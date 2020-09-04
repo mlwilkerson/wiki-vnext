@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "mrmlnc.vscode-json5",
+    "christian-kohler.path-intellisense",
+    "mrmlnc.vscode-puglint",
+    "EditorConfig.editorconfig",
+    "octref.vetur"
+  ],
+  "unwantedRecommendations": [
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "ms-vscode.vscode-typescript-tslint-plugin"
+  ]
+}
