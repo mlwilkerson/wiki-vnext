@@ -31,3 +31,14 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# Config Files
+/config.yml
+
+# Data directories
+/repo
+/data
+/uploads
+/content
+/temp
+*.sqlite
