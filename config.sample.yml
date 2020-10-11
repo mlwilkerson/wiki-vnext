@@ -46,6 +46,22 @@ db:
   # SQLite only:
   storage: path/to/database.sqlite
 
+# ---------------------------------------------------------------------
+# Telemetry
+# ---------------------------------------------------------------------
+# Help Wiki.js developers improve this app with anonymized telemetry.
+# Learn more at https://docs.requarks.io/telemetry
+
+allowTelemetry: true
+
+# ---------------------------------------------------------------------
+# GraphQL Server Ports
+# ---------------------------------------------------------------------
+# The internal port used for the GraphQL API server
+
+graphServer:
+  port: 11511
+
 #######################################################################
 # ADVANCED OPTIONS                                                    #
 #######################################################################

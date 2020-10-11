@@ -7,28 +7,12 @@
             q-avatar(size='34px', square)
               img(src='../assets/logo-wikijs.svg')
           q-toolbar-title.text-h6 Wiki.js
-        q-toolbar.gt-sm(style='height: 64px;', dark)
-          q-input(
-            dark
-            v-model='search'
-            standout='bg-white text-dark'
-            dense
-            rounded
-            ref='searchField'
-            style='width: 100%;'
-            label='Search...'
-            )
-            template(v-slot:prepend)
-              q-icon(name='mdi-magnify')
-            template(v-slot:append)
-              q-icon.cursor-pointer(name='mdi-close', @click='search=``', v-if='search.length > 0', :color='$q.dark.isActive ? `blue` : `grey-4`')
-          q-btn.q-ml-md(flat, round, dense, icon='mdi-tag-multiple', color='grey', to='/t')
+        q-toolbar.gt-sm.justify-center(style='height: 64px;', dark)
+          .text-overline.text-uppercase Administration
         q-toolbar(style='height: 64px;', dark)
           q-space
-          q-btn.q-ml-md(flat, round, dense, icon='mdi-web', color='grey')
-          q-btn.q-ml-md(flat, round, dense, icon='mdi-file-document-edit-outline', color='grey')
-          q-btn.q-ml-md(flat, round, dense, icon='mdi-text-box-plus-outline', color='grey')
-          q-btn.q-ml-md(flat, round, dense, icon='mdi-cog', color='grey', to='/a')
+          q-btn.q-ml-md(flat, dense, icon='mdi-exit-run', label='Exit' color='grey-5', to='/')
+          q-separator(vertical)
           q-btn.q-ml-md(flat, round, dense, color='grey')
             q-icon(v-if='!user.picture', name='mdi-account-circle')
             q-avatar(v-else)
@@ -42,16 +26,24 @@
                 q-card-actions(align='center')
                   q-btn(flat, label='Profile', icon='mdi-account', color='primary', to='/p')
                   q-btn(flat, label='Logout', icon='mdi-logout', color='red', href='/logout')
-    q-drawer(v-model='leftDrawerOpen', show-if-above, content-class='bg-primary')
-      q-list
-        q-item-label.text-white(header) Test
+    q-drawer(v-model='leftDrawerOpen', show-if-above, content-class='bg-white')
+      q-list.text-grey-8
+        q-item(to='dashboard', clickable, v-ripple)
+          q-item-section(avatar)
+            q-icon(name='mdi-view-dashboard-variant')
+          q-item-section {{ $t('admin:dashboard.title') }}
+        q-separator
+        q-item(to='general', clickable, v-ripple)
+          q-item-section(avatar)
+            q-icon(name='mdi-widgets')
+          q-item-section {{ $t('admin:general.title') }}
     q-page-container
       router-view
 </template>
 
 <script>
 export default {
-  name: 'MainLayout',
+  name: 'AdminLayout',
   data () {
     return {
       leftDrawerOpen: true,
