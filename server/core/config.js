@@ -13,7 +13,7 @@ module.exports = {
    */
   init () {
     const confPaths = {
-      config: path.join(WIKI.ROOTPATH, 'config.yml'),
+      config: path.join(WIKI.ROOTPATH, 'config-server.yml'),
       data: path.join(WIKI.SERVERPATH, 'app/data.yml'),
       dataRegex: path.join(WIKI.SERVERPATH, 'app/regex.js')
     }

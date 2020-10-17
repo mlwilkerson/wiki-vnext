@@ -26,6 +26,9 @@ defaults:
     logLevel: info
     offline: false
     ha: false
+    graphServer:
+      port: 11511
+      bindIP: 0.0.0.0
     # DB defaults
     api:
       isEnabled: false

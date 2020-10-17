@@ -34,6 +34,8 @@ yarn-error.log*
 
 # Config Files
 /config.yml
+/config-server.yml
+/config-ui.yml
 
 # Data directories
 /repo

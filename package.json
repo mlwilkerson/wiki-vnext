@@ -14,6 +14,7 @@
   "homepage": "https://github.com/Requarks/wiki#readme",
   "scripts": {
     "dev": "quasar dev -m ssr -H local.requarks.io",
+    "server": "nodemon server",
     "build": "quasar build -m ssr --skip-pkg",
     "lint": "eslint --format codeframe --ext .js,.vue ./",
     "test": "eslint --format codeframe --ext .js,.vue . && pug-lint server/views && jest",
@@ -78,6 +79,7 @@
     "i18next": "19.8.2",
     "js-base64": "3.5.2",
     "js-binary": "1.2.0",
+    "js-cookie": "2.2.1",
     "js-yaml": "3.14.0",
     "jsdom": "16.4.0",
     "jsonwebtoken": "8.5.1",
@@ -166,6 +168,7 @@
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
     "eslint-plugin-vue": "7.0.0",
+    "nodemon": "2.0.4",
     "pug": "3.0.0",
     "pug-plain-loader": "1.0.0",
     "workbox-webpack-plugin": "5.1.4"
@@ -185,5 +188,15 @@
     "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "server/"
+    ],
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "ext": "js,json,graphql,gql",
+    "delay": "500"
   }
 }

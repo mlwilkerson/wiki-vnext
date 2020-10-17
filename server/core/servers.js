@@ -19,11 +19,10 @@ module.exports = {
    * Start HTTP Server
    */
   async startHTTP () {
-    WIKI.logger.info(`HTTP Server on port: [ ${WIKI.config.port} ]`)
+    WIKI.logger.info(`HTTP Server on port: [ ${WIKI.config.graphServer.port} ]`)
     this.servers.http = http.createServer(WIKI.app)
-    this.servers.graph.installSubscriptionHandlers(this.servers.http)
 
-    this.servers.http.listen(WIKI.config.port, WIKI.config.bindIP)
+    this.servers.http.listen(WIKI.config.graphServer.port, WIKI.config.graphServer.bindIP)
     this.servers.http.on('error', (error) => {
       if (error.syscall !== 'listen') {
         throw error
@@ -31,10 +30,10 @@ module.exports = {
 
       switch (error.code) {
         case 'EACCES':
-          WIKI.logger.error('Listening on port ' + WIKI.config.port + ' requires elevated privileges!')
+          WIKI.logger.error('Listening on port ' + WIKI.config.graphServer.port + ' requires elevated privileges!')
           return process.exit(1)
         case 'EADDRINUSE':
-          WIKI.logger.error('Port ' + WIKI.config.port + ' is already in use!')
+          WIKI.logger.error('Port ' + WIKI.config.graphServer.port + ' is already in use!')
           return process.exit(1)
         default:
           throw error
@@ -46,7 +45,7 @@ module.exports = {
     })
 
     this.servers.http.on('connection', conn => {
-      let connKey = `http:${conn.remoteAddress}:${conn.remotePort}`
+      const connKey = `http:${conn.remoteAddress}:${conn.remotePort}`
       this.connections.set(connKey, conn)
       conn.on('close', () => {
         this.connections.delete(connKey)
@@ -83,9 +82,7 @@ module.exports = {
       return process.exit(1)
     }
     this.servers.https = https.createServer(tlsOpts, WIKI.app)
-    this.servers.graph.installSubscriptionHandlers(this.servers.https)
 
-    this.servers.https.listen(WIKI.config.ssl.port, WIKI.config.bindIP)
     this.servers.https.on('error', (error) => {
       if (error.syscall !== 'listen') {
         throw error
@@ -108,12 +105,14 @@ module.exports = {
     })
 
     this.servers.https.on('connection', conn => {
-      let connKey = `https:${conn.remoteAddress}:${conn.remotePort}`
+      const connKey = `https:${conn.remoteAddress}:${conn.remotePort}`
       this.connections.set(connKey, conn)
       conn.on('close', () => {
         this.connections.delete(connKey)
       })
     })
+
+    this.servers.https.listen(WIKI.config.ssl.port, WIKI.config.bindIP)
   },
   /**
    * Start GraphQL Server
@@ -122,22 +121,16 @@ module.exports = {
     const graphqlSchema = require('../graph')
     this.servers.graph = new ApolloServer({
       ...graphqlSchema,
-      context: ({ req, res }) => ({ req, res }),
-      subscriptions: {
-        onConnect: (connectionParams, webSocket) => {
-
-        },
-        path: '/graphql-subscriptions'
-      }
+      context: ({ req, res }) => ({ req, res })
     })
-    this.servers.graph.applyMiddleware({ app: WIKI.app })
+    this.servers.graph.applyMiddleware({ app: WIKI.app, path: '/' })
   },
   /**
    * Close all active connections
    */
   closeConnections (mode = 'all') {
     for (const [key, conn] of this.connections) {
-      if (mode !== `all` && key.indexOf(`${mode}:`) !== 0) {
+      if (mode !== 'all' && key.indexOf(`${mode}:`) !== 0) {
         continue
       }
       conn.destroy()

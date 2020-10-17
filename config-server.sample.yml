@@ -1,5 +1,5 @@
 #######################################################################
-# Wiki.js - CONFIGURATION                                             #
+# Wiki.js - SERVER - CONFIGURATION                                    #
 #######################################################################
 # Full documentation + examples:
 # https://docs.requarks.io/install
@@ -53,14 +53,6 @@ db:
 # Learn more at https://docs.requarks.io/telemetry
 
 allowTelemetry: true
-
-# ---------------------------------------------------------------------
-# GraphQL Server Ports
-# ---------------------------------------------------------------------
-# The internal port used for the GraphQL API server
-
-graphServer:
-  port: 11511
 
 #######################################################################
 # ADVANCED OPTIONS                                                    #
@@ -142,4 +134,5 @@ ha: false
 # Data Path
 # ---------------------------------------------------------------------
 # Writeable data path used for cache and temporary user uploads.
+
 dataPath: ./data

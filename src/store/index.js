@@ -1,7 +1,13 @@
+import union from 'lodash/union'
+import without from 'lodash/without'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import pathify from 'vuex-pathify' // eslint-disable-line import/no-duplicates
+import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 
-// import example from './module-example'
+import page from './page'
+import site from './site'
+import user from './user'
 
 Vue.use(Vuex)
 
@@ -14,10 +20,33 @@ Vue.use(Vuex)
  * with the Store instance.
  */
 
+const state = {
+  loadingStack: []
+}
+
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
+    plugins: [
+      pathify.plugin
+    ],
+    state,
+    getters: {
+      isLoading: state => { return state.loadingStack.length > 0 }
+    },
+    mutations: {
+      ...make.mutations(state),
+      loadingStart (st, stackName) {
+        st.loadingStack = union(st.loadingStack, [stackName])
+      },
+      loadingStop (st, stackName) {
+        st.loadingStack = without(st.loadingStack, stackName)
+      }
+    },
+    actions: {},
     modules: {
-      // example
+      page,
+      site,
+      user
     },
 
     // enable strict mode (adds overhead!)

@@ -1,7 +1,3 @@
-// ===========================================
-// Wiki.js
-// Licensed under AGPLv3
-// ===========================================
 /*
  * Note: This file is used for both PRODUCTION & DEVELOPMENT.
  * Note: Changes to this file (but not any file it imports!) are picked up by the

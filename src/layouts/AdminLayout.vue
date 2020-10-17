@@ -11,10 +11,10 @@
           .text-overline.text-uppercase Administration
         q-toolbar(style='height: 64px;', dark)
           q-space
-          q-btn.q-ml-md(flat, dense, icon='mdi-exit-run', label='Exit' color='grey-5', to='/')
+          q-btn.q-ml-md(flat, dense, icon='las la-arrow-circle-left', label='Exit' color='grey-5', to='/')
           q-separator(vertical)
           q-btn.q-ml-md(flat, round, dense, color='grey')
-            q-icon(v-if='!user.picture', name='mdi-account-circle')
+            q-icon(v-if='!user.picture', name='las la-user-circle')
             q-avatar(v-else)
               img(:src='user.picture')
             q-menu(auto-close)
@@ -24,24 +24,25 @@
                   .text-caption.text-grey-8 {{user.email}}
                 q-separator(:dark='false')
                 q-card-actions(align='center')
-                  q-btn(flat, label='Profile', icon='mdi-account', color='primary', to='/p')
-                  q-btn(flat, label='Logout', icon='mdi-logout', color='red', href='/logout')
-    q-drawer(v-model='leftDrawerOpen', show-if-above, content-class='bg-white')
-      q-list.text-grey-8
-        q-item(to='dashboard', clickable, v-ripple)
+                  q-btn(flat, label='Profile', icon='las la-user-alt', color='primary', to='/p')
+                  q-btn(flat, label='Logout', icon='las la-sign-out-alt', color='red', href='/logout')
+    q-drawer(v-model='leftDrawerOpen', show-if-above, content-class='bg-white', bordered)
+      q-list.text-grey-8(separator, clickable)
+        q-item(to='dashboard', v-ripple)
           q-item-section(avatar)
-            q-icon(name='mdi-view-dashboard-variant')
+            q-icon(name='las la-campground')
           q-item-section {{ $t('admin:dashboard.title') }}
-        q-separator
-        q-item(to='general', clickable, v-ripple)
+        q-item(to='general', v-ripple)
           q-item-section(avatar)
-            q-icon(name='mdi-widgets')
+            q-icon(name='las la-shapes')
           q-item-section {{ $t('admin:general.title') }}
     q-page-container
       router-view
 </template>
 
 <script>
+import adminStore from '../store/admin'
+
 export default {
   name: 'AdminLayout',
   data () {
@@ -54,6 +55,15 @@ export default {
         picture: null
       }
     }
+  },
+  preFetch ({ store }) {
+    store.registerModule('admin', adminStore)
+  },
+  mounted () {
+    this.$store.registerModule('admin', adminStore, { preserveState: true })
+  },
+  destroyed () {
+    this.$store.unregisterModule('admin')
   }
 }
 </script>

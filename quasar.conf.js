@@ -19,7 +19,6 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-
       'i18n'
     ],
 
@@ -38,8 +37,8 @@ module.exports = function (/* ctx */) {
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font', // optional, you are not bound to it
-      'mdi-v5' // optional, you are not bound to it
+      'roboto-font',
+      'line-awesome'
     ],
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
@@ -86,9 +85,15 @@ module.exports = function (/* ctx */) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      iconSet: 'mdi-v5', // Quasar icon set
+      iconSet: 'line-awesome', // Quasar icon set
       lang: 'en-us', // Quasar language pack
-      config: {},
+      config: {
+        loadingBar: {
+          color: 'primary',
+          size: '1px',
+          position: 'top'
+        }
+      },
 
       // Possible values for "importStrategy":
       // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
@@ -105,6 +110,7 @@ module.exports = function (/* ctx */) {
       // Quasar plugins
       plugins: [
         'Loading',
+        'LoadingBar',
         'Notify'
       ]
     },
