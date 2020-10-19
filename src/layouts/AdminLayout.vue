@@ -12,20 +12,7 @@
         q-toolbar(style='height: 64px;', dark)
           q-space
           q-btn.q-ml-md(flat, dense, icon='las la-arrow-circle-left', label='Exit' color='grey-5', to='/')
-          q-separator(vertical)
-          q-btn.q-ml-md(flat, round, dense, color='grey')
-            q-icon(v-if='!user.picture', name='las la-user-circle')
-            q-avatar(v-else)
-              img(:src='user.picture')
-            q-menu(auto-close)
-              q-card(flat, style='width: 300px;', :dark='false')
-                q-card-section(align='center')
-                  .text-subtitle1.text-grey-7 {{user.name}}
-                  .text-caption.text-grey-8 {{user.email}}
-                q-separator(:dark='false')
-                q-card-actions(align='center')
-                  q-btn(flat, label='Profile', icon='las la-user-alt', color='primary', to='/p')
-                  q-btn(flat, label='Logout', icon='las la-sign-out-alt', color='red', href='/logout')
+          account-menu
     q-drawer(v-model='leftDrawerOpen', show-if-above, content-class='bg-white', bordered)
       q-list.text-grey-8(separator, clickable)
         q-item(to='dashboard', v-ripple)

@@ -56,6 +56,7 @@
     "cheerio": "1.0.0-rc.3",
     "chromium-pickle-js": "0.2.0",
     "clean-css": "4.2.3",
+    "clipboard": "2.0.6",
     "command-exists": "1.2.9",
     "compression": "1.7.4",
     "cookie-parser": "1.4.5",

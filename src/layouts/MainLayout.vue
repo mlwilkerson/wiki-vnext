@@ -2,12 +2,25 @@
   q-layout(view='hHh Lpr lff')
     q-header.bg-black.text-white
       .row.no-wrap
-        q-toolbar(style='height: 64px;', dark)
-          q-btn(dense, flat, to='/')
-            q-avatar(size='34px', square)
+        q-toolbar(
+          style='height: 64px;'
+          dark
+          )
+          q-btn(
+            dense
+            flat
+            to='/'
+            )
+            q-avatar(
+              size='34px'
+              square
+              )
               img(src='../assets/logo-wikijs.svg')
-          q-toolbar-title.text-h6 Wiki.js
-        q-toolbar.gt-sm(style='height: 64px;', dark)
+          q-toolbar-title.text-h6.font-poppins Wiki.js
+        q-toolbar.gt-sm(
+          style='height: 64px;'
+          dark
+          )
           q-input(
             dark
             v-model='search'
@@ -21,25 +34,45 @@
             template(v-slot:prepend)
               q-icon(name='las la-search')
             template(v-slot:append)
-              q-icon.cursor-pointer(name='las la-times', @click='search=``', v-if='search.length > 0', :color='$q.dark.isActive ? `blue` : `grey-4`')
-          q-btn.q-ml-md(flat, round, dense, icon='las la-tags', color='grey', to='/t')
-        q-toolbar(style='height: 64px;', dark)
+              q-icon.cursor-pointer(
+                name='las la-times'
+                @click='search=``'
+                v-if='search.length > 0'
+                :color='$q.dark.isActive ? `blue` : `grey-4`'
+                )
+          q-btn.q-ml-md(
+            flat
+            round
+            dense
+            icon='las la-tags'
+            color='grey'
+            to='/t'
+            )
+        q-toolbar(
+          style='height: 64px;'
+          dark
+          )
           q-space
-          q-btn.q-ml-md(flat, round, dense, icon='las la-plus', color='blue-4')
-          q-btn.q-ml-md(flat, round, dense, icon='las la-tools', color='grey', to='/a')
-          q-btn.q-ml-md(flat, round, dense, color='grey')
-            q-icon(v-if='!user.picture', name='las la-user-circle')
-            q-avatar(v-else)
-              img(:src='user.picture')
-            q-menu(auto-close)
-              q-card(flat, style='width: 300px;', :dark='false')
-                q-card-section(align='center')
-                  .text-subtitle1.text-grey-7 {{user.name}}
-                  .text-caption.text-grey-8 {{user.email}}
-                q-separator(:dark='false')
-                q-card-actions(align='center')
-                  q-btn(flat, label='Profile', icon='las la-user-alt', color='primary', to='/p')
-                  q-btn(flat, label='Logout', icon='las la-sign-out-alt', color='red', href='/logout')
+          q-btn.q-ml-md(
+            flat
+            round
+            dense
+            icon='las la-plus'
+            color='blue-4'
+            aria-label='Create New Page'
+            )
+            q-tooltip Create New Page
+          q-btn.q-ml-md(
+            flat
+            round
+            dense
+            icon='las la-tools'
+            color='grey'
+            to='/a'
+            aria-label='Administration'
+            )
+            q-tooltip Administration
+          account-menu
     q-drawer(
       v-model='leftDrawerOpen'
       show-if-above
@@ -54,6 +87,7 @@
           color='blue-7'
           text-color='blue-2'
           label='EN'
+          aria-label='EN'
           size='sm'
           )
         q-separator(vertical)
@@ -64,14 +98,44 @@
           color='blue-7'
           text-color='blue-2'
           label='Browse'
+          aria-label='Browse'
           size='sm'
           )
       q-scroll-area.sidebar-nav(
         :thumb-style='thumbStyle'
         :bar-style='barStyle'
         )
-        q-list
-          q-item-label.text-white(header, v-for='n in 100', :key='n') Test
+        q-list(
+          clickable
+          dense
+          dark
+          )
+          q-item-label.text-blue-2.text-caption(header) Getting Started
+          q-item(to='/install')
+            q-item-section(avatar)
+              q-icon(name='las la-dog', color='white')
+            q-item-section Requirements
+          q-item(to='/install')
+            q-item-section(avatar)
+              q-icon(name='las la-cat', color='white')
+            q-item-section Installation
+          q-separator.q-my-sm
+          q-item(to='/install')
+            q-item-section(avatar)
+              q-icon(name='las la-cat', color='white')
+            q-item-section Installation
+      q-bar.bg-blue-9.text-white(dense)
+        q-btn.col(
+          icon='las la-dharmachakra'
+          label='History'
+          flat
+        )
+        q-separator(vertical)
+        q-btn.col(
+          icon='las la-bookmark'
+          label='Bookmarks'
+          flat
+        )
     q-page-container
       router-view
       q-page-scroller(
@@ -97,11 +161,6 @@ export default {
     return {
       leftDrawerOpen: true,
       search: '',
-      user: {
-        name: 'John Doe',
-        email: 'test@example.com',
-        picture: null
-      },
       thumbStyle: {
         right: '2px',
         borderRadius: '5px',
@@ -127,6 +186,6 @@ export default {
 }
 .sidebar-nav {
   border-top: 1px solid rgba(255,255,255,.15);
-  height: calc(100% - 38px);
+  height: calc(100% - 38px - 24px);
 }
 </style>

@@ -19,7 +19,8 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      'i18n'
+      'i18n',
+      'components'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -92,6 +93,21 @@ module.exports = function (/* ctx */) {
           color: 'primary',
           size: '1px',
           position: 'top'
+        },
+        notify: {
+          position: 'top',
+          progress: true,
+          color: 'green',
+          icon: 'las la-check',
+          actions: [
+            {
+              icon: 'las la-times',
+              color: 'white',
+              size: 'sm',
+              round: true,
+              handler: () => {}
+            }
+          ]
         }
       },
 
