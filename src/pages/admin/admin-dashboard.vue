@@ -1,5 +1,6 @@
 <template lang='pug'>
-  span Doude
+  q-page.bg-grey-1
+    span Test
   //- v-container(fluid, grid-list-lg)
   //-   v-layout(row, wrap)
   //-     v-flex(xs12)

@@ -1,6 +1,6 @@
 <template lang='pug'>
   q-layout(view='hHh Lpr lff')
-    q-header.bg-black.text-white
+    q-header.bg-black.text-white.site-header
       .row.no-wrap
         q-toolbar(
           style='height: 64px;'
