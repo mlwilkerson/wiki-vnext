@@ -1,145 +1,212 @@
 <template lang='pug'>
-  v-container.admin-system(fluid, grid-list-lg)
-    v-layout(row, wrap)
-      v-flex(xs12)
-        .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-tune.svg', alt='System Info', style='width: 80px;')
-          .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:system.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{ $t('admin:system.subtitle') }}
-        v-layout.mt-3(row wrap)
-          v-flex(lg6 xs12)
-            v-card.animated.fadeInUp
-              v-btn.animated.fadeInLeft.wait-p2s.btn-animate-rotate(fab, absolute, :right='!$vuetify.rtl', :left='$vuetify.rtl', top, small, light, @click='refresh'): v-icon(color='grey') mdi-refresh
-              v-subheader Wiki.js
-              v-list(two-line, dense)
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue.white--text mdi-application-export
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.currentVersion') }}
-                    v-list-item-subtitle {{ info.currentVersion }}
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue.white--text mdi-inbox-arrow-up
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.latestVersion') }}
-                    v-list-item-subtitle {{ info.latestVersion }}
-                  v-list-item-action
-                    v-list-item-action-text {{ $t('admin:system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
-              v-card-actions(v-if='info.upgradeCapable && !isLatestVersion && info.platform === `docker`', :class='$vuetify.theme.dark ? `grey darken-3-d5` : `indigo lighten-5`')
-                .caption.indigo--text.pl-3(:class='$vuetify.theme.dark ? `text--lighten-4` : ``') Wiki.js can perform the upgrade to the latest version for you.
-                v-spacer
-                v-btn.px-3(
-                  color='indigo'
-                  dark
-                  @click='performUpgrade'
-                  )
-                  v-icon(left) mdi-upload
-                  span Perform Upgrade
+  q-page.bg-grey-1.admin-system
+    .row.q-pa-md.items-center
+      .col-auto
+        img.admin-icon(src='~assets/icons/fluent-processor.svg')
+      .col.q-pl-md
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:system.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:system.subtitle') }}
+    q-separator(inset)
+    .row.q-pa-md.q-col-gutter-md
+      .col-6
+        //- -----------------------
+        //- WIKI.JS
+        //- -----------------------
+        q-card.bg-grey-3.q-pb-sm(flat)
+          q-card-section
+            .text-subtitle1 Wiki.js
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-vector-square'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.currentVersion') }}
+              q-item-label(caption): strong {{ info.currentVersion }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-broadcast-tower'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.latestVersion') }}
+              q-item-label(caption): strong {{ info.latestVersion }}
 
-            v-card.mt-4.animated.fadeInUp.wait-p2s
-              v-subheader {{ $t('admin:system.hostInfo') }}
-              v-list(two-line, dense)
-                v-list-item
-                  v-list-item-avatar
-                    v-avatar.blue-grey(size='40')
-                      v-icon(color='white') {{platformLogo}}
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.os') }}
-                    v-list-item-subtitle {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue-grey.white--text mdi-desktop-classic
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.hostname') }}
-                    v-list-item-subtitle {{ info.hostname }}
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue-grey.white--text mdi-cpu-64-bit
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.cpuCores') }}
-                    v-list-item-subtitle {{ info.cpuCores }}
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue-grey.white--text mdi-memory
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.totalRAM') }}
-                    v-list-item-subtitle {{ info.ramTotal }}
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue-grey.white--text mdi-iframe-outline
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.workingDirectory') }}
-                    v-list-item-subtitle {{ info.workingDirectory }}
-                v-list-item
-                  v-list-item-avatar
-                    v-icon.blue-grey.white--text mdi-card-bulleted-settings-outline
-                  v-list-item-content
-                    v-list-item-title {{ $t('admin:system.configFile') }}
-                    v-list-item-subtitle {{ info.configFile }}
+        //- -----------------------
+        //- ENGINES
+        //- -----------------------
+        q-card.bg-grey-3.q-mt-md.q-pb-sm(flat)
+          q-card-section
+            .text-subtitle1 Engines
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='lab la-node-js'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label Node.js
+              q-item-label(caption): strong {{ info.nodeVersion }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-database'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label Database
+              q-item-label(caption): strong {{ info.dbType }} {{dbVersion}}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-ethernet'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label Database Host
+              q-item-label(caption): strong {{ info.dbHost }}
 
-          v-flex(lg6 xs12)
-            v-card.pb-3.animated.fadeInUp.wait-p4s
-              v-subheader Node.js
-              v-list(dense)
-                v-list-item
-                  v-list-item-avatar
-                    v-avatar.light-green(size='40')
-                      v-icon(color='white') mdi-nodejs
-                  v-list-item-content
-                    v-list-item-title {{ info.nodeVersion }}
+      .col-6
+        //- -----------------------
+        //- HOST INFORMATION
+        //- -----------------------
+        q-card.bg-grey-3.q-pb-sm(flat)
+          q-card-section
+            .text-subtitle1 {{ $t('admin:system.hostInfo') }}
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                :icon='platformLogo'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.os') }}
+              q-item-label(caption): strong {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-server'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.hostname') }}
+              q-item-label(caption): strong {{ info.hostname }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-microchip'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.cpuCores') }}
+              q-item-label(caption): strong {{ info.cpuCores }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-memory'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.totalRAM') }}
+              q-item-label(caption): strong {{ info.ramTotal }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-terminal'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.workingDirectory') }}
+              q-item-label(caption): strong {{ info.workingDirectory }}
+          q-separator(inset)
+          q-item
+            q-item-section(avatar)
+              q-avatar(
+                icon='las la-file-code'
+                text-color='white'
+                rounded
+                color='primary'
+                )
+            q-item-section
+              q-item-label {{ $t('admin:system.configFile') }}
+              q-item-label(caption): strong {{ info.configFile }}
 
-              v-divider.mt-3
-              v-subheader {{ info.dbType }}
-              v-list(dense)
-                v-list-item
-                  v-list-item-avatar
-                    v-avatar.indigo.darken-1(size='40')
-                      v-icon(color='white') mdi-database
-                  v-list-item-content
-                    v-list-item-title(v-html='dbVersion')
-                    v-list-item-subtitle {{ info.dbHost }}
+    //-                 v-list-item-action-text {{ $t('admin:system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
+    //-           v-card-actions(v-if='info.upgradeCapable && !isLatestVersion && info.platform === `docker`', :class='$vuetify.theme.dark ? `grey darken-3-d5` : `indigo lighten-5`')
+    //-             .caption.indigo--text.pl-3(:class='$vuetify.theme.dark ? `text--lighten-4` : ``') Wiki.js can perform the upgrade to the latest version for you.
+    //-             v-spacer
+    //-             v-btn.px-3(
+    //-               color='indigo'
+    //-               dark
+    //-               @click='performUpgrade'
+    //-               )
+    //-               v-icon(left) mdi-upload
+    //-               span Perform Upgrade
 
-                v-alert.mt-3.mx-4(:value='isDbLimited', color='deep-orange darken-2', icon='mdi-alert', dark) {{ $t('admin:system.dbPartialSupport') }}
-
-    v-dialog(
-      v-model='isUpgrading'
-      persistent
-      width='450'
-      )
-      v-card.blue.darken-5(dark)
-        v-card-text.text-center.pa-10
-          self-building-square-spinner(
-            :animation-duration='4000'
-            :size='40'
-            color='#FFF'
-            style='margin: 0 auto;'
-            )
-          .body-2.mt-5.blue--text.text--lighten-4 Your Wiki.js container is being upgraded...
-          .caption.blue--text.text--lighten-2 Please wait
-          v-progress-linear.mt-5(
-            color='blue lighten-2'
-            :value='upgradeProgress'
-            :buffer-value='upgradeProgress'
-            rounded
-            :stream='isUpgradingStarted'
-            query
-            :indeterminate='!isUpgradingStarted'
-          )
+    //- v-dialog(
+    //-   v-model='isUpgrading'
+    //-   persistent
+    //-   width='450'
+    //-   )
+    //-   v-card.blue.darken-5(dark)
+    //-     v-card-text.text-center.pa-10
+    //-       self-building-square-spinner(
+    //-         :animation-duration='4000'
+    //-         :size='40'
+    //-         color='#FFF'
+    //-         style='margin: 0 auto;'
+    //-         )
+    //-       .body-2.mt-5.blue--text.text--lighten-4 Your Wiki.js container is being upgraded...
+    //-       .caption.blue--text.text--lighten-2 Please wait
+    //-       v-progress-linear.mt-5(
+    //-         color='blue lighten-2'
+    //-         :value='upgradeProgress'
+    //-         :buffer-value='upgradeProgress'
+    //-         rounded
+    //-         :stream='isUpgradingStarted'
+    //-         query
+    //-         :indeterminate='!isUpgradingStarted'
+    //-       )
 </template>
 
 <script>
-import _ from 'lodash'
+import _get from 'lodash/get'
+import gql from 'graphql-tag'
 
-import { SelfBuildingSquareSpinner } from 'epic-spinners'
-
-import systemInfoQuery from 'gql/admin/system/system-query-info.gql'
-import performUpgradeMutation from 'gql/admin/system/system-mutation-upgrade.gql'
+// import { SelfBuildingSquareSpinner } from 'epic-spinners'
 
 export default {
   components: {
-    SelfBuildingSquareSpinner
+    // SelfBuildingSquareSpinner
   },
   data () {
     return {
@@ -151,24 +218,24 @@ export default {
   },
   computed: {
     dbVersion () {
-      return _.get(this.info, 'dbVersion', '').replace(/(?:\r\n|\r|\n)/g, '<br />')
+      return _get(this.info, 'dbVersion', '').replace(/(?:\r\n|\r|\n)/g, ', ')
     },
     platformLogo () {
       switch (this.info.platform) {
         case 'docker':
-          return 'mdi-docker'
+          return 'lab la-docker'
         case 'darwin':
-          return 'mdi-apple'
+          return 'lab la-apple'
         case 'linux':
           if (this.info.operatingSystem.indexOf('Ubuntu')) {
-            return 'mdi-ubuntu'
+            return 'lab la-ubuntu'
           } else {
-            return 'mdi-linux'
+            return 'lab la-linux'
           }
         case 'win32':
-          return 'mdi-microsoft-windows'
+          return 'lab la-windows'
         default:
-          return ''
+          return 'las la-question'
       }
     },
     isDbLimited () {
@@ -191,18 +258,31 @@ export default {
       this.isUpgrading = true
       this.isUpgradingStarted = false
       this.upgradeProgress = 0
-      this.$store.commit(`loadingStart`, 'admin-system-upgrade')
+      this.$store.commit('loadingStart', 'admin-system-upgrade')
       try {
         const respRaw = await this.$apollo.mutate({
-          mutation: performUpgradeMutation
+          mutation: gql`
+            mutation {
+              system {
+                performUpgrade {
+                  responseResult {
+                    succeeded
+                    errorCode
+                    slug
+                    message
+                  }
+                }
+              }
+            }
+          `
         })
-        const resp = _.get(respRaw, 'data.system.performUpgrade.responseResult', {})
+        const resp = _get(respRaw, 'data.system.performUpgrade.responseResult', {})
         if (resp.succeeded) {
           this.isUpgradingStarted = true
-          let progressInterval = setInterval(() => {
+          const progressInterval = setInterval(() => {
             this.upgradeProgress += 0.83
           }, 500)
-          _.delay(() => {
+          setTimeout(() => {
             clearInterval(progressInterval)
             window.location.reload(true)
           }, 60000)
@@ -211,14 +291,36 @@ export default {
         }
       } catch (err) {
         this.$store.commit('pushGraphError', err)
-        this.$store.commit(`loadingStop`, 'admin-system-upgrade')
+        this.$store.commit('loadingStop', 'admin-system-upgrade')
         this.isUpgrading = false
       }
     }
   },
   apollo: {
     info: {
-      query: systemInfoQuery,
+      query: gql`
+        query {
+          system {
+            info {
+              configFile
+              cpuCores
+              currentVersion
+              dbHost
+              dbType
+              dbVersion
+              hostname
+              latestVersion
+              latestVersionReleaseDate
+              nodeVersion
+              operatingSystem
+              platform
+              ramTotal
+              upgradeCapable
+              workingDirectory
+            }
+          }
+        }
+      `,
       fetchPolicy: 'network-only',
       update: (data) => data.system.info,
       watchLoading (isLoading) {

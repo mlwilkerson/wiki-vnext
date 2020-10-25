@@ -19,6 +19,8 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
+      { path: 'apollo-browser', server: false },
+      { path: 'apollo-server', client: false },
       'i18n',
       'components'
     ],

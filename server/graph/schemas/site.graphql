@@ -16,6 +16,10 @@ extend type Mutation {
 
 type SiteQuery {
   config: SiteConfig @auth(requires: ["manage:system"])
+
+  info(
+    hostname: String!
+  ): SiteInfo
 }
 
 # -----------------------------------------------
@@ -93,4 +97,13 @@ type SiteConfig {
   securityCSPDirectives: String!
   uploadMaxFileSize: Int!
   uploadMaxFiles: Int!
+}
+
+type SiteInfo {
+  host: String
+  title: String
+  description: String
+  company: String
+  contentLicense: String
+  logoUrl: String
 }
