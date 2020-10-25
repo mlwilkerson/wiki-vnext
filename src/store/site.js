@@ -1,10 +1,12 @@
 import { make } from 'vuex-pathify'
 
 const state = {
+  host: '',
   company: '',
   contentLicense: '',
   dark: false,
   title: '',
+  description: '',
   logoUrl: '',
   search: '',
   searchIsFocused: false,

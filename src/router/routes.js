@@ -8,11 +8,18 @@ const routes = [
     ]
   },
   {
+    path: '/login',
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Login.vue') }
+    ]
+  },
+  {
     path: '/a',
     component: () => import('layouts/AdminLayout.vue'),
     children: [
       { path: '', redirect: 'dashboard' },
-      { path: 'dashboard', component: () => import('pages/admin/admin-dashboard.vue') }
+      { path: 'dashboard', component: () => import('pages/admin/admin-dashboard.vue') },
       // { path: 'general', component: () => import('pages/admin/admin-general.vue') },
       // { path: 'locale', component: () => import('pages/admin/admin-locale.vue') },
       // { path: 'navigation', component: () => import('pages/admin/admin-navigation.vue') },
@@ -38,7 +45,7 @@ const routes = [
       // { path: 'mail', component: () => import('pages/admin/admin-mail.vue') },
       // { path: 'security', component: () => import('pages/admin/admin-security.vue') },
       // { path: 'ssl', component: () => import('pages/admin/admin-ssl.vue') },
-      // { path: 'system', component: () => import('pages/admin/admin-system.vue') },
+      { path: 'system', component: () => import('pages/admin/admin-system.vue') }
       // { path: 'utilities', component: () => import('pages/admin/admin-utilities.vue') },
       // { path: 'webhooks', component: () => import('pages/admin/admin-webhooks.vue') },
       // { path: 'dev-flags', component: () => import('pages/admin/admin-dev-flags.vue') },

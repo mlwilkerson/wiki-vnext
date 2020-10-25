@@ -5,13 +5,13 @@ const _ = require('lodash')
 
 module.exports = {
   Query: {
-    async site() { return {} }
+    async site () { return {} }
   },
   Mutation: {
-    async site() { return {} }
+    async site () { return {} }
   },
   SiteQuery: {
-    async config(obj, args, context, info) {
+    async config (obj, args, context, info) {
       return {
         host: WIKI.config.host,
         title: WIKI.config.title,
@@ -31,10 +31,20 @@ module.exports = {
         uploadMaxFileSize: WIKI.config.uploads.maxFileSize,
         uploadMaxFiles: WIKI.config.uploads.maxFiles
       }
+    },
+    async info (obj, args) {
+      return {
+        host: args.hostname,
+        title: WIKI.config.title,
+        description: '',
+        company: WIKI.config.company,
+        contentLicense: WIKI.config.contentLicense,
+        logoUrl: WIKI.config.logoUrl
+      }
     }
   },
   SiteMutation: {
-    async updateConfig(obj, args, context) {
+    async updateConfig (obj, args, context) {
       try {
         if (args.host) {
           let siteHost = _.trim(args.host)

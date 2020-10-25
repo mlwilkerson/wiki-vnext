@@ -3,24 +3,25 @@ const { defaultFieldResolver } = require('graphql')
 const _ = require('lodash')
 
 class AuthDirective extends SchemaDirectiveVisitor {
-  visitObject(type) {
+  visitObject (type) {
     this.ensureFieldsWrapped(type)
     type._requiredAuthScopes = this.args.requires
   }
+
   // Visitor methods for nested types like fields and arguments
   // also receive a details object that provides information about
   // the parent and grandparent types.
-  visitFieldDefinition(field, details) {
+  visitFieldDefinition (field, details) {
     this.ensureFieldsWrapped(details.objectType)
     field._requiredAuthScopes = this.args.requires
   }
 
-  visitArgumentDefinition(argument, details) {
+  visitArgumentDefinition (argument, details) {
     this.ensureFieldsWrapped(details.objectType)
     argument._requiredAuthScopes = this.args.requires
   }
 
-  ensureFieldsWrapped(objectType) {
+  ensureFieldsWrapped (objectType) {
     // Mark the GraphQLObjectType object to avoid re-wrapping:
     if (objectType._authFieldsWrapped) return
     objectType._authFieldsWrapped = true
@@ -39,13 +40,13 @@ class AuthDirective extends SchemaDirectiveVisitor {
           return resolve.apply(this, args)
         }
 
-        const context = args[2]
-        if (!context.req.user) {
-          throw new Error('Unauthorized')
-        }
-        if (!_.some(context.req.user.permissions, pm => _.includes(requiredScopes, pm))) {
-          throw new Error('Forbidden')
-        }
+        // const context = args[2]
+        // if (!context.req.user) {
+        //   throw new Error('Unauthorized')
+        // }
+        // if (!_.some(context.req.user.permissions, pm => _.includes(requiredScopes, pm))) {
+        //   throw new Error('Forbidden')
+        // }
 
         return resolve.apply(this, args)
       }
