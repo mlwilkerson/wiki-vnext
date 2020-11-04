@@ -1,18 +1,25 @@
 <template lang='pug'>
-  q-page.bg-grey-1.admin-system
+  q-page.admin-system
     .row.q-pa-md.items-center
       .col-auto
         img.admin-icon(src='~assets/icons/fluent-processor.svg')
       .col.q-pl-md
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:system.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:system.subtitle') }}
+      .col-auto
+        q-btn(
+          outline
+          icon='las la-clipboard'
+          label='Copy System Info'
+          color='primary'
+        )
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
       .col-6
         //- -----------------------
         //- WIKI.JS
         //- -----------------------
-        q-card.bg-grey-3.q-pb-sm(flat)
+        q-card.q-pb-sm.shadow-1
           q-card-section
             .text-subtitle1 Wiki.js
           q-item
@@ -42,7 +49,7 @@
         //- -----------------------
         //- ENGINES
         //- -----------------------
-        q-card.bg-grey-3.q-mt-md.q-pb-sm(flat)
+        q-card.q-mt-md.q-pb-sm.shadow-1
           q-card-section
             .text-subtitle1 Engines
           q-item
@@ -85,7 +92,7 @@
         //- -----------------------
         //- HOST INFORMATION
         //- -----------------------
-        q-card.bg-grey-3.q-pb-sm(flat)
+        q-card.q-pb-sm.shadow-1
           q-card-section
             .text-subtitle1 {{ $t('admin:system.hostInfo') }}
           q-item

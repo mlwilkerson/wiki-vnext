@@ -18,19 +18,24 @@
     //-------------------------------------------------
     //- PROVIDERS LIST
     //-------------------------------------------------
-    template(v-if='screen === `login` && strategies.length >= 1')
+    template(v-if='screen === `login` && strategies.length > 1')
       .auth-login-subtitle
         .text-subtitle1 {{$t('auth:selectAuthProvider')}}
       .auth-login-list
-        q-list.bg-white.shadow-2.rounded-borders
-          q-item(
+        q-list.bg-white.shadow-2.rounded-borders.q-pa-sm(separator)
+          q-item.rounded-borders(
+            clickable
+            v-ripple
             v-for='(stg, idx) of filteredStrategies'
             :key='stg.key'
-            :value='stg.key'
-            :color='stg.strategy.color'
+            @click='selectedStrategyKey = stg.key'
+            :class='stg.key === selectedStrategyKey ? `bg-primary text-white` : ``'
             )
-            q-avatar.mr-3(square, size='24px', v-html='stg.strategy.icon')
-            span.text-none {{stg.displayName}}
+            q-item-section(avatar)
+              q-avatar.mr-3(:color='stg.strategy.color', rounded, size='32px')
+                div(v-html='stg.strategy.icon')
+            q-item-section
+              span.text-none {{stg.displayName}}
     //-------------------------------------------------
     //- LOGIN FORM
     //-------------------------------------------------
@@ -48,7 +53,7 @@
           :autocomplete='isUsernameEmail ? `email` : `username`'
           )
           template(v-slot:prepend)
-            q-icon(name='las la-user-circle')
+            q-icon(name='las la-user-circle', color='primary')
         q-input.q-mt-sm(
           outlined
           bg-color='white'
@@ -60,7 +65,7 @@
           @keyup.enter='login'
           )
           template(v-slot:prepend)
-            q-icon(name='las la-key')
+            q-icon(name='las la-key', color='primary')
           template(v-slot:append)
             q-icon.cursor-pointer(
               :name='hidePassword ? "las la-eye-slash" : "las la-eye"'
@@ -239,10 +244,9 @@ export default {
           }
         } catch (err) {
           console.error(err)
-          this.$store.commit('showNotification', {
-            style: 'red',
-            message: err.message,
-            icon: 'alert'
+          this.$q.notify({
+            type: 'negative',
+            message: err.message
           })
           this.isLoading = false
         }
@@ -316,10 +320,9 @@ export default {
           }
         } catch (err) {
           console.error(err)
-          this.$store.commit('showNotification', {
-            style: 'red',
-            message: err.message,
-            icon: 'alert'
+          this.$q.notify({
+            type: 'negative',
+            message: err.message
           })
           this.isLoading = false
         }
@@ -493,6 +496,7 @@ export default {
   },
   apollo: {
     strategies: {
+      prefetch: false,
       query: gql`
         {
           authentication {

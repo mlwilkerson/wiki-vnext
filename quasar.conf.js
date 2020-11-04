@@ -41,6 +41,7 @@ module.exports = function (/* ctx */) {
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font',
+      'mdi-v5',
       'line-awesome'
     ],
 
@@ -88,7 +89,7 @@ module.exports = function (/* ctx */) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      iconSet: 'line-awesome', // Quasar icon set
+      iconSet: 'mdi-v5', // Quasar icon set
       lang: 'en-us', // Quasar language pack
       config: {
         loadingBar: {

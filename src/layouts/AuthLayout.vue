@@ -12,7 +12,8 @@ export default {
   name: 'AuthLayout',
   data () {
     return {
-      bgUrl: 'https://docs.requarks.io/_assets/img/splash/1.jpg'
+      bgUrl: '_assets/bg/login.jpg'
+      // bgUrl: 'https://docs.requarks.io/_assets/img/splash/1.jpg'
     }
   }
 }
