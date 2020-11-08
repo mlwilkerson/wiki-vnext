@@ -76,7 +76,7 @@
     q-drawer(
       v-model='leftDrawerOpen'
       show-if-above
-      content-class='bg-primary'
+      content-class='bg-sidebar'
       :width='255'
       )
       .sidebar-actions.flex.items-stretch

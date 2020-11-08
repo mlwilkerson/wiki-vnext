@@ -1,15 +1,22 @@
 <template lang='pug'>
-  q-page.admin-system
+  q-page.admin-theme
     .row.q-pa-md.items-center
       .col-auto
-        img.admin-icon(src='~assets/icons/fluent-color-wheel.svg')
+        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-color-wheel.svg')
       .col.q-pl-md
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:theme.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:theme.subtitle') }}
       .col-auto
+        q-btn.q-mr-sm(
+          icon='las la-question-circle'
+          flat
+          color='grey'
+          href='https://docs.requarks.io/theming'
+          target='_blank'
+          )
         q-btn(
           unelevated
-          icon='las la-save'
+          icon='mdi-check'
           :label='$t(`common:actions.apply`)'
           color='positive'
           @click='save'
@@ -19,15 +26,15 @@
     .row.q-pa-md.q-col-gutter-md
       .col-6
         //- -----------------------
-        //- WIKI.JS
+        //- Theme Options
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
-            .text-subtitle1 {{$t('admin:theme.siteTheme')}}
+            .text-subtitle1 {{$t('admin:theme.options')}}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
-                name='las la-swatchbook'
+                name='las la-adjust'
                 color='primary'
                 size='sm'
                 )
@@ -42,7 +49,6 @@
                 unchecked-icon='las la-times'
                 :aria-label='$t(`admin:theme.darkMode`)'
                 )
-              //- .q-field__bottom {{$t(`admin:theme.darkModeHint`)}}
           template(v-for='(cl, idx) of colorKeys')
             q-separator.q-my-sm(inset)
             q-item(:key='cl')
@@ -61,20 +67,34 @@
                   padding='xs sm'
                   icon='las la-undo-alt'
                   color='grey'
+                  size='sm'
                   )
               q-item-section(avatar)
                 q-btn.q-mr-sm(
-                  unelevated
-                  padding='xs sm'
-                  icon='las la-fill'
+                  push
+                  padding='xs md'
+                  rounded
+                  no-caps
+                  size='sm'
                   :color='cl'
                   )
+                  q-icon(name='las la-fill', size='xs', left)
+                  span Pick...
                   q-menu
                     q-color(
                       v-model='config[cl + `Color`]'
                     )
           q-separator.q-my-sm(inset)
           q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-icons'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.iconset`)}}
+              q-item-label(caption) {{$t(`admin:theme.iconsetHint`)}}
             q-item-section
               q-select(
                 outlined
@@ -82,132 +102,142 @@
                 :options='iconsets'
                 emit-value
                 map-options
-                :label='$t(`admin:theme.iconset`)'
-                :hint='$t(`admin:theme.iconsetHint`)'
+                dense
                 :aria-label='$t(`admin:theme.iconset`)'
                 )
-                template(v-slot:prepend)
-                  q-icon(name='las la-icons', color='primary')
-  //- v-container(fluid, grid-list-lg)
-  //-       v-form.pt-3
-  //-         v-layout(row wrap)
-  //-           v-flex(lg6 xs12)
-  //-             v-card.animated.fadeInUp
-  //-               v-toolbar(color='primary', dark, dense, flat)
-  //-                 v-toolbar-title.subtitle-1 {{$t('admin:theme.title')}}
-  //-               v-card-text
-  //-                 v-select(
-  //-                   :items='themes'
-  //-                   outlined
-  //-                   prepend-icon='mdi-palette'
-  //-                   v-model='config.theme'
-  //-                   :label='$t(`admin:theme.siteTheme`)'
-  //-                   persistent-hint
-  //-                   :hint='$t(`admin:theme.siteThemeHint`)'
-  //-                   )
-  //-                   template(slot='item', slot-scope='data')
-  //-                     v-list-item-avatar
-  //-                       v-icon.blue--text(dark) mdi-image-filter-frames
-  //-                     v-list-item-content
-  //-                       v-list-item-title(v-html='data.item.text')
-  //-                       v-list-item-sub-title(v-html='data.item.author')
-  //-                 v-select.mt-3(
-  //-                   :items='iconsets'
-  //-                   outlined
-  //-                   prepend-icon='mdi-paw'
-  //-                   v-model='config.iconset'
-  //-                   :label='$t(`admin:theme.iconset`)'
-  //-                   persistent-hint
-  //-                   :hint='$t(`admin:theme.iconsetHint`)'
-  //-                   )
-  //-                 v-divider.mt-3
-  //-                 v-switch(
-  //-                   inset
-  //-                   v-model='darkMode'
-  //-                   :label='$t(`admin:theme.darkMode`)'
-  //-                   color='primary'
-  //-                   persistent-hint
-  //-                   :hint='$t(`admin:theme.darkModeHint`)'
-  //-                   )
+          q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-swatchbook'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.reduceMotion`)}}
+              q-item-label(caption) {{$t(`admin:theme.reduceMotionHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.reduceMotion'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:theme.reduceMotion`)'
+                )
 
-  //-             v-card.mt-3.animated.fadeInUp.wait-p1s
-  //-               v-toolbar(color='primary', dark, dense, flat)
-  //-                 v-toolbar-title.subtitle-1 {{$t(`admin:theme.options`)}}
-  //-                 v-spacer
-  //-                 v-chip(label, color='white', small).primary--text coming soon
-  //-               v-card-text
-  //-                 v-select(
-  //-                   :items='[]'
-  //-                   outlined
-  //-                   prepend-icon='mdi-border-vertical'
-  //-                   v-model='config.iconset'
-  //-                   label='Table of Contents Position'
-  //-                   persistent-hint
-  //-                   hint='Select whether the table of contents is shown on the left, right or not at all.'
-  //-                   disabled
-  //-                   )
+        //- -----------------------
+        //- Theme Layout
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm.q-mt-md
+          q-card-section
+            .text-subtitle1 {{$t('admin:theme.layout')}}
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-ruler-vertical'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.sidebarPosition`)}}
+              q-item-label(caption) {{$t(`admin:theme.sidebarPositionHint`)}}
+            q-item-section.col-auto
+              q-btn-toggle(
+                v-model='config.sidebarPosition'
+                push
+                glossy
+                no-caps
+                toggle-color='primary'
+                :options=`[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Right', value: 'right' }
+                ]`
+              )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-outdent'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.tocPosition`)}}
+              q-item-label(caption) {{$t(`admin:theme.tocPositionHint`)}}
+            q-item-section.col-auto
+              q-btn-toggle(
+                v-model='config.tocPosition'
+                push
+                glossy
+                no-caps
+                toggle-color='primary'
+                :options=`[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Right', value: 'right' }
+                ]`
+              )
 
-  //-           v-flex(lg6 xs12)
-              //- v-card.animated.fadeInUp.wait-p2s
-              //-   v-toolbar(color='teal', dark, dense, flat)
-              //-     v-toolbar-title.subtitle-1 {{$t('admin:theme.downloadThemes')}}
-              //-     v-spacer
-              //-     v-chip(label, color='white', small).teal--text coming soon
-              //-   v-data-table(
-              //-     :headers='headers',
-              //-     :items='themes',
-              //-     hide-default-footer,
-              //-     item-key='value',
-              //-     :items-per-page='1000'
-              //-   )
-              //-     template(v-slot:item='thm')
-              //-       td
-              //-         strong {{thm.item.text}}
-              //-       td
-              //-         span {{ thm.item.author }}
-              //-       td.text-xs-center
-              //-         v-progress-circular(v-if='thm.item.isDownloading', indeterminate, color='blue', size='20', :width='2')
-              //-         v-btn(v-else-if='thm.item.isInstalled && thm.item.installDate < thm.item.updatedAt', icon)
-              //-           v-icon.blue--text mdi-cached
-              //-         v-btn(v-else-if='thm.item.isInstalled', icon)
-              //-           v-icon.green--text mdi-check-bold
-              //-         v-btn(v-else, icon)
-              //-           v-icon.grey--text mdi-cloud-download
-
-              //- v-card.animated.fadeInUp.wait-p2s
-              //-   v-toolbar(color='primary', dark, dense, flat)
-              //-     v-toolbar-title.subtitle-1 {{$t(`admin:theme.codeInjection`)}}
-              //-   v-card-text
-              //-     v-textarea.is-monospaced(
-              //-       v-model='config.injectCSS'
-              //-       :label='$t(`admin:theme.cssOverride`)'
-              //-       outlined
-              //-       color='primary'
-              //-       persistent-hint
-              //-       :hint='$t(`admin:theme.cssOverrideHint`)'
-              //-       auto-grow
-              //-       )
-              //-     i18next.caption.pl-2.ml-1(path='admin:theme.cssOverrideWarning', tag='div')
-              //-       strong.red--text(place='caution') {{$t('admin:theme.cssOverrideWarningCaution')}}
-              //-       code(place='cssClass') .contents
-              //-     v-textarea.is-monospaced.mt-3(
-              //-       v-model='config.injectHead'
-              //-       :label='$t(`admin:theme.headHtmlInjection`)'
-              //-       outlined
-              //-       color='primary'
-              //-       persistent-hint
-              //-       :hint='$t(`admin:theme.headHtmlInjectionHint`)'
-              //-       auto-grow
-              //-       )
-              //-     v-textarea.is-monospaced.mt-2(
-              //-       v-model='config.injectBody'
-              //-       :label='$t(`admin:theme.bodyHtmlInjection`)'
-              //-       outlined
-              //-       color='primary'
-              //-       persistent-hint
-              //-       :hint='$t(`admin:theme.bodyHtmlInjectionHint`)'
-              //-       auto-grow
-              //-       )
+      .col-6
+        //- -----------------------
+        //- Code Injection
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm
+          q-card-section
+            .text-subtitle1 {{$t('admin:theme.codeInjection')}}
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-seedling'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.cssOverride`)}}
+              q-item-label(caption) {{$t(`admin:theme.cssOverrideHint`)}}
+          q-item
+            q-item-section
+              q-input(
+                v-model='config.injectCSS'
+                type='textarea'
+                outlined
+              )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-hat-wizard'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.headHtmlInjection`)}}
+              q-item-label(caption) {{$t(`admin:theme.headHtmlInjectionHint`)}}
+          q-item
+            q-item-section
+              q-input(
+                v-model='config.injectHead'
+                type='textarea'
+                outlined
+              )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-tshirt'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.bodyHtmlInjection`)}}
+              q-item-label(caption) {{$t(`admin:theme.bodyHtmlInjectionHint`)}}
+          q-item
+            q-item-section
+              q-input(
+                v-model='config.injectBody'
+                type='textarea'
+                outlined
+                input-style='font-family: monospace;'
+              )
 </template>
 
 <script>
@@ -241,9 +271,12 @@ export default {
         injectBody: '',
         primaryColor: '#1976D2',
         secondaryColor: '#26A69A',
-        accentColor: '#9c27b0',
+        accentColor: '#f03a47',
         headerColor: '#000',
-        sidebarColor: '#1976D2'
+        sidebarColor: '#1976D2',
+        reduceMotion: false,
+        sidebarPosition: 'left',
+        tocPosition: 'right'
       },
       darkModeInitial: false
     }

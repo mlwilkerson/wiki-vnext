@@ -39,7 +39,6 @@ body::-webkit-scrollbar-thumb {
 // THEME COLORS
 // ------------------------------------------------------------------
 
-
 :root {
   --q-color-header: #000;
   --q-color-sidebar: #1976D2;
@@ -53,3 +52,5 @@ body::-webkit-scrollbar-thumb {
   background: #1976D2 !important;
   background: var(--q-color-sidebar) !important;
 }
+
+@import './animation.scss';

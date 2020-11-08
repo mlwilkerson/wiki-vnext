@@ -5,18 +5,18 @@ const _ = require('lodash')
 
 module.exports = {
   Query: {
-    async localization() { return {} }
+    async localization () { return {} }
   },
   Mutation: {
-    async localization() { return {} }
+    async localization () { return {} }
   },
   LocalizationQuery: {
-    async locales(obj, args, context, info) {
+    async locales (obj, args, context, info) {
       let remoteLocales = await WIKI.cache.get('locales')
-      let localLocales = await WIKI.models.locales.query().select('code', 'isRTL', 'name', 'nativeName', 'createdAt', 'updatedAt', 'availability')
+      const localLocales = await WIKI.models.locales.query().select('code', 'isRTL', 'name', 'nativeName', 'createdAt', 'updatedAt', 'availability')
       remoteLocales = remoteLocales || localLocales
       return _.map(remoteLocales, rl => {
-        let isInstalled = _.some(localLocales, ['code', rl.code])
+        const isInstalled = _.some(localLocales, ['code', rl.code])
         return {
           ...rl,
           isInstalled,
@@ -24,7 +24,7 @@ module.exports = {
         }
       })
     },
-    async config(obj, args, context, info) {
+    async config (obj, args, context, info) {
       return {
         locale: WIKI.config.lang.code,
         autoUpdate: WIKI.config.lang.autoUpdate,
@@ -37,7 +37,7 @@ module.exports = {
     }
   },
   LocalizationMutation: {
-    async downloadLocale(obj, args, context) {
+    async downloadLocale (obj, args, context) {
       try {
         const job = await WIKI.scheduler.registerJob({
           name: 'fetch-graph-locale',
@@ -51,7 +51,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async updateLocale(obj, args, context) {
+    async updateLocale (obj, args, context) {
       try {
         WIKI.config.lang.code = args.locale
         WIKI.config.lang.autoUpdate = args.autoUpdate
@@ -63,8 +63,8 @@ module.exports = {
 
         await WIKI.configSvc.saveToDb(['lang'])
 
-        await WIKI.lang.setCurrentLocale(args.locale)
-        await WIKI.lang.refreshNamespaces()
+        // await WIKI.lang.setCurrentLocale(args.locale)
+        // await WIKI.lang.refreshNamespaces()
 
         await WIKI.cache.del('nav:locales')
 

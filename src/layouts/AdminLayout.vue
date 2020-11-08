@@ -1,5 +1,5 @@
 <template lang='pug'>
-  q-layout(view='hHh lpr lff')
+  q-layout(view='hHh Lpr lff')
     q-header.bg-header.text-white
       .row.no-wrap
         q-toolbar(style='height: 64px;', dark)
@@ -23,8 +23,22 @@
             q-item-section(avatar)
               q-icon(name='las la-stream')
             q-item-section {{ $t('admin:dashboard.title') }}
+          q-item(to='sites', v-ripple, active-class='bg-primary text-white')
+            q-item-section(avatar)
+              q-icon(name='las la-sitemap')
+            q-item-section {{ $t('admin:sites.title') }}
           q-separator(spaced, inset)
           q-item-label(header).text-caption.text-grey-6 {{ $t('admin:nav.site') }}
+          q-item.q-mb-sm
+            q-item-section
+              q-select(
+                outlined
+                dense
+                v-model='currentSite'
+                :options='sites'
+                emit-value
+                map-options
+              )
           q-item(to='general', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-shapes')
@@ -130,6 +144,9 @@
             q-item-section {{ $t('admin:contribute.title') }}
     q-page-container.admin-container
       router-view
+    q-footer.bg-white
+      q-bar.bg-grey-3.text-grey-7.justify-center(dense)
+        span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
 </template>
 
 <script>
@@ -150,6 +167,10 @@ export default {
         groupsTotal: 99,
         usersTotal: 999
       },
+      currentSite: 1,
+      sites: [
+        { value: 1, label: 'Default' }
+      ],
       thumbStyle: {
         right: '1px',
         borderRadius: '5px',

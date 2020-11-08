@@ -1,192 +1,224 @@
 <template lang='pug'>
-  v-container(fluid, grid-list-lg)
-    v-layout(row wrap)
-      v-flex(xs12)
-        .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-categorize.svg', alt='General', style='width: 80px;')
-          .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:general.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft {{ $t('admin:general.subtitle') }}
-          v-spacer
-          v-btn.animated.fadeInDown(color='success', depressed, @click='save', large)
-            v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
-        v-form.pt-3
-          v-layout(row wrap)
-            v-flex(lg6 xs12)
-              v-form
-                v-card.animated.fadeInUp
-                  v-toolbar(color='primary', dark, dense, flat)
-                    v-toolbar-title.subtitle-1 {{ $t('admin:general.siteInfo') }}
-                  .overline.grey--text.pa-4 {{$t('admin:general.general')}}
-                  .px-3.pb-3
-                    v-text-field(
-                      outlined
-                      :label='$t(`admin:general.siteUrl`)'
-                      required
-                      :counter='255'
-                      v-model='config.host'
-                      prepend-icon='mdi-label-variant-outline'
-                      :hint='$t(`admin:general.siteUrlHint`)'
-                      persistent-hint
-                      )
-                    v-text-field.mt-3(
-                      outlined
-                      :label='$t(`admin:general.siteTitle`)'
-                      required
-                      :counter='50'
-                      v-model='config.title'
-                      prepend-icon='mdi-earth'
-                      :hint='$t(`admin:general.siteTitleHint`)'
-                      persistent-hint
-                      )
-                  v-divider
-                  .overline.grey--text.pa-4 {{$t('admin:general.logo')}}
-                  .pt-2.pb-7.pl-10.pr-3
-                    .d-flex.align-center
-                      v-avatar(size='100', tile)
-                        v-img(
-                          :src='config.logoUrl'
-                          lazy-src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNcWQ8AAdcBKrJda2oAAAAASUVORK5CYII='
-                          aspect-ratio='1'
-                          )
-                      .ml-4(style='flex: 1 1 auto;')
-                        v-text-field(
-                          outlined
-                          :label='$t(`admin:general.logoUrl`)'
-                          v-model='config.logoUrl'
-                          :hint='$t(`admin:general.logoUrlHint`)'
-                          persistent-hint
-                          append-icon='mdi-folder-image'
-                          @click:append='browseLogo'
-                          @keyup.enter='refreshLogo'
-                        )
-                  v-divider
-                  .overline.grey--text.pa-4 {{$t('admin:general.footerCopyright')}}
-                  .px-3.pb-3
-                    v-text-field(
-                      outlined
-                      :label='$t(`admin:general.companyName`)'
-                      v-model='config.company'
-                      :counter='255'
-                      prepend-icon='mdi-domain'
-                      persistent-hint
-                      :hint='$t(`admin:general.companyNameHint`)'
-                      )
-                    v-select.mt-3(
-                      outlined
-                      :label='$t(`admin:general.contentLicense`)'
-                      :items='contentLicenses'
-                      v-model='config.contentLicense'
-                      prepend-icon='mdi-creative-commons'
-                      :return-object='false'
-                      :hint='$t(`admin:general.contentLicenseHint`)'
-                      persistent-hint
-                      )
-                  v-divider
-                  .overline.grey--text.pa-4 SEO
-                  .px-3.pb-3
-                    v-text-field(
-                      outlined
-                      :label='$t(`admin:general.siteDescription`)'
-                      :counter='255'
-                      v-model='config.description'
-                      prepend-icon='mdi-compass'
-                      :hint='$t(`admin:general.siteDescriptionHint`)'
-                      persistent-hint
-                      )
-                    v-select.mt-3(
-                      outlined
-                      :label='$t(`admin:general.metaRobots`)'
-                      multiple
-                      :items='metaRobots'
-                      v-model='config.robots'
-                      prepend-icon='mdi-compass'
-                      :return-object='false'
-                      :hint='$t(`admin:general.metaRobotsHint`)'
-                      persistent-hint
-                      )
+  q-page.admin-theme
+    .row.q-pa-md.items-center
+      .col-auto
+        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-web.svg')
+      .col.q-pl-md
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:general.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:general.subtitle') }}
+      .col-auto
+        q-btn.q-mr-sm(
+          icon='las la-question-circle'
+          flat
+          color='grey'
+          href='https://docs.requarks.io/theming'
+          target='_blank'
+          )
+        q-btn(
+          unelevated
+          icon='mdi-check'
+          :label='$t(`common:actions.apply`)'
+          color='positive'
+          @click='save'
+          :loading='loading'
+        )
+    q-separator(inset)
+    .row.q-pa-md.q-col-gutter-md
+      .col-6
+        //- -----------------------
+        //- Locale Options
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm
+          q-card-section
+            .text-subtitle1 {{$t('admin:general.siteInfo')}}
 
-            v-flex(lg6 xs12)
-              v-card.animated.fadeInUp.wait-p4s
-                v-toolbar(color='indigo', dark, dense, flat)
-                  v-toolbar-title.subtitle-1 Features
-                v-card-text
-                  //- v-switch(
-                  //-   inset
-                  //-   label='Asset Image Optimization'
-                  //-   color='indigo'
-                  //-   v-model='config.featureTinyPNG'
-                  //-   persistent-hint
-                  //-   hint='Image optimization tool to reduce filesize and bandwidth costs.'
-                  //-   disabled
-                  //-   )
-                  //- v-text-field.mt-3(
-                  //-   outlined
-                  //-   label='TinyPNG API Key'
-                  //-   :counter='255'
-                  //-   v-model='config.description'
-                  //-   prepend-icon='mdi-subdirectory-arrow-right'
-                  //-   hint='Get your API key at https://tinypng.com/developers'
-                  //-   persistent-hint
-                  //-   disabled
-                  //-   )
+  //- v-container(fluid, grid-list-lg)
+  //-   v-layout(row wrap)
+  //-     v-flex(xs12)
+  //-       .admin-header
+  //-         img.animated.fadeInUp(src='/_assets/svg/icon-categorize.svg', alt='General', style='width: 80px;')
+  //-         .admin-header-title
+  //-           .headline.primary--text.animated.fadeInLeft {{ $t('admin:general.title') }}
+  //-           .subtitle-1.grey--text.animated.fadeInLeft {{ $t('admin:general.subtitle') }}
+  //-         v-spacer
+  //-         v-btn.animated.fadeInDown(color='success', depressed, @click='save', large)
+  //-           v-icon(left) mdi-check
+  //-           span {{$t('common:actions.apply')}}
+  //-       v-form.pt-3
+  //-         v-layout(row wrap)
+  //-           v-flex(lg6 xs12)
+  //-             v-form
+  //-               v-card.animated.fadeInUp
+  //-                 v-toolbar(color='primary', dark, dense, flat)
+  //-                   v-toolbar-title.subtitle-1 {{ $t('admin:general.siteInfo') }}
+  //-                 .overline.grey--text.pa-4 {{$t('admin:general.general')}}
+  //-                 .px-3.pb-3
+  //-                   v-text-field(
+  //-                     outlined
+  //-                     :label='$t(`admin:general.siteUrl`)'
+  //-                     required
+  //-                     :counter='255'
+  //-                     v-model='config.host'
+  //-                     prepend-icon='mdi-label-variant-outline'
+  //-                     :hint='$t(`admin:general.siteUrlHint`)'
+  //-                     persistent-hint
+  //-                     )
+  //-                   v-text-field.mt-3(
+  //-                     outlined
+  //-                     :label='$t(`admin:general.siteTitle`)'
+  //-                     required
+  //-                     :counter='50'
+  //-                     v-model='config.title'
+  //-                     prepend-icon='mdi-earth'
+  //-                     :hint='$t(`admin:general.siteTitleHint`)'
+  //-                     persistent-hint
+  //-                     )
+  //-                 v-divider
+  //-                 .overline.grey--text.pa-4 {{$t('admin:general.logo')}}
+  //-                 .pt-2.pb-7.pl-10.pr-3
+  //-                   .d-flex.align-center
+  //-                     v-avatar(size='100', tile)
+  //-                       v-img(
+  //-                         :src='config.logoUrl'
+  //-                         lazy-src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNcWQ8AAdcBKrJda2oAAAAASUVORK5CYII='
+  //-                         aspect-ratio='1'
+  //-                         )
+  //-                     .ml-4(style='flex: 1 1 auto;')
+  //-                       v-text-field(
+  //-                         outlined
+  //-                         :label='$t(`admin:general.logoUrl`)'
+  //-                         v-model='config.logoUrl'
+  //-                         :hint='$t(`admin:general.logoUrlHint`)'
+  //-                         persistent-hint
+  //-                         append-icon='mdi-folder-image'
+  //-                         @click:append='browseLogo'
+  //-                         @keyup.enter='refreshLogo'
+  //-                       )
+  //-                 v-divider
+  //-                 .overline.grey--text.pa-4 {{$t('admin:general.footerCopyright')}}
+  //-                 .px-3.pb-3
+  //-                   v-text-field(
+  //-                     outlined
+  //-                     :label='$t(`admin:general.companyName`)'
+  //-                     v-model='config.company'
+  //-                     :counter='255'
+  //-                     prepend-icon='mdi-domain'
+  //-                     persistent-hint
+  //-                     :hint='$t(`admin:general.companyNameHint`)'
+  //-                     )
+  //-                   v-select.mt-3(
+  //-                     outlined
+  //-                     :label='$t(`admin:general.contentLicense`)'
+  //-                     :items='contentLicenses'
+  //-                     v-model='config.contentLicense'
+  //-                     prepend-icon='mdi-creative-commons'
+  //-                     :return-object='false'
+  //-                     :hint='$t(`admin:general.contentLicenseHint`)'
+  //-                     persistent-hint
+  //-                     )
+  //-                 v-divider
+  //-                 .overline.grey--text.pa-4 SEO
+  //-                 .px-3.pb-3
+  //-                   v-text-field(
+  //-                     outlined
+  //-                     :label='$t(`admin:general.siteDescription`)'
+  //-                     :counter='255'
+  //-                     v-model='config.description'
+  //-                     prepend-icon='mdi-compass'
+  //-                     :hint='$t(`admin:general.siteDescriptionHint`)'
+  //-                     persistent-hint
+  //-                     )
+  //-                   v-select.mt-3(
+  //-                     outlined
+  //-                     :label='$t(`admin:general.metaRobots`)'
+  //-                     multiple
+  //-                     :items='metaRobots'
+  //-                     v-model='config.robots'
+  //-                     prepend-icon='mdi-compass'
+  //-                     :return-object='false'
+  //-                     :hint='$t(`admin:general.metaRobotsHint`)'
+  //-                     persistent-hint
+  //-                     )
 
-                  //- v-divider.mt-3
-                  //- v-switch(
-                  //-   inset
-                  //-   label='Page Ratings'
-                  //-   color='indigo'
-                  //-   v-model='config.featurePageRatings'
-                  //-   persistent-hint
-                  //-   hint='Allow users to rate pages.'
-                  //-   disabled
-                  //-   )
+  //-           v-flex(lg6 xs12)
+  //-             v-card.animated.fadeInUp.wait-p4s
+  //-               v-toolbar(color='indigo', dark, dense, flat)
+  //-                 v-toolbar-title.subtitle-1 Features
+  //-               v-card-text
+  //-                 //- v-switch(
+  //-                 //-   inset
+  //-                 //-   label='Asset Image Optimization'
+  //-                 //-   color='indigo'
+  //-                 //-   v-model='config.featureTinyPNG'
+  //-                 //-   persistent-hint
+  //-                 //-   hint='Image optimization tool to reduce filesize and bandwidth costs.'
+  //-                 //-   disabled
+  //-                 //-   )
+  //-                 //- v-text-field.mt-3(
+  //-                 //-   outlined
+  //-                 //-   label='TinyPNG API Key'
+  //-                 //-   :counter='255'
+  //-                 //-   v-model='config.description'
+  //-                 //-   prepend-icon='mdi-subdirectory-arrow-right'
+  //-                 //-   hint='Get your API key at https://tinypng.com/developers'
+  //-                 //-   persistent-hint
+  //-                 //-   disabled
+  //-                 //-   )
 
-                  //- v-divider.mt-3
-                  v-switch(
-                    inset
-                    label='Comments'
-                    color='indigo'
-                    v-model='config.featurePageComments'
-                    persistent-hint
-                    hint='Allow users to leave comments on pages.'
-                    )
+  //-                 //- v-divider.mt-3
+  //-                 //- v-switch(
+  //-                 //-   inset
+  //-                 //-   label='Page Ratings'
+  //-                 //-   color='indigo'
+  //-                 //-   v-model='config.featurePageRatings'
+  //-                 //-   persistent-hint
+  //-                 //-   hint='Allow users to rate pages.'
+  //-                 //-   disabled
+  //-                 //-   )
 
-                  //- v-divider.mt-3
-                  //- v-switch(
-                  //-   inset
-                  //-   label='Personal Wikis'
-                  //-   color='indigo'
-                  //-   v-model='config.featurePersonalWikis'
-                  //-   persistent-hint
-                  //-   hint='Allow users to have their own personal wiki.'
-                  //-   disabled
-                  //-   )
+  //-                 //- v-divider.mt-3
+  //-                 v-switch(
+  //-                   inset
+  //-                   label='Comments'
+  //-                   color='indigo'
+  //-                   v-model='config.featurePageComments'
+  //-                   persistent-hint
+  //-                   hint='Allow users to leave comments on pages.'
+  //-                   )
 
-    component(:is='activeModal')
+  //-                 //- v-divider.mt-3
+  //-                 //- v-switch(
+  //-                 //-   inset
+  //-                 //-   label='Personal Wikis'
+  //-                 //-   color='indigo'
+  //-                 //-   v-model='config.featurePersonalWikis'
+  //-                 //-   persistent-hint
+  //-                 //-   hint='Allow users to have their own personal wiki.'
+  //-                 //-   disabled
+  //-                 //-   )
+
+  //- component(:is='activeModal')
 
 </template>
 
 <script>
-import _ from 'lodash'
 import { sync } from 'vuex-pathify'
 import gql from 'graphql-tag'
+import _get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 
-import editorStore from '../../store/editor'
-
-/* global WIKI */
+// import editorStore from '../../store/editor'
 
 const titleRegex = /[<>"]/i
 
-WIKI.$store.registerModule('editor', editorStore)
+// WIKI.$store.registerModule('editor', editorStore)
 
 export default {
-  i18nOptions: { namespaces: 'editor' },
-  components: {
-    editorModalMedia: () => import(/* webpackChunkName: "editor", webpackMode: "lazy" */ '../editor/editor-modal-media.vue')
-  },
-  data() {
+  // i18nOptions: { namespaces: 'editor' },
+  // components: {
+  //   editorModalMedia: () => import(/* webpackChunkName: "editor", webpackMode: "lazy" */ '../editor/editor-modal-media.vue')
+  // },
+  data () {
     return {
       config: {
         host: '',
@@ -234,7 +266,7 @@ export default {
   },
   methods: {
     async save () {
-      const title = _.get(this.config, 'title', '')
+      const title = _get(this.config, 'title', '')
       if (titleRegex.test(title)) {
         this.$store.commit('showNotification', {
           style: 'error',
@@ -286,18 +318,18 @@ export default {
             }
           `,
           variables: {
-            host: _.get(this.config, 'host', ''),
-            title: _.get(this.config, 'title', ''),
-            description: _.get(this.config, 'description', ''),
-            robots: _.get(this.config, 'robots', []),
-            analyticsService: _.get(this.config, 'analyticsService', ''),
-            analyticsId: _.get(this.config, 'analyticsId', ''),
-            company: _.get(this.config, 'company', ''),
-            contentLicense: _.get(this.config, 'contentLicense', ''),
-            logoUrl: _.get(this.config, 'logoUrl', ''),
-            featurePageRatings: _.get(this.config, 'featurePageRatings', false),
-            featurePageComments: _.get(this.config, 'featurePageComments', false),
-            featurePersonalWikis: _.get(this.config, 'featurePersonalWikis', false)
+            host: _get(this.config, 'host', ''),
+            title: _get(this.config, 'title', ''),
+            description: _get(this.config, 'description', ''),
+            robots: _get(this.config, 'robots', []),
+            analyticsService: _get(this.config, 'analyticsService', ''),
+            analyticsId: _get(this.config, 'analyticsId', ''),
+            company: _get(this.config, 'company', ''),
+            contentLicense: _get(this.config, 'contentLicense', ''),
+            logoUrl: _get(this.config, 'logoUrl', ''),
+            featurePageRatings: _get(this.config, 'featurePageRatings', false),
+            featurePageComments: _get(this.config, 'featurePageComments', false),
+            featurePersonalWikis: _get(this.config, 'featurePersonalWikis', false)
           },
           watchLoading (isLoading) {
             this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-update')
@@ -329,7 +361,7 @@ export default {
       this.config.logoUrl = opts.path
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.$root.$off('editorInsert')
   },
   apollo: {
@@ -355,7 +387,7 @@ export default {
         }
       `,
       fetchPolicy: 'network-only',
-      update: (data) => _.cloneDeep(data.site.config),
+      update: (data) => cloneDeep(data.site.config),
       watchLoading (isLoading) {
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-refresh')
       }

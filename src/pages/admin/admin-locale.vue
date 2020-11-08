@@ -1,153 +1,258 @@
 <template lang='pug'>
-  v-container(fluid, grid-list-lg)
-    v-layout(row, wrap)
-      v-flex(xs12)
-        .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-globe-earth.svg', alt='Locale', style='width: 80px;')
-          .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:locale.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin:locale.subtitle') }}
-          v-spacer
-          v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/locales', target='_blank')
-            v-icon mdi-help-circle
-          v-btn.animated.fadeInDown.ml-3(color='success', depressed, @click='save', large, :loading='loading')
-            v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
-        v-form.pt-3
-          v-layout(row wrap)
-            v-flex(xl6 lg5 xs12)
-              v-card.wiki-form.animated.fadeInUp
-                v-toolbar(color='primary', dark, dense, flat)
-                  v-toolbar-title.subtitle-1 {{ $t('admin:locale.settings') }}
-                v-card-text
-                  v-select(
-                    outlined
-                    :items='installedLocales'
-                    prepend-icon='mdi-web'
-                    v-model='selectedLocale'
-                    item-value='code'
-                    item-text='nativeName'
-                    :label='namespacing ? $t("admin:locale.base.labelWithNS") : $t("admin:locale.base.label")'
-                    persistent-hint
-                    :hint='$t("admin:locale.base.hint")'
-                  )
-                    template(slot='item', slot-scope='data')
-                      template(v-if='typeof data.item !== "object"')
-                        v-list-item-content(v-text='data.item')
-                      template(v-else)
-                        v-list-item-avatar
-                          v-avatar.blue.white--text(tile, size='40', v-html='data.item.code.toUpperCase()')
-                        v-list-item-content
-                          v-list-item-title(v-html='data.item.name')
-                          v-list-item-subtitle(v-html='data.item.nativeName')
-                  v-divider.mt-3
-                  v-switch(
-                    inset
-                    v-model='autoUpdate'
-                    :label='$t("admin:locale.autoUpdate.label")'
-                    color='primary'
-                    persistent-hint
-                    :hint='namespacing ? $t("admin:locale.autoUpdate.hintWithNS") : $t("admin:locale.autoUpdate.hint")'
-                  )
+  q-page.admin-locale
+    .row.q-pa-md.items-center
+      .col-auto
+        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-language.svg')
+      .col.q-pl-md
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:locale.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:locale.subtitle') }}
+      .col-auto
+        q-btn.q-mr-sm(
+          icon='las la-question-circle'
+          flat
+          color='grey'
+          href='https://docs.requarks.io/theming'
+          target='_blank'
+          )
+        q-btn(
+          unelevated
+          icon='mdi-check'
+          :label='$t(`common:actions.apply`)'
+          color='positive'
+          @click='save'
+          :loading='loading'
+        )
+    q-separator(inset)
+    .row.q-pa-md.q-col-gutter-md
+      .col-6
+        //- -----------------------
+        //- Locale Options
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm
+          q-card-section
+            .text-subtitle1 {{$t('admin:locale.settings')}}
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-language'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{namespacing ? $t(`admin:locale.base.labelWithNS`) : $t(`admin:locale.base.label`)}}
+              q-item-label(caption) {{$t(`admin:locale.base.hint`)}}
+            q-item-section
+              q-select(
+                outlined
+                v-model='selectedLocale'
+                :options='installedLocales'
+                option-value='code'
+                option-label='name'
+                emit-value
+                map-options
+                dense
+                :aria-label='$t(`admin:locale.base.label`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-cloud-download-alt'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:locale.autoUpdate.label`)}}
+              q-item-label(caption) {{namespacing ? $t(`admin:locale.autoUpdate.hintWithNS`) : $t(`admin:locale.autoUpdate.hint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='autoUpdate'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:locale.autoUpdate.label`)'
+                )
 
-              v-card.wiki-form.mt-3.animated.fadeInUp.wait-p2s
-                v-toolbar(color='primary', dark, dense, flat)
-                  v-toolbar-title.subtitle-1 {{ $t('admin:locale.namespacing') }}
-                v-card-text
-                  v-switch(
-                    inset
-                    v-model='namespacing'
-                    :label='$t("admin:locale.namespaces.label")'
-                    color='primary'
-                    persistent-hint
-                    :hint='$t("admin:locale.namespaces.hint")'
-                    )
-                  v-alert.mt-3(
-                    outlined
-                    color='orange'
-                    :value='true'
-                    icon='mdi-alert'
-                    )
+        //- -----------------------
+        //- Namespacing
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm.q-mt-md
+          q-card-section
+            .text-subtitle1 {{$t('admin:locale.namespacing')}}
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-compress'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:locale.namespaces.label`)}}
+              q-item-label(caption) {{$t(`admin:locale.namespaces.hint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='namespacing'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:locale.namespaces.label`)'
+                )
+          q-item
+            q-item-section
+              q-card.bg-warning.text-white.rounded-borders(flat)
+                q-card-section.items-center(horizontal)
+                  q-card-section.col-auto.q-pr-none
+                    q-icon(name='las la-exclamation-circle', size='md')
+                  q-card-section
                     span {{ $t('admin:locale.namespacingPrefixWarning.title', { langCode: selectedLocale }) }}
-                    .caption.grey--text {{ $t('admin:locale.namespacingPrefixWarning.subtitle') }}
-                  v-divider.mt-3.mb-4
-                  v-select(
-                    outlined
-                    :disabled='!namespacing'
-                    :items='installedLocales'
-                    prepend-icon='mdi-web'
-                    multiple
-                    chips
-                    deletable-chips
-                    v-model='namespaces'
-                    item-value='code'
-                    item-text='name'
-                    :label='$t("admin:locale.activeNamespaces.label")'
-                    persistent-hint
-                    small-chips
-                    :hint='$t("admin:locale.activeNamespaces.hint")'
+                    .text-caption.text-yellow-1 {{ $t('admin:locale.namespacingPrefixWarning.subtitle') }}
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-tasks'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:locale.activeNamespaces.label`)}}
+              q-item-label(caption) {{$t(`admin:locale.activeNamespaces.hint`)}}
+            q-item-section
+              q-select(
+                outlined
+                :disable='!namespacing'
+                v-model='namespaces'
+                :options='installedLocales'
+                multiple
+                use-chips
+                option-value='code'
+                option-label='name'
+                emit-value
+                map-options
+                dense
+                :aria-label='$t(`admin:locale.activeNamespaces.label`)'
+                )
+
+      .col-6
+        //- -----------------------
+        //- Download Locales
+        //- -----------------------
+        q-card.shadow-1
+          q-card-section
+            .text-subtitle1 {{$t('admin:locale.downloadTitle')}}
+          q-card-section.q-pa-none
+            q-table.no-border-radius(
+              :data='locales'
+              :columns='headers'
+              row-name='code'
+              flat
+              hide-bottom
+              :rows-per-page-options='[0]'
+              )
+              template(v-slot:body-cell-code='props')
+                q-td(:props='props')
+                  q-chip(
+                    square
+                    color='secondary'
+                    text-color='white'
+                    dense
+                    ): span.text-caption {{props.value}}
+              template(v-slot:body-cell-name='props')
+                q-td(:props='props')
+                  strong {{props.value}}
+              template(v-slot:body-cell-isRTL='props')
+                q-td(:props='props')
+                  q-icon(
+                    v-if='props.value'
+                    name='las la-check'
+                    color='brown'
+                    size='xs'
                     )
-                    template(slot='item', slot-scope='data')
-                      template(v-if='typeof data.item !== "object"')
-                        v-list-item-content(v-text='data.item')
-                      template(v-else)
-                        v-list-item-avatar
-                          v-avatar.blue.white--text(tile, size='40', v-html='data.item.code.toUpperCase()')
-                        v-list-item-content
-                          v-list-item-title(v-html='data.item.name')
-                          v-list-item-subtitle(v-html='data.item.nativeName')
-                        v-list-item-action
-                          v-checkbox(:input-value='data.attrs.inputValue', color='primary', value)
-            v-flex(xl6 lg7 xs12)
-              v-card.animated.fadeInUp.wait-p4s
-                v-toolbar(color='teal', dark, dense, flat)
-                  v-toolbar-title.subtitle-1 {{ $t('admin:locale.downloadTitle') }}
-                v-data-table(
-                  :headers='headers',
-                  :items='locales',
-                  hide-default-footer,
-                  item-key='code',
-                  :items-per-page='1000'
-                  )
-                  template(v-slot:item.code='{ item }')
-                    v-chip.white--text(label, color='teal', small) {{item.code}}
-                  template(v-slot:item.name='{ item }')
-                    strong {{item.name}}
-                  template(v-slot:item.isRTL='{ item }')
-                    v-icon(v-if='item.isRTL') mdi-check
-                  template(v-slot:item.availability='{ item }')
-                    .d-flex.align-center.pl-4
-                      v-progress-circular(:value='item.availability', width='2', size='20', :color='item.availability <= 33 ? `red` : (item.availability <= 66) ? `orange` : `green`')
-                      .caption.mx-2(:class='item.availability <= 33 ? `red--text` : (item.availability <= 66) ? `orange--text` : `green--text`') {{item.availability}}%
-                  template(v-slot:item.isInstalled='{ item }')
-                    v-progress-circular(v-if='item.isDownloading', indeterminate, color='blue', size='20', :width='2')
-                    v-btn(v-else-if='item.isInstalled && item.installDate < item.updatedAt', icon, small, @click='download(item)')
-                      v-icon.blue--text mdi-cached
-                    v-btn(v-else-if='item.isInstalled', icon, small, @click='download(item)')
-                      v-icon.green--text mdi-check-bold
-                    v-btn(v-else, icon, small, @click='download(item)')
-                      v-icon.grey--text mdi-cloud-download
-              v-card.wiki-form.mt-3.animated.fadeInUp.wait-p5s
-                v-toolbar(color='teal', dark, dense, flat)
-                  v-toolbar-title.subtitle-1 {{ $t('admin:locale.sideload') }}
-                  v-spacer
-                  v-chip(label, color='white', small).teal--text coming soon
-                v-card-text
-                  div {{ $t('admin:locale.sideloadHelp') }}
-                  v-btn.ml-0.mt-3(color='teal', disabled) {{ $t('common:actions.browse') }}
+              template(v-slot:body-cell-availability='props')
+                q-td(:props='props')
+                  q-circular-progress(
+                    size='md'
+                    show-value
+                    :value='props.value'
+                    :thickness='0.1'
+                    :color='props.value <= 33 ? `negative` : (props.value <= 66) ? `warning` : `positive`'
+                  ) {{ props.value }}%
+              template(v-slot:body-cell-isInstalled='props')
+                q-td(:props='props')
+                  q-spinner(
+                    v-if='props.row.isDownloading'
+                    color='primary'
+                    size='20px'
+                    :thickness='2'
+                    )
+                  q-btn(
+                    v-else-if='props.value && props.row.installDate < props.row.updatedAt'
+                    flat
+                    round
+                    dense
+                    @click='download(props.row)'
+                    icon='las la-redo-alt'
+                    color='accent'
+                    )
+                  q-btn(
+                    v-else-if='props.value'
+                    flat
+                    round
+                    dense
+                    @click='download(props.row)'
+                    icon='las la-check-circle'
+                    color='positive'
+                    )
+                  q-btn(
+                    v-else
+                    flat
+                    round
+                    dense
+                    @click='download(props.row)'
+                    icon='las la-cloud-download-alt'
+                    color='primary'
+                    )
+  //-             v-card.wiki-form.mt-3.animated.fadeInUp.wait-p5s
+  //-               v-toolbar(color='teal', dark, dense, flat)
+  //-                 v-toolbar-title.subtitle-1 {{ $t('admin:locale.sideload') }}
+  //-                 v-spacer
+  //-                 v-chip(label, color='white', small).teal--text coming soon
+  //-               v-card-text
+  //-                 div {{ $t('admin:locale.sideloadHelp') }}
+  //-                 v-btn.ml-0.mt-3(color='teal', disabled) {{ $t('common:actions.browse') }}
 </template>
 
 <script>
-import _ from 'lodash'
+import gql from 'graphql-tag'
+import filter from 'lodash/filter'
+import _get from 'lodash/get'
 
-/* global WIKI */
-
-import localesQuery from 'gql/admin/locale/locale-query-list.gql'
-import localesDownloadMutation from 'gql/admin/locale/locale-mutation-download.gql'
-import localesSaveMutation from 'gql/admin/locale/locale-mutation-save.gql'
+const fetchLocaleGql = gql`
+  {
+    localization {
+      locales {
+        availability
+        code
+        createdAt
+        isInstalled
+        installDate
+        isRTL
+        name
+        nativeName
+        updatedAt
+      }
+      config {
+        locale
+        autoUpdate
+        namespacing
+        namespaces
+      }
+    }
+  }
+`
 
 export default {
-  data() {
+  data () {
     return {
       loading: false,
       locales: [],
@@ -158,61 +263,83 @@ export default {
     }
   },
   computed: {
-    installedLocales() {
-      return _.filter(this.locales, ['isInstalled', true])
+    installedLocales () {
+      return filter(this.locales, ['isInstalled', true])
     },
-    headers() {
+    headers () {
       return [
         {
-          text: this.$t('admin:locale.code'),
+          label: this.$t('admin:locale.code'),
           align: 'left',
-          value: 'code',
-          width: 90
+          field: 'code',
+          name: 'code',
+          sortable: true,
+          style: 'width: 90px'
         },
         {
-          text: this.$t('admin:locale.name'),
+          label: this.$t('admin:locale.name'),
           align: 'left',
-          value: 'name'
+          field: 'name',
+          name: 'name',
+          sortable: true
         },
         {
-          text: this.$t('admin:locale.nativeName'),
+          label: this.$t('admin:locale.nativeName'),
           align: 'left',
-          value: 'nativeName'
+          field: 'nativeName',
+          name: 'nativeName',
+          sortable: true
         },
         {
-          text: this.$t('admin:locale.rtl'),
+          label: this.$t('admin:locale.rtl'),
           align: 'center',
-          value: 'isRTL',
+          field: 'isRTL',
+          name: 'isRTL',
           sortable: false,
-          width: 10
+          style: 'width: 10px'
         },
         {
-          text: this.$t('admin:locale.availability'),
+          label: this.$t('admin:locale.availability'),
           align: 'center',
-          value: 'availability',
+          field: 'availability',
+          name: 'availability',
           sortable: false,
-          width: 120
+          style: 'width: 120px'
         },
         {
-          text: this.$t('admin:locale.download'),
+          label: this.$t('admin:locale.download'),
           align: 'center',
-          value: 'isInstalled',
+          field: 'isInstalled',
+          name: 'isInstalled',
           sortable: false,
-          width: 100
+          style: 'width: 100px'
         }
       ]
     }
   },
   methods: {
-    async download(lc) {
+    async download (lc) {
       lc.isDownloading = true
       const respRaw = await this.$apollo.mutate({
-        mutation: localesDownloadMutation,
+        mutation: gql`
+          mutation($locale: String!) {
+            localization {
+              downloadLocale(locale: $locale) {
+                responseResult {
+                  succeeded
+                  errorCode
+                  slug
+                  message
+                }
+              }
+            }
+          }
+        `,
         variables: {
           locale: lc.code
         }
       })
-      const resp = _.get(respRaw, 'data.localization.downloadLocale.responseResult', {})
+      const resp = _get(respRaw, 'data.localization.downloadLocale.responseResult', {})
       if (resp.succeeded) {
         lc.isDownloading = false
         lc.isInstalled = true
@@ -224,18 +351,40 @@ export default {
           icon: 'get_app'
         })
       } else {
-        this.$store.commit('showNotification', {
-          message: `Error: ${resp.message}`,
-          style: 'error',
-          icon: 'warning'
+        this.$q.notify({
+          type: 'negative',
+          message: resp.message
         })
       }
       this.isDownloading = false
     },
-    async save() {
+    async save () {
       this.loading = true
       const respRaw = await this.$apollo.mutate({
-        mutation: localesSaveMutation,
+        mutation: gql`
+          mutation (
+            $locale: String!
+            $autoUpdate: Boolean!
+            $namespacing: Boolean!
+            $namespaces: [String]!
+            ) {
+            localization {
+              updateLocale(
+                locale: $locale
+                autoUpdate: $autoUpdate
+                namespacing: $namespacing
+                namespaces: $namespaces
+                ) {
+                responseResult {
+                  succeeded
+                  errorCode
+                  slug
+                  message
+                }
+              }
+            }
+          }
+        `,
         variables: {
           locale: this.selectedLocale,
           autoUpdate: this.autoUpdate,
@@ -243,30 +392,23 @@ export default {
           namespaces: this.namespaces
         }
       })
-      const resp = _.get(respRaw, 'data.localization.updateLocale.responseResult', {})
+      const resp = _get(respRaw, 'data.localization.updateLocale.responseResult', {})
       if (resp.succeeded) {
         // Change UI language
-        WIKI.$i18n.i18next.changeLanguage(this.selectedLocale)
-        WIKI.$moment.locale(this.selectedLocale)
+        this.$i18n.locale = this.selectedLocale
 
-        // Check for RTL
-        const curLocale = _.find(this.locales, ['code', this.selectedLocale])
-        this.$vuetify.rtl = curLocale && curLocale.isRTL
-
-        this.$store.commit('showNotification', {
-          message: 'Locale settings updated successfully.',
-          style: 'success',
-          icon: 'check'
+        this.$q.notify({
+          type: 'positive',
+          message: 'Locale settings updated successfully.'
         })
 
-        _.delay(() => {
+        setTimeout(() => {
           window.location.reload(true)
         }, 1000)
       } else {
-        this.$store.commit('showNotification', {
-          message: `Error: ${resp.message}`,
-          style: 'error',
-          icon: 'warning'
+        this.$q.notify({
+          type: 'negative',
+          message: resp.message
         })
       }
       this.loading = false
@@ -274,7 +416,7 @@ export default {
   },
   apollo: {
     locales: {
-      query: localesQuery,
+      query: fetchLocaleGql,
       fetchPolicy: 'network-only',
       update: (data) => data.localization.locales.map(lc => ({ ...lc, isDownloading: false })),
       watchLoading (isLoading) {
@@ -282,19 +424,19 @@ export default {
       }
     },
     selectedLocale: {
-      query: localesQuery,
+      query: fetchLocaleGql,
       update: (data) => data.localization.config.locale
     },
     autoUpdate: {
-      query: localesQuery,
+      query: fetchLocaleGql,
       update: (data) => data.localization.config.autoUpdate
     },
     namespacing: {
-      query: localesQuery,
+      query: fetchLocaleGql,
       update: (data) => data.localization.config.namespacing
     },
     namespaces: {
-      query: localesQuery,
+      query: fetchLocaleGql,
       update: (data) => data.localization.config.namespaces
     }
   }
