@@ -1,5 +1,5 @@
 <template lang='pug'>
-  q-layout(view='hHh Lpr lff')
+  q-layout.admin(view='hHh Lpr lff')
     q-header.bg-header.text-white
       .row.no-wrap
         q-toolbar(style='height: 64px;', dark)
@@ -143,8 +143,9 @@
               q-icon(name='las la-heart')
             q-item-section {{ $t('admin:contribute.title') }}
     q-page-container.admin-container
-      router-view
-    q-footer.bg-white
+      transition(name='fade')
+        router-view
+    q-footer.admin-footer
       q-bar.bg-grey-3.text-grey-7.justify-center(dense)
         span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
 </template>
@@ -225,6 +226,15 @@ export default {
     @at-root .body--dark & {
       background-color: lighten($grey-10, 5%);
     }
+  }
+}
+
+.admin-footer > .q-bar {
+  @at-root .body--light & {
+    background-color: #FFF !important;
+  }
+  @at-root .body--dark & {
+    background-color: #111 !important;
   }
 }
 </style>

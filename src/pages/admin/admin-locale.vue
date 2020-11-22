@@ -18,7 +18,7 @@
           unelevated
           icon='mdi-check'
           :label='$t(`common:actions.apply`)'
-          color='positive'
+          color='secondary'
           @click='save'
           :loading='loading'
         )
@@ -148,12 +148,13 @@
               flat
               hide-bottom
               :rows-per-page-options='[0]'
+              :loading='loading'
               )
               template(v-slot:body-cell-code='props')
                 q-td(:props='props')
                   q-chip(
                     square
-                    color='secondary'
+                    color='teal'
                     text-color='white'
                     dense
                     ): span.text-caption {{props.value}}

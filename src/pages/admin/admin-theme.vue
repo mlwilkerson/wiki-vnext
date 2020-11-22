@@ -18,7 +18,7 @@
           unelevated
           icon='mdi-check'
           :label='$t(`common:actions.apply`)'
-          color='positive'
+          color='secondary'
           @click='save'
           :loading='loading'
         )
@@ -176,6 +176,44 @@
                   { label: 'Right', value: 'right' }
                 ]`
               )
+          q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-share-alt'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.showSharingMenu`)}}
+              q-item-label(caption) {{$t(`admin:theme.showSharingMenuHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.showSharingMenu'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:theme.showSharingMenu`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-print'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:theme.showPrintBtn`)}}
+              q-item-label(caption) {{$t(`admin:theme.showPrintBtnHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.showPrintBtn'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:theme.showPrintBtn`)'
+                )
 
       .col-6
         //- -----------------------
@@ -196,11 +234,13 @@
               q-item-label(caption) {{$t(`admin:theme.cssOverrideHint`)}}
           q-item
             q-item-section
-              q-input(
-                v-model='config.injectCSS'
-                type='textarea'
-                outlined
-              )
+              q-no-ssr(:placeholder='$t(`common:loading`)')
+                codemirror.admin-theme-cm(
+                  ref='cmCSS'
+                  v-model='config.injectCSS'
+                  :options='{ mode: `text/css` }'
+                  @ready='onCmReady'
+                )
           q-separator.q-my-sm(inset)
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
@@ -214,11 +254,13 @@
               q-item-label(caption) {{$t(`admin:theme.headHtmlInjectionHint`)}}
           q-item
             q-item-section
-              q-input(
-                v-model='config.injectHead'
-                type='textarea'
-                outlined
-              )
+              q-no-ssr(:placeholder='$t(`common:loading`)')
+                codemirror.admin-theme-cm(
+                  ref='cmHead'
+                  v-model='config.injectHead'
+                  :options='{ mode: `text/html` }'
+                  @ready='onCmReady'
+                )
           q-separator.q-my-sm(inset)
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
@@ -232,12 +274,13 @@
               q-item-label(caption) {{$t(`admin:theme.bodyHtmlInjectionHint`)}}
           q-item
             q-item-section
-              q-input(
-                v-model='config.injectBody'
-                type='textarea'
-                outlined
-                input-style='font-family: monospace;'
-              )
+              q-no-ssr(:placeholder='$t(`common:loading`)')
+                codemirror.admin-theme-cm(
+                  ref='cmBody'
+                  v-model='config.injectBody'
+                  :options='{ mode: `text/html` }'
+                  @ready='onCmReady'
+                )
 </template>
 
 <script>
@@ -270,13 +313,15 @@ export default {
         injectHead: '',
         injectBody: '',
         primaryColor: '#1976D2',
-        secondaryColor: '#26A69A',
+        secondaryColor: '#02C39A',
         accentColor: '#f03a47',
         headerColor: '#000',
         sidebarColor: '#1976D2',
         reduceMotion: false,
         sidebarPosition: 'left',
-        tocPosition: 'right'
+        tocPosition: 'right',
+        showSharingMenu: true,
+        showPrintBtn: true
       },
       darkModeInitial: false
     }
@@ -307,6 +352,9 @@ export default {
   watch: {
     'config.darkMode' (newValue) {
       this.$q.dark.set(newValue)
+      this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-darker' : 'elegant')
+      this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-darker' : 'elegant')
+      this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-darker' : 'elegant')
     },
     'config.primaryColor' (newValue) {
       colors.setBrand('primary', newValue)
@@ -332,6 +380,10 @@ export default {
     this.$vuetify.theme.dark = this.darkModeInitial
   },
   methods: {
+    onCmReady (cm) {
+      cm.setOption('theme', this.$q.dark.isActive ? 'material-darker' : 'elegant')
+      cm.setSize(null, 200)
+    },
     async save () {
       this.loading = true
       this.$store.commit('loadingStart', 'admin-theme-save')
@@ -419,10 +471,13 @@ export default {
 </script>
 
 <style lang='scss'>
-.v-textarea.is-monospaced textarea {
-  font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
+.admin-theme-cm {
+  border: 1px solid #CCC;
+  border-radius: 5px;
+  overflow: hidden;
+
+  > .CmodeMirror {
+    height: 150px;
+  }
 }
 </style>

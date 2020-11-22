@@ -22,6 +22,7 @@ module.exports = function (/* ctx */) {
       { path: 'apollo-browser', server: false },
       { path: 'apollo-server', client: false },
       'i18n',
+      { path: 'codemirror-browser', server: false },
       'components'
     ],
 

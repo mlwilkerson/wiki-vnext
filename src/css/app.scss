@@ -53,4 +53,23 @@ body::-webkit-scrollbar-thumb {
   background: var(--q-color-sidebar) !important;
 }
 
+// ------------------------------------------------------------------
+// FORMS
+// ------------------------------------------------------------------
+
+.v-textarea.is-monospaced textarea {
+  font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+// ------------------------------------------------------------------
+// IMPORTS
+// ------------------------------------------------------------------
+
 @import './animation.scss';
+
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/elegant.css';
+@import '~codemirror/theme/material-darker.css';

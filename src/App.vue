@@ -5,6 +5,11 @@
 </template>
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    this.$nextTick(() => {
+      document.querySelector('.init-loading').remove()
+    })
+  }
 }
 </script>

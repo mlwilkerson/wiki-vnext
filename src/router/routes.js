@@ -20,9 +20,10 @@ const routes = [
     children: [
       { path: '', redirect: 'dashboard' },
       { path: 'dashboard', component: () => import('pages/admin/admin-dashboard.vue') },
+      { path: 'sites', component: () => import('pages/admin/admin-sites.vue') },
       { path: 'general', component: () => import('pages/admin/admin-general.vue') },
       { path: 'locale', component: () => import('pages/admin/admin-locale.vue') },
-      // { path: 'navigation', component: () => import('pages/admin/admin-navigation.vue') },
+      { path: 'navigation', component: () => import('pages/admin/admin-navigation.vue') },
       // { path: 'pages', component: () => import('pages/admin/admin-pages.vue') },
       // { path: 'pages/:id(\\d+)', component: () => import('pages/admin/admin-pages-edit.vue') },
       // { path: 'pages/visualize', component: () => import('pages/admin/admin-pages-visualize.vue') },

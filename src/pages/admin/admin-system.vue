@@ -26,9 +26,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-vector-square'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.currentVersion') }}
@@ -38,9 +38,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-broadcast-tower'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.latestVersion') }}
@@ -56,9 +56,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='lab la-node-js'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label Node.js
@@ -68,9 +68,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-database'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label Database
@@ -80,9 +80,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-ethernet'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label Database Host
@@ -99,9 +99,9 @@
             q-item-section(avatar)
               q-avatar(
                 :icon='platformLogo'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.os') }}
@@ -111,9 +111,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-server'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.hostname') }}
@@ -123,9 +123,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-microchip'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.cpuCores') }}
@@ -135,9 +135,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-memory'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.totalRAM') }}
@@ -147,9 +147,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-terminal'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.workingDirectory') }}
@@ -159,9 +159,9 @@
             q-item-section(avatar)
               q-avatar(
                 icon='las la-file-code'
-                text-color='white'
+                text-color='primary'
                 rounded
-                color='primary'
+                color='grey-2'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.configFile') }}

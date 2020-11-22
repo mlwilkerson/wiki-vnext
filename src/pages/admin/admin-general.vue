@@ -18,62 +18,248 @@
           unelevated
           icon='mdi-check'
           :label='$t(`common:actions.apply`)'
-          color='positive'
+          color='secondary'
           @click='save'
           :loading='loading'
         )
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
-      .col-6
+      .col-7
         //- -----------------------
-        //- Locale Options
+        //- Site Info
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
             .text-subtitle1 {{$t('admin:general.siteInfo')}}
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-asterisk'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.siteTitle`)}}
+              q-item-label(caption) {{$t(`admin:general.siteTitleHint`)}}
+            q-item-section
+              q-input(
+                outlined
+                v-model='config.title'
+                dense
+                :rules=`[
+                  val => /^[^<>"]+$/.test(val) || $t('admin:general.siteTitleInvalidChars')
+                ]`
+                hide-bottom-space
+                :aria-label='$t(`admin:general.siteTitle`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-pen-nib'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.siteDescription`)}}
+              q-item-label(caption) {{$t(`admin:general.siteDescriptionHint`)}}
+            q-item-section
+              q-input(
+                outlined
+                v-model='config.description'
+                dense
+                :aria-label='$t(`admin:general.siteDescription`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-globe'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.siteHostname`)}}
+              q-item-label(caption) {{$t(`admin:general.siteHostnameHint`)}}
+            q-item-section
+              q-input(
+                outlined
+                v-model='config.host'
+                dense
+                :rules=`[
+                  val => /^(([a-z0-9.-]+)|([*]{1}))$/.test(val) || $t('admin:general.siteHostnameInvalid')
+                ]`
+                hide-bottom-space
+                :aria-label='$t(`admin:general.siteHostname`)'
+                )
 
-  //- v-container(fluid, grid-list-lg)
-  //-   v-layout(row wrap)
-  //-     v-flex(xs12)
-  //-       .admin-header
-  //-         img.animated.fadeInUp(src='/_assets/svg/icon-categorize.svg', alt='General', style='width: 80px;')
-  //-         .admin-header-title
-  //-           .headline.primary--text.animated.fadeInLeft {{ $t('admin:general.title') }}
-  //-           .subtitle-1.grey--text.animated.fadeInLeft {{ $t('admin:general.subtitle') }}
-  //-         v-spacer
-  //-         v-btn.animated.fadeInDown(color='success', depressed, @click='save', large)
-  //-           v-icon(left) mdi-check
-  //-           span {{$t('common:actions.apply')}}
-  //-       v-form.pt-3
-  //-         v-layout(row wrap)
-  //-           v-flex(lg6 xs12)
-  //-             v-form
-  //-               v-card.animated.fadeInUp
-  //-                 v-toolbar(color='primary', dark, dense, flat)
-  //-                   v-toolbar-title.subtitle-1 {{ $t('admin:general.siteInfo') }}
-  //-                 .overline.grey--text.pa-4 {{$t('admin:general.general')}}
-  //-                 .px-3.pb-3
-  //-                   v-text-field(
-  //-                     outlined
-  //-                     :label='$t(`admin:general.siteUrl`)'
-  //-                     required
-  //-                     :counter='255'
-  //-                     v-model='config.host'
-  //-                     prepend-icon='mdi-label-variant-outline'
-  //-                     :hint='$t(`admin:general.siteUrlHint`)'
-  //-                     persistent-hint
-  //-                     )
-  //-                   v-text-field.mt-3(
-  //-                     outlined
-  //-                     :label='$t(`admin:general.siteTitle`)'
-  //-                     required
-  //-                     :counter='50'
-  //-                     v-model='config.title'
-  //-                     prepend-icon='mdi-earth'
-  //-                     :hint='$t(`admin:general.siteTitleHint`)'
-  //-                     persistent-hint
-  //-                     )
-  //-                 v-divider
+        //- -----------------------
+        //- Footer / Copyright
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm.q-mt-md
+          q-card-section
+            .text-subtitle1 {{$t('admin:general.footerCopyright')}}
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-landmark'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.companyName`)}}
+              q-item-label(caption) {{$t(`admin:general.companyNameHint`)}}
+            q-item-section
+              q-input(
+                outlined
+                v-model='config.company'
+                dense
+                :aria-label='$t(`admin:general.companyName`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-copyright'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.contentLicense`)}}
+              q-item-label(caption) {{$t(`admin:general.contentLicenseHint`)}}
+            q-item-section
+              q-select(
+                outlined
+                v-model='config.contentLicense'
+                :options='contentLicenses'
+                option-value='value'
+                option-label='text'
+                emit-value
+                map-options
+                dense
+                :aria-label='$t(`admin:general.contentLicense`)'
+                )
+
+        //- -----------------------
+        //- SEO
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm.q-mt-md
+          q-card-section
+            .text-subtitle1 SEO
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-robot'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.searchAllowIndexing`)}}
+              q-item-label(caption) {{$t(`admin:general.searchAllowIndexingHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='searchAllowIndexing'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:general.searchAllowIndexing`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-hand-point-right'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.searchAllowFollow`)}}
+              q-item-label(caption) {{$t(`admin:general.searchAllowFollowHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='searchAllowFollow'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:general.searchAllowFollow`)'
+                )
+
+        //- -----------------------
+        //- FEATURES
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm.q-mt-md
+          q-card-section
+            .text-subtitle1 {{$t('admin:general.features')}}
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-comments'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.allowComments`)}}
+              q-item-label(caption) {{$t(`admin:general.allowCommentsHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.featurePageComments'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:general.allowComments`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-star-half-alt'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.allowRatings`)}}
+              q-item-label(caption) {{$t(`admin:general.allowRatingsHint`)}}
+            q-item-section.col-auto
+              q-btn-toggle(
+                v-model='config.featurePageRatings'
+                push
+                glossy
+                no-caps
+                toggle-color='primary'
+                :options=`[
+                  { label: $t('admin:general.ratingsOff'), value: 'off' },
+                  { label: $t('admin:general.ratingsThumbs'), value: 'thumbs' },
+                  { label: $t('admin:general.ratingsStars'), value: 'stars' }
+                ]`
+              )
+
+      .col-5
+        //- -----------------------
+        //- Logo
+        //- -----------------------
+        q-card.shadow-1.q-pb-sm
+          q-card-section
+            .text-subtitle1 {{$t('admin:general.logo')}}
+          q-item(tag='label', v-ripple)
+            q-item-section.items-center(style='flex: 0 0 40px;')
+              q-icon(
+                name='las la-feather'
+                color='primary'
+                size='sm'
+                )
+            q-item-section
+              q-item-label {{$t(`admin:general.displaySiteTitle`)}}
+              q-item-label(caption) {{$t(`admin:general.displaySiteTitleHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.featurePageComments'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin:general.displaySiteTitle`)'
+                )
+          q-separator.q-my-sm(inset)
+
   //-                 .overline.grey--text.pa-4 {{$t('admin:general.logo')}}
   //-                 .pt-2.pb-7.pl-10.pr-3
   //-                   .d-flex.align-center
@@ -94,51 +280,6 @@
   //-                         @click:append='browseLogo'
   //-                         @keyup.enter='refreshLogo'
   //-                       )
-  //-                 v-divider
-  //-                 .overline.grey--text.pa-4 {{$t('admin:general.footerCopyright')}}
-  //-                 .px-3.pb-3
-  //-                   v-text-field(
-  //-                     outlined
-  //-                     :label='$t(`admin:general.companyName`)'
-  //-                     v-model='config.company'
-  //-                     :counter='255'
-  //-                     prepend-icon='mdi-domain'
-  //-                     persistent-hint
-  //-                     :hint='$t(`admin:general.companyNameHint`)'
-  //-                     )
-  //-                   v-select.mt-3(
-  //-                     outlined
-  //-                     :label='$t(`admin:general.contentLicense`)'
-  //-                     :items='contentLicenses'
-  //-                     v-model='config.contentLicense'
-  //-                     prepend-icon='mdi-creative-commons'
-  //-                     :return-object='false'
-  //-                     :hint='$t(`admin:general.contentLicenseHint`)'
-  //-                     persistent-hint
-  //-                     )
-  //-                 v-divider
-  //-                 .overline.grey--text.pa-4 SEO
-  //-                 .px-3.pb-3
-  //-                   v-text-field(
-  //-                     outlined
-  //-                     :label='$t(`admin:general.siteDescription`)'
-  //-                     :counter='255'
-  //-                     v-model='config.description'
-  //-                     prepend-icon='mdi-compass'
-  //-                     :hint='$t(`admin:general.siteDescriptionHint`)'
-  //-                     persistent-hint
-  //-                     )
-  //-                   v-select.mt-3(
-  //-                     outlined
-  //-                     :label='$t(`admin:general.metaRobots`)'
-  //-                     multiple
-  //-                     :items='metaRobots'
-  //-                     v-model='config.robots'
-  //-                     prepend-icon='mdi-compass'
-  //-                     :return-object='false'
-  //-                     :hint='$t(`admin:general.metaRobotsHint`)'
-  //-                     persistent-hint
-  //-                     )
 
   //-           v-flex(lg6 xs12)
   //-             v-card.animated.fadeInUp.wait-p4s
@@ -165,40 +306,6 @@
   //-                 //-   disabled
   //-                 //-   )
 
-  //-                 //- v-divider.mt-3
-  //-                 //- v-switch(
-  //-                 //-   inset
-  //-                 //-   label='Page Ratings'
-  //-                 //-   color='indigo'
-  //-                 //-   v-model='config.featurePageRatings'
-  //-                 //-   persistent-hint
-  //-                 //-   hint='Allow users to rate pages.'
-  //-                 //-   disabled
-  //-                 //-   )
-
-  //-                 //- v-divider.mt-3
-  //-                 v-switch(
-  //-                   inset
-  //-                   label='Comments'
-  //-                   color='indigo'
-  //-                   v-model='config.featurePageComments'
-  //-                   persistent-hint
-  //-                   hint='Allow users to leave comments on pages.'
-  //-                   )
-
-  //-                 //- v-divider.mt-3
-  //-                 //- v-switch(
-  //-                 //-   inset
-  //-                 //-   label='Personal Wikis'
-  //-                 //-   color='indigo'
-  //-                 //-   v-model='config.featurePersonalWikis'
-  //-                 //-   persistent-hint
-  //-                 //-   hint='Allow users to have their own personal wiki.'
-  //-                 //-   disabled
-  //-                 //-   )
-
-  //- component(:is='activeModal')
-
 </template>
 
 <script>
@@ -206,42 +313,23 @@ import { sync } from 'vuex-pathify'
 import gql from 'graphql-tag'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
-
-// import editorStore from '../../store/editor'
-
-const titleRegex = /[<>"]/i
-
-// WIKI.$store.registerModule('editor', editorStore)
+import uniq from 'lodash/uniq'
+import without from 'lodash/without'
 
 export default {
-  // i18nOptions: { namespaces: 'editor' },
-  // components: {
-  //   editorModalMedia: () => import(/* webpackChunkName: "editor", webpackMode: "lazy" */ '../editor/editor-modal-media.vue')
-  // },
   data () {
     return {
+      loading: false,
       config: {
         host: '',
         title: '',
         description: '',
         robots: [],
-        analyticsService: '',
-        analyticsId: '',
         company: '',
         contentLicense: '',
-        logoUrl: '',
-        featureAnalytics: false,
-        featurePageRatings: false,
-        featurePageComments: false,
-        featurePersonalWikis: false,
-        featureTinyPNG: false
-      },
-      metaRobots: [
-        { text: 'Index', value: 'index' },
-        { text: 'Follow', value: 'follow' },
-        { text: 'No Index', value: 'noindex' },
-        { text: 'No Follow', value: 'nofollow' }
-      ]
+        featurePageComments: true,
+        featurePageRatings: 'off'
+      }
     }
   },
   computed: {
@@ -249,7 +337,6 @@ export default {
     logoUrl: sync('site/logoUrl'),
     company: sync('site/company'),
     contentLicense: sync('site/contentLicense'),
-    activeModal: sync('editor/activeModal'),
     contentLicenses () {
       return [
         { value: '', text: this.$t('common:license.none') },
@@ -262,19 +349,22 @@ export default {
         { value: 'ccbyncsa', text: this.$t('common:license.ccbyncsa') },
         { value: 'ccbyncnd', text: this.$t('common:license.ccbyncnd') }
       ]
+    },
+    searchAllowIndexing: {
+      get () { return !this.config.robots.includes('noindex') },
+      set (val) {
+        this.config.robots = val ? uniq([...without(this.config.robots, 'noindex'), 'index']) : uniq([...without(this.config.robots, 'index'), 'noindex'])
+      }
+    },
+    searchAllowFollow: {
+      get () { return !this.config.robots.includes('nofollow') },
+      set (val) {
+        this.config.robots = val ? uniq([...without(this.config.robots, 'nofollow'), 'follow']) : uniq([...without(this.config.robots, 'follow'), 'nofollow'])
+      }
     }
   },
   methods: {
     async save () {
-      const title = _get(this.config, 'title', '')
-      if (titleRegex.test(title)) {
-        this.$store.commit('showNotification', {
-          style: 'error',
-          message: this.$t('admin:general.siteTitleInvalidChars'),
-          icon: 'alert'
-        })
-        return
-      }
       try {
         await this.$apollo.mutate({
           mutation: gql`
@@ -301,11 +391,7 @@ export default {
                   analyticsService: $analyticsService,
                   analyticsId: $analyticsId,
                   company: $company,
-                  contentLicense: $contentLicense,
-                  logoUrl: $logoUrl,
-                  featurePageRatings: $featurePageRatings,
-                  featurePageComments: $featurePageComments,
-                  featurePersonalWikis: $featurePersonalWikis
+                  contentLicense: $contentLicense
                 ) {
                   responseResult {
                     succeeded
@@ -322,14 +408,8 @@ export default {
             title: _get(this.config, 'title', ''),
             description: _get(this.config, 'description', ''),
             robots: _get(this.config, 'robots', []),
-            analyticsService: _get(this.config, 'analyticsService', ''),
-            analyticsId: _get(this.config, 'analyticsId', ''),
             company: _get(this.config, 'company', ''),
-            contentLicense: _get(this.config, 'contentLicense', ''),
-            logoUrl: _get(this.config, 'logoUrl', ''),
-            featurePageRatings: _get(this.config, 'featurePageRatings', false),
-            featurePageComments: _get(this.config, 'featurePageComments', false),
-            featurePersonalWikis: _get(this.config, 'featurePersonalWikis', false)
+            contentLicense: _get(this.config, 'contentLicense', '')
           },
           watchLoading (isLoading) {
             this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-update')
@@ -348,21 +428,9 @@ export default {
         this.$store.commit('pushGraphError', err)
       }
     },
-    browseLogo () {
-      this.$store.set('editor/editorKey', 'common')
-      this.activeModal = 'editorModalMedia'
-    },
     refreshLogo () {
       this.$forceUpdate()
     }
-  },
-  mounted () {
-    this.$root.$on('editorInsert', opts => {
-      this.config.logoUrl = opts.path
-    })
-  },
-  beforeDestroy () {
-    this.$root.$off('editorInsert')
   },
   apollo: {
     config: {
@@ -374,14 +442,10 @@ export default {
               title
               description
               robots
-              analyticsService
-              analyticsId
               company
               contentLicense
-              logoUrl
               featurePageRatings
               featurePageComments
-              featurePersonalWikis
             }
           }
         }
