@@ -1,0 +1,237 @@
+<template lang="pug">
+  q-card.page-properties-dialog(style='max-width: 450px;')
+    q-toolbar.bg-primary.text-white.flex
+      .text-subtitle2 {{$t('editor:props.pageProperties')}}
+      q-space
+      q-btn(
+        icon='las la-times'
+        dense
+        flat
+        v-close-popup
+      )
+    q-scroll-area(
+      :thumb-style='thumbStyle'
+      :bar-style='barStyle'
+      style='height: calc(100% - 50px);'
+      )
+      q-card-section
+        .text-overline {{$t('editor:props.info')}}
+        q-form.q-gutter-sm
+          q-input(
+            v-model='title'
+            :label='$t(`editor:props.title`)'
+            outlined
+            dense
+          )
+          q-input(
+            v-model='description'
+            :label='$t(`editor:props.shortDescription`)'
+            outlined
+            dense
+          )
+      q-card-section.alt-card
+        .text-overline.q-pb-xs {{$t('editor:props.publishState')}}
+        q-form.q-gutter-md
+          div
+            q-btn-toggle(
+              v-model='isPublished'
+              push
+              glossy
+              no-caps
+              toggle-color='primary'
+              :options=`[
+                { label: $t('editor:props.draft'), value: false },
+                { label: $t('editor:props.published'), value: true },
+                { label: $t('editor:props.dateRange'), value: null }
+              ]`
+            )
+          .text-caption(v-if='isPublished'): em {{$t('editor:props.publishedHint')}}
+          .text-caption(v-else-if='isPublished === false'): em {{$t('editor:props.draftHint')}}
+          template(v-else-if='isPublished === null')
+            .text-caption: em {{$t('editor:props.dateRangeHint')}}
+            q-date(
+              v-model='publishingRange'
+              range
+              flat
+              bordered
+              landscape
+              minimal
+              )
+      q-card-section
+        .text-overline {{$t('editor:props.relations')}}
+        q-list.rounded-borders.q-mb-sm.bg-white(
+          v-if='relations.length > 0'
+          separator
+          bordered
+          )
+          q-item(v-for='rel of relations', :key='`rel-id-` + rel.id')
+            q-item-section(side)
+              q-icon(:name='rel.icon')
+            q-item-section
+              q-item-label: strong {{rel.label}}
+              q-item-label(caption) {{rel.caption}}
+            q-item-section(side)
+              q-chip.q-px-sm(
+                dense
+                square
+                color='primary'
+                text-color='white'
+                )
+                .text-caption {{rel.position}}
+            q-item-section(side)
+              q-btn(
+                icon='las la-pen'
+                dense
+                flat
+                padding='none'
+                @click='editRelation(rel)'
+              )
+            q-item-section(side)
+              q-btn(
+                icon='las la-times'
+                dense
+                flat
+                padding='none'
+                @click='removeRelation(rel)'
+              )
+        q-btn.full-width(
+          :label='$t(`editor:props.relationAdd`)'
+          icon='las la-plus'
+          no-caps
+          unelevated
+          color='secondary'
+          @click='newRelation'
+          )
+          q-tooltip {{$t('editor:props.relationAddHint')}}
+      q-card-section.alt-card
+        .text-overline {{$t('editor:props.scripts')}}
+        q-btn.full-width(
+          :label='$t(`editor:props.jsLoad`)'
+          icon='lab la-js-square'
+          no-caps
+          unelevated
+          color='secondary'
+          )
+          q-tooltip {{$t('editor:props.jsLoadHint')}}
+        q-btn.full-width.q-mt-sm(
+          :label='$t(`editor:props.jsUnload`)'
+          icon='lab la-js-square'
+          no-caps
+          unelevated
+          color='secondary'
+          )
+          q-tooltip {{$t('editor:props.jsUnloadHint')}}
+        q-btn.full-width.q-mt-sm(
+          :label='$t(`editor:props.styles`)'
+          icon='lab la-css3-alt'
+          no-caps
+          unelevated
+          color='secondary'
+          )
+          q-tooltip {{$t('editor:props.stylesHint')}}
+      q-card-section.q-pb-lg
+        .text-overline {{$t('editor:props.sidebar')}}
+        q-form.q-gutter-md.q-pt-sm
+          div
+            q-toggle(
+              v-model='showSidebar'
+              dense
+              :label='$t(`editor:props.showSidebar`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+          div
+            q-toggle(
+              v-if='showSidebar'
+              v-model='showToc'
+              dense
+              :label='$t(`editor:props.showToc`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+          div(
+            v-if='showSidebar && showToc'
+            style='padding-left: 40px;'
+            )
+            .text-caption {{$t('editor:props.tocMaxDepth')}} #[strong (H{{tocDepth}})]
+            q-slider(
+              v-model='tocDepth'
+              :min='1'
+              :max='6'
+              color='primary'
+              snap
+              label
+              markers
+            )
+      q-card-section.alt-card.q-pb-lg
+        .text-overline {{$t('editor:props.social')}}
+        q-form.q-gutter-md.q-pt-sm
+          div
+            q-toggle(
+              v-model='allowComments'
+              dense
+              :label='$t(`editor:props.allowComments`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+          div
+            q-toggle(
+              v-model='allowRatings'
+              dense
+              :label='$t(`editor:props.allowRatings`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+      q-card-section.q-pb-lg
+        .text-overline {{$t('editor:props.tags')}}
+        page-tags(edit)
+
+    q-dialog(
+      v-model='showRelationDialog'
+      )
+      page-relation-dialog(:edit-id='editRelationId')
+</template>
+
+<script>
+import { get, sync } from 'vuex-pathify'
+
+export default {
+  data () {
+    return {
+      showRelationDialog: false,
+      allowComments: true,
+      allowRatings: true,
+      publishingRange: {},
+      showSidebar: true,
+      showToc: true,
+      tocDepth: 2,
+      editRelationId: null
+    }
+  },
+  computed: {
+    title: sync('page/title'),
+    description: sync('page/description'),
+    isPublished: sync('page/isPublished'),
+    relations: sync('page/relations'),
+    thumbStyle: get('site/thumbStyle'),
+    barStyle: get('site/barStyle')
+  },
+  methods: {
+    newRelation () {
+      this.editRelationId = null
+      this.showRelationDialog = true
+    },
+    editRelation (rel) {
+      this.editRelationId = rel.id
+      this.showRelationDialog = true
+    },
+    removeRelation (rel) {
+      this.relations = this.$store.get('page/relations').filter(r => r.id !== rel.id)
+    }
+  }
+}
+</script>

@@ -1,6 +1,11 @@
 <template lang='pug'>
-  q-page.bg-grey-1
-    span Test
+  q-page.admin-dashboard
+    .row.q-pa-md.items-center
+      .col-auto
+        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-change-theme.svg')
+      .col.q-pl-md
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:dashboard.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:dashboard.subtitle') }}
   //- v-container(fluid, grid-list-lg)
   //-   v-layout(row, wrap)
   //-     v-flex(xs12)

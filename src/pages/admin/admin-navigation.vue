@@ -1,5 +1,5 @@
 <template lang='pug'>
-  q-page.admin-locale
+  q-page.admin-navigation
     .row.q-pa-md.items-center
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-tree-structure.svg')

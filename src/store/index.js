@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import pathify from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 
+import admin from './admin'
 import page from './page'
 import site from './site'
 import user from './user'
@@ -29,7 +30,7 @@ export default function (/* { ssrContext } */) {
     plugins: [
       pathify.plugin
     ],
-    state,
+    state: () => ({ ...state }),
     getters: {
       isLoading: state => { return state.loadingStack.length > 0 }
     },
@@ -44,6 +45,7 @@ export default function (/* { ssrContext } */) {
     },
     actions: {},
     modules: {
+      admin,
       page,
       site,
       user

@@ -1,77 +1,104 @@
 <template lang='pug'>
-  v-container(fluid, grid-list-lg)
-    v-layout(row wrap)
-      v-flex(xs12)
-        .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-people.svg', alt='Groups', style='width: 80px;')
-          .admin-header-title
-            .headline.blue--text.text--darken-2.animated.fadeInLeft Groups
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s Manage groups and their permissions
-          v-spacer
-          v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/groups', target='_blank')
-            v-icon mdi-help-circle
-          v-btn.animated.fadeInDown.wait-p2s.mx-3(color='grey', outlined, @click='refresh', icon)
-            v-icon mdi-refresh
-          v-dialog(v-model='newGroupDialog', max-width='500')
-            template(v-slot:activator='{ on }')
-              v-btn.animated.fadeInDown(color='primary', depressed, v-on='on', large)
-                v-icon(left) mdi-plus
-                span New Group
-            v-card
-              .dialog-header.is-short New Group
-              v-card-text.pt-5
-                v-text-field.md2(
-                  outlined
-                  prepend-icon='mdi-account-group'
-                  v-model='newGroupName'
-                  label='Group Name'
-                  counter='255'
-                  @keyup.enter='createGroup'
-                  @keyup.esc='newGroupDialog = false'
-                  ref='groupNameIpt'
-                  )
-              v-card-chin
-                v-spacer
-                v-btn(text, @click='newGroupDialog = false') Cancel
-                v-btn(color='primary', @click='createGroup') Create
-        v-card.mt-3.animated.fadeInUp
-          v-data-table(
-            :items='groups'
-            :headers='headers'
-            :search='search'
-            :page.sync='pagination'
-            :items-per-page='15'
-            :loading='loading'
-            @page-count='pageCount = $event'
-            must-sort,
-            hide-default-footer
+  q-page.admin-groups
+    .row.q-pa-md.items-center
+      .col-auto
+        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-people.svg')
+      .col.q-pl-md
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:groups.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:groups.subtitle') }}
+      .col-auto
+        q-btn.q-mr-sm(
+          icon='las la-question-circle'
+          flat
+          color='grey'
+          href='https://docs.requarks.io/groups'
+          target='_blank'
           )
-            template(slot='item', slot-scope='props')
-              tr.is-clickable(:active='props.selected', @click='$router.push("/groups/" + props.item.id)')
-                td {{ props.item.id }}
-                td: strong {{ props.item.name }}
-                td {{ props.item.userCount }}
-                td {{ props.item.createdAt | moment('calendar') }}
-                td {{ props.item.updatedAt | moment('calendar') }}
-                td
-                  v-tooltip(left, v-if='props.item.isSystem')
-                    template(v-slot:activator='{ on }')
-                      v-icon(v-on='on') mdi-lock-outline
-                    span System Group
-            template(slot='no-data')
-              v-alert.ma-3(icon='mdi-alert', :value='true', outline) No groups to display.
-          .text-xs-center.py-2(v-if='pageCount > 1')
-            v-pagination(v-model='pagination', :length='pageCount')
+        q-btn(
+          unelevated
+          icon='las la-plus'
+          :label='$t(`admin:groups.create`)'
+          color='primary'
+          )
+          q-menu
+            q-card(flat, style='min-width: 350px;')
+              q-card-section
+                .text-subtitle1 {{$t(`admin:groups.new`)}}
+    q-separator(inset)
+    .row.q-pa-md.q-col-gutter-md
+      .col-6
+  //- v-container(fluid, grid-list-lg)
+  //-   v-layout(row wrap)
+  //-     v-flex(xs12)
+  //-       .admin-header
+  //-         img.animated.fadeInUp(src='/_assets/svg/icon-people.svg', alt='Groups', style='width: 80px;')
+  //-         .admin-header-title
+  //-           .headline.blue--text.text--darken-2.animated.fadeInLeft Groups
+  //-           .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s Manage groups and their permissions
+  //-         v-spacer
+  //-         v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/groups', target='_blank')
+  //-           v-icon mdi-help-circle
+  //-         v-btn.animated.fadeInDown.wait-p2s.mx-3(color='grey', outlined, @click='refresh', icon)
+  //-           v-icon mdi-refresh
+  //-         v-dialog(v-model='newGroupDialog', max-width='500')
+  //-           template(v-slot:activator='{ on }')
+  //-             v-btn.animated.fadeInDown(color='primary', depressed, v-on='on', large)
+  //-               v-icon(left) mdi-plus
+  //-               span New Group
+  //-           v-card
+  //-             .dialog-header.is-short New Group
+  //-             v-card-text.pt-5
+  //-               v-text-field.md2(
+  //-                 outlined
+  //-                 prepend-icon='mdi-account-group'
+  //-                 v-model='newGroupName'
+  //-                 label='Group Name'
+  //-                 counter='255'
+  //-                 @keyup.enter='createGroup'
+  //-                 @keyup.esc='newGroupDialog = false'
+  //-                 ref='groupNameIpt'
+  //-                 )
+  //-             v-card-chin
+  //-               v-spacer
+  //-               v-btn(text, @click='newGroupDialog = false') Cancel
+  //-               v-btn(color='primary', @click='createGroup') Create
+  //-       v-card.mt-3.animated.fadeInUp
+  //-         v-data-table(
+  //-           :items='groups'
+  //-           :headers='headers'
+  //-           :search='search'
+  //-           :page.sync='pagination'
+  //-           :items-per-page='15'
+  //-           :loading='loading'
+  //-           @page-count='pageCount = $event'
+  //-           must-sort,
+  //-           hide-default-footer
+  //-         )
+  //-           template(slot='item', slot-scope='props')
+  //-             tr.is-clickable(:active='props.selected', @click='$router.push("/groups/" + props.item.id)')
+  //-               td {{ props.item.id }}
+  //-               td: strong {{ props.item.name }}
+  //-               td {{ props.item.userCount }}
+  //-               td {{ props.item.createdAt | moment('calendar') }}
+  //-               td {{ props.item.updatedAt | moment('calendar') }}
+  //-               td
+  //-                 v-tooltip(left, v-if='props.item.isSystem')
+  //-                   template(v-slot:activator='{ on }')
+  //-                     v-icon(v-on='on') mdi-lock-outline
+  //-                   span System Group
+  //-           template(slot='no-data')
+  //-             v-alert.ma-3(icon='mdi-alert', :value='true', outline) No groups to display.
+  //-         .text-xs-center.py-2(v-if='pageCount > 1')
+  //-           v-pagination(v-model='pagination', :length='pageCount')
 </template>
 
 <script>
-import _ from 'lodash'
-
-import groupsQuery from 'gql/admin/groups/groups-query-list.gql'
-import createGroupMutation from 'gql/admin/groups/groups-mutation-create.gql'
+import trim from 'lodash/trim'
+import _get from 'lodash/get'
+import gql from 'graphql-tag'
 
 export default {
-  data() {
+  data () {
     return {
       newGroupDialog: false,
       newGroupName: '',
@@ -92,7 +119,7 @@ export default {
     }
   },
   watch: {
-    newGroupDialog(newValue, oldValue) {
+    newGroupDialog (newValue, oldValue) {
       if (newValue) {
         this.$nextTick(() => {
           this.$refs.groupNameIpt.focus()
@@ -101,7 +128,7 @@ export default {
     }
   },
   methods: {
-    async refresh() {
+    async refresh () {
       await this.$apollo.queries.groups.refetch()
       this.$store.commit('showNotification', {
         message: 'Groups have been refreshed.',
@@ -109,8 +136,8 @@ export default {
         icon: 'cached'
       })
     },
-    async createGroup() {
-      if (_.trim(this.newGroupName).length < 1) {
+    async createGroup () {
+      if (trim(this.newGroupName).length < 1) {
         this.$store.commit('showNotification', {
           style: 'red',
           message: 'Enter a group name.',
@@ -121,17 +148,33 @@ export default {
       this.newGroupDialog = false
       try {
         await this.$apollo.mutate({
-          mutation: createGroupMutation,
+          mutation: gql`
+            mutation ($name: String!) {
+              groups {
+                create(name: $name) {
+                  responseResult {
+                    succeeded
+                    errorCode
+                    slug
+                    message
+                  }
+                  group {
+                    id
+                    name
+                    createdAt
+                    updatedAt
+                  }
+                }
+              }
+            }
+          `,
           variables: {
             name: this.newGroupName
           },
           update (store, resp) {
-            const data = _.get(resp, 'data.groups.create', { responseResult: {} })
+            const data = _get(resp, 'data.groups.create', { responseResult: {} })
             if (data.responseResult.succeeded === true) {
-              const apolloData = store.readQuery({ query: groupsQuery })
-              data.group.userCount = 0
-              apolloData.groups.list.push(data.group)
-              store.writeQuery({ query: groupsQuery, data: apolloData })
+              this.$apollo.queries.groups.refetch()
             } else {
               throw new Error(data.responseResult.message)
             }
@@ -143,7 +186,7 @@ export default {
         this.newGroupName = ''
         this.$store.commit('showNotification', {
           style: 'success',
-          message: `Group has been created successfully.`,
+          message: 'Group has been created successfully.',
           icon: 'check'
         })
       } catch (err) {
@@ -153,7 +196,20 @@ export default {
   },
   apollo: {
     groups: {
-      query: groupsQuery,
+      query: gql`
+        query {
+          groups {
+            list {
+              id
+              name
+              isSystem
+              userCount
+              createdAt
+              updatedAt
+            }
+          }
+        }
+      `,
       fetchPolicy: 'network-only',
       update: (data) => data.groups.list,
       watchLoading (isLoading) {

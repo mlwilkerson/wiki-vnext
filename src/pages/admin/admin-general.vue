@@ -84,7 +84,7 @@
             q-item-section
               q-input(
                 outlined
-                v-model='config.host'
+                v-model='config.hostname'
                 dense
                 :rules=`[
                   val => /^(([a-z0-9.-]+)|([*]{1}))$/.test(val) || $t('admin:general.siteHostnameInvalid')
@@ -202,7 +202,7 @@
               q-item-label(caption) {{$t(`admin:general.allowCommentsHint`)}}
             q-item-section(avatar)
               q-toggle(
-                v-model='config.featurePageComments'
+                v-model='config.commentsAreActive'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
@@ -221,7 +221,7 @@
               q-item-label(caption) {{$t(`admin:general.allowRatingsHint`)}}
             q-item-section.col-auto
               q-btn-toggle(
-                v-model='config.featurePageRatings'
+                v-model='config.ratingsMode'
                 push
                 glossy
                 no-caps
@@ -309,7 +309,7 @@
 </template>
 
 <script>
-import { sync } from 'vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 import gql from 'graphql-tag'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
@@ -321,18 +321,20 @@ export default {
     return {
       loading: false,
       config: {
-        host: '',
+        hostname: '',
         title: '',
         description: '',
         robots: [],
         company: '',
         contentLicense: '',
-        featurePageComments: true,
-        featurePageRatings: 'off'
+        commentsAreActive: true,
+        ratingsMode: 'off',
+        logoUrl: ''
       }
     }
   },
   computed: {
+    currentSiteId: get('admin/currentSiteId'),
     siteTitle: sync('site/title'),
     logoUrl: sync('site/logoUrl'),
     company: sync('site/company'),
@@ -351,13 +353,13 @@ export default {
       ]
     },
     searchAllowIndexing: {
-      get () { return !this.config.robots.includes('noindex') },
+      get () { return this.config.robots && !this.config.robots.includes('noindex') },
       set (val) {
         this.config.robots = val ? uniq([...without(this.config.robots, 'noindex'), 'index']) : uniq([...without(this.config.robots, 'index'), 'noindex'])
       }
     },
     searchAllowFollow: {
-      get () { return !this.config.robots.includes('nofollow') },
+      get () { return this.config.robots && !this.config.robots.includes('nofollow') },
       set (val) {
         this.config.robots = val ? uniq([...without(this.config.robots, 'nofollow'), 'follow']) : uniq([...without(this.config.robots, 'follow'), 'nofollow'])
       }
@@ -435,23 +437,32 @@ export default {
   apollo: {
     config: {
       query: gql`
-        {
-          site {
-            config {
-              host
-              title
-              description
-              robots
-              company
-              contentLicense
-              featurePageRatings
-              featurePageComments
-            }
+        query (
+          $id: Int!
+        ) {
+          siteById(
+            id: $id
+          ) {
+            hostname
+            isEnabled
+            title
+            description
+            robots
+            company
+            contentLicense
+            commentsAreActive
+            ratingsMode
+            logoUrl
           }
         }
       `,
+      variables () {
+        return {
+          id: this.currentSiteId
+        }
+      },
       fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.site.config),
+      update: (data) => cloneDeep(data.siteById),
       watchLoading (isLoading) {
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-refresh')
       }

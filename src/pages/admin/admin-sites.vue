@@ -20,10 +20,10 @@
           :label='$t(`admin:sites.new`)'
           color='primary'
           )
-          q-menu
-            q-card(flat, style='min-width: 350px;')
-              q-card-section
-                .text-subtitle1 {{$t(`admin:sites.new`)}}
+          q-menu(
+            content-class='shadow-20'
+          )
+            site-create-dialog
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
       .col-12
@@ -40,17 +40,27 @@
               :rows-per-page-options='[0]'
               :loading='loading'
               )
-              template(v-slot:body-cell-name='props')
+              template(v-slot:body-cell-title='props')
                 q-td(:props='props')
                   strong {{props.value}}
-              template(v-slot:body-cell-isActive='props')
+              template(v-slot:body-cell-isEnabled='props')
                 q-td(:props='props')
                   q-toggle(
-                    v-model='props.row.isActive'
+                    v-model='props.row.isEnabled'
                     color='primary'
                     checked-icon='las la-check'
                     unchecked-icon='las la-times'
                     :aria-label='$t(`admin:sites.isActive`)'
+                    )
+              template(v-slot:body-cell-edit='props')
+                q-td(:props='props')
+                  q-btn(
+                    flat
+                    round
+                    dense
+                    @click='editSite(props.row)'
+                    icon='las la-pen'
+                    color='indigo'
                     )
               template(v-slot:body-cell-remove='props')
                 q-td(:props='props')
@@ -67,25 +77,13 @@
 <script>
 import gql from 'graphql-tag'
 import _get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   data () {
     return {
       loading: false,
-      sites: [
-        {
-          id: 1,
-          name: 'Default',
-          hostname: '*',
-          isActive: true
-        },
-        {
-          id: 2,
-          name: 'Second Wiki',
-          hostname: 'wiki.example.com',
-          isActive: false
-        }
-      ]
+      sites: []
     }
   },
   computed: {
@@ -102,8 +100,8 @@ export default {
         {
           label: this.$t('common:field.name'),
           align: 'left',
-          field: 'name',
-          name: 'name',
+          field: 'title',
+          name: 'title',
           sortable: true
         },
         {
@@ -116,10 +114,18 @@ export default {
         {
           label: this.$t('admin:sites.isActive'),
           align: 'center',
-          field: 'isActive',
-          name: 'isActive',
+          field: 'isEnabled',
+          name: 'isEnabled',
           sortable: false,
           style: 'width: 10px'
+        },
+        {
+          label: this.$t('admin:sites.edit'),
+          align: 'center',
+          field: 'edit',
+          name: 'edit',
+          sortable: false,
+          style: 'width: 100px'
         },
         {
           label: this.$t('admin:sites.delete'),
@@ -133,6 +139,10 @@ export default {
     }
   },
   methods: {
+    editSite (st) {
+      this.$store.set('admin/currentSiteId', st.id)
+      this.$router.push('/a/general')
+    },
     async deleteSite (st) {
       const respRaw = await this.$apollo.mutate({
         mutation: gql`
@@ -221,20 +231,25 @@ export default {
       }
       this.loading = false
     }
+  },
+  apollo: {
+    sites: {
+      query: gql`
+        {
+          sites {
+            id
+            hostname
+            isEnabled
+            title
+          }
+        }
+      `,
+      fetchPolicy: 'network-only',
+      update: r => cloneDeep(r.sites),
+      watchLoading (isLoading) {
+        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-sites-refresh')
+      }
+    }
   }
-  // apollo: {
-  //   locales: {
-  //     query: gql`
-  //       sites {
-
-  //       }
-  //     `,
-  //     fetchPolicy: 'network-only',
-  //     update: (data) => data.localization.locales.map(lc => ({ ...lc, isDownloading: false })),
-  //     watchLoading (isLoading) {
-  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-locale-refresh')
-  //     }
-  //   }
-  // }
 }
 </script>

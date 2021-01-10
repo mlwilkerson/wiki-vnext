@@ -39,9 +39,9 @@ module.exports = function (/* ctx */) {
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
+      'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font',
+      // 'roboto-font',
       'mdi-v5',
       'line-awesome'
     ],

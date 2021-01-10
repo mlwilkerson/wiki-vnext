@@ -15,18 +15,69 @@
           q-breadcrumbs-el(icon='las la-file-alt', label='Installation', aria-label='Installation' to='/install')
           q-breadcrumbs-el(icon='las la-file-alt', label='Ubuntu', aria-label='Ubuntu', to='/install/ubuntu')
       .col-auto.flex.items-center.justify-end
+        template(v-if='!isPublished')
+          .text-caption.text-accent: strong Unpublished
+          q-separator.q-mx-sm(vertical)
         .text-caption.text-grey-6 Last modified on #[strong September 5th, 2020]
     .page-header.row
-      .col-auto.q-pl-md.flex.items-center
-        q-icon(
-          name='lab la-galactic-republic'
+      //- PAGE ICON
+      .col-auto.q-pl-md.flex.items-center(v-if='editMode')
+        q-btn.rounded-borders(
+          padding='none'
+          size='37px'
+          :icon='pageIcon'
+          color='primary'
+          flat
+          )
+          q-menu(content-class='shadow-7')
+            icon-picker-dialog(v-model='pageIcon')
+      .col-auto.q-pl-md.flex.items-center(v-else)
+        q-icon.rounded-borders(
+          :name='pageIcon'
           size='64px'
           color='primary'
         )
-      .col.q-pa-md.font-poppins
-        .text-h4.text-grey-9 Ubuntu
-        .text-subtitle2.text-grey-7 How to install Wiki.js on Ubuntu 18.04 / 20.04
-      .col-auto.q-pa-md.flex.items-center.justify-end
+      //- PAGE HEADER
+      .col.q-pa-md(v-if='editMode')
+        q-input.no-height(
+          borderless
+          v-model='title'
+          input-class='font-poppins text-h4 text-grey-9'
+          input-style='padding: 0;'
+          hide-hint
+          )
+        q-input.no-height(
+          borderless
+          v-model='description'
+          input-class='font-poppins text-subtitle2 text-grey-7'
+          input-style='padding: 0;'
+          hide-hint
+          )
+      .col.q-pa-md.font-poppins(v-else)
+        .text-h4.page-header-title {{title}}
+        .text-subtitle2.page-header-subtitle {{description}}
+
+      //- PAGE ACTIONS
+      .col-auto.q-pa-md.flex.items-center.justify-end(v-if='editMode')
+        q-btn.q-mr-sm(
+          outline
+          icon='las la-times'
+          color='grey-7'
+          label='Discard'
+          aria-label='Discard'
+          no-caps
+          @click='editMode = false'
+        )
+        q-btn(
+          unelevated
+          icon='las la-check'
+          color='secondary'
+          label='Save'
+          aria-label='Save'
+          no-caps
+          @click='editMode = false'
+        )
+      .col-auto.q-pa-md.flex.items-center.justify-end(v-else)
         q-btn.q-mr-md(
           flat
           dense
@@ -59,34 +110,110 @@
           label='Edit'
           aria-label='Edit'
           no-caps
+          @click='editMode = true'
         )
     .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
       .col(style='order: 1;')
+        q-no-ssr(v-if='editMode')
+          editor-wysiwyg
+          //- editor-markdown
         q-scroll-area(
           :thumb-style='thumbStyle'
           :bar-style='barStyle'
           style='height: 100%;'
+          v-else
           )
           .q-pa-md
-            div(style='height:500px;') Test
-            div(style='height:500px;') Test
-            div(style='height:500px;') Test
-            div(style='height:500px;') Test
-            div(style='height:500px;') Test
-            div(style='height:500px;') Test
-
-      .page-sidebar.bg-grey-2(style='order: 2;')
+            div(v-html='render')
+            template(v-if='relations && relations.length > 0')
+              q-separator.q-my-lg
+              .row.align-center
+                .col.text-left(v-if='relationsLeft.length > 0')
+                  q-btn.q-mr-sm.q-mb-sm(
+                    padding='sm md'
+                    outline
+                    :icon='rel.icon'
+                    no-caps
+                    color='primary'
+                    v-for='rel of relationsLeft'
+                    :key='`rel-id-` + rel.id'
+                    )
+                    .column.text-left.q-pl-md
+                      .text-body2: strong {{rel.label}}
+                      .text-caption {{rel.caption}}
+                .col.text-center(v-if='relationsCenter.length > 0')
+                  .column
+                    q-btn(
+                      :label='rel.label'
+                      color='primary'
+                      flat
+                      no-caps
+                      :icon='rel.icon'
+                      v-for='rel of relationsCenter'
+                      :key='`rel-id-` + rel.id'
+                    )
+                .col.text-right(v-if='relationsRight.length > 0')
+                  q-btn.q-ml-sm.q-mb-sm(
+                    padding='sm md'
+                    outline
+                    :icon-right='rel.icon'
+                    no-caps
+                    color='primary'
+                    v-for='rel of relationsRight'
+                    :key='`rel-id-` + rel.id'
+                    )
+                    .column.text-left.q-pr-md
+                      .text-body2: strong {{rel.label}}
+                      .text-caption {{rel.caption}}
+      .page-sidebar(style='order: 2;')
         .q-pa-md.flex.items-center
           q-icon.q-mr-sm(name='las la-stream', color='grey')
           .text-caption.text-grey-7 Contents
-      .page-actions.bg-grey-3.column.items-stretch.order-last
+        .q-px-md
+          q-tree(
+            :nodes='toc'
+            node-key='key'
+            default-expand-all
+            :selected.sync='tocSelected'
+          )
+        .q-pa-md(
+          @mouseover='showTagsEditBtn = true'
+          @mouseleave='showTagsEditBtn = false'
+        )
+          .flex.items-center
+            q-icon.q-mr-sm(name='las la-tags', color='grey')
+            .text-caption.text-grey-7 Tags
+            q-space
+            transition(name='fade')
+              q-btn(
+                v-show='showTagsEditBtn'
+                size='sm'
+                padding='none xs'
+                icon='las la-pen'
+                color='deep-orange-9'
+                flat
+                label='Edit'
+                no-caps
+                @click='tagEditMode = !tagEditMode'
+              )
+          page-tags.q-mt-sm(:edit='tagEditMode')
+      .page-actions.column.items-stretch.order-last
         q-btn.q-py-sm(
           flat
           icon='las la-pen-nib'
           color='deep-orange-9'
           aria-label='Page Properties'
+          @click='showSideDialog = true'
           )
           q-tooltip(anchor='center left' self='center right') Page Properties
+        q-btn.q-py-sm(
+          flat
+          icon='las la-project-diagram'
+          color='deep-orange-9'
+          aria-label='Page Data'
+          @click='showSideDialog = true'
+          )
+          q-tooltip(anchor='center left' self='center right') Page Data
         q-separator(inset)
         q-btn.q-py-sm(
           flat
@@ -124,13 +251,77 @@
           aria-label='Delete Page'
           )
           q-tooltip(anchor='center left' self='center right') Delete Page
+
+    q-dialog(
+      v-model='showSideDialog'
+      position='right'
+      full-height
+      transition-show='jump-left'
+      transition-hide='jump-right'
+      content-class='floating-sidepanel'
+      )
+      page-properties-dialog
 </template>
 
 <script>
+import { get, sync } from 'vuex-pathify'
+
 export default {
   name: 'PageIndex',
   data () {
     return {
+      showSideDialog: false,
+      showTagsEditBtn: false,
+      tagEditMode: false,
+      toc: [
+        {
+          key: 'h1-0',
+          label: 'Introduction'
+        },
+        {
+          key: 'h1-1',
+          label: 'Planets',
+          children: [
+            {
+              key: 'h2-0',
+              label: 'Earth',
+              children: [
+                {
+                  key: 'h3-0',
+                  label: 'Countries',
+                  children: [
+                    {
+                      key: 'h4-0',
+                      label: 'Cities',
+                      children: [
+                        {
+                          key: 'h5-0',
+                          label: 'Montreal',
+                          children: [
+                            {
+                              key: 'h6-0',
+                              label: 'Districts'
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              key: 'h2-1',
+              label: 'Mars'
+            },
+            {
+              key: 'h2-2',
+              label: 'Jupiter'
+            }
+          ]
+        }
+      ],
+      tocSelected: [],
       thumbStyle: {
         right: '2px',
         borderRadius: '5px',
@@ -144,27 +335,138 @@ export default {
         opacity: 1
       }
     }
+  },
+  computed: {
+    editMode: sync('page/editMode'),
+    title: sync('page/title'),
+    description: sync('page/description'),
+    relations: get('page/relations'),
+    tags: sync('page/tags'),
+    isPublished: get('page/isPublished'),
+    pageIcon: sync('page/icon'),
+    render: get('page/render'),
+    relationsLeft () {
+      return this.relations ? this.relations.filter(r => r.position === 'left') : []
+    },
+    relationsCenter () {
+      return this.relations ? this.relations.filter(r => r.position === 'center') : []
+    },
+    relationsRight () {
+      return this.relations ? this.relations.filter(r => r.position === 'right') : []
+    }
   }
 }
 </script>
 
 <style lang="scss">
 .page-breadcrumbs {
-  background: linear-gradient(to bottom, $grey-1 0%, $grey-3 100%);
-  border-bottom: 1px solid $grey-4;
+  @at-root .body--light & {
+    background: linear-gradient(to bottom, $grey-1 0%, $grey-3 100%);
+    border-bottom: 1px solid $grey-4;
+  }
+  @at-root .body--dark & {
+    background: linear-gradient(to bottom, $dark-3 0%, $dark-4 100%);
+    border-bottom: 1px solid $dark-3;
+  }
 }
 .page-header {
-  background: linear-gradient(to bottom, $grey-2 0%, $grey-1 100%);
-  border-bottom: 1px solid $grey-4;
-  border-top: 1px solid #FFF;
+  @at-root .body--light & {
+    background: linear-gradient(to bottom, $grey-2 0%, $grey-1 100%);
+    border-bottom: 1px solid $grey-4;
+    border-top: 1px solid #FFF;
+  }
+  @at-root .body--dark & {
+    background: linear-gradient(to bottom, $dark-4 0%, $dark-3 100%);
+    // border-bottom: 1px solid $dark-5;
+    border-top: 1px solid $dark-6;
+  }
+
+  .no-height .q-field__control {
+    height: auto;
+  }
+
+  &-title {
+    @at-root .body--light & {
+      color: $grey-9;
+    }
+    @at-root .body--dark & {
+      color: #FFF;
+    }
+  }
+  &-subtitle {
+    @at-root .body--light & {
+      color: $grey-7;
+    }
+    @at-root .body--dark & {
+      color: rgba(255,255,255,.6);
+    }
+  }
 }
 .page-container {
-  border-top: 1px solid #FFF;
+  @at-root .body--light & {
+    border-top: 1px solid #FFF;
+  }
+  // @at-root .body--dark & {
+  //   border-top: 1px solid $dark-6;
+  // }
 }
 .page-sidebar {
   flex: 0 0 300px;
+
+  @at-root .body--light & {
+    background-color: $grey-2;
+  }
+  @at-root .body--dark & {
+    background-color: $dark-5;
+  }
 }
 .page-actions {
   flex: 0 0 56px;
+
+  @at-root .body--light & {
+    background-color: $grey-3;
+  }
+  @at-root .body--dark & {
+    background-color: $dark-4;
+  }
+}
+
+.floating-sidepanel {
+  .q-dialog__inner {
+    right: 24px;
+
+    .q-card {
+      border-radius: 4px;
+      min-width: 450px;
+
+      .q-card__section {
+        border-radius: 0;
+      }
+    }
+  }
+
+  .alt-card {
+    @at-root .body--light & {
+      background-color: $grey-2;
+      border-top: 1px solid $grey-4;
+      box-shadow: inset 0 1px 0 0 #FFF, inset 0 -1px 0 0 #FFF;
+      border-bottom: 1px solid $grey-4;
+    }
+    @at-root .body--dark & {
+      background-color: $dark-4;
+      border-top: 1px solid lighten($dark-3, 8%);
+      box-shadow: inset 0 1px 0 0 $dark-6, inset 0 -1px 0 0 $dark-6;
+      border-bottom: 1px solid lighten($dark-3, 8%);
+    }
+  }
+}
+
+.q-card {
+  @at-root .body--light & {
+    background-color: #FFF;
+  }
+  @at-root .body--dark & {
+    background-color: $dark-3;
+  }
 }
 </style>

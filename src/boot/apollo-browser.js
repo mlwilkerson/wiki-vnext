@@ -20,11 +20,11 @@ export default ({ app, store }) => {
 
   // Authentication Link
   const authLink = setContext(async (req, { headers }) => {
-    const token = '' // await window.auth0Client.getTokenSilently()
+    const token = 'test' // await window.auth0Client.getTokenSilently()
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : ''
+        Authorization: token ? `Bearer ${token}` : ''
       }
     }
   })
@@ -44,6 +44,7 @@ export default ({ app, store }) => {
   const client = new ApolloClient({
     cache,
     link: authLink.concat(httpLink),
+    credentials: 'omit',
     ssrForceFetchDelay: 100
   })
 

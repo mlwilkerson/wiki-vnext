@@ -1,6 +1,8 @@
 <template lang='pug'>
   q-layout(view='hHh Lpr lff')
-    q-header.bg-header.text-white.site-header
+    q-header.bg-header.text-white.site-header(
+      height-hint='64'
+      )
       .row.no-wrap
         q-toolbar(
           style='height: 64px;'
@@ -57,17 +59,18 @@
             flat
             round
             dense
-            icon='las la-plus'
+            icon='las la-plus-circle'
             color='blue-4'
             aria-label='Create New Page'
             )
             q-tooltip Create New Page
+            new-menu
           q-btn.q-ml-md(
             flat
             round
             dense
             icon='las la-tools'
-            color='grey'
+            color='secondary'
             to='/a'
             aria-label='Administration'
             )
@@ -149,8 +152,8 @@
           round
           size='md'
         )
-    q-footer.bg-white
-      q-bar.bg-grey-3.text-grey-7.justify-center(dense)
+    q-footer
+      q-bar.justify-center(dense)
         span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
 </template>
 
@@ -187,5 +190,22 @@ export default {
 .sidebar-nav {
   border-top: 1px solid rgba(255,255,255,.15);
   height: calc(100% - 38px - 24px);
+}
+
+body.body--dark {
+  background-color: $dark-6;
+}
+
+.q-footer {
+  .q-bar {
+    @at-root .body--light & {
+      background-color: $grey-3;
+      color: $grey-7;
+    }
+    @at-root .body--dark & {
+      background-color: $dark-4;
+      color: rgba(255,255,255,.3);
+    }
+  }
 }
 </style>

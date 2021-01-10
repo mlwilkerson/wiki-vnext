@@ -352,9 +352,9 @@ export default {
   watch: {
     'config.darkMode' (newValue) {
       this.$q.dark.set(newValue)
-      this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-darker' : 'elegant')
-      this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-darker' : 'elegant')
-      this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-darker' : 'elegant')
+      this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+      this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+      this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
     },
     'config.primaryColor' (newValue) {
       colors.setBrand('primary', newValue)
@@ -381,7 +381,7 @@ export default {
   },
   methods: {
     onCmReady (cm) {
-      cm.setOption('theme', this.$q.dark.isActive ? 'material-darker' : 'elegant')
+      cm.setOption('theme', this.$q.dark.isActive ? 'material-ocean' : 'elegant')
       cm.setSize(null, 200)
     },
     async save () {
@@ -476,7 +476,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
 
-  > .CmodeMirror {
+  > .CodeMirror {
     height: 150px;
   }
 }

@@ -58,12 +58,26 @@
         .init-loading {
           display: none !important;
         }
+
+        .q-drawer-container {
+          display: none !important;
+        }
+
+        .scroll.relative-position {
+          position: static !important;
+        }
+
+        .scroll.relative-position > .absolute {
+          position: relative !important;
+        }
       </style>
     </noscript>
   </head>
   <body>
     <div class="init-loading"></div>
-    <!-- DO NOT touch the following DIV -->
     <div id="q-app"></div>
+    <% if (ctx.mode.ssr && process.env.ssr) { %>
+      {{{ renderState({ contextKey: 'apolloState', windowKey: '__APOLLO_STATE__' }) }}}
+    <% } %>
   </body>
 </html>

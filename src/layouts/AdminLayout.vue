@@ -34,8 +34,10 @@
               q-select(
                 outlined
                 dense
-                v-model='currentSite'
+                v-model='currentSiteId'
                 :options='sites'
+                option-value='id'
+                option-label='title'
                 emit-value
                 map-options
               )
@@ -151,7 +153,8 @@
 </template>
 
 <script>
-import adminStore from '../store/admin'
+import gql from 'graphql-tag'
+import { sync } from 'vuex-pathify'
 
 export default {
   name: 'AdminLayout',
@@ -168,10 +171,7 @@ export default {
         groupsTotal: 99,
         usersTotal: 999
       },
-      currentSite: 1,
-      sites: [
-        { value: 1, label: 'Default' }
-      ],
+      sites: [],
       thumbStyle: {
         right: '1px',
         borderRadius: '5px',
@@ -184,14 +184,26 @@ export default {
       }
     }
   },
-  preFetch ({ store }) {
-    store.registerModule('admin', adminStore)
+  computed: {
+    currentSiteId: sync('admin/currentSiteId')
   },
-  mounted () {
-    this.$store.registerModule('admin', adminStore, { preserveState: true })
-  },
-  destroyed () {
-    this.$store.unregisterModule('admin')
+  apollo: {
+    sites: {
+      query: gql`
+        {
+          sites {
+            id
+            hostname
+            isEnabled
+            title
+          }
+        }
+      `,
+      fetchPolicy: 'network-only',
+      watchLoading (isLoading) {
+        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-sites-refresh')
+      }
+    }
   }
 }
 </script>
@@ -208,7 +220,7 @@ export default {
     background-color: #FFF;
   }
   @at-root .body--dark & {
-    background-color: #111;
+    background-color: $dark-5;
   }
 }
 .admin-container {
@@ -216,7 +228,7 @@ export default {
     background-color: $grey-1;
   }
   @at-root .body--dark & {
-    background-color: $grey-10;
+    background-color: $dark-4;
   }
 
   .q-card {
@@ -224,7 +236,7 @@ export default {
       background-color: #FFF;
     }
     @at-root .body--dark & {
-      background-color: lighten($grey-10, 5%);
+      background-color: $dark-3;
     }
   }
 }
@@ -234,7 +246,7 @@ export default {
     background-color: #FFF !important;
   }
   @at-root .body--dark & {
-    background-color: #111 !important;
+    background-color: $dark-6 !important;
   }
 }
 </style>

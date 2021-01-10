@@ -13,7 +13,19 @@ const state = {
   searchIsLoading: false,
   searchRestrictLocale: false,
   searchRestrictPath: false,
-  printView: false
+  printView: false,
+  thumbStyle: {
+    right: '2px',
+    borderRadius: '5px',
+    backgroundColor: '#000',
+    width: '5px',
+    opacity: 0.15
+  },
+  barStyle: {
+    backgroundColor: '#FAFAFA',
+    width: '9px',
+    opacity: 1
+  }
 }
 
 export default {
