@@ -77,7 +77,6 @@
           .column.text-left.q-pr-md
             .text-body2: strong {{label}}
             .text-caption {{caption}}
-    q-separator
     q-card-actions.card-actions
       q-space
       q-btn(

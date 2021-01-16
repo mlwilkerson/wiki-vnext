@@ -203,7 +203,7 @@
           icon='las la-pen-nib'
           color='deep-orange-9'
           aria-label='Page Properties'
-          @click='showSideDialog = true'
+          @click='togglePageProperties'
           )
           q-tooltip(anchor='center left' self='center right') Page Properties
         q-btn.q-py-sm(
@@ -211,7 +211,7 @@
           icon='las la-project-diagram'
           color='deep-orange-9'
           aria-label='Page Data'
-          @click='showSideDialog = true'
+          @click='togglePageData'
           )
           q-tooltip(anchor='center left' self='center right') Page Data
         q-separator(inset)
@@ -229,6 +229,34 @@
           aria-label='Page Source'
           )
           q-tooltip(anchor='center left' self='center right') Page Source
+        q-btn.q-py-sm(
+          flat
+          icon='las la-ellipsis-h'
+          color='grey'
+          aria-label='Page Actions'
+          )
+          q-menu(
+            anchor='top left'
+            self='top right'
+            auto-close
+            transition-show='jump-left'
+            )
+            q-list(padding, style='min-width: 225px;')
+              q-item(clickable)
+                q-item-section.items-center(avatar)
+                  q-icon(color='deep-orange-9', name='las la-atom', size='sm')
+                q-item-section
+                  q-item-label Convert Page
+              q-item(clickable)
+                q-item-section.items-center(avatar)
+                  q-icon(color='deep-orange-9', name='las la-magic', size='sm')
+                q-item-section
+                  q-item-label Re-render Page
+              q-item(clickable)
+                q-item-section.items-center(avatar)
+                  q-icon(color='deep-orange-9', name='las la-sun', size='sm')
+                q-item-section
+                  q-item-label View Backlinks
         q-space
         q-btn.q-py-sm(
           flat
@@ -260,7 +288,7 @@
       transition-hide='jump-right'
       content-class='floating-sidepanel'
       )
-      page-properties-dialog
+      component(:is='sideDialogComponent')
 </template>
 
 <script>
@@ -271,6 +299,7 @@ export default {
   data () {
     return {
       showSideDialog: false,
+      sideDialogComponent: null,
       showTagsEditBtn: false,
       tagEditMode: false,
       toc: [
@@ -353,6 +382,16 @@ export default {
     },
     relationsRight () {
       return this.relations ? this.relations.filter(r => r.position === 'right') : []
+    }
+  },
+  methods: {
+    togglePageProperties () {
+      this.sideDialogComponent = 'PagePropertiesDialog'
+      this.showSideDialog = true
+    },
+    togglePageData () {
+      this.sideDialogComponent = 'PageDataDialog'
+      this.showSideDialog = true
     }
   }
 }
@@ -457,6 +496,28 @@ export default {
       border-top: 1px solid lighten($dark-3, 8%);
       box-shadow: inset 0 1px 0 0 $dark-6, inset 0 -1px 0 0 $dark-6;
       border-bottom: 1px solid lighten($dark-3, 8%);
+    }
+  }
+
+  &-quickaccess {
+    width: 40px;
+    border-radius: 4px !important;
+    background-color: rgba(0,0,0,.75);
+    color: #FFF;
+    position: fixed;
+    right: 486px;
+    top: 74px;
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.5) !important;
+
+    @at-root .q-transition--jump-left-enter-active & {
+      display: none !important;
+    }
+
+    @at-root .q-transition--jump-right-leave-active & {
+      display: none !important;
     }
   }
 }

@@ -1,5 +1,17 @@
 <template lang="pug">
   q-card.page-properties-dialog(style='max-width: 450px;')
+    .floating-sidepanel-quickaccess.animated.fadeIn(v-if='showQuickAccess', style='right: 486px;')
+      template(v-for='(qa, idx) of quickaccess')
+        q-btn(
+          :key='`qa-` + qa.key'
+          :icon='qa.icon'
+          flat
+          padding='sm xs'
+          size='sm'
+          @click='jumpToSection(qa.key)'
+          )
+          q-tooltip(anchor='center left' self='center right') {{qa.label}}
+        q-separator(dark, v-if='idx < quickaccess.length - 1')
     q-toolbar.bg-primary.text-white.flex
       .text-subtitle2 {{$t('editor:props.pageProperties')}}
       q-space
@@ -10,12 +22,13 @@
         v-close-popup
       )
     q-scroll-area(
+      ref='scrollArea'
       :thumb-style='thumbStyle'
       :bar-style='barStyle'
       style='height: calc(100% - 50px);'
       )
-      q-card-section
-        .text-overline {{$t('editor:props.info')}}
+      q-card-section(ref='card-info')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-info-circle', size='xs')] {{$t('editor:props.info')}}
         q-form.q-gutter-sm
           q-input(
             v-model='title'
@@ -29,8 +42,8 @@
             outlined
             dense
           )
-      q-card-section.alt-card
-        .text-overline.q-pb-xs {{$t('editor:props.publishState')}}
+      q-card-section.alt-card(ref='card-publishstate')
+        .text-overline.q-pb-xs.items-center.flex #[q-icon.q-mr-sm(name='las la-power-off', size='xs')] {{$t('editor:props.publishState')}}
         q-form.q-gutter-md
           div
             q-btn-toggle(
@@ -57,8 +70,8 @@
               landscape
               minimal
               )
-      q-card-section
-        .text-overline {{$t('editor:props.relations')}}
+      q-card-section(ref='card-relations')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-sun', size='xs')] {{$t('editor:props.relations')}}
         q-list.rounded-borders.q-mb-sm.bg-white(
           v-if='relations.length > 0'
           separator
@@ -103,14 +116,15 @@
           @click='newRelation'
           )
           q-tooltip {{$t('editor:props.relationAddHint')}}
-      q-card-section.alt-card
-        .text-overline {{$t('editor:props.scripts')}}
+      q-card-section.alt-card(ref='card-scripts')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-code', size='xs')] {{$t('editor:props.scripts')}}
         q-btn.full-width(
           :label='$t(`editor:props.jsLoad`)'
           icon='lab la-js-square'
           no-caps
           unelevated
           color='secondary'
+          @click='editScripts(`jsLoad`)'
           )
           q-tooltip {{$t('editor:props.jsLoadHint')}}
         q-btn.full-width.q-mt-sm(
@@ -119,6 +133,7 @@
           no-caps
           unelevated
           color='secondary'
+          @click='editScripts(`jsUnload`)'
           )
           q-tooltip {{$t('editor:props.jsUnloadHint')}}
         q-btn.full-width.q-mt-sm(
@@ -127,10 +142,11 @@
           no-caps
           unelevated
           color='secondary'
+          @click='editScripts(`styles`)'
           )
           q-tooltip {{$t('editor:props.stylesHint')}}
-      q-card-section.q-pb-lg
-        .text-overline {{$t('editor:props.sidebar')}}
+      q-card-section.q-pb-lg(ref='card-sidebar')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-ruler-vertical', size='xs')] {{$t('editor:props.sidebar')}}
         q-form.q-gutter-md.q-pt-sm
           div
             q-toggle(
@@ -165,8 +181,8 @@
               label
               markers
             )
-      q-card-section.alt-card.q-pb-lg
-        .text-overline {{$t('editor:props.social')}}
+      q-card-section.alt-card.q-pb-lg(ref='card-social')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-comments', size='xs')] {{$t('editor:props.social')}}
         q-form.q-gutter-md.q-pt-sm
           div
             q-toggle(
@@ -186,14 +202,19 @@
               checked-icon='las la-check'
               unchecked-icon='las la-times'
             )
-      q-card-section.q-pb-lg
-        .text-overline {{$t('editor:props.tags')}}
+      q-card-section.q-pb-lg(ref='card-tags')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-tags', size='xs')] {{$t('editor:props.tags')}}
         page-tags(edit)
 
     q-dialog(
       v-model='showRelationDialog'
       )
       page-relation-dialog(:edit-id='editRelationId')
+
+    q-dialog(
+      v-model='showScriptsDialog'
+      )
+      page-scripts-dialog(:mode='pageScriptsMode')
 </template>
 
 <script>
@@ -203,13 +224,16 @@ export default {
   data () {
     return {
       showRelationDialog: false,
+      showScriptsDialog: false,
       allowComments: true,
       allowRatings: true,
       publishingRange: {},
       showSidebar: true,
       showToc: true,
       tocDepth: 2,
-      editRelationId: null
+      editRelationId: null,
+      pageScriptsMode: 'jsLoad',
+      showQuickAccess: true
     }
   },
   computed: {
@@ -218,9 +242,29 @@ export default {
     isPublished: sync('page/isPublished'),
     relations: sync('page/relations'),
     thumbStyle: get('site/thumbStyle'),
-    barStyle: get('site/barStyle')
+    barStyle: get('site/barStyle'),
+    quickaccess () {
+      return [
+        { key: 'info', icon: 'las la-info-circle', label: this.$t('editor:props.info') },
+        { key: 'publishstate', icon: 'las la-power-off', label: this.$t('editor:props.publishState') },
+        { key: 'relations', icon: 'las la-sun', label: this.$t('editor:props.relations') },
+        { key: 'scripts', icon: 'las la-code', label: this.$t('editor:props.scripts') },
+        { key: 'sidebar', icon: 'las la-ruler-vertical', label: this.$t('editor:props.sidebar') },
+        { key: 'social', icon: 'las la-comments', label: this.$t('editor:props.social') },
+        { key: 'tags', icon: 'las la-tags', label: this.$t('editor:props.tags') }
+      ]
+    }
+  },
+  mounted () {
+    setTimeout(() => {
+      this.showQuickAccess = true
+    }, 300)
   },
   methods: {
+    editScripts (mode) {
+      this.pageScriptsMode = mode
+      this.showScriptsDialog = true
+    },
     newRelation () {
       this.editRelationId = null
       this.showRelationDialog = true
@@ -231,6 +275,12 @@ export default {
     },
     removeRelation (rel) {
       this.relations = this.$store.get('page/relations').filter(r => r.id !== rel.id)
+    },
+    jumpToSection (id) {
+      this.$refs[`card-${id}`].$el.scrollIntoView({
+        behavior: 'smooth'
+      })
+      // this.$refs.scrollArea.setScrollPosition(offset, 600)
     }
   }
 }

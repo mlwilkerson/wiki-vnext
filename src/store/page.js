@@ -18,8 +18,9 @@ const state = {
   updatedAt: '',
   mode: '',
   relations: [],
-  scriptJs: '',
-  scriptCss: '',
+  scriptJsLoad: '',
+  scriptJsUnload: '',
+  scriptStyles: '',
   effectivePermissions: {
     comments: {
       read: false,

@@ -3,6 +3,8 @@
  * the ES6 features that are supported by your Node version. https://node.green/
  */
 
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
@@ -78,6 +80,9 @@ module.exports = function (/* ctx */) {
           test: /\.pug$/,
           loader: 'pug-plain-loader'
         })
+        cfg.plugins.push(
+          new MonacoWebpackPlugin()
+        )
       }
     },
 

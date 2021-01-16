@@ -6,6 +6,7 @@ import pathify from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 
 import admin from './admin'
+import colors from './colors'
 import page from './page'
 import site from './site'
 import user from './user'
@@ -46,6 +47,7 @@ export default function (/* { ssrContext } */) {
     actions: {},
     modules: {
       admin,
+      colors,
       page,
       site,
       user
