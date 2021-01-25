@@ -122,7 +122,7 @@
             q-item-section(avatar)
               q-icon(name='las la-cat', color='white')
             q-item-section Installation
-          q-separator.q-my-sm
+          q-separator.q-my-sm(dark)
           q-item(to='/install')
             q-item-section(avatar)
               q-icon(name='las la-cat', color='white')

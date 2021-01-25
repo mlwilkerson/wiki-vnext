@@ -20,13 +20,13 @@
         )
     q-card-actions.card-actions
       q-space
-      q-btn(
+      q-btn.acrylic-btn(
         icon='las la-times'
         :label='$t(`common:actions.discard`)'
         color='grey-7'
         padding='xs md'
         v-close-popup
-        outline
+        flat
       )
       q-btn(
         icon='las la-check'

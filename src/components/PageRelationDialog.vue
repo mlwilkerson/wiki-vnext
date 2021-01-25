@@ -21,6 +21,7 @@
           )
         .text-overline {{$t('editor:pageRel.button')}}
         q-input(
+          ref='iptRelLabel'
           outlined
           dense
           :label='$t(`editor:pageRel.label`)'
@@ -79,13 +80,13 @@
             .text-caption {{caption}}
     q-card-actions.card-actions
       q-space
-      q-btn(
+      q-btn.acrylic-btn(
         icon='las la-times'
         :label='$t(`common:actions.discard`)'
         color='grey-7'
         padding='xs md'
         v-close-popup
-        outline
+        flat
       )
       q-btn(
         v-if='isEditMode'
@@ -169,6 +170,9 @@ export default {
         this.target = rel.target
       }
     }
+    this.$nextTick(() => {
+      this.$refs.iptRelLabel.focus()
+    })
   },
   methods: {
     create () {

@@ -59,8 +59,8 @@
 
       //- PAGE ACTIONS
       .col-auto.q-pa-md.flex.items-center.justify-end(v-if='editMode')
-        q-btn.q-mr-sm(
-          outline
+        q-btn.q-mr-sm.acrylic-btn(
+          flat
           icon='las la-times'
           color='grey-7'
           label='Discard'
@@ -78,6 +78,14 @@
           @click='editMode = false'
         )
       .col-auto.q-pa-md.flex.items-center.justify-end(v-else)
+        q-btn.q-mr-md(
+          flat
+          dense
+          icon='las la-bell'
+          color='grey'
+          aria-label='Watch Page'
+          )
+          q-tooltip Watch Page
         q-btn.q-mr-md(
           flat
           dense
@@ -103,8 +111,8 @@
           aria-label='Print'
           )
           q-tooltip Print
-        q-btn(
-          outline
+        q-btn.acrylic-btn(
+          flat
           icon='las la-edit'
           color='deep-orange-9'
           label='Edit'
@@ -165,21 +173,28 @@
                     .column.text-left.q-pr-md
                       .text-body2: strong {{rel.label}}
                       .text-caption {{rel.caption}}
-      .page-sidebar(style='order: 2;')
-        .q-pa-md.flex.items-center
-          q-icon.q-mr-sm(name='las la-stream', color='grey')
-          .text-caption.text-grey-7 Contents
-        .q-px-md
-          q-tree(
-            :nodes='toc'
-            node-key='key'
-            default-expand-all
-            :selected.sync='tocSelected'
-          )
+      .page-sidebar(
+        v-if='showSidebar'
+        style='order: 2;'
+        )
+        template(v-if='showToc')
+          //- TOC
+          .q-pa-md.flex.items-center
+            q-icon.q-mr-sm(name='las la-stream', color='grey')
+            .text-caption.text-grey-7 Contents
+          .q-px-md.q-pb-sm
+            q-tree(
+              :nodes='toc'
+              node-key='key'
+              default-expand-all
+              :selected.sync='tocSelected'
+            )
+          q-separator
+        //- Tags
         .q-pa-md(
           @mouseover='showTagsEditBtn = true'
           @mouseleave='showTagsEditBtn = false'
-        )
+          )
           .flex.items-center
             q-icon.q-mr-sm(name='las la-tags', color='grey')
             .text-caption.text-grey-7 Tags
@@ -197,6 +212,31 @@
                 @click='tagEditMode = !tagEditMode'
               )
           page-tags.q-mt-sm(:edit='tagEditMode')
+        template(v-if='allowRatings && ratingsMode !== `off`')
+          q-separator
+          //- Rating
+          .q-pa-md.flex.items-center
+            q-icon.q-mr-sm(name='las la-star-half-alt', color='grey')
+            .text-caption.text-grey-7 Rate this page
+          .q-px-md
+            q-rating(
+              v-if='ratingsMode === `stars`'
+              v-model='currentRating'
+              icon='las la-star'
+              color='secondary'
+              size='sm'
+            )
+            .flex.items-center(v-else-if='ratingsMode === `thumbs`')
+              q-btn.acrylic-btn(
+                flat
+                icon='las la-thumbs-down'
+                color='secondary'
+              )
+              q-btn.acrylic-btn.q-ml-sm(
+                flat
+                icon='las la-thumbs-up'
+                color='secondary'
+              )
       .page-actions.column.items-stretch.order-last
         q-btn.q-py-sm(
           flat
@@ -351,6 +391,7 @@ export default {
         }
       ],
       tocSelected: [],
+      currentRating: 3,
       thumbStyle: {
         right: '2px',
         borderRadius: '5px',
@@ -371,6 +412,13 @@ export default {
     description: sync('page/description'),
     relations: get('page/relations'),
     tags: sync('page/tags'),
+    ratingsMode: get('site/ratingsMode'),
+    allowComments: get('page/allowComments'),
+    allowContributions: get('page/allowContributions'),
+    allowRatings: get('page/allowRatings'),
+    showSidebar: get('page/showSidebar'),
+    showToc: get('page/showToc'),
+    tocDepth: get('page/tocDepth'),
     isPublished: get('page/isPublished'),
     pageIcon: sync('page/icon'),
     render: get('page/render'),
@@ -457,6 +505,20 @@ export default {
   }
   @at-root .body--dark & {
     background-color: $dark-5;
+  }
+
+  .q-separator {
+    background-color: rgba(0,0,0,.05);
+    border-bottom: 1px solid;
+
+    @at-root .body--light & {
+      background-color: rgba(0,0,0,.05);
+      border-bottom-color: #FFF;
+    }
+    @at-root .body--dark & {
+      background-color: rgba(255,255,255,.04);
+      border-bottom-color: #070a0d;
+    }
   }
 }
 .page-actions {

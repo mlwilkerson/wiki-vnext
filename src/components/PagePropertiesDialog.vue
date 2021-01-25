@@ -195,6 +195,15 @@
             )
           div
             q-toggle(
+              v-model='allowContributions'
+              dense
+              :label='$t(`editor:props.allowContributions`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+          div
+            q-toggle(
               v-model='allowRatings'
               dense
               :label='$t(`editor:props.allowRatings`)'
@@ -205,7 +214,39 @@
       q-card-section.q-pb-lg(ref='card-tags')
         .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-tags', size='xs')] {{$t('editor:props.tags')}}
         page-tags(edit)
-
+      q-card-section.alt-card.q-pb-lg(ref='card-visibility')
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-eye', size='xs')] {{$t('editor:props.visibility')}}
+        q-form.q-gutter-md.q-pt-sm
+          div
+            q-toggle(
+              v-model='showInTree'
+              dense
+              :label='$t(`editor:props.showInTree`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+          div
+            q-toggle(
+              v-model='requirePassword'
+              dense
+              :label='$t(`editor:props.requirePassword`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
+          div(
+            v-if='requirePassword'
+            style='padding-left: 40px;'
+            )
+            q-input(
+              ref='iptPagePassword'
+              v-model='password'
+              :label='$t(`editor:props.password`)'
+              :hint='$t(`editor:props.passwordHint`)'
+              outlined
+              dense
+            )
     q-dialog(
       v-model='showRelationDialog'
       )
@@ -225,12 +266,9 @@ export default {
     return {
       showRelationDialog: false,
       showScriptsDialog: false,
-      allowComments: true,
-      allowRatings: true,
       publishingRange: {},
-      showSidebar: true,
-      showToc: true,
-      tocDepth: 2,
+      requirePassword: false,
+      password: '',
       editRelationId: null,
       pageScriptsMode: 'jsLoad',
       showQuickAccess: true
@@ -239,8 +277,15 @@ export default {
   computed: {
     title: sync('page/title'),
     description: sync('page/description'),
+    showInTree: sync('page/showInTree'),
     isPublished: sync('page/isPublished'),
     relations: sync('page/relations'),
+    showSidebar: sync('page/showSidebar'),
+    showToc: sync('page/showToc'),
+    tocDepth: sync('page/tocDepth'),
+    allowComments: sync('page/allowComments'),
+    allowContributions: sync('page/allowContributions'),
+    allowRatings: sync('page/allowRatings'),
     thumbStyle: get('site/thumbStyle'),
     barStyle: get('site/barStyle'),
     quickaccess () {
@@ -251,8 +296,21 @@ export default {
         { key: 'scripts', icon: 'las la-code', label: this.$t('editor:props.scripts') },
         { key: 'sidebar', icon: 'las la-ruler-vertical', label: this.$t('editor:props.sidebar') },
         { key: 'social', icon: 'las la-comments', label: this.$t('editor:props.social') },
-        { key: 'tags', icon: 'las la-tags', label: this.$t('editor:props.tags') }
+        { key: 'tags', icon: 'las la-tags', label: this.$t('editor:props.tags') },
+        { key: 'visibility', icon: 'las la-eye', label: this.$t('editor:props.visibility') }
       ]
+    }
+  },
+  watch: {
+    requirePassword (newValue) {
+      if (newValue) {
+        this.$nextTick(() => {
+          this.$refs.iptPagePassword.focus()
+          this.$refs.iptPagePassword.$el.scrollIntoView({
+            behavior: 'smooth'
+          })
+        })
+      }
     }
   },
   mounted () {

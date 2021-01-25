@@ -8,6 +8,7 @@ const state = {
   createdAt: '',
   description: 'How to install Wiki.js on Ubuntu 18.04 / 20.04',
   isPublished: true,
+  showInTree: true,
   locale: 'en',
   path: '',
   publishEndDate: '',
@@ -21,6 +22,12 @@ const state = {
   scriptJsLoad: '',
   scriptJsUnload: '',
   scriptStyles: '',
+  allowComments: false,
+  allowContributions: true,
+  allowRatings: true,
+  showSidebar: true,
+  showToc: true,
+  tocDepth: 2,
   effectivePermissions: {
     comments: {
       read: false,

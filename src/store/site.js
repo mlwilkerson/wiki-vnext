@@ -14,6 +14,8 @@ const state = {
   searchRestrictLocale: false,
   searchRestrictPath: false,
   printView: false,
+  ratingsMode: 'thumbs',
+  pageDataTemplates: [],
   thumbStyle: {
     right: '2px',
     borderRadius: '5px',
