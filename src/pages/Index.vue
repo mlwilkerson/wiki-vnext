@@ -12,13 +12,26 @@
             )
           q-breadcrumbs-el(icon='las la-home', to='/', aria-label='Home')
             q-tooltip Home
-          q-breadcrumbs-el(icon='las la-file-alt', label='Installation', aria-label='Installation' to='/install')
-          q-breadcrumbs-el(icon='las la-file-alt', label='Ubuntu', aria-label='Ubuntu', to='/install/ubuntu')
+          q-breadcrumbs-el(
+            v-for='brd of breadcrumbs'
+            :key='brd.id'
+            :icon='brd.icon'
+            :label='brd.title'
+            :aria-label='brd.title'
+            :to='$pageHelpers.getFullPath(brd)'
+            )
+          q-breadcrumbs-el(
+            v-if='editCreateMode'
+            :icon='pageIcon'
+            :label='title || `Untitled Page`'
+            :aria-label='title || `Untitled Page`'
+            )
       .col-auto.flex.items-center.justify-end
         template(v-if='!isPublished')
           .text-caption.text-accent: strong Unpublished
           q-separator.q-mx-sm(vertical)
-        .text-caption.text-grey-6 Last modified on #[strong September 5th, 2020]
+        .text-caption.text-grey-6(v-if='editCreateMode') New Page
+        .text-caption.text-grey-6(v-else) Last modified on #[strong September 5th, 2020]
     .page-header.row
       //- PAGE ICON
       .col-auto.q-pl-md.flex.items-center(v-if='editMode')
@@ -44,6 +57,7 @@
           v-model='title'
           input-class='font-poppins text-h4 text-grey-9'
           input-style='padding: 0;'
+          placeholder='Untitled Page'
           hide-hint
           )
         q-input.no-height(
@@ -51,6 +65,7 @@
           v-model='description'
           input-class='font-poppins text-subtitle2 text-grey-7'
           input-style='padding: 0;'
+          placeholder='Enter a short description'
           hide-hint
           )
       .col.q-pa-md.font-poppins(v-else)
@@ -69,11 +84,22 @@
           @click='editMode = false'
         )
         q-btn(
+          v-if='editorMode === `edit`'
           unelevated
           icon='las la-check'
           color='secondary'
           label='Save'
           aria-label='Save'
+          no-caps
+          @click='editMode = false'
+        )
+        q-btn(
+          v-else
+          unelevated
+          icon='las la-check'
+          color='secondary'
+          label='Create'
+          aria-label='Create'
           no-caps
           @click='editMode = false'
         )
@@ -189,31 +215,32 @@
               default-expand-all
               :selected.sync='tocSelected'
             )
-          q-separator
         //- Tags
-        .q-pa-md(
-          @mouseover='showTagsEditBtn = true'
-          @mouseleave='showTagsEditBtn = false'
-          )
-          .flex.items-center
-            q-icon.q-mr-sm(name='las la-tags', color='grey')
-            .text-caption.text-grey-7 Tags
-            q-space
-            transition(name='fade')
-              q-btn(
-                v-show='showTagsEditBtn'
-                size='sm'
-                padding='none xs'
-                icon='las la-pen'
-                color='deep-orange-9'
-                flat
-                label='Edit'
-                no-caps
-                @click='tagEditMode = !tagEditMode'
-              )
-          page-tags.q-mt-sm(:edit='tagEditMode')
+        template(v-if='showTags')
+          q-separator(v-if='showToc')
+          .q-pa-md(
+            @mouseover='showTagsEditBtn = true'
+            @mouseleave='showTagsEditBtn = false'
+            )
+            .flex.items-center
+              q-icon.q-mr-sm(name='las la-tags', color='grey')
+              .text-caption.text-grey-7 Tags
+              q-space
+              transition(name='fade')
+                q-btn(
+                  v-show='showTagsEditBtn'
+                  size='sm'
+                  padding='none xs'
+                  icon='las la-pen'
+                  color='deep-orange-9'
+                  flat
+                  label='Edit'
+                  no-caps
+                  @click='tagEditMode = !tagEditMode'
+                )
+            page-tags.q-mt-sm(:edit='tagEditMode')
         template(v-if='allowRatings && ratingsMode !== `off`')
-          q-separator
+          q-separator(v-if='showToc || showTags')
           //- Rating
           .q-pa-md.flex.items-center
             q-icon.q-mr-sm(name='las la-star-half-alt', color='grey')
@@ -317,6 +344,7 @@
           icon='las la-trash'
           color='grey'
           aria-label='Delete Page'
+          @click='savePage'
           )
           q-tooltip(anchor='center left' self='center right') Delete Page
 
@@ -329,6 +357,13 @@
       content-class='floating-sidepanel'
       )
       component(:is='sideDialogComponent')
+
+    q-dialog(
+      v-model='showGlobalDialog'
+      transition-show='jump-up'
+      transition-hide='jump-down'
+      )
+      component(:is='globalDialogComponent')
 </template>
 
 <script>
@@ -340,6 +375,8 @@ export default {
     return {
       showSideDialog: false,
       sideDialogComponent: null,
+      showGlobalDialog: false,
+      globalDialogComponent: null,
       showTagsEditBtn: false,
       tagEditMode: false,
       toc: [
@@ -407,7 +444,9 @@ export default {
     }
   },
   computed: {
-    editMode: sync('page/editMode'),
+    mode: sync('page/mode'),
+    editorMode: get('page/editorMode'),
+    breadcrumbs: get('page/breadcrumbs'),
     title: sync('page/title'),
     description: sync('page/description'),
     relations: get('page/relations'),
@@ -416,7 +455,10 @@ export default {
     allowComments: get('page/allowComments'),
     allowContributions: get('page/allowContributions'),
     allowRatings: get('page/allowRatings'),
-    showSidebar: get('page/showSidebar'),
+    showSidebar () {
+      return this.$store.get('page/showSidebar') && this.$store.get('site/showSidebar')
+    },
+    showTags: get('page/showTags'),
     showToc: get('page/showToc'),
     tocDepth: get('page/tocDepth'),
     isPublished: get('page/isPublished'),
@@ -430,6 +472,12 @@ export default {
     },
     relationsRight () {
       return this.relations ? this.relations.filter(r => r.position === 'right') : []
+    },
+    editMode () {
+      return this.mode === 'edit'
+    },
+    editCreateMode () {
+      return this.mode === 'edit' && this.editorMode === 'create'
     }
   },
   methods: {
@@ -440,6 +488,10 @@ export default {
     togglePageData () {
       this.sideDialogComponent = 'PageDataDialog'
       this.showSideDialog = true
+    },
+    savePage () {
+      this.globalDialogComponent = 'PageSaveDialog'
+      this.showGlobalDialog = true
     }
   }
 }

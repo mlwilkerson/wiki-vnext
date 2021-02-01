@@ -5,23 +5,23 @@
     self='top right'
     )
     q-list(padding)
-      q-item(clickable, to='/n')
+      q-item(clickable, @click='create(`wysiwyg`)')
         q-item-section.items-center(avatar)
           q-icon(color='primary', name='las la-file-alt', size='sm')
         q-item-section.q-pr-sm New Page
-      q-item(clickable, to='/n/markdown')
+      q-item(clickable, @click='create(`markdown`)')
         q-item-section.items-center(avatar)
           q-icon(color='primary', name='lab la-markdown', size='sm')
         q-item-section.q-pr-sm New Markdown Page
-      q-item(clickable, to='/n/blog', disabled)
+      q-item(clickable, @click='create(`blog`)', disabled)
         q-item-section.items-center(avatar)
           q-icon(color='primary', name='las la-blog', size='sm')
         q-item-section.q-pr-sm New Blog Page
-      q-item(clickable, to='/n/api', disabled)
+      q-item(clickable, @click='create(`api`)', disabled)
         q-item-section.items-center(avatar)
           q-icon(color='primary', name='las la-code-branch', size='sm')
         q-item-section.q-pr-sm New API Documentation
-      q-item(clickable, to='/n/redirection', disabled)
+      q-item(clickable, @click='create(`redirect`)', disabled)
         q-item-section.items-center(avatar)
           q-icon(color='primary', name='las la-location-arrow', size='sm')
         q-item-section.q-pr-sm New Redirection
@@ -35,10 +35,12 @@
 <script>
 export default {
   data () {
-    return {
-    }
+    return { }
   },
   methods: {
+    create (editor) {
+      this.$store.dispatch('page/pageCreate', { editor })
+    }
   }
 }
 </script>

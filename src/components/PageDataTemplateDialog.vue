@@ -91,6 +91,7 @@
           )
             .col.page-datatmpl-meta.q-px-md.q-py-md.flex.q-gutter-md
               q-input.col(
+                ref='tmplTitleIpt'
                 :label='$t(`editor:pageData.templateTitle`)'
                 outlined
                 dense
@@ -270,6 +271,12 @@ export default {
         label: this.$t('editor:pageData.templateUntitled'),
         data: []
       }
+      this.$nextTick(() => {
+        this.$refs.tmplTitleIpt.focus()
+        this.$nextTick(() => {
+          document.execCommand('selectall')
+        })
+      })
     },
     commit () {
       try {

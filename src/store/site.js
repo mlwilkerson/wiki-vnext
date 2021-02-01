@@ -1,6 +1,7 @@
 import { make } from 'vuex-pathify'
 
 const state = {
+  useLocales: false,
   host: '',
   company: '',
   contentLicense: '',
@@ -16,6 +17,8 @@ const state = {
   printView: false,
   ratingsMode: 'thumbs',
   pageDataTemplates: [],
+  showSideNav: true,
+  showSidebar: true,
   thumbStyle: {
     right: '2px',
     borderRadius: '5px',

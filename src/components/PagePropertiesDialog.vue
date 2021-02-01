@@ -181,6 +181,16 @@
               label
               markers
             )
+          div
+            q-toggle(
+              v-if='showSidebar'
+              v-model='showTags'
+              dense
+              :label='$t(`editor:props.showTags`)'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+            )
       q-card-section.alt-card.q-pb-lg(ref='card-social')
         .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-comments', size='xs')] {{$t('editor:props.social')}}
         q-form.q-gutter-md.q-pt-sm
@@ -282,6 +292,7 @@ export default {
     relations: sync('page/relations'),
     showSidebar: sync('page/showSidebar'),
     showToc: sync('page/showToc'),
+    showTags: sync('page/showTags'),
     tocDepth: sync('page/tocDepth'),
     allowComments: sync('page/allowComments'),
     allowContributions: sync('page/allowContributions'),

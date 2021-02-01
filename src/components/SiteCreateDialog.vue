@@ -31,9 +31,9 @@
           )
     q-card-actions.card-actions
       q-space
-      q-btn(
+      q-btn.acrylic-btn(
         v-close-popup
-        outline
+        flat
         :label='$t(`common:actions.cancel`)'
         color='grey'
         padding='xs md'

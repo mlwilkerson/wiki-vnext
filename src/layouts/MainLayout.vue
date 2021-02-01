@@ -77,7 +77,7 @@
             q-tooltip Administration
           account-menu
     q-drawer(
-      v-model='leftDrawerOpen'
+      v-model='showSideNav'
       show-if-above
       content-class='bg-sidebar'
       :width='255'
@@ -158,6 +158,8 @@
 </template>
 
 <script>
+import { sync } from 'vuex-pathify'
+
 export default {
   name: 'MainLayout',
   data () {
@@ -177,6 +179,9 @@ export default {
         opacity: 0.1
       }
     }
+  },
+  computed: {
+    showSideNav: sync('site/showSideNav')
   }
 }
 </script>

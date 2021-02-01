@@ -25,7 +25,8 @@ module.exports = function (/* ctx */) {
       { path: 'apollo-server', client: false },
       'i18n',
       { path: 'codemirror-browser', server: false },
-      'components'
+      'components',
+      'helpers'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css

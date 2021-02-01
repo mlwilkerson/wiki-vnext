@@ -85,10 +85,10 @@
             q-item-section(avatar)
               q-icon(name='las la-comment')
             q-item-section {{ $t('admin:comments.title') }}
-          q-item(to='editor', v-ripple, active-class='bg-primary text-white')
+          q-item(to='editors', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-pen-square')
-            q-item-section {{ $t('admin:editor.title') }}
+            q-item-section {{ $t('admin:editors.title') }}
           q-item(to='extensions', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-puzzle-piece')
