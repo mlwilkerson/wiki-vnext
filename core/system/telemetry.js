@@ -44,26 +44,6 @@ module.exports = {
           break
       }
 
-      // DB Version detection
-      let dbVersion = 'Unknown'
-      switch (WIKI.config.db.type) {
-        case 'mariadb':
-        case 'mysql':
-          const resultMYSQL = await WIKI.models.knex.raw('SELECT VERSION() as version;')
-          dbVersion = _.get(resultMYSQL, '[0][0].version', 'Unknown')
-          break
-        case 'mssql':
-          const resultMSSQL = await WIKI.models.knex.raw('SELECT @@VERSION as version;')
-          dbVersion = _.get(resultMSSQL, '[0].version', 'Unknown')
-          break
-        case 'postgres':
-          dbVersion = _.get(WIKI.models, 'knex.client.version', 'Unknown')
-          break
-        case 'sqlite':
-          dbVersion = _.get(WIKI.models, 'knex.client.driver.VERSION', 'Unknown')
-          break
-      }
-
       let arch = os.arch().toUpperCase()
       if (['ARM', 'ARM64', 'X32', 'X64'].indexOf(arch) < 0) {
         arch = 'OTHER'
@@ -113,7 +93,7 @@ module.exports = {
           os: osname,
           architecture: arch,
           dbType: WIKI.config.db.type.toUpperCase(),
-          dbVersion,
+          dbVersion: _.get(WIKI.models, 'knex.client.version', 'Unknown'),
           nodeVersion: process.version.substr(1),
           cpuCores: os.cpus().length,
           ramMBytes: Math.round(os.totalmem() / 1024 / 1024),

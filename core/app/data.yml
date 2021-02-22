@@ -8,14 +8,12 @@ defaults:
     # File defaults
     port: 80
     db:
-      type: postgres
       host: localhost
       port: 5432
       user: wikijs
       pass: wikijsrocks
       db: wiki
       ssl: false
-      storage: ./db.sqlite
       sslOptions:
         auto: true
     ssl:
@@ -25,14 +23,12 @@ defaults:
     bindIP: 0.0.0.0
     logLevel: info
     offline: false
-    ha: false
     graphServer:
       port: 11511
       bindIP: 0.0.0.0
     # DB defaults
     api:
       isEnabled: false
-    graphEndpoint: 'https://graph.requarks.io'
     lang:
       code: en
       autoUpdate: true
@@ -87,8 +83,8 @@ defaults:
       ldapdebug: false
       sqllog: false
     # System defaults
+    graphEndpoint: 'https://graph.js.wiki'
     channel: STABLE
-    setup: false
     dataPath: ./data
     cors:
       credentials: true
@@ -141,11 +137,6 @@ groups:
         - 'write:comments'
       path: ''
       locales: []
-telemetry:
-  BUGSNAG_ID: 'bb4b324d0675bcbba10025617fd2cec8'
-  BUGSNAG_REMOTE: 'https://notify.bugsnag.com'
-  GA_ID: 'UA-9094100-7'
-  GA_REMOTE: 'https://www.google-analytics.com/batch'
 reservedPaths:
   - login
   - logout

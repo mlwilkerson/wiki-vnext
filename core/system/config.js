@@ -32,12 +32,12 @@ module.exports = {
     let appdata = {}
 
     try {
-      appconfig = yaml.safeLoad(
+      appconfig = yaml.load(
         cfgHelper.parseConfigValue(
           fs.readFileSync(confPaths.config, 'utf8')
         )
       )
-      appdata = yaml.safeLoad(fs.readFileSync(confPaths.data, 'utf8'))
+      appdata = yaml.load(fs.readFileSync(confPaths.data, 'utf8'))
       appdata.regex = require(confPaths.dataRegex)
       console.info(chalk.green.bold('OK'))
     } catch (err) {
@@ -81,12 +81,14 @@ module.exports = {
    * Load config from DB
    */
   async loadFromDb () {
+    WIKI.logger.info('Fetching configuration from database...')
     const conf = await WIKI.models.settings.getConfig()
     if (conf) {
       WIKI.config = _.defaultsDeep(conf, WIKI.config)
+      WIKI.logger.info('Database configuration applied successfully.')
     } else {
-      WIKI.logger.warn('DB Configuration is empty or incomplete. Switching to Setup mode...')
-      WIKI.config.setup = true
+      WIKI.logger.error('Failed to load configuration from database.')
+      process.exit(1)
     }
   },
   /**

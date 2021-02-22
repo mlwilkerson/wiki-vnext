@@ -8,7 +8,7 @@ const path = require('path')
 module.exports = {
   transport: null,
   templates: {},
-  init() {
+  init () {
     if (_.get(WIKI.config, 'mail.host', '').length > 2) {
       let conf = {
         host: WIKI.config.mail.host,
@@ -44,7 +44,7 @@ module.exports = {
     }
     return this
   },
-  async send(opts) {
+  async send (opts) {
     if (!this.transport) {
       WIKI.logger.warn('Cannot send email because mail is not setup in the administration area!')
       throw new WIKI.Error.MailNotConfigured()
@@ -63,11 +63,11 @@ module.exports = {
       })
     })
   },
-  async loadTemplate(key) {
+  async loadTemplate (key) {
     if (_.has(this.templates, key)) { return }
     const keyKebab = _.kebabCase(key)
     try {
-      const rawTmpl = await fs.readFile(path.join(WIKI.SERVERPATH, `templates/${keyKebab}.html`), 'utf8')
+      const rawTmpl = await fs.readFile(path.join(process.cwd(), `templates/${keyKebab}.html`), 'utf8')
       _.set(this.templates, key, _.template(rawTmpl))
     } catch (err) {
       WIKI.logger.warn(err)

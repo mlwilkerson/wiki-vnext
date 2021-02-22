@@ -2,9 +2,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const semver = require('semver')
 
-const baseMigrationPath = path.join(WIKI.SERVERPATH, 'db/migrations')
-
-/* global WIKI */
+const baseMigrationPath = path.join(process.cwd(), 'db/migrations')
 
 module.exports = {
   /**

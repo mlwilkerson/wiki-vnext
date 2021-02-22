@@ -43,16 +43,16 @@ module.exports = {
       // eslint-disable-next-line no-unneeded-ternary
       sslOptions.rejectUnauthorized = sslOptions.rejectUnauthorized === false ? false : true
       if (sslOptions.ca && sslOptions.ca.indexOf('-----') !== 0) {
-        sslOptions.ca = fs.readFileSync(path.resolve(WIKI.ROOTPATH, sslOptions.ca))
+        sslOptions.ca = fs.readFileSync(path.resolve(process.cwd(), sslOptions.ca))
       }
       if (sslOptions.cert) {
-        sslOptions.cert = fs.readFileSync(path.resolve(WIKI.ROOTPATH, sslOptions.cert))
+        sslOptions.cert = fs.readFileSync(path.resolve(process.cwd(), sslOptions.cert))
       }
       if (sslOptions.key) {
-        sslOptions.key = fs.readFileSync(path.resolve(WIKI.ROOTPATH, sslOptions.key))
+        sslOptions.key = fs.readFileSync(path.resolve(process.cwd(), sslOptions.key))
       }
       if (sslOptions.pfx) {
-        sslOptions.pfx = fs.readFileSync(path.resolve(WIKI.ROOTPATH, sslOptions.pfx))
+        sslOptions.pfx = fs.readFileSync(path.resolve(process.cwd(), sslOptions.pfx))
       }
     } else {
       sslOptions = true
@@ -89,15 +89,15 @@ module.exports = {
           await conn.query('set application_name = \'Wiki.js\'')
           done()
         }
-      },
-      debug: WIKI.IS_DEBUG
+      }
+      // debug: WIKI.IS_DEBUG
     })
 
     Objection.Model.knex(this.knex)
 
     // Load DB Models
 
-    const models = autoload(path.join(WIKI.SERVERPATH, 'models'))
+    const models = autoload(path.join(process.cwd(), 'models'))
 
     // Set init tasks
     let conAttempts = 0
@@ -107,15 +107,15 @@ module.exports = {
         try {
           WIKI.logger.info('Connecting to database...')
           await self.knex.raw('SELECT 1 + 1;')
-          WIKI.logger.info('Database Connection Successful [ OK ]')
+          WIKI.logger.info('Database connection established.')
         } catch (err) {
-          if (conAttempts < 10) {
+          if (conAttempts < 20) {
             if (err.code) {
               WIKI.logger.error(`Database Connection Error: ${err.code} ${err.address}:${err.port}`)
             } else {
               WIKI.logger.error(`Database Connection Error: ${err.message}`)
             }
-            WIKI.logger.warn(`Will retry in 3 seconds... [Attempt ${++conAttempts} of 10]`)
+            WIKI.logger.warn(`Will retry in 3 seconds... [Attempt ${++conAttempts} of 20]`)
             await new Promise(resolve => setTimeout(resolve, 3000))
             await initTasks.connect()
           } else {
@@ -132,11 +132,9 @@ module.exports = {
       }
     }
 
-    const initTasksQueue = (WIKI.IS_MAIN) ? [
+    const initTasksQueue = [
       initTasks.connect,
       initTasks.syncSchemas
-    ] : [
-      () => { return Promise.resolve() }
     ]
 
     // Perform init tasks

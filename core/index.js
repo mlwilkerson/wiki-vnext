@@ -3,7 +3,7 @@
 // Licensed under AGPLv3
 // ===========================================
 
-const { nanoid } = require('nanoid')
+const crypto = require('crypto')
 const { DateTime } = require('luxon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -28,7 +28,7 @@ if (!semver.gt(process.versions.node, '14.0.0')) {
 
 const WIKI = {
   IS_DEBUG: process.env.NODE_ENV === 'development',
-  INSTANCE_ID: nanoid(10),
+  INSTANCE_ID: crypto.randomBytes(4).toString('hex'),
   STARTED_AT: DateTime.utc(),
   ERROR: require('./helpers/error'),
   configSvc: require('./system/config'),

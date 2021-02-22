@@ -33,13 +33,6 @@ module.exports = {
     }
 
     try {
-      // -> First-time setup
-
-      if (WIKI.config.setup) {
-        WIKI.logger.info('Setting up for first-time use...')
-        require('./setup')()
-      }
-
       // -> Initialize core modules
 
       require('./telemetry').init()
@@ -59,14 +52,14 @@ module.exports = {
       WIKI.mail = require('./mail').init()
       WIKI.system = require('./system').init()
 
-      await WIKI.models.analytics.refreshProvidersFromDisk()
-      await WIKI.models.authentication.refreshStrategiesFromDisk()
-      await WIKI.models.commentProviders.refreshProvidersFromDisk()
-      await WIKI.models.editors.refreshEditorsFromDisk()
-      await WIKI.models.loggers.refreshLoggersFromDisk()
-      await WIKI.models.renderers.refreshRenderersFromDisk()
-      await WIKI.models.searchEngines.refreshSearchEnginesFromDisk()
-      await WIKI.models.storage.refreshTargetsFromDisk()
+      // await WIKI.models.analytics.refreshProvidersFromDisk()
+      // await WIKI.models.authentication.refreshStrategiesFromDisk()
+      // await WIKI.models.commentProviders.refreshProvidersFromDisk()
+      // await WIKI.models.editors.refreshEditorsFromDisk()
+      // await WIKI.models.loggers.refreshLoggersFromDisk()
+      // await WIKI.models.renderers.refreshRenderersFromDisk()
+      // await WIKI.models.searchEngines.refreshSearchEnginesFromDisk()
+      // await WIKI.models.storage.refreshTargetsFromDisk()
 
       await WIKI.extensions.init()
 

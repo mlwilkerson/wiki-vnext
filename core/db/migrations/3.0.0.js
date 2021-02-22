@@ -1,7 +1,11 @@
 const { v4: uuid } = require('uuid')
 const bcrypt = require('bcryptjs-then')
+const crypto = require('crypto')
+const pem2jwk = require('pem-jwk').pem2jwk
 
 exports.up = async knex => {
+  WIKI.logger.info('Running 3.0.0 database migration...')
+
   // =====================================
   // PG EXTENSIONS
   // =====================================
@@ -63,6 +67,7 @@ exports.up = async knex => {
       table.boolean('selfRegistration').notNullable().defaultTo(false)
       table.jsonb('domainWhitelist').notNullable().defaultTo('[]')
       table.jsonb('autoEnrollGroups').notNullable().defaultTo('[]')
+      table.jsonb('hideOnSites').notNullable().defaultTo('[]')
     })
     // COMMENTS ----------------------------
     .createTable('comments', table => {
@@ -167,7 +172,6 @@ exports.up = async knex => {
     .createTable('settings', table => {
       table.string('key').notNullable().primary()
       table.jsonb('value')
-      table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now())
     })
     // SITES -------------------------------
     .createTable('sites', table => {
@@ -256,9 +260,6 @@ exports.up = async knex => {
     .table('assetFolders', table => {
       table.uuid('parentId').references('id').inTable('assetFolders').index()
     })
-    .table('authentication', table => {
-      table.uuid('siteId').notNullable().references('id').inTable('sites')
-    })
     .table('comments', table => {
       table.uuid('pageId').notNullable().references('id').inTable('pages').index()
       table.uuid('authorId').notNullable().references('id').inTable('users').index()
@@ -306,40 +307,195 @@ exports.up = async knex => {
   // DEFAULT DATA
   // =====================================
 
+  // -> SYSTEM CONFIG
+
+  await knex('settings').insert([
+    {
+      key: 'update',
+      value: {
+        locales: true
+      }
+    },
+    {
+      key: 'mail',
+      value: {
+        senderName: '',
+        senderEmail: '',
+        host: '',
+        port: 465,
+        secure: true,
+        verifySSL: true,
+        user: '',
+        pass: '',
+        useDKIM: false,
+        dkimDomainName: '',
+        dkimKeySelector: '',
+        dkimPrivateKey: ''
+      }
+    },
+    {
+      key: 'telemetry',
+      value: {
+        isEnabled: WIKI.config.allowTelemetry !== false && process.env.DISALLOW_TELEMETRY !== '0',
+        clientId: uuid()
+      }
+    }
+  ])
+
+  // -> DEFAULT LOCALE
+
+  await knex('locales').insert({
+    code: 'en',
+    strings: {},
+    isRTL: false,
+    name: 'English',
+    nativeName: 'English'
+  })
+
+  // -> DEFAULT SITE
+
+  WIKI.logger.info('Generating certificates...')
+  const secret = crypto.randomBytes(32).toString('hex')
+  const certs = crypto.generateKeyPairSync('rsa', {
+    modulusLength: 2048,
+    publicKeyEncoding: {
+      type: 'pkcs1',
+      format: 'pem'
+    },
+    privateKeyEncoding: {
+      type: 'pkcs1',
+      format: 'pem',
+      cipher: 'aes-256-cbc',
+      passphrase: secret
+    }
+  })
+
   const siteId = uuid()
   await knex('sites').insert({
     id: siteId,
     hostname: '*',
     isEnabled: true,
     config: {
+      auth: {
+        audience: 'urn:wiki.js',
+        tokenExpiration: '30m',
+        tokenRenewal: '14d',
+        certs: {
+          jwk: pem2jwk(certs.publicKey),
+          public: certs.publicKey,
+          private: certs.privateKey
+        },
+        secret
+      },
       title: 'My Wiki Site',
       description: '',
       company: '',
       contentLicense: '',
+      features: {
+        ratings: false,
+        ratingsMode: 'thumbs',
+        comments: false
+      },
       logoUrl: '',
-      robots: [],
-      pageComments: true,
-      pageRatings: 'off',
-      locale: 'en'
+      robots: {
+        index: true,
+        follow: true
+      },
+      locale: 'en',
+      localeNamespacing: false,
+      localeNamespaces: [],
+      theme: {
+        dark: false,
+        iconSets: ['mdi', 'la'],
+        injectCSS: '',
+        injectHead: '',
+        injectBody: ''
+      }
     }
   })
+
+  // -> DEFAULT GROUPS
+
+  const groupAdminId = uuid()
+  const groupGuestId = uuid()
+  await knex('groups').insert([
+    {
+      id: groupAdminId,
+      name: 'Administrators',
+      permissions: JSON.stringify(['manage:system']),
+      pageRules: JSON.stringify([]),
+      isSystem: true
+    },
+    {
+      id: groupGuestId,
+      name: 'Guests',
+      permissions: JSON.stringify(['read:pages', 'read:assets', 'read:comments']),
+      pageRules: JSON.stringify([
+        {
+          id: 'guest',
+          roles: ['read:pages', 'read:assets', 'read:comments'],
+          match: 'START',
+          deny: true,
+          path: '',
+          locales: [],
+          comment: 'Default Rule'
+        }
+      ]),
+      isSystem: true
+    }
+  ])
+
+  // -> AUTHENTICATION MODULE
 
   const authModuleId = uuid()
   await knex('authentication').insert({
     id: authModuleId,
-    siteId,
     module: 'local',
     isEnabled: true,
     displayName: 'Local Authentication'
   })
 
-  const userId = uuid()
-  await knex('users').insert({
-    id: userId,
-    providerId: authModuleId,
-    email: process.env.ADMIN_EMAIL ?? 'admin@example.com',
-    password: bcrypt.hash(process.env.ADMIN_PASS || '12345678', 12)
-  })
+  // -> USERS
+
+  const userAdminId = uuid()
+  const userGuestId = uuid()
+  await knex('users').insert([
+    {
+      id: userAdminId,
+      providerId: authModuleId,
+      email: process.env.ADMIN_EMAIL ?? 'admin@example.com',
+      password: await bcrypt.hash(process.env.ADMIN_PASS || '12345678', 12),
+      name: 'Administrator',
+      isSystem: false,
+      isActive: true,
+      isVerified: true,
+      localeCode: 'en'
+    },
+    {
+      id: userGuestId,
+      providerId: authModuleId,
+      email: 'guest@example.com',
+      password: '',
+      name: 'Guest',
+      isSystem: true,
+      isActive: true,
+      isVerified: true,
+      localeCode: 'en'
+    }
+  ])
+
+  await knex('userGroups').insert([
+    {
+      userId: userAdminId,
+      groupId: groupAdminId
+    },
+    {
+      userId: userGuestId,
+      groupId: groupGuestId
+    }
+  ])
+
+  WIKI.logger.info('Completed 3.0.0 database migration.')
 }
 
 exports.down = knex => { }
