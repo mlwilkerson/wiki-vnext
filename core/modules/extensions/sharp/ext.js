@@ -2,8 +2,6 @@ const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
 
-/* global WIKI */
-
 module.exports = {
   key: 'sharp',
   title: 'Sharp',
@@ -13,7 +11,7 @@ module.exports = {
   },
   isInstalled: false,
   async check () {
-    this.isInstalled = await fs.pathExists(path.join(WIKI.ROOTPATH, 'node_modules/sharp'))
+    this.isInstalled = await fs.pathExists(path.join(process.cwd(), 'node_modules/sharp'))
     return this.isInstalled
   }
 }

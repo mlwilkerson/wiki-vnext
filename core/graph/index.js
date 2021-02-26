@@ -11,15 +11,15 @@ WIKI.logger.info('Loading GraphQL Schema...')
 // Schemas
 
 const typeDefs = [createRateLimitTypeDef()]
-const schemas = fs.readdirSync(path.join(WIKI.SERVERPATH, 'graph/schemas'))
+const schemas = fs.readdirSync(path.join(process.cwd(), 'graph/schemas'))
 schemas.forEach(schema => {
-  typeDefs.push(fs.readFileSync(path.join(WIKI.SERVERPATH, `graph/schemas/${schema}`), 'utf8'))
+  typeDefs.push(fs.readFileSync(path.join(process.cwd(), `graph/schemas/${schema}`), 'utf8'))
 })
 
 // Resolvers
 
 const resolvers = {}
-const resolversObj = _.values(autoload(path.join(WIKI.SERVERPATH, 'graph/resolvers')))
+const resolversObj = _.values(autoload(path.join(process.cwd(), 'graph/resolvers')))
 resolversObj.forEach(resolver => {
   _.merge(resolvers, resolver)
 })
@@ -27,7 +27,7 @@ resolversObj.forEach(resolver => {
 // Directives
 
 const schemaDirectives = {
-  ...autoload(path.join(WIKI.SERVERPATH, 'graph/directives'))
+  ...autoload(path.join(process.cwd(), 'graph/directives'))
 }
 
 WIKI.logger.info('GraphQL Schema: [ OK ]')

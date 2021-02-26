@@ -58,8 +58,8 @@ WIKI.kernel.init().then(async () => {
   WIKI.app.use(compression())
   WIKI.app.use(cookieParser())
   WIKI.app.use(cors(WIKI.config.cors))
-  WIKI.app.use(WIKI.auth.passport.initialize())
-  WIKI.app.use(WIKI.auth.authenticate)
+  // WIKI.app.use(WIKI.auth.passport.initialize())
+  // WIKI.app.use(WIKI.auth.authenticate)
   WIKI.app.use(bodyParser.json({ limit: '1mb' }))
 
   // -> Security Middlewares

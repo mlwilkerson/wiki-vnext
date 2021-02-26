@@ -154,14 +154,6 @@ module.exports = {
    * Subscribe to database LISTEN / NOTIFY for multi-instances events
    */
   async subscribeToNotifications () {
-    const useHA = (WIKI.config.ha === true || WIKI.config.ha === 'true' || WIKI.config.ha === 1 || WIKI.config.ha === '1')
-    if (!useHA) {
-      return
-    } else if (WIKI.config.db.type !== 'postgres') {
-      WIKI.logger.warn('Database engine doesn\'t support pub/sub. Will not handle concurrent instances: [ DISABLED ]')
-      return
-    }
-
     const PGPubSub = require('pg-pubsub')
 
     this.listener = new PGPubSub(this.knex.client.connectionSettings, {

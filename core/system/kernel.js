@@ -63,11 +63,11 @@ module.exports = {
 
       await WIKI.extensions.init()
 
-      await WIKI.auth.activateStrategies()
-      await WIKI.models.commentProviders.initProvider()
-      await WIKI.models.searchEngines.initEngine()
-      await WIKI.models.storage.initTargets()
-      WIKI.scheduler.start()
+      // await WIKI.auth.activateStrategies()
+      // await WIKI.models.commentProviders.initProvider()
+      // await WIKI.models.searchEngines.initEngine()
+      // await WIKI.models.storage.initTargets()
+      // WIKI.scheduler.start()
 
       await WIKI.models.subscribeToNotifications()
     } catch (err) {

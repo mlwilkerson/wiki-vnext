@@ -35,7 +35,7 @@ extend type Mutation {
 # -----------------------------------------------
 
 type Site {
-  id: Int
+  id: UUID
   hostname: String
   isEnabled: Boolean
   title: String
@@ -50,7 +50,7 @@ type Site {
 
 type SiteCreateResponse {
   responseResult: ResponseStatus
-  id: Int
+  id: UUID
 }
 
 input SiteUpdateInput {
