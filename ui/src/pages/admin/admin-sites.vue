@@ -7,11 +7,12 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:sites.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:sites.subtitle') }}
       .col-auto
-        q-btn.q-mr-sm(
+        q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/sites'
+          type='a'
+          href='https://docs.js.wiki/sites'
           target='_blank'
           )
         q-btn(
@@ -28,8 +29,6 @@
     .row.q-pa-md.q-col-gutter-md
       .col-12
         q-card.shadow-1
-          q-card-section
-            .text-subtitle1 {{$t('admin:sites.title')}}
           q-card-section.q-pa-none
             q-table.no-border-radius(
               :data='sites'
@@ -40,9 +39,39 @@
               :rows-per-page-options='[0]'
               :loading='loading'
               )
+              template(v-slot:body-cell-id='props')
+                q-td(:props='props')
+                  q-btn.acrylic-btn(
+                    size='sm'
+                    padding='xs'
+                    icon='las la-clipboard'
+                    flat
+                    color='brown'
+                    @click='copyID(props.value)'
+                    )
+                    q-tooltip(
+                      anchor='center left'
+                      self='center right'
+                    ) {{$t('common:clipboard.uuid')}}
               template(v-slot:body-cell-title='props')
                 q-td(:props='props')
                   strong {{props.value}}
+              template(v-slot:body-cell-hostname='props')
+                q-td(:props='props')
+                  span.font-robotomono(v-if='props.value !== `*`') {{props.value}}
+                  q-chip.q-mx-none(
+                    v-else
+                    square
+                    color='indigo-7'
+                    text-color='white'
+                    size='sm'
+                    )
+                    q-avatar(
+                      icon='las la-asterisk'
+                      color='indigo-5'
+                      text-color='white'
+                      )
+                    span catch-all
               template(v-slot:body-cell-isEnabled='props')
                 q-td(:props='props')
                   q-toggle(
@@ -54,9 +83,8 @@
                     )
               template(v-slot:body-cell-edit='props')
                 q-td(:props='props')
-                  q-btn(
+                  q-btn.acrylic-btn(
                     flat
-                    round
                     dense
                     @click='editSite(props.row)'
                     icon='las la-pen'
@@ -64,9 +92,8 @@
                     )
               template(v-slot:body-cell-remove='props')
                 q-td(:props='props')
-                  q-btn(
+                  q-btn.acrylic-btn(
                     flat
-                    round
                     dense
                     @click='deleteSite(props.row)'
                     icon='las la-trash'
@@ -78,6 +105,8 @@
 import gql from 'graphql-tag'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
+
+import { copyToClipboard } from 'quasar'
 
 export default {
   data () {
@@ -91,10 +120,10 @@ export default {
       return [
         {
           label: this.$t('common:field.id'),
-          align: 'left',
+          align: 'center',
           field: 'id',
-          name: 'ID',
-          sortable: true,
+          name: 'id',
+          sortable: false,
           style: 'width: 50px'
         },
         {
@@ -139,6 +168,19 @@ export default {
     }
   },
   methods: {
+    copyID (uid) {
+      copyToClipboard(uid).then(() => {
+        this.$q.notify({
+          type: 'positive',
+          message: this.$t('common:clipboard.success')
+        })
+      }).catch(() => {
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('common:clipboard.failure')
+        })
+      })
+    },
     editSite (st) {
       this.$store.set('admin/currentSiteId', st.id)
       this.$router.push('/a/general')

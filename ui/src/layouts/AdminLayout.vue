@@ -11,7 +11,7 @@
           .text-overline.text-uppercase.text-grey Administration Area
         q-toolbar(style='height: 64px;', dark)
           q-space
-          q-btn.q-ml-md(flat, dense, icon='las la-arrow-circle-left', label='Exit' color='grey-5', to='/')
+          q-btn.q-ml-md(flat, dense, icon='las la-times-circle', label='Exit' color='pink', to='/')
           account-menu
     q-drawer(v-model='leftDrawerOpen', show-if-above, content-class='admin-sidebar', bordered)
       q-scroll-area.admin-nav(
@@ -185,6 +185,13 @@ export default {
   },
   computed: {
     currentSiteId: sync('admin/currentSiteId')
+  },
+  watch: {
+    sites (newValue) {
+      if (this.currentSiteId === null && newValue.length > 0) {
+        this.currentSiteId = newValue[0].id
+      }
+    }
   },
   apollo: {
     sites: {

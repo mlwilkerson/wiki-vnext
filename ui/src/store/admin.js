@@ -1,7 +1,7 @@
 import { make } from 'vuex-pathify'
 
 const state = {
-  currentSiteId: 1,
+  currentSiteId: null,
   info: {
     currentVersion: 'n/a',
     latestVersion: 'n/a',
