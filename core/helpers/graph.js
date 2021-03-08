@@ -12,10 +12,9 @@ module.exports = {
   generateError (err, complete = true) {
     const error = {
       succeeded: false,
-      errorCode: _.isFinite(err.code) ? err.code : 1,
       slug: err.name,
       message: err.message || 'An unexpected error occured.'
     }
-    return (complete) ? { responseResult: error } : error
+    return (complete) ? { status: error } : error
   }
 }

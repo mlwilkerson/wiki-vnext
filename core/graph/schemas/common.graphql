@@ -23,14 +23,13 @@ input KeyValuePairInput {
 
 # Generic Mutation Response
 type DefaultResponse {
-  responseResult: ResponseStatus
+  status: ResponseStatus
 }
 
 # Mutation Status
 type ResponseStatus {
-  succeeded: Boolean!
-  errorCode: Int!
-  slug: String!
+  succeeded: Boolean
+  slug: String
   message: String
 }
 

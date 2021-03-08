@@ -152,8 +152,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
-import { sync } from 'vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 
 export default {
   name: 'AdminLayout',
@@ -170,7 +169,6 @@ export default {
         groupsTotal: 99,
         usersTotal: 999
       },
-      sites: [],
       thumbStyle: {
         right: '1px',
         borderRadius: '5px',
@@ -184,7 +182,8 @@ export default {
     }
   },
   computed: {
-    currentSiteId: sync('admin/currentSiteId')
+    currentSiteId: sync('admin/currentSiteId'),
+    sites: get('admin/sites')
   },
   watch: {
     sites (newValue) {
@@ -193,23 +192,8 @@ export default {
       }
     }
   },
-  apollo: {
-    sites: {
-      query: gql`
-        {
-          sites {
-            id
-            hostname
-            isEnabled
-            title
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-sites-refresh')
-      }
-    }
+  mounted () {
+    this.$store.dispatch('admin/fetchSites')
   }
 }
 </script>

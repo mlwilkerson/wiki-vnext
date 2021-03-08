@@ -109,6 +109,8 @@
     "vuex-pathify": "1.4.5"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-nullish-coalescing-operator": "7.13.8",
+    "@babel/plugin-proposal-optional-chaining": "7.13.8",
     "@quasar/app": "2.1.1",
     "@quasar/cli": "1.1.2",
     "babel-eslint": "10.1.0",

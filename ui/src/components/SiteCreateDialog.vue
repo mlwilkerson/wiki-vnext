@@ -1,57 +1,123 @@
 <template lang="pug">
-  q-card(flat, style='min-width: 350px;')
-    q-card-section.card-header
-      q-icon(name='las la-plus', left)
-      span {{$t(`admin:sites.new`)}}
-    q-card-section
-      q-form.q-gutter-md
-        q-input(
-          outlined
-          v-model='siteName'
-          dense
-          :rules=`[
-            val => val.length > 0 || $t('admin:sites.nameMissing'),
-            val => /^[^<>"]+$/.test(val) || $t('admin:sites.nameInvalidChars')
-          ]`
-          hide-bottom-space
-          :label='$t(`common:field.name`)'
-          :aria-label='$t(`common:field.name`)'
+  q-dialog(ref='dialog', @hide='onDialogHide')
+    q-card(style='min-width: 350px;')
+      q-card-section.card-header
+        q-icon(name='las la-plus', left)
+        span {{$t(`admin:sites.new`)}}
+      q-card-section
+        q-form.q-gutter-md(ref='createSiteForm')
+          q-input(
+            outlined
+            v-model='siteName'
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin:sites.nameMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin:sites.nameInvalidChars')
+            ]`
+            hide-bottom-space
+            :label='$t(`common:field.name`)'
+            :aria-label='$t(`common:field.name`)'
+            autofocus
+            )
+          q-input(
+            outlined
+            v-model='siteHostname'
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin:sites.hostnameMissing'),
+              val => /^(\\*)|([a-z0-9\-.:]+)$/.test(val) || $t('admin:sites.hostnameInvalidChars')
+            ]`
+            hide-bottom-space
+            :label='$t(`admin:sites.hostname`)'
+            :aria-label='$t(`admin:sites.hostname`)'
+            )
+      q-card-actions.card-actions
+        q-space
+        q-btn.acrylic-btn(
+          flat
+          :label='$t(`common:actions.cancel`)'
+          color='grey'
+          padding='xs md'
+          @click='hide'
           )
-        q-input(
-          outlined
-          v-model='siteHostname'
-          dense
-          :rules=`[
-            val => val.length > 0 || $t('admin:sites.hostnameMissing'),
-            val => /^(\\*)|([a-z0-9\-.]+)$/.test(val) || $t('admin:sites.hostnameInvalidChars')
-          ]`
-          hide-bottom-space
-          :label='$t(`admin:sites.hostname`)'
-          :aria-label='$t(`admin:sites.hostname`)'
+        q-btn(
+          unelevated
+          :label='$t(`common:actions.create`)'
+          color='primary'
+          padding='xs md'
+          @click='create'
+          :loading='isLoading'
           )
-    q-card-actions.card-actions
-      q-space
-      q-btn.acrylic-btn(
-        v-close-popup
-        flat
-        :label='$t(`common:actions.cancel`)'
-        color='grey'
-        padding='xs md'
-        )
-      q-btn(
-        unelevated
-        :label='$t(`common:actions.create`)'
-        color='primary'
-        padding='xs md'
-        )
 </template>
 
 <script>
+import gql from 'graphql-tag'
+
 export default {
   data () {
     return {
       siteName: '',
-      siteHostname: 'wiki.example.com'
+      siteHostname: 'wiki.example.com',
+      isLoading: false
+    }
+  },
+  methods: {
+    show () {
+      this.$refs.dialog.show()
+    },
+    hide () {
+      this.$refs.dialog.hide()
+    },
+    onDialogHide () {
+      this.$emit('hide')
+    },
+    async create () {
+      this.isLoading = true
+      try {
+        const isFormValid = await this.$refs.createSiteForm.validate(true)
+        if (!isFormValid) {
+          throw new Error(this.$t('admin:sites.createInvalidData'))
+        }
+        const resp = await this.$apollo.mutate({
+          mutation: gql`
+            mutation (
+              $hostname: String!
+              $title: String!
+              ) {
+              createSite(
+                hostname: $hostname
+                title: $title
+                ) {
+                status {
+                  succeeded
+                  message
+                }
+              }
+            }
+          `,
+          variables: {
+            hostname: this.siteHostname,
+            title: this.siteName
+          }
+        })
+        if (resp?.data?.createSite?.status?.succeeded) {
+          this.$q.notify({
+            type: 'positive',
+            message: this.$t('admin:sites.createSuccess')
+          })
+          await this.$store.dispatch('admin/fetchSites')
+          this.$emit('ok')
+          this.hide()
+        } else {
+          throw new Error(resp?.data?.createSite?.status?.message || 'An unexpected error occured.')
+        }
+      } catch (err) {
+        this.$q.notify({
+          type: 'negative',
+          message: err.message
+        })
+      }
+      this.isLoading = false
     }
   }
 }

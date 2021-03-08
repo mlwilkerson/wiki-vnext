@@ -15,16 +15,19 @@
           href='https://docs.js.wiki/sites'
           target='_blank'
           )
+        q-btn.q-mr-sm.acrylic-btn(
+          icon='las la-redo-alt'
+          flat
+          color='secondary'
+          @click='refresh'
+          )
         q-btn(
           unelevated
           icon='las la-plus'
           :label='$t(`admin:sites.new`)'
           color='primary'
+          @click='createSite'
           )
-          q-menu(
-            content-class='shadow-20'
-          )
-            site-create-dialog
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
       .col-12
@@ -75,18 +78,19 @@
               template(v-slot:body-cell-isEnabled='props')
                 q-td(:props='props')
                   q-toggle(
-                    v-model='props.row.isEnabled'
+                    :value='props.row.isEnabled'
                     color='primary'
                     checked-icon='las la-check'
                     unchecked-icon='las la-times'
                     :aria-label='$t(`admin:sites.isActive`)'
+                    @input='(val) => { toggleSiteState(props.row, val) }'
                     )
               template(v-slot:body-cell-edit='props')
                 q-td(:props='props')
                   q-btn.acrylic-btn(
                     flat
-                    dense
                     @click='editSite(props.row)'
+                    padding='xs sm'
                     icon='las la-pen'
                     color='indigo'
                     )
@@ -94,28 +98,26 @@
                 q-td(:props='props')
                   q-btn.acrylic-btn(
                     flat
-                    dense
-                    @click='deleteSite(props.row)'
+                    padding='xs sm'
                     icon='las la-trash'
                     color='accent'
+                    @click='deleteSite(props.row)'
                     )
 </template>
 
 <script>
-import gql from 'graphql-tag'
-import _get from 'lodash/get'
-import cloneDeep from 'lodash/cloneDeep'
-
+import { get } from 'vuex-pathify'
 import { copyToClipboard } from 'quasar'
+import Vue from 'vue'
 
 export default {
   data () {
     return {
-      loading: false,
-      sites: []
+      loading: false
     }
   },
   computed: {
+    sites: get('admin/sites'),
     headers () {
       return [
         {
@@ -154,7 +156,7 @@ export default {
           field: 'edit',
           name: 'edit',
           sortable: false,
-          style: 'width: 100px'
+          style: 'width: 150px'
         },
         {
           label: this.$t('admin:sites.delete'),
@@ -172,126 +174,50 @@ export default {
       copyToClipboard(uid).then(() => {
         this.$q.notify({
           type: 'positive',
-          message: this.$t('common:clipboard.success')
+          message: this.$t('common:clipboard.uuidSuccess')
         })
       }).catch(() => {
         this.$q.notify({
           type: 'negative',
-          message: this.$t('common:clipboard.failure')
+          message: this.$t('common:clipboard.uuidFailure')
         })
+      })
+    },
+    async refresh () {
+      await this.$store.dispatch('admin/fetchSites')
+      this.$q.notify({
+        type: 'positive',
+        message: this.$t('admin:sites.refreshSuccess')
+      })
+    },
+    createSite () {
+      this.$q.dialog({
+        component: Vue.options.components.SiteCreateDialog,
+        parent: this
       })
     },
     editSite (st) {
       this.$store.set('admin/currentSiteId', st.id)
       this.$router.push('/a/general')
     },
-    async deleteSite (st) {
-      const respRaw = await this.$apollo.mutate({
-        mutation: gql`
-          mutation($locale: String!) {
-            localization {
-              downloadLocale(locale: $locale) {
-                responseResult {
-                  succeeded
-                  errorCode
-                  slug
-                  message
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          locale: st.id
-        }
+    toggleSiteState (st, newState) {
+      this.$q.dialog({
+        component: Vue.options.components.SiteActivateDialog,
+        parent: this,
+        site: st,
+        value: newState
       })
-      const resp = _get(respRaw, 'data.localization.downloadLocale.responseResult', {})
-      if (resp.succeeded) {
-        this.$q.notify({
-          type: 'positive',
-          message: this.$t('admin:sites.deleteSuccess')
-        })
-      } else {
-        this.$q.notify({
-          type: 'negative',
-          message: resp.message
-        })
-      }
     },
-    async save () {
-      this.loading = true
-      const respRaw = await this.$apollo.mutate({
-        mutation: gql`
-          mutation (
-            $locale: String!
-            $autoUpdate: Boolean!
-            $namespacing: Boolean!
-            $namespaces: [String]!
-            ) {
-            localization {
-              updateLocale(
-                locale: $locale
-                autoUpdate: $autoUpdate
-                namespacing: $namespacing
-                namespaces: $namespaces
-                ) {
-                responseResult {
-                  succeeded
-                  errorCode
-                  slug
-                  message
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          locale: this.selectedLocale,
-          autoUpdate: this.autoUpdate,
-          namespacing: this.namespacing,
-          namespaces: this.namespaces
-        }
+    deleteSite (st) {
+      this.$q.dialog({
+        component: Vue.options.components.SiteDeleteDialog,
+        parent: this,
+        site: st
       })
-      const resp = _get(respRaw, 'data.localization.updateLocale.responseResult', {})
-      if (resp.succeeded) {
-        // Change UI language
-        this.$i18n.locale = this.selectedLocale
-
-        this.$q.notify({
-          type: 'positive',
-          message: 'Locale settings updated successfully.'
-        })
-
-        setTimeout(() => {
-          window.location.reload(true)
-        }, 1000)
-      } else {
-        this.$q.notify({
-          type: 'negative',
-          message: resp.message
-        })
-      }
-      this.loading = false
     }
   },
-  apollo: {
-    sites: {
-      query: gql`
-        {
-          sites {
-            id
-            hostname
-            isEnabled
-            title
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: r => cloneDeep(r.sites),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-sites-refresh')
-      }
-    }
+  mounted () {
+    this.$store.dispatch('admin/fetchSites')
   }
 }
 </script>

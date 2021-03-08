@@ -1,4 +1,6 @@
 const Model = require('objection').Model
+const crypto = require('crypto')
+const pem2jwk = require('pem-jwk').pem2jwk
 const _ = require('lodash')
 
 /* global WIKI */
@@ -15,9 +17,9 @@ module.exports = class Site extends Model {
       required: ['hostname'],
 
       properties: {
-        id: { type: 'integer' },
+        id: { type: 'string' },
         hostname: { type: 'string' },
-        isActive: { type: 'boolean', default: false }
+        isEnabled: { type: 'boolean', default: false }
       }
     }
   }
@@ -26,15 +28,66 @@ module.exports = class Site extends Model {
     return ['config']
   }
 
-  // static async getById () {
-  //   const settings = await WIKI.models.settings.query()
-  //   if (settings.length > 0) {
-  //     return _.reduce(settings, (res, val, key) => {
-  //       _.set(res, val.key, (_.has(val.value, 'v')) ? val.value.v : val.value)
-  //       return res
-  //     }, {})
-  //   } else {
-  //     return false
-  //   }
-  // }
+  static async createSite (hostname, config) {
+    const secret = crypto.randomBytes(32).toString('hex')
+    const certs = crypto.generateKeyPairSync('rsa', {
+      modulusLength: 2048,
+      publicKeyEncoding: {
+        type: 'pkcs1',
+        format: 'pem'
+      },
+      privateKeyEncoding: {
+        type: 'pkcs1',
+        format: 'pem',
+        cipher: 'aes-256-cbc',
+        passphrase: secret
+      }
+    })
+
+    return WIKI.models.sites.query().insertAndFetch({
+      hostname,
+      isEnabled: true,
+      config: _.defaultsDeep(config, {
+        auth: {
+          audience: `urn:${hostname}`,
+          tokenExpiration: '30m',
+          tokenRenewal: '14d',
+          certs: {
+            jwk: pem2jwk(certs.publicKey),
+            public: certs.publicKey,
+            private: certs.privateKey
+          },
+          secret
+        },
+        title: 'My Wiki Site',
+        description: '',
+        company: '',
+        contentLicense: '',
+        features: {
+          ratings: false,
+          ratingsMode: 'thumbs',
+          comments: false
+        },
+        logoUrl: '',
+        robots: {
+          index: true,
+          follow: true
+        },
+        locale: 'en',
+        localeNamespacing: false,
+        localeNamespaces: [],
+        theme: {
+          dark: false,
+          iconSets: ['mdi', 'la'],
+          injectCSS: '',
+          injectHead: '',
+          injectBody: ''
+        }
+      })
+    })
+  }
+
+  static async deleteSite (id) {
+    return WIKI.models.sites.query().deleteById(id)
+  }
 }
