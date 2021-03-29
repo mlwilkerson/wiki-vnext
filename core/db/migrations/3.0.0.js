@@ -391,12 +391,20 @@ exports.up = async knex => {
       description: '',
       company: '',
       contentLicense: '',
+      defaults: {
+        timezone: 'America/Toronto',
+        dateFormat: 'YYYY-MM-DD',
+        timeFormat: '12h'
+      },
       features: {
         ratings: false,
-        ratingsMode: 'thumbs',
-        comments: false
+        ratingsMode: 'off',
+        comments: false,
+        contributions: false,
+        profile: true,
+        search: true
       },
-      logoUrl: '',
+      logoText: true,
       robots: {
         index: true,
         follow: true

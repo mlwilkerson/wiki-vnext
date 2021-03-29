@@ -7,7 +7,7 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:locale.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:locale.subtitle') }}
       .col-auto
-        q-btn.q-mr-sm(
+        q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
           flat
           color='grey'

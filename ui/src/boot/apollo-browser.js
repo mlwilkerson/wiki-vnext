@@ -32,6 +32,7 @@ export default ({ app, store }) => {
   // Cache
 
   const cache = new InMemoryCache()
+
   if (typeof window !== 'undefined') {
     const state = window.__APOLLO_STATE__
     if (state) {

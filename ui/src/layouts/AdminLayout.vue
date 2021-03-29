@@ -8,7 +8,7 @@
               img(src='../assets/logo-wikijs.svg')
           q-toolbar-title.text-h6 Wiki.js
         q-toolbar.gt-sm.justify-center(style='height: 64px;', dark)
-          .text-overline.text-uppercase.text-grey Administration Area
+          .text-overline.text-uppercase.text-grey {{$t('admin:adminArea')}}
         q-toolbar(style='height: 64px;', dark)
           q-space
           q-btn.q-ml-md(flat, dense, icon='las la-times-circle', label='Exit' color='pink', to='/')
@@ -33,7 +33,7 @@
               )
           q-item(to='dashboard', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
-              q-icon(name='las la-stream')
+              q-icon(name='las la-tachometer-alt')
             q-item-section {{ $t('admin:dashboard.title') }}
           q-item(to='sites', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
@@ -55,16 +55,12 @@
               )
           q-item(to='general', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
-              q-icon(name='las la-shapes')
+              q-icon(name='las la-stream')
             q-item-section {{ $t('admin:general.title') }}
           q-item(to='analytics', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-chart-line')
             q-item-section {{ $t('admin:analytics.title') }}
-          q-item(to='auth', v-ripple, active-class='bg-primary text-white')
-            q-item-section(avatar)
-              q-icon(name='las la-lock')
-            q-item-section {{ $t('admin:auth.title') }}
           q-item(to='comments', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-comment')
@@ -77,6 +73,10 @@
             q-item-section(avatar)
               q-icon(name='las la-language')
             q-item-section {{ $t('admin:locale.title') }}
+          q-item(to='login', v-ripple, active-class='bg-primary text-white')
+            q-item-section(avatar)
+              q-icon(name='las la-sign-in-alt')
+            q-item-section {{ $t('admin:login.title') }}
           q-item(to='navigation', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-th-list')
@@ -94,6 +94,10 @@
               q-icon(name='las la-palette')
             q-item-section {{ $t('admin:theme.title') }}
           q-item-label.q-mt-sm(header).text-caption.text-blue-grey-4 {{ $t('admin:nav.users') }}
+          q-item(to='auth', v-ripple, active-class='bg-primary text-white')
+            q-item-section(avatar)
+              q-icon(name='las la-lock')
+            q-item-section {{ $t('admin:auth.title') }}
           q-item(to='groups', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-users')
@@ -139,7 +143,7 @@
             q-item-section(avatar)
               q-icon(name='las la-magic')
             q-item-section {{ $t('admin:webhooks.title') }}
-          q-item(to='dev-flags', v-ripple, active-class='bg-primary text-white')
+          q-item(to='flags', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-flag-checkered')
             q-item-section {{ $t('admin:dev.flags.title') }}
@@ -147,8 +151,8 @@
       transition(name='fade')
         router-view
     q-footer.admin-footer
-      q-bar.bg-grey-3.text-grey-7.justify-center(dense)
-        span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
+      q-bar.justify-center(dense)
+        span(style='font-size: 11px;') Powered by #[a(href='https://js.wiki', target='_blank'): strong Wiki.js], an open source project.
 </template>
 
 <script>
@@ -156,6 +160,11 @@ import { get, sync } from 'vuex-pathify'
 
 export default {
   name: 'AdminLayout',
+  meta () {
+    return {
+      titleTemplate: title => `${title} - ${this.$t('admin:adminArea')} - Wiki.js`
+    }
+  },
   data () {
     return {
       leftDrawerOpen: true,
@@ -192,8 +201,8 @@ export default {
       }
     }
   },
-  mounted () {
-    this.$store.dispatch('admin/fetchSites')
+  async mounted () {
+    await this.$store.dispatch('admin/fetchSites')
   }
 }
 </script>
@@ -239,9 +248,20 @@ export default {
 .admin-footer > .q-bar {
   @at-root .body--light & {
     background-color: #FFF !important;
+
+    a {
+      color: $blue-grey-9 !important;
+      text-decoration: none;
+    }
   }
   @at-root .body--dark & {
     background-color: $dark-6 !important;
+    color: $blue-grey-5 !important;
+
+    a {
+      color: $blue-grey-5 !important;
+      text-decoration: none;
+    }
   }
 }
 </style>

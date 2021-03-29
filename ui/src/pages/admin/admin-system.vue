@@ -28,7 +28,7 @@
                 icon='las la-vector-square'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.currentVersion') }}
@@ -40,7 +40,7 @@
                 icon='las la-broadcast-tower'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.latestVersion') }}
@@ -58,7 +58,7 @@
                 icon='lab la-node-js'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label Node.js
@@ -70,7 +70,7 @@
                 icon='las la-database'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label Database
@@ -82,7 +82,7 @@
                 icon='las la-ethernet'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label Database Host
@@ -101,7 +101,7 @@
                 :icon='platformLogo'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.os') }}
@@ -113,7 +113,7 @@
                 icon='las la-server'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.hostname') }}
@@ -125,7 +125,7 @@
                 icon='las la-microchip'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.cpuCores') }}
@@ -137,7 +137,7 @@
                 icon='las la-memory'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.totalRAM') }}
@@ -149,7 +149,7 @@
                 icon='las la-terminal'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.workingDirectory') }}
@@ -161,7 +161,7 @@
                 icon='las la-file-code'
                 text-color='white'
                 rounded
-                color='black'
+                color='primary'
                 )
             q-item-section
               q-item-label {{ $t('admin:system.configFile') }}

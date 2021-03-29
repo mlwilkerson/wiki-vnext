@@ -47,10 +47,10 @@ const routes = [
       // { path: 'mail', component: () => import('pages/admin/admin-mail.vue') },
       // { path: 'security', component: () => import('pages/admin/admin-security.vue') },
       // { path: 'ssl', component: () => import('pages/admin/admin-ssl.vue') },
-      { path: 'system', component: () => import('pages/admin/admin-system.vue') }
+      { path: 'system', component: () => import('pages/admin/admin-system.vue') },
       // { path: 'utilities', component: () => import('pages/admin/admin-utilities.vue') },
       // { path: 'webhooks', component: () => import('pages/admin/admin-webhooks.vue') },
-      // { path: 'dev-flags', component: () => import('pages/admin/admin-dev-flags.vue') },
+      { path: 'flags', component: () => import('pages/admin/admin-flags.vue') }
       // { path: 'contribute', component: () => import('pages/admin/admin-contribute.vue') }
     ]
   },

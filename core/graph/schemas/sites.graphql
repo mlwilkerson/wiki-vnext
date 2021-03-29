@@ -6,11 +6,12 @@ extend type Query {
   sites: [Site]
 
   siteById (
-    id: Int!
+    id: UUID!
   ): Site
 
   siteByHostname (
     hostname: String!
+    exact: Boolean!
   ): Site
 }
 
@@ -22,7 +23,7 @@ extend type Mutation {
 
   updateSite (
     id: UUID!
-    patch: SiteUpdateInput
+    patch: SiteUpdateInput!
   ): DefaultResponse
 
   deleteSite (
@@ -40,12 +41,32 @@ type Site {
   isEnabled: Boolean
   title: String
   description: String
-  robots: [String]
   company: String
   contentLicense: String
-  commentsAreActive: Boolean
+  logoText: Boolean
+  robots: SiteRobots
+  features: SiteFeatures
+  defaults: SiteDefaults
+}
+
+type SiteRobots {
+  index: Boolean
+  follow: Boolean
+}
+
+type SiteFeatures {
+  ratings: Boolean
   ratingsMode: SitePageRatingModes
-  logoUrl: String
+  comments: Boolean
+  contributions: Boolean
+  profile: Boolean
+  search: Boolean
+}
+
+type SiteDefaults {
+  timezone: String
+  dateFormat: String
+  timeFormat: String
 }
 
 type SiteCreateResponse {
@@ -60,7 +81,30 @@ input SiteUpdateInput {
   description: String
   company: String
   contentLicense: String
-  logoUrl: String
+  logoText: Boolean
+  robots: SiteRobotsInput
+  features: SiteFeaturesInput
+  defaults: SiteDefaultsInput
+}
+
+input SiteRobotsInput {
+  index: Boolean
+  follow: Boolean
+}
+
+input SiteFeaturesInput {
+  ratings: Boolean
+  ratingsMode: SitePageRatingModes
+  comments: Boolean
+  contributions: Boolean
+  profile: Boolean
+  search: Boolean
+}
+
+input SiteDefaultsInput {
+  timezone: String
+  dateFormat: String
+  timeFormat: String
 }
 
 enum SitePageRatingModes {

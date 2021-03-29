@@ -166,32 +166,32 @@ export default {
     }
   },
   apollo: {
-    recentPages: {
-      query: gql`
-        query {
-          pages {
-            list(limit: 10, orderBy: UPDATED, orderByDirection: DESC) {
-              id
-              locale
-              path
-              title
-              description
-              contentType
-              isPublished
-              isPrivate
-              privateNS
-              createdAt
-              updatedAt
-            }
-          }
-        }
-      `,
-      update: (data) => data.pages.list,
-      watchLoading (isLoading) {
-        this.recentPagesLoading = isLoading
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-dashboard-recentpages')
-      }
-    },
+    // recentPages: {
+    //   query: gql`
+    //     query {
+    //       pages {
+    //         list(limit: 10, orderBy: UPDATED, orderByDirection: DESC) {
+    //           id
+    //           locale
+    //           path
+    //           title
+    //           description
+    //           contentType
+    //           isPublished
+    //           isPrivate
+    //           privateNS
+    //           createdAt
+    //           updatedAt
+    //         }
+    //       }
+    //     }
+    //   `,
+    //   update: (data) => data.pages.list,
+    //   watchLoading (isLoading) {
+    //     this.recentPagesLoading = isLoading
+    //     this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-dashboard-recentpages')
+    //   }
+    // },
     lastLogins: {
       query: gql`
         query {

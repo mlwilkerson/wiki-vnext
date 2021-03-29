@@ -7,6 +7,7 @@ import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 
 import admin from './admin'
 import colors from './colors'
+import data from './data'
 import page from './page'
 import site from './site'
 import user from './user'
@@ -48,6 +49,7 @@ export default function (/* { ssrContext } */) {
     modules: {
       admin,
       colors,
+      data,
       page,
       site,
       user

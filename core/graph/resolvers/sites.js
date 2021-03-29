@@ -24,9 +24,15 @@ module.exports = {
       } : null
     },
     async siteByHostname (obj, args) {
-      const site = await WIKI.models.sites.query().where({
+      let site = await WIKI.models.sites.query().where({
         hostname: args.hostname
       }).first()
+      if (!site && !args.exact) {
+        site = await WIKI.models.sites.query().where({
+          hostname: '*'
+        }).first()
+      }
+      console.info(site)
       return site ? {
         ...site.config,
         id: site.id,
@@ -42,7 +48,7 @@ module.exports = {
     async createSite (obj, args) {
       try {
         // -> Validate inputs
-        if (!args.hostname || args.hostname.length < 2 || !/^(\\*)|([a-z0-9\-.:]+)$/.test(args.hostname)) {
+        if (!args.hostname || args.hostname.length < 1 || !/^(\\*)|([a-z0-9\-.:]+)$/.test(args.hostname)) {
           throw WIKI.ERROR(new Error('Invalid Site Hostname'), 'SiteCreateInvalidHostname')
         }
         if (!args.title || args.title.length < 1 || !/^[^<>"]+$/.test(args.title)) {

@@ -1,6 +1,7 @@
 import { make } from 'vuex-pathify'
 
 const state = {
+  id: null,
   useLocales: false,
   hostname: '',
   company: '',

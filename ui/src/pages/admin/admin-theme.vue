@@ -2,12 +2,12 @@
   q-page.admin-theme
     .row.q-pa-md.items-center
       .col-auto
-        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-color-wheel.svg')
+        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-paint-roller.svg')
       .col.q-pl-md
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:theme.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:theme.subtitle') }}
       .col-auto
-        q-btn.q-mr-sm(
+        q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
           flat
           color='grey'
@@ -105,25 +105,25 @@
                 dense
                 :aria-label='$t(`admin:theme.iconset`)'
                 )
-          q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-swatchbook'
-                color='primary'
-                size='sm'
-                )
-            q-item-section
-              q-item-label {{$t(`admin:theme.reduceMotion`)}}
-              q-item-label(caption) {{$t(`admin:theme.reduceMotionHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.reduceMotion'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin:theme.reduceMotion`)'
-                )
+          //- q-separator.q-my-sm(inset)
+          //- q-item(tag='label', v-ripple)
+          //-   q-item-section.items-center(style='flex: 0 0 40px;')
+          //-     q-icon(
+          //-       name='las la-swatchbook'
+          //-       color='primary'
+          //-       size='sm'
+          //-       )
+          //-   q-item-section
+          //-     q-item-label {{$t(`admin:theme.reduceMotion`)}}
+          //-     q-item-label(caption) {{$t(`admin:theme.reduceMotionHint`)}}
+          //-   q-item-section(avatar)
+          //-     q-toggle(
+          //-       v-model='config.reduceMotion'
+          //-       color='primary'
+          //-       checked-icon='las la-check'
+          //-       unchecked-icon='las la-times'
+          //-       :aria-label='$t(`admin:theme.reduceMotion`)'
+          //-       )
 
         //- -----------------------
         //- Theme Layout

@@ -51,12 +51,15 @@ export default async ({ app, router, store, ssrContext }) => {
     const resp = await apolloClient.query({
       query: gql`
         query ($hostname: String!) {
-          siteByHostname (hostname: $hostname) {
+          siteByHostname (
+            hostname: $hostname
+            exact: false
+            ) {
             id
             hostname
             title
             description
-            logoUrl
+            logoText
             company
             contentLicense
           }
@@ -68,6 +71,7 @@ export default async ({ app, router, store, ssrContext }) => {
     })
     const siteInfo = resp.data.siteByHostname
     if (siteInfo) {
+      store.set('site/id', siteInfo.id)
       store.set('site/hostname', siteInfo.hostname)
       store.set('site/title', siteInfo.title)
       store.set('site/description', siteInfo.description)
