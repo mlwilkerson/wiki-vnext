@@ -11,7 +11,7 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/theming'
+          href='https://docs.js.wiki/theming'
           target='_blank'
           )
         q-btn(
@@ -84,27 +84,27 @@
                     q-color(
                       v-model='config[cl + `Color`]'
                     )
-          q-separator.q-my-sm(inset)
-          q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-icons'
-                color='primary'
-                size='sm'
-                )
-            q-item-section
-              q-item-label {{$t(`admin:theme.iconset`)}}
-              q-item-label(caption) {{$t(`admin:theme.iconsetHint`)}}
-            q-item-section
-              q-select(
-                outlined
-                v-model='config.iconset'
-                :options='iconsets'
-                emit-value
-                map-options
-                dense
-                :aria-label='$t(`admin:theme.iconset`)'
-                )
+          //- q-separator.q-my-sm(inset)
+          //- q-item
+          //-   q-item-section.items-center(style='flex: 0 0 40px;')
+          //-     q-icon(
+          //-       name='las la-icons'
+          //-       color='primary'
+          //-       size='sm'
+          //-       )
+          //-   q-item-section
+          //-     q-item-label {{$t(`admin:theme.iconset`)}}
+          //-     q-item-label(caption) {{$t(`admin:theme.iconsetHint`)}}
+          //-   q-item-section
+          //-     q-select(
+          //-       outlined
+          //-       v-model='config.iconset'
+          //-       :options='iconsets'
+          //-       emit-value
+          //-       map-options
+          //-       dense
+          //-       :aria-label='$t(`admin:theme.iconset`)'
+          //-       )
           //- q-separator.q-my-sm(inset)
           //- q-item(tag='label', v-ripple)
           //-   q-item-section.items-center(style='flex: 0 0 40px;')

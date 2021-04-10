@@ -248,6 +248,7 @@ export default {
 .admin-footer > .q-bar {
   @at-root .body--light & {
     background-color: #FFF !important;
+    color: $blue-grey-5 !important;
 
     a {
       color: $blue-grey-9 !important;

@@ -32,7 +32,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.currentVersion') }}
-              q-item-label(caption): strong.text-primary {{ info.currentVersion }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.currentVersion }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -44,7 +44,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.latestVersion') }}
-              q-item-label(caption): strong.text-primary {{ info.latestVersion }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.latestVersion }}
 
         //- -----------------------
         //- ENGINES
@@ -62,7 +62,7 @@
                 )
             q-item-section
               q-item-label Node.js
-              q-item-label(caption): strong.text-primary {{ info.nodeVersion }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.nodeVersion }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -74,7 +74,7 @@
                 )
             q-item-section
               q-item-label Database
-              q-item-label(caption): strong.text-primary {{ info.dbType }} {{dbVersion}}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.dbType }} {{dbVersion}}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -86,7 +86,7 @@
                 )
             q-item-section
               q-item-label Database Host
-              q-item-label(caption): strong.text-primary {{ info.dbHost }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.dbHost }}
 
       .col-6
         //- -----------------------
@@ -105,7 +105,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.os') }}
-              q-item-label(caption): strong.text-primary {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -117,7 +117,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.hostname') }}
-              q-item-label(caption): strong.text-primary {{ info.hostname }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.hostname }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -129,7 +129,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.cpuCores') }}
-              q-item-label(caption): strong.text-primary {{ info.cpuCores }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.cpuCores }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -141,7 +141,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.totalRAM') }}
-              q-item-label(caption): strong.text-primary {{ info.ramTotal }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.ramTotal }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -153,7 +153,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.workingDirectory') }}
-              q-item-label(caption): strong.text-primary {{ info.workingDirectory }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.workingDirectory }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -165,7 +165,7 @@
                 )
             q-item-section
               q-item-label {{ $t('admin:system.configFile') }}
-              q-item-label(caption): strong.text-primary {{ info.configFile }}
+              q-item-label(caption): strong.text-primary.font-robotomono {{ info.configFile }}
 
     //-                 v-list-item-action-text {{ $t('admin:system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
     //-           v-card-actions(v-if='info.upgradeCapable && !isLatestVersion && info.platform === `docker`', :class='$vuetify.theme.dark ? `grey darken-3-d5` : `indigo lighten-5`')
