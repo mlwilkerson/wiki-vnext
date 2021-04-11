@@ -7,33 +7,28 @@ const gql = require('graphql')
 
 module.exports = {
   Query: {
-    async groups () { return {} }
-  },
-  Mutation: {
-    async groups () { return {} }
-  },
-  GroupQuery: {
     /**
      * FETCH ALL GROUPS
      */
-    async list () {
-      return WIKI.models.groups.query().select(
-        'groups.*',
-        WIKI.models.groups.relatedQuery('users').count().as('userCount')
-      )
+    async groups (obj, args, context, info) {
+      const cols = graphHelper.parseFields(info, ['userCount'])
+      return WIKI.models.groups.query().select([
+        ...cols.fields.map(f => `groups.${f}`),
+        ...(cols.flags.userCount ? [WIKI.models.groups.relatedQuery('users').count().as('userCount')] : [])
+      ])
     },
     /**
      * FETCH A SINGLE GROUP
      */
-    async single(obj, args) {
+    async groupById (obj, args) {
       return WIKI.models.groups.query().findById(args.id)
     }
   },
-  GroupMutation: {
+  Mutation: {
     /**
      * ASSIGN USER TO GROUP
      */
-    async assignUser (obj, args, { req }) {
+    async assignUserToGroup (obj, args, { req }) {
       // Check for guest user
       if (args.userId === 2) {
         throw new gql.GraphQLError('Cannot assign the Guest user to a group.')
@@ -79,13 +74,13 @@ module.exports = {
       WIKI.events.outbound.emit('addAuthRevoke', { id: usr.id, kind: 'u' })
 
       return {
-        responseResult: graphHelper.generateSuccess('User has been assigned to group.')
+        status: graphHelper.generateSuccess('User has been assigned to group.')
       }
     },
     /**
      * CREATE NEW GROUP
      */
-    async create (obj, args, { req }) {
+    async createGroup (obj, args, { req }) {
       const group = await WIKI.models.groups.query().insertAndFetch({
         name: args.name,
         permissions: JSON.stringify(WIKI.data.groups.defaultPermissions),
@@ -95,15 +90,16 @@ module.exports = {
       await WIKI.auth.reloadGroups()
       WIKI.events.outbound.emit('reloadGroups')
       return {
-        responseResult: graphHelper.generateSuccess('Group created successfully.'),
+        status: graphHelper.generateSuccess('Group created successfully.'),
         group
       }
     },
     /**
      * DELETE GROUP
      */
-    async delete (obj, args) {
-      if (args.id === 1 || args.id === 2) {
+    async deleteGroup (obj, args) {
+      const grp = WIKI.models.groups.query().findById(args.id)
+      if (grp.isSystem) {
         throw new gql.GraphQLError('Cannot delete this group.')
       }
 
@@ -116,13 +112,13 @@ module.exports = {
       WIKI.events.outbound.emit('reloadGroups')
 
       return {
-        responseResult: graphHelper.generateSuccess('Group has been deleted.')
+        status: graphHelper.generateSuccess('Group has been deleted.')
       }
     },
     /**
      * UNASSIGN USER FROM GROUP
      */
-    async unassignUser (obj, args) {
+    async unassignUserFromGroup (obj, args) {
       if (args.userId === 2) {
         throw new gql.GraphQLError('Cannot unassign Guest user')
       }
@@ -143,13 +139,13 @@ module.exports = {
       WIKI.events.outbound.emit('addAuthRevoke', { id: usr.id, kind: 'u' })
 
       return {
-        responseResult: graphHelper.generateSuccess('User has been unassigned from group.')
+        status: graphHelper.generateSuccess('User has been unassigned from group.')
       }
     },
     /**
      * UPDATE GROUP
      */
-    async update (obj, args, { req }) {
+    async updateGroup (obj, args, { req }) {
       // Check for unsafe regex page rules
       if (_.some(args.pageRules, pr => {
         return pr.match === 'REGEX' && !safeRegex(pr.path)
@@ -190,7 +186,7 @@ module.exports = {
       WIKI.events.outbound.emit('reloadGroups')
 
       return {
-        responseResult: graphHelper.generateSuccess('Group has been updated.')
+        status: graphHelper.generateSuccess('Group has been updated.')
       }
     }
   },

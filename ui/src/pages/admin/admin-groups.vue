@@ -7,191 +7,188 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:groups.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:groups.subtitle') }}
       .col-auto
-        q-btn.q-mr-sm(
+        q-btn.acrylic-btn.q-mr-sm(
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/groups'
+          type='a'
+          href='https://docs.js.wiki/groups'
           target='_blank'
+          )
+        q-btn.q-mr-sm.acrylic-btn(
+          icon='las la-redo-alt'
+          flat
+          color='secondary'
+          @click='refresh'
           )
         q-btn(
           unelevated
           icon='las la-plus'
           :label='$t(`admin:groups.create`)'
           color='primary'
+          @click='createGroup'
           )
-          q-menu
-            q-card(flat, style='min-width: 350px;')
-              q-card-section
-                .text-subtitle1 {{$t(`admin:groups.new`)}}
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
-      .col-6
-  //- v-container(fluid, grid-list-lg)
-  //-   v-layout(row wrap)
-  //-     v-flex(xs12)
-  //-       .admin-header
-  //-         img.animated.fadeInUp(src='/_assets/svg/icon-people.svg', alt='Groups', style='width: 80px;')
-  //-         .admin-header-title
-  //-           .headline.blue--text.text--darken-2.animated.fadeInLeft Groups
-  //-           .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s Manage groups and their permissions
-  //-         v-spacer
-  //-         v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/groups', target='_blank')
-  //-           v-icon mdi-help-circle
-  //-         v-btn.animated.fadeInDown.wait-p2s.mx-3(color='grey', outlined, @click='refresh', icon)
-  //-           v-icon mdi-refresh
-  //-         v-dialog(v-model='newGroupDialog', max-width='500')
-  //-           template(v-slot:activator='{ on }')
-  //-             v-btn.animated.fadeInDown(color='primary', depressed, v-on='on', large)
-  //-               v-icon(left) mdi-plus
-  //-               span New Group
-  //-           v-card
-  //-             .dialog-header.is-short New Group
-  //-             v-card-text.pt-5
-  //-               v-text-field.md2(
-  //-                 outlined
-  //-                 prepend-icon='mdi-account-group'
-  //-                 v-model='newGroupName'
-  //-                 label='Group Name'
-  //-                 counter='255'
-  //-                 @keyup.enter='createGroup'
-  //-                 @keyup.esc='newGroupDialog = false'
-  //-                 ref='groupNameIpt'
-  //-                 )
-  //-             v-card-chin
-  //-               v-spacer
-  //-               v-btn(text, @click='newGroupDialog = false') Cancel
-  //-               v-btn(color='primary', @click='createGroup') Create
-  //-       v-card.mt-3.animated.fadeInUp
-  //-         v-data-table(
-  //-           :items='groups'
-  //-           :headers='headers'
-  //-           :search='search'
-  //-           :page.sync='pagination'
-  //-           :items-per-page='15'
-  //-           :loading='loading'
-  //-           @page-count='pageCount = $event'
-  //-           must-sort,
-  //-           hide-default-footer
-  //-         )
-  //-           template(slot='item', slot-scope='props')
-  //-             tr.is-clickable(:active='props.selected', @click='$router.push("/groups/" + props.item.id)')
-  //-               td {{ props.item.id }}
-  //-               td: strong {{ props.item.name }}
-  //-               td {{ props.item.userCount }}
-  //-               td {{ props.item.createdAt | moment('calendar') }}
-  //-               td {{ props.item.updatedAt | moment('calendar') }}
-  //-               td
-  //-                 v-tooltip(left, v-if='props.item.isSystem')
-  //-                   template(v-slot:activator='{ on }')
-  //-                     v-icon(v-on='on') mdi-lock-outline
-  //-                   span System Group
-  //-           template(slot='no-data')
-  //-             v-alert.ma-3(icon='mdi-alert', :value='true', outline) No groups to display.
-  //-         .text-xs-center.py-2(v-if='pageCount > 1')
-  //-           v-pagination(v-model='pagination', :length='pageCount')
+      .col-12
+        q-card.shadow-1
+          q-table(
+            :data='groups'
+            :columns='headers'
+            row-key='id'
+            flat
+            hide-bottom
+            :rows-per-page-options='[0]'
+            :loading='loading'
+            )
+            template(v-slot:body-cell-id='props')
+              q-td(:props='props')
+                q-btn.acrylic-btn(
+                  size='sm'
+                  padding='xs'
+                  icon='las la-clipboard'
+                  flat
+                  color='brown'
+                  @click='copyID(props.value)'
+                  )
+                  q-tooltip(
+                    anchor='center left'
+                    self='center right'
+                  ) {{$t('common:clipboard.uuid')}}
+            template(v-slot:body-cell-name='props')
+              q-td.flex.items-center(:props='props')
+                strong {{props.value}}
+                q-icon.q-ml-sm(
+                  v-if='props.row.isSystem'
+                  name='las la-lock'
+                  color='pink'
+                  )
+            template(v-slot:body-cell-usercount='props')
+              q-td(:props='props')
+                q-chip.text-caption(
+                  square
+                  :color='$q.dark.isActive ? `dark-6` : `grey-2`'
+                  :text-color='$q.dark.isActive ? `white` : `grey-8`'
+                  dense
+                ) {{props.value}}
+            template(v-slot:body-cell-edit='props')
+              q-td(:props='props')
+                q-btn.acrylic-btn(
+                  flat
+                  padding='xs sm'
+                  icon='las la-pen'
+                  color='indigo'
+                  :to='`/a/groups/` + props.row.id'
+                  )
+            template(v-slot:body-cell-remove='props')
+              q-td(:props='props')
+                q-btn.acrylic-btn(
+                  flat
+                  padding='xs sm'
+                  icon='las la-trash'
+                  color='accent'
+                  :disabled='props.row.isSystem'
+                  @click='deleteGroup(props.row)'
+                  )
 </template>
 
 <script>
-import trim from 'lodash/trim'
-import _get from 'lodash/get'
 import gql from 'graphql-tag'
+import Vue from 'vue'
+import { copyToClipboard } from 'quasar'
 
 export default {
   data () {
     return {
-      newGroupDialog: false,
-      newGroupName: '',
-      selectedGroup: {},
-      pagination: 1,
-      pageCount: 0,
       groups: [],
-      headers: [
-        { text: 'ID', value: 'id', width: 80, sortable: true },
-        { text: 'Name', value: 'name' },
-        { text: 'Users', value: 'userCount', width: 200 },
-        { text: 'Created', value: 'createdAt', width: 250 },
-        { text: 'Last Updated', value: 'updatedAt', width: 250 },
-        { text: '', value: 'isSystem', width: 20, sortable: false }
-      ],
-      search: '',
       loading: false
     }
   },
-  watch: {
-    newGroupDialog (newValue, oldValue) {
-      if (newValue) {
-        this.$nextTick(() => {
-          this.$refs.groupNameIpt.focus()
-        })
-      }
+  computed: {
+    headers () {
+      return [
+        {
+          label: this.$t('common:field.id'),
+          align: 'center',
+          field: 'id',
+          name: 'id',
+          sortable: false,
+          style: 'width: 50px'
+        },
+        {
+          label: this.$t('common:field.name'),
+          align: 'left',
+          field: 'name',
+          name: 'name',
+          sortable: true
+        },
+        {
+          label: this.$t('admin:groups.userCount'),
+          align: 'center',
+          field: 'userCount',
+          name: 'usercount',
+          sortable: false,
+          style: 'width: 150px'
+        },
+        {
+          label: this.$t('admin:groups.edit'),
+          align: 'center',
+          field: 'edit',
+          name: 'edit',
+          sortable: false,
+          style: 'width: 150px'
+        },
+        {
+          label: this.$t('admin:groups.delete'),
+          align: 'center',
+          field: 'remove',
+          name: 'remove',
+          sortable: false,
+          style: 'width: 100px'
+        }
+      ]
     }
   },
   methods: {
     async refresh () {
       await this.$apollo.queries.groups.refetch()
-      this.$store.commit('showNotification', {
-        message: 'Groups have been refreshed.',
-        style: 'success',
-        icon: 'cached'
+      this.$q.notify({
+        type: 'positive',
+        message: this.$t('admin:groups.refreshSuccess')
       })
     },
-    async createGroup () {
-      if (trim(this.newGroupName).length < 1) {
-        this.$store.commit('showNotification', {
-          style: 'red',
-          message: 'Enter a group name.',
-          icon: 'warning'
+    createGroup () {
+      this.$q.dialog({
+        component: Vue.options.components.GroupCreateDialog,
+        parent: this
+      }).onOk(() => {
+        this.$apollo.queries.groups.refetch()
+      })
+    },
+    editGroup (gr) {
+      this.$router.push(`/a/groups/${gr.id}`)
+    },
+    deleteGroup (gr) {
+      this.$q.dialog({
+        component: Vue.options.components.GroupDeleteDialog,
+        parent: this,
+        group: gr
+      }).onOk(() => {
+        this.$apollo.queries.groups.refetch()
+      })
+    },
+    copyID (uid) {
+      copyToClipboard(uid).then(() => {
+        this.$q.notify({
+          type: 'positive',
+          message: this.$t('common:clipboard.uuidSuccess')
         })
-        return
-      }
-      this.newGroupDialog = false
-      try {
-        await this.$apollo.mutate({
-          mutation: gql`
-            mutation ($name: String!) {
-              groups {
-                create(name: $name) {
-                  responseResult {
-                    succeeded
-                    errorCode
-                    slug
-                    message
-                  }
-                  group {
-                    id
-                    name
-                    createdAt
-                    updatedAt
-                  }
-                }
-              }
-            }
-          `,
-          variables: {
-            name: this.newGroupName
-          },
-          update (store, resp) {
-            const data = _get(resp, 'data.groups.create', { responseResult: {} })
-            if (data.responseResult.succeeded === true) {
-              this.$apollo.queries.groups.refetch()
-            } else {
-              throw new Error(data.responseResult.message)
-            }
-          },
-          watchLoading (isLoading) {
-            this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-groups-create')
-          }
+      }).catch(() => {
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('common:clipboard.uuidFailure')
         })
-        this.newGroupName = ''
-        this.$store.commit('showNotification', {
-          style: 'success',
-          message: 'Group has been created successfully.',
-          icon: 'check'
-        })
-      } catch (err) {
-        this.$store.commit('pushGraphError', err)
-      }
+      })
     }
   },
   apollo: {
@@ -199,19 +196,17 @@ export default {
       query: gql`
         query {
           groups {
-            list {
-              id
-              name
-              isSystem
-              userCount
-              createdAt
-              updatedAt
-            }
+            id
+            name
+            isSystem
+            userCount
+            createdAt
+            updatedAt
           }
         }
       `,
       fetchPolicy: 'network-only',
-      update: (data) => data.groups.list,
+      update: (data) => data.groups,
       watchLoading (isLoading) {
         this.loading = isLoading
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-groups-refresh')

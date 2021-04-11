@@ -7,11 +7,11 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:navigation.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:navigation.subtitle') }}
       .col-auto
-        q-btn.q-mr-sm(
+        q-btn.acrylic-btn.q-mr-sm(
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/theming'
+          href='https://docs.requarks.io/nav'
           target='_blank'
           )
         q-btn(

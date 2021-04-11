@@ -12,7 +12,7 @@ module.exports = class Group extends Model {
       required: ['name'],
 
       properties: {
-        id: { type: 'integer' },
+        id: { type: 'string' },
         name: { type: 'string' },
         isSystem: { type: 'boolean' },
         redirectOnLogin: { type: 'string' },

@@ -46,9 +46,6 @@
                 outlined
                 v-model='config.senderName'
                 dense
-                :rules=`[
-                  val => /^[^<>"]+$/.test(val) || $t('admin:general.senderNameInvalidChars')
-                ]`
                 hide-bottom-space
                 :aria-label='$t(`admin:general.senderName`)'
                 )
@@ -91,9 +88,6 @@
                 outlined
                 v-model='config.host'
                 dense
-                :rules=`[
-                  val => /^[^<>"]+$/.test(val) || $t('admin:general.siteTitleInvalidChars')
-                ]`
                 hide-bottom-space
                 :aria-label='$t(`admin:general.smtpHost`)'
                 )
@@ -108,7 +102,7 @@
             q-item-section
               q-item-label {{$t(`admin:mail.smtpPort`)}}
               q-item-label(caption) {{$t(`admin:mail.smtpPortHint`)}}
-            q-item-section
+            q-item-section(style='flex: 0 0 120px;')
               q-input(
                 outlined
                 v-model='config.port'

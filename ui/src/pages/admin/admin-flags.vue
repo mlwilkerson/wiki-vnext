@@ -72,11 +72,11 @@
                 unchecked-icon='las la-times'
                 :aria-label='$t(`admin:flags.sqllog.label`)'
                 )
-          q-separator.q-my-sm(inset)
+        q-card.shadow-1.q-py-sm.q-mt-md
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
-                name='las la-flag-checkered'
+                name='las la-heart'
                 color='primary'
                 size='sm'
                 )
