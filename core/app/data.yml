@@ -126,8 +126,9 @@ groups:
     - 'read:assets'
     - 'read:comments'
     - 'write:comments'
-  defaultPageRules:
+  defaultRules:
     - id: default
+      name: Default Rule
       deny: false
       match: START
       roles:
@@ -137,6 +138,7 @@ groups:
         - 'write:comments'
       path: ''
       locales: []
+      sites: []
 reservedPaths:
   - login
   - logout

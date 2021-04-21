@@ -3,21 +3,14 @@
 # ===============================================
 
 extend type Query {
-  system: SystemQuery
+  systemExtensions: [SystemExtension]! @auth(requires: ["manage:system"])
+  systemFlags: [SystemFlag] @auth(requires: ["manage:system"])
+  systemInfo: SystemInfo
+  systemSecurity: SystemSecurity
 }
 
 extend type Mutation {
   system: SystemMutation
-}
-
-# -----------------------------------------------
-# QUERIES
-# -----------------------------------------------
-
-type SystemQuery {
-  flags: [SystemFlag] @auth(requires: ["manage:system"])
-  info: SystemInfo
-  extensions: [SystemExtension]! @auth(requires: ["manage:system"])
 }
 
 # -----------------------------------------------
@@ -54,8 +47,8 @@ type SystemMutation {
 # -----------------------------------------------
 
 type SystemFlag {
-  key: String!
-  value: Boolean!
+  key: String
+  value: Boolean
 }
 
 input SystemFlagInput {
@@ -68,7 +61,6 @@ type SystemInfo {
   cpuCores: Int @auth(requires: ["manage:system"])
   currentVersion: String @auth(requires: ["manage:system"])
   dbHost: String @auth(requires: ["manage:system"])
-  dbType: String @auth(requires: ["manage:system"])
   dbVersion: String @auth(requires: ["manage:system"])
   groupsTotal: Int @auth(requires: ["manage:system", "manage:navigation", "manage:groups", "write:groups", "manage:users", "write:users"])
   hostname: String @auth(requires: ["manage:system"])
@@ -115,9 +107,35 @@ type SystemImportUsersResponseFailed {
 }
 
 type SystemExtension {
-  key: String!
-  title: String!
-  description: String!
-  isInstalled: Boolean!
-  isCompatible: Boolean!
+  key: String
+  title: String
+  description: String
+  isInstalled: Boolean
+  isCompatible: Boolean
+}
+
+type SystemSecurity {
+  authJwtAudience: String
+  authJwtExpiration: String
+  authJwtRenewablePeriod: String
+  corsConfig: String
+  corsMode: SystemSecurityCorsMode
+  cspDirectives: String
+  disallowFloc: Boolean
+  disallowIframe: Boolean
+  disallowOpenRedirect: Boolean
+  enforceCsp: Boolean
+  enforceHsts: Boolean
+  enforceSameOriginReferrerPolicy: Boolean
+  hstsDuration: Int
+  trustProxy: Boolean
+  uploadMaxFiles: Int
+  uploadMaxFileSize: Int
+}
+
+enum SystemSecurityCorsMode {
+  OFF
+  REFLECT
+  HOSTNAMES
+  REGEX
 }

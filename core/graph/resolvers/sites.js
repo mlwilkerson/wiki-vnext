@@ -32,7 +32,6 @@ module.exports = {
           hostname: '*'
         }).first()
       }
-      console.info(site)
       return site ? {
         ...site.config,
         id: site.id,

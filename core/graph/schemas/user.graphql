@@ -115,66 +115,66 @@ type UserResponse {
 }
 
 type UserLastLogin {
-  id: Int!
-  name: String!
-  lastLoginAt: Date!
+  id: Int
+  name: String
+  lastLoginAt: Date
 }
 
 type UserMinimal {
-  id: Int!
-  name: String!
-  email: String!
-  providerKey: String!
-  isSystem: Boolean!
-  isActive: Boolean!
-  createdAt: Date!
+  id: UUID
+  name: String
+  email: String
+  providerKey: String
+  isSystem: Boolean
+  isActive: Boolean
+  createdAt: Date
   lastLoginAt: Date
 }
 
 type User {
-  id: Int!
-  name: String!
-  email: String!
-  providerKey: String!
+  id: UUID
+  name: String
+  email: String
+  providerKey: String
   providerName: String
   providerId: String
   providerIs2FACapable: Boolean
-  isSystem: Boolean!
-  isActive: Boolean!
-  isVerified: Boolean!
-  location: String!
-  jobTitle: String!
-  timezone: String!
-  dateFormat: String!
-  appearance: String!
-  createdAt: Date!
-  updatedAt: Date!
+  isSystem: Boolean
+  isActive: Boolean
+  isVerified: Boolean
+  location: String
+  jobTitle: String
+  timezone: String
+  dateFormat: String
+  appearance: String
+  createdAt: Date
+  updatedAt: Date
   lastLoginAt: Date
-  tfaIsActive: Boolean!
-  groups: [Group]!
+  tfaIsActive: Boolean
+  groups: [Group]
 }
 
 type UserProfile {
-  id: Int!
-  name: String!
-  email: String!
+  id: Int
+  name: String
+  email: String
   providerKey: String
   providerName: String
-  isSystem: Boolean!
-  isVerified: Boolean!
-  location: String!
-  jobTitle: String!
-  timezone: String!
-  dateFormat: String!
-  appearance: String!
-  createdAt: Date!
-  updatedAt: Date!
+  isSystem: Boolean
+  isVerified: Boolean
+  location: String
+  jobTitle: String
+  timezone: String
+  dateFormat: String
+  appearance: String
+  createdAt: Date
+  updatedAt: Date
   lastLoginAt: Date
-  groups: [String]!
-  pagesTotal: Int!
+  groups: [String]
+  pagesTotal: Int
 }
 
 type UserTokenResponse {
-  responseResult: ResponseStatus!
+  responseResult: ResponseStatus
   jwt: String
 }

@@ -19,7 +19,7 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.js.wiki/api'
+          href='https://docs.js.wiki/admin/api'
           target='_blank'
           )
         q-btn.q-mr-sm(
@@ -117,6 +117,11 @@ export default {
   components: {
     // StatusIndicator,
     // CreateApiKey
+  },
+  meta () {
+    return {
+      title: this.$t('admin:api.title')
+    }
   },
   data () {
     return {

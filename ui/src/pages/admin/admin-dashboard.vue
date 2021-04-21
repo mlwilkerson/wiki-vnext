@@ -125,6 +125,11 @@ export default {
   components: {
     AnimatedNumber
   },
+  meta () {
+    return {
+      title: this.$t('admin:dashboard.title')
+    }
+  },
   data () {
     return {
       recentPages: [],

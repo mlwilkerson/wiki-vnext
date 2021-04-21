@@ -253,6 +253,11 @@ const fetchLocaleGql = gql`
 `
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:locale.title')
+    }
+  },
   data () {
     return {
       loading: false,

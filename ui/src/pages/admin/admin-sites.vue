@@ -111,6 +111,11 @@ import { copyToClipboard } from 'quasar'
 import Vue from 'vue'
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:sites.title')
+    }
+  },
   data () {
     return {
       loading: false

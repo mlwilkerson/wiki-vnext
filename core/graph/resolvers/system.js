@@ -13,35 +13,44 @@ const nanoid = require('nanoid/non-secure').customAlphabet('1234567890abcdef', 1
 
 /* global WIKI */
 
-const dbTypes = {
-  mysql: 'MySQL',
-  mariadb: 'MariaDB',
-  postgres: 'PostgreSQL',
-  sqlite: 'SQLite',
-  mssql: 'MS SQL Server'
-}
-
 module.exports = {
   Query: {
-    async system () { return {} }
-  },
-  Mutation: {
-    async system () { return {} }
-  },
-  SystemQuery: {
-    flags () {
+    systemFlags () {
       return _.transform(WIKI.config.flags, (result, value, key) => {
         result.push({ key, value })
       }, [])
     },
-    async info () { return {} },
-    async extensions () {
+    async systemInfo () { return {} },
+    async systemExtensions () {
       const exts = Object.values(WIKI.extensions.ext).map(ext => _.pick(ext, ['key', 'title', 'description', 'isInstalled']))
-      for (let ext of exts) {
+      for (const ext of exts) {
         ext.isCompatible = await WIKI.extensions.ext[ext.key].isCompatible()
       }
       return exts
+    },
+    systemSecurity () {
+      return {
+        corsConfig: '',
+        corsMode: 'OFF',
+        cspDirectives: '',
+        disallowFloc: false,
+        disallowIframe: false,
+        disallowOpenRedirect: false,
+        enforceCsp: false,
+        enforceHsts: false,
+        enforceSameOriginReferrerPolicy: false,
+        hstsDuration: 300,
+        trustProxy: false,
+        authJwtAudience: 'urn:wiki.js',
+        authJwtExpiration: '30m',
+        authJwtRenewablePeriod: '14d',
+        uploadMaxFileSize: 0,
+        uploadMaxFiles: 0
+      }
     }
+  },
+  Mutation: {
+    async system () { return {} }
   },
   SystemMutation: {
     async updateFlags (obj, args, context) {
@@ -97,7 +106,7 @@ module.exports = {
     /**
      * Import Users from a v1 installation
      */
-    async importUsersFromV1(obj, args, context) {
+    async importUsersFromV1 (obj, args, context) {
       try {
         const MongoClient = require('mongodb').MongoClient
         if (args.mongoDbConnString && args.mongoDbConnString.length > 10) {
@@ -107,19 +116,19 @@ module.exports = {
             appname: `Wiki.js ${WIKI.version} Migration Tool`
           })
           const dbUsers = client.db().collection('users')
-          const userCursor = dbUsers.find({ email: { '$ne': 'guest' } })
+          const userCursor = dbUsers.find({ email: { $ne: 'guest' } })
 
           const curDateISO = new Date().toISOString()
 
-          let failed = []
+          const failed = []
           let usersCount = 0
           let groupsCount = 0
-          let assignableGroups = []
-          let reuseGroups = []
+          const assignableGroups = []
+          const reuseGroups = []
 
           // -> Create SINGLE group
 
-          if (args.groupMode === `SINGLE`) {
+          if (args.groupMode === 'SINGLE') {
             const singleGroup = await WIKI.models.groups.query().insert({
               name: `Import_${curDateISO}`,
               permissions: JSON.stringify(WIKI.data.groups.defaultPermissions),
@@ -134,8 +143,8 @@ module.exports = {
           while (await userCursor.hasNext()) {
             const usr = await userCursor.next()
 
-            let usrGroup = []
-            if (args.groupMode === `MULTI`) {
+            const usrGroup = []
+            if (args.groupMode === 'MULTI') {
               // -> Check if global admin
 
               if (_.some(usr.rights, ['role', 'admin'])) {
@@ -153,7 +162,7 @@ module.exports = {
 
                   const pageRules = _.map(usr.rights, r => {
                     let roles = ['read:pages', 'read:assets', 'read:comments', 'write:comments']
-                    if (r.role === `write`) {
+                    if (r.role === 'write') {
                       roles = _.concat(roles, ['write:pages', 'manage:pages', 'read:source', 'read:history', 'write:assets', 'manage:assets'])
                     }
                     return {
@@ -210,7 +219,7 @@ module.exports = {
 
           // -> Reload group permissions
 
-          if (args.groupMode !== `NONE`) {
+          if (args.groupMode !== 'NONE') {
             await WIKI.auth.reloadGroups()
             WIKI.events.outbound.emit('reloadGroups')
           }
@@ -246,7 +255,7 @@ module.exports = {
       try {
         if (!WIKI.config.ssl.enabled) {
           throw new WIKI.Error.SystemSSLDisabled()
-        } else if (WIKI.config.ssl.provider !== `letsencrypt`) {
+        } else if (WIKI.config.ssl.provider !== 'letsencrypt') {
           throw new WIKI.Error.SystemSSLRenewInvalidProvider()
         } else if (!WIKI.servers.le) {
           throw new WIKI.Error.SystemSSLLEUnavailable()
@@ -272,36 +281,11 @@ module.exports = {
     currentVersion () {
       return WIKI.version
     },
-    dbType () {
-      return _.get(dbTypes, WIKI.config.db.type, 'Unknown DB')
-    },
     async dbVersion () {
-      let version = 'Unknown Version'
-      switch (WIKI.config.db.type) {
-        case 'mariadb':
-        case 'mysql':
-          const resultMYSQL = await WIKI.models.knex.raw('SELECT VERSION() as version;')
-          version = _.get(resultMYSQL, '[0][0].version', 'Unknown Version')
-          break
-        case 'mssql':
-          const resultMSSQL = await WIKI.models.knex.raw('SELECT @@VERSION as version;')
-          version = _.get(resultMSSQL, '[0].version', 'Unknown Version')
-          break
-        case 'postgres':
-          version = _.get(WIKI.models, 'knex.client.version', 'Unknown Version')
-          break
-        case 'sqlite':
-          version = _.get(WIKI.models, 'knex.client.driver.VERSION', 'Unknown Version')
-          break
-      }
-      return version
+      return _.get(WIKI.models, 'knex.client.version', 'Unknown Version')
     },
     dbHost () {
-      if (WIKI.config.db.type === 'sqlite') {
-        return WIKI.config.db.storage
-      } else {
-        return WIKI.config.db.host
-      }
+      return WIKI.config.db.host
     },
     hostname () {
       return os.hostname()
@@ -343,10 +327,10 @@ module.exports = {
       return filesize(os.totalmem())
     },
     sslDomain () {
-      return WIKI.config.ssl.enabled && WIKI.config.ssl.provider === `letsencrypt` ? WIKI.config.ssl.domain : null
+      return WIKI.config.ssl.enabled && WIKI.config.ssl.provider === 'letsencrypt' ? WIKI.config.ssl.domain : null
     },
     sslExpirationDate () {
-      return WIKI.config.ssl.enabled && WIKI.config.ssl.provider === `letsencrypt` ? _.get(WIKI.config.letsencrypt, 'payload.expires', null) : null
+      return WIKI.config.ssl.enabled && WIKI.config.ssl.provider === 'letsencrypt' ? _.get(WIKI.config.letsencrypt, 'payload.expires', null) : null
     },
     sslProvider () {
       return WIKI.config.ssl.enabled ? WIKI.config.ssl.provider : null
@@ -355,7 +339,7 @@ module.exports = {
       return 'OK'
     },
     sslSubscriberEmail () {
-      return WIKI.config.ssl.enabled && WIKI.config.ssl.provider === `letsencrypt` ? WIKI.config.ssl.subscriberEmail : null
+      return WIKI.config.ssl.enabled && WIKI.config.ssl.provider === 'letsencrypt' ? WIKI.config.ssl.subscriberEmail : null
     },
     telemetry () {
       return WIKI.telemetry.enabled

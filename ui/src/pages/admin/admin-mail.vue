@@ -11,7 +11,7 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.js.wiki/mail'
+          href='https://docs.js.wiki/admin/mail'
           target='_blank'
           )
         q-btn(
@@ -189,7 +189,7 @@
         q-card.shadow-1.q-pb-sm.q-mt-md
           q-card-section
             .text-subtitle1 {{$t('admin:mail.dkim')}}
-          q-item
+          q-item.q-pt-none
             q-item-section
               q-card.bg-info.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
@@ -298,8 +298,7 @@
                 )
           .flex.justify-end.q-pr-md.q-py-sm
             q-btn(
-              push
-              glossy
+              unelevated
               color='primary'
               icon='las la-paper-plane'
               :label='$t(`admin:mail.testSend`)'
@@ -307,20 +306,20 @@
               :loading='testLoading'
             )
 
-  //-                   span {{ $t('admin:mail.dkimHint') }}
-
 </template>
 
 <script>
 import toSafeInteger from 'lodash/toSafeInteger'
 import _get from 'lodash/get'
-// import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
-// import mailConfigQuery from 'gql/admin/mail/mail-query-config.gql'
-// import mailUpdateConfigMutation from 'gql/admin/mail/mail-mutation-save-config.gql'
-// import mailTestMutation from 'gql/admin/mail/mail-mutation-sendtest.gql'
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:mail.title')
+    }
+  },
   data () {
     return {
       config: {
@@ -346,17 +345,53 @@ export default {
     async save () {
       try {
         await this.$apollo.mutate({
-          mutation: gql`{ test }`,
+          mutation: gql`
+            mutation (
+              $senderName: String!
+              $senderEmail: String!
+              $host: String!
+              $port: Int!
+              $secure: Boolean!
+              $verifySSL: Boolean!
+              $user: String!
+              $pass: String!
+              $useDKIM: Boolean!
+              $dkimDomainName: String!
+              $dkimKeySelector: String!
+              $dkimPrivateKey: String!
+            ) {
+              updateMailConfig (
+                senderName: $senderName
+                senderEmail: $senderEmail
+                host: $host
+                port: $port
+                secure: $secure
+                verifySSL: $verifySSL
+                user: $user
+                pass: $pass
+                useDKIM: $useDKIM
+                dkimDomainName: $dkimDomainName
+                dkimKeySelector: $dkimKeySelector
+                dkimPrivateKey: $dkimPrivateKey
+              ) {
+                status {
+                  succeeded
+                  slug
+                  message
+                }
+              }
+            }
+          `,
           variables: {
             senderName: this.config.senderName || '',
             senderEmail: this.config.senderEmail || '',
             host: this.config.host || '',
             port: toSafeInteger(this.config.port) || 0,
-            secure: this.config.secure || false,
-            verifySSL: this.config.verifySSL || false,
+            secure: this.config.secure ?? false,
+            verifySSL: this.config.verifySSL ?? false,
             user: this.config.user || '',
             pass: this.config.pass || '',
-            useDKIM: this.config.useDKIM || false,
+            useDKIM: this.config.useDKIM ?? false,
             dkimDomainName: this.config.dkimDomainName || '',
             dkimKeySelector: this.config.dkimKeySelector || '',
             dkimPrivateKey: this.config.dkimPrivateKey || ''
@@ -365,10 +400,9 @@ export default {
             this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-update')
           }
         })
-        this.$store.commit('showNotification', {
-          style: 'success',
-          message: this.$t('admin:mail.saveSuccess'),
-          icon: 'check'
+        this.$q.notify({
+          type: 'positive',
+          message: this.$t('admin:mail.saveSuccess')
         })
       } catch (err) {
         this.$store.commit('pushGraphError', err)
@@ -377,7 +411,21 @@ export default {
     async sendTest () {
       try {
         const resp = await this.$apollo.mutate({
-          mutation: gql`{ test }`,
+          mutation: gql`
+            mutation (
+              $recipientEmail: String!
+              ) {
+              sendMailTest(
+                recipientEmail: $recipientEmail
+              ) {
+                status {
+                  succeeded
+                  slug
+                  message
+                }
+              }
+            }
+          `,
           variables: {
             recipientEmail: this.testEmail
           },
@@ -385,31 +433,47 @@ export default {
             this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-test')
           }
         })
-        if (!_get(resp, 'data.mail.sendTest.responseResult.succeeded', false)) {
-          throw new Error(_get(resp, 'data.mail.sendTest.responseResult.message', 'An unexpected error occurred.'))
+        if (!_get(resp, 'data.sendMailTest.status.succeeded', false)) {
+          throw new Error(_get(resp, 'data.sendMailTest.status.message', 'An unexpected error occurred.'))
         }
 
         this.testEmail = ''
-        this.$store.commit('showNotification', {
-          style: 'success',
-          message: this.$t('admin:mail.sendTestSuccess'),
-          icon: 'check'
+        this.$q.notify({
+          type: 'positive',
+          message: this.$t('admin:mail.sendTestSuccess')
         })
       } catch (err) {
         this.$store.commit('pushGraphError', err)
       }
     }
+  },
+  apollo: {
+    config: {
+      query: gql`{
+        mailConfig {
+          senderName
+          senderEmail
+          host
+          port
+          secure
+          verifySSL
+          user
+          pass
+          useDKIM
+          dkimDomainName
+          dkimKeySelector
+          dkimPrivateKey
+        }
+      }`,
+      prefetch: false,
+      fetchPolicy: 'network-only',
+      update: (data) => cloneDeep(data.mailConfig),
+      watchLoading (isLoading) {
+        this.loading = isLoading
+        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-refresh')
+      }
+    }
   }
-  // apollo: {
-  //   config: {
-  //     query: gql`{ test }`,
-  //     fetchPolicy: 'network-only',
-  //     update: (data) => cloneDeep(data.mail.config),
-  //     watchLoading (isLoading) {
-  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-refresh')
-  //     }
-  //   }
-  // }
 }
 </script>
 

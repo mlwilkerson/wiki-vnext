@@ -12,8 +12,8 @@ directive @auth(requires: [String]) on QUERY | FIELD_DEFINITION | ARGUMENT_DEFIN
 
 # Generic Key Value Pair
 type KeyValuePair {
-  key: String!
-  value: String!
+  key: String
+  value: String
 }
 # General Key Value Pair Input
 input KeyValuePairInput {

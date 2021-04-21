@@ -12,7 +12,7 @@
           flat
           color='grey'
           type='a'
-          href='https://docs.js.wiki/groups'
+          href='https://docs.js.wiki/admin/groups'
           target='_blank'
           )
         q-btn.q-mr-sm.acrylic-btn(
@@ -98,10 +98,15 @@ import Vue from 'vue'
 import { copyToClipboard } from 'quasar'
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:groups.title')
+    }
+  },
   data () {
     return {
       groups: [],
-      loading: false
+      loading: true
     }
   },
   computed: {
@@ -205,6 +210,7 @@ export default {
           }
         }
       `,
+      prefetch: false,
       fetchPolicy: 'network-only',
       update: (data) => data.groups,
       watchLoading (isLoading) {

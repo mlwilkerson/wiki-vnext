@@ -2,6 +2,7 @@ const graphHelper = require('../../helpers/graph')
 const safeRegex = require('safe-regex')
 const _ = require('lodash')
 const gql = require('graphql')
+const { v4: uuid } = require('uuid')
 
 /* global WIKI */
 
@@ -84,7 +85,10 @@ module.exports = {
       const group = await WIKI.models.groups.query().insertAndFetch({
         name: args.name,
         permissions: JSON.stringify(WIKI.data.groups.defaultPermissions),
-        pageRules: JSON.stringify(WIKI.data.groups.defaultPageRules),
+        rules: JSON.stringify(WIKI.data.groups.defaultRules.map(r => ({
+          ...r,
+          id: uuid()
+        }))),
         isSystem: false
       })
       await WIKI.auth.reloadGroups()

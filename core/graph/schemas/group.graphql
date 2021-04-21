@@ -20,7 +20,7 @@ extend type Mutation {
     name: String!
     redirectOnLogin: String!
     permissions: [String]!
-    pageRules: [PageRuleInput]!
+    rules: [GroupRuleInput]!
   ): DefaultResponse @auth(requires: ["write:groups", "manage:groups", "manage:system"])
 
   deleteGroup(
@@ -53,35 +53,40 @@ type Group {
   isSystem: Boolean
   redirectOnLogin: String
   permissions: [String]
-  pageRules: [PageRule]
+  rules: [GroupRule]
   users: [UserMinimal]
   userCount: Int
   createdAt: Date
   updatedAt: Date
 }
 
-type PageRule {
-  id: String
+type GroupRule {
+  id: UUID
+  name: String
   deny: Boolean
-  match: PageRuleMatch
+  match: GroupRuleMatch
   roles: [String]
   path: String
   locales: [String]
+  sites: [UUID]
 }
 
-input PageRuleInput {
-  id: String!
+input GroupRuleInput {
+  id: UUID!
+  name: String!
   deny: Boolean!
-  match: PageRuleMatch!
+  match: GroupRuleMatch!
   roles: [String]!
   path: String!
   locales: [String]!
+  sites: [UUID]
 }
 
-enum PageRuleMatch {
+enum GroupRuleMatch {
   START
   EXACT
   END
   REGEX
   TAG
+  TAGALL
 }

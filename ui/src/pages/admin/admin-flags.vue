@@ -28,7 +28,7 @@
         q-card.shadow-1.q-py-sm
           q-item
             q-item-section
-              q-card.bg-red.text-white.rounded-borders(flat)
+              q-card.bg-negative.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
                   q-card-section.col-auto.q-pr-none
                     q-icon(name='las la-exclamation-triangle', size='md')
@@ -99,8 +99,14 @@ import gql from 'graphql-tag'
 import _transform from 'lodash/transform'
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:flags.title')
+    }
+  },
   data () {
     return {
+      loading: false,
       flags: {
         ldapdebug: false,
         sqllog: false,

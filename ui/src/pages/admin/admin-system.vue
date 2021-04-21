@@ -74,7 +74,7 @@
                 )
             q-item-section
               q-item-label Database
-              q-item-label(caption): strong.text-primary.font-robotomono {{ info.dbType }} {{dbVersion}}
+              q-item-label(caption): strong.text-primary.font-robotomono PostgreSQL {{dbVersion}}
           q-separator(inset)
           q-item
             q-item-section(avatar)
@@ -215,6 +215,11 @@ export default {
   components: {
     // SelfBuildingSquareSpinner
   },
+  meta () {
+    return {
+      title: this.$t('admin:system.title')
+    }
+  },
   data () {
     return {
       isUpgrading: false,
@@ -307,29 +312,26 @@ export default {
     info: {
       query: gql`
         query {
-          system {
-            info {
-              configFile
-              cpuCores
-              currentVersion
-              dbHost
-              dbType
-              dbVersion
-              hostname
-              latestVersion
-              latestVersionReleaseDate
-              nodeVersion
-              operatingSystem
-              platform
-              ramTotal
-              upgradeCapable
-              workingDirectory
-            }
+          systemInfo {
+            configFile
+            cpuCores
+            currentVersion
+            dbHost
+            dbVersion
+            hostname
+            latestVersion
+            latestVersionReleaseDate
+            nodeVersion
+            operatingSystem
+            platform
+            ramTotal
+            upgradeCapable
+            workingDirectory
           }
         }
       `,
       fetchPolicy: 'network-only',
-      update: (data) => data.system.info,
+      update: (data) => data.systemInfo,
       watchLoading (isLoading) {
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-system-refresh')
       }

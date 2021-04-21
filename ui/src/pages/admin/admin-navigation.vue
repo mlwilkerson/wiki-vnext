@@ -312,6 +312,11 @@ export default {
   components: {
     draggable
   },
+  meta () {
+    return {
+      title: this.$t('admin:navigation.title')
+    }
+  },
   data () {
     return {
       loading: false,

@@ -291,6 +291,11 @@ import _get from 'lodash/get'
 import { colors } from 'quasar'
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:theme.title')
+    }
+  },
   data () {
     return {
       loading: false,

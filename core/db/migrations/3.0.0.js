@@ -86,7 +86,7 @@ exports.up = async knex => {
       table.uuid('id').notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'))
       table.string('name').notNullable()
       table.jsonb('permissions').notNullable()
-      table.jsonb('pageRules').notNullable()
+      table.jsonb('rules').notNullable()
       table.string('redirectOnLogin').notNullable().defaultTo('/')
       table.boolean('isSystem').notNullable().defaultTo(false)
       table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now())
@@ -431,22 +431,23 @@ exports.up = async knex => {
       id: groupAdminId,
       name: 'Administrators',
       permissions: JSON.stringify(['manage:system']),
-      pageRules: JSON.stringify([]),
+      rules: JSON.stringify([]),
       isSystem: true
     },
     {
       id: groupGuestId,
       name: 'Guests',
       permissions: JSON.stringify(['read:pages', 'read:assets', 'read:comments']),
-      pageRules: JSON.stringify([
+      rules: JSON.stringify([
         {
-          id: 'guest',
+          id: uuid(),
+          name: 'Default Rule',
           roles: ['read:pages', 'read:assets', 'read:comments'],
           match: 'START',
           deny: true,
           path: '',
           locales: [],
-          comment: 'Default Rule'
+          sites: []
         }
       ]),
       isSystem: true

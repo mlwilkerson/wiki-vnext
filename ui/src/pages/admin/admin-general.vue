@@ -11,7 +11,7 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/theming'
+          href='https://docs.js.wiki/admin/general'
           target='_blank'
           )
         q-btn(
@@ -266,11 +266,10 @@
             q-item-section.col-auto
               q-btn(
                 label='Upload'
-                glossy
+                unelevated
                 icon='las la-upload'
                 color='primary'
                 text-color='white'
-                push
               )
           q-separator.q-my-sm(inset)
           q-item
@@ -286,11 +285,10 @@
             q-item-section.col-auto
               q-btn(
                 label='Upload'
-                glossy
+                unelevated
                 icon='las la-upload'
                 color='primary'
                 text-color='white'
-                push
               )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -361,7 +359,7 @@
                 dense
                 :aria-label='$t(`admin:general.defaultDateFormat`)'
                 :options=`[
-                  { label: this.$t('profile:localeDefault'), value: '' },
+                  { label: $t('profile:localeDefault'), value: '' },
                   { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
                   { label: 'DD.MM.YYYY', value: 'DD.MM.YYYY' },
                   { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },

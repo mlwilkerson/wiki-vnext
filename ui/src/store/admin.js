@@ -11,7 +11,10 @@ const state = {
     pagesTotal: 0,
     usersTotal: 0
   },
-  sites: []
+  sites: [],
+  locales: [
+    { code: '', name: 'English' }
+  ]
 }
 
 export default {

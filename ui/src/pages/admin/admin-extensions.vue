@@ -49,6 +49,11 @@
 import gql from 'graphql-tag'
 
 export default {
+  meta () {
+    return {
+      title: this.$t('admin:extensions.title')
+    }
+  },
   data () {
     return {
       loading: false,
@@ -63,19 +68,17 @@ export default {
     extensions: {
       query: gql`
         {
-          system {
-            extensions {
-              key
-              title
-              description
-              isInstalled
-              isCompatible
-            }
+          systemExtensions {
+            key
+            title
+            description
+            isInstalled
+            isCompatible
           }
         }
       `,
       fetchPolicy: 'network-only',
-      update: (data) => data.system.extensions,
+      update: (data) => data.systemExtensions,
       watchLoading (isLoading) {
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-extensions-refresh')
       }
