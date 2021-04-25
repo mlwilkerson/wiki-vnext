@@ -5,8 +5,8 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-process.svg', alt='Rendering', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:rendering.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin:rendering.subtitle') }}
+            .headline.primary--text.animated.fadeInLeft {{ $t('admin.rendering.title') }}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin.rendering.subtitle') }}
           v-spacer
           v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/rendering', target='_blank')
             v-icon mdi-help-circle
@@ -14,7 +14,7 @@
             v-icon mdi-refresh
           v-btn.animated.fadeInDown(color='success', @click='save', depressed, large)
             v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex.animated.fadeInUp(lg3, xs12)
         v-toolbar(

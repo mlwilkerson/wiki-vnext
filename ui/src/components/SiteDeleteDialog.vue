@@ -3,26 +3,26 @@
     q-card(style='min-width: 350px; max-width: 450px;')
       q-card-section.card-header
         q-icon(name='las la-trash', left, size='sm')
-        span {{$t(`admin:sites.delete`)}}
+        span {{$t(`admin.sites.delete`)}}
       q-card-section
         .text-body2
-          i18n(path='admin:sites.deleteConfirm')
+          i18n(path='admin.sites.deleteConfirm')
             template(v-slot:siteTitle)
               strong {{site.title}}
         .text-body2.q-mt-md
-          strong.text-negative {{$t(`admin:sites.deleteConfirmWarn`)}}
+          strong.text-negative {{$t(`admin.sites.deleteConfirmWarn`)}}
       q-card-actions.card-actions
         q-space
         q-btn.acrylic-btn(
           flat
-          :label='$t(`common:actions.cancel`)'
+          :label='$t(`common.actions.cancel`)'
           color='grey'
           padding='xs md'
           @click='hide'
           )
         q-btn(
           unelevated
-          :label='$t(`common:actions.delete`)'
+          :label='$t(`common.actions.delete`)'
           color='negative'
           padding='xs md'
           @click='confirm'
@@ -72,7 +72,7 @@ export default {
         if (resp?.data?.deleteSite?.status?.succeeded) {
           this.$q.notify({
             type: 'positive',
-            message: this.$t('admin:sites.deleteSuccess')
+            message: this.$t('admin.sites.deleteSuccess')
           })
           this.$store.set('admin/sites', this.$store.get('admin/sites').filter(s => s.id !== siteId))
           this.$emit('ok')

@@ -12,16 +12,16 @@
           v-spacer
           template(v-if='page.isPublished')
             status-indicator.mr-3(positive, pulse)
-            .caption.green--text {{$t('common:page.published')}}
+            .caption.green--text {{$t('common.page.published')}}
           template(v-else)
             status-indicator.mr-3(negative, pulse)
-            .caption.red--text {{$t('common:page.unpublished')}}
+            .caption.red--text {{$t('common.page.unpublished')}}
           template(v-if='page.isPrivate')
             status-indicator.mr-3.ml-4(intermediary, pulse)
-            .caption.deep-orange--text {{$t('common:page.private')}}
+            .caption.deep-orange--text {{$t('common.page.private')}}
           template(v-else)
             status-indicator.mr-3.ml-4(active, pulse)
-            .caption.blue--text {{$t('common:page.global')}}
+            .caption.blue--text {{$t('common.page.global')}}
           v-spacer
           v-btn.animated.fadeInDown.wait-p3s(color='grey', icon, outlined, to='/pages')
             v-icon mdi-arrow-left
@@ -72,19 +72,19 @@
                 v-card
                   .dialog-header.is-short.is-red
                     v-icon.mr-2(color='white') mdi-file-document-box-remove-outline
-                    span {{$t('common:page.delete')}}
+                    span {{$t('common.page.delete')}}
                   v-card-text.pt-5
-                    i18next.body-2(path='common:page.deleteTitle', tag='div')
+                    i18next.body-2(path='common.page.deleteTitle', tag='div')
                       span.red--text.text--darken-2(place='title') {{page.title}}
-                    .caption {{$t('common:page.deleteSubtitle')}}
+                    .caption {{$t('common.page.deleteSubtitle')}}
                     v-chip.mt-3.ml-0.mr-1(label, color='red lighten-4', disabled, small)
                       .caption.red--text.text--darken-2 {{page.locale.toUpperCase()}}
                     v-chip.mt-3.mx-0(label, color='red lighten-5', disabled, small)
                       span.red--text.text--darken-2 /{{page.path}}
                   v-card-chin
                     v-spacer
-                    v-btn(text, @click='deletePageDialog = false', :disabled='loading') {{$t('common:actions.cancel')}}
-                    v-btn(color='red darken-2', @click='deletePage', :loading='loading').white--text {{$t('common:actions.delete')}}
+                    v-btn(text, @click='deletePageDialog = false', :disabled='loading') {{$t('common.actions.cancel')}}
+                    v-btn(color='red darken-2', @click='deletePage', :loading='loading').white--text {{$t('common.actions.delete')}}
           v-btn.animated.fadeInDown(color='success', large, depressed, disabled)
             v-icon(left) mdi-check
             span Save Changes
@@ -157,7 +157,7 @@
 
     v-layout(row, align-center, v-else)
       v-progress-circular(indeterminate, width='2', color='grey')
-      .body-2.pl-3.grey--text {{ $t('common:page.loading') }}
+      .body-2.pl-3.grey--text {{ $t('common.page.loading') }}
 
 </template>
 <script>
@@ -197,7 +197,7 @@ export default {
           })
           this.$router.replace('/pages')
         } else {
-          throw new Error(_.get(resp, 'data.pages.delete.responseResult.message', this.$t('common:error.unexpected')))
+          throw new Error(_.get(resp, 'data.pages.delete.responseResult.message', this.$t('common.error.unexpected')))
         }
       } catch (err) {
         this.$store.commit('pushGraphError', err)

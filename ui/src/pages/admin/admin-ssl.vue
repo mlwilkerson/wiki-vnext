@@ -5,8 +5,8 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-validation.svg', alt='SSL', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:ssl.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft {{ $t('admin:ssl.subtitle') }}
+            .headline.primary--text.animated.fadeInLeft {{ $t('admin.ssl.title') }}
+            .subtitle-1.grey--text.animated.fadeInLeft {{ $t('admin.ssl.subtitle') }}
           v-spacer
           v-btn.animated.fadeInDown(
             v-if='info.sslProvider === `letsencrypt` && info.httpsPort > 0'
@@ -18,54 +18,54 @@
             :loading='loadingRenew'
             )
             v-icon(left) mdi-cached
-            span {{$t('admin:ssl.renewCertificate')}}
+            span {{$t('admin.ssl.renewCertificate')}}
         v-form.pt-3
           v-layout(row wrap)
             v-flex(lg6 xs12)
               v-card.animated.fadeInUp
-                v-subheader {{ $t('admin:ssl.currentState') }}
+                v-subheader {{ $t('admin.ssl.currentState') }}
                 v-list(two-line, dense)
                   v-list-item
                     v-list-item-avatar
                       v-icon.indigo.white--text mdi-handshake
                     v-list-item-content
-                      v-list-item-title {{ $t(`admin:ssl.provider`) }}
+                      v-list-item-title {{ $t(`admin.ssl.provider`) }}
                       v-list-item-subtitle {{ providerTitle }}
                   template(v-if='info.sslProvider === `letsencrypt` && info.httpsPort > 0')
                     v-list-item
                       v-list-item-avatar
                         v-icon.indigo.white--text mdi-application
                       v-list-item-content
-                        v-list-item-title {{ $t(`admin:ssl.domain`) }}
+                        v-list-item-title {{ $t(`admin.ssl.domain`) }}
                         v-list-item-subtitle {{ info.sslDomain }}
                     v-list-item
                       v-list-item-avatar
                         v-icon.indigo.white--text mdi-at
                       v-list-item-content
-                        v-list-item-title {{ $t('admin:ssl.subscriberEmail') }}
+                        v-list-item-title {{ $t('admin.ssl.subscriberEmail') }}
                         v-list-item-subtitle {{ info.sslSubscriberEmail }}
                     v-list-item
                       v-list-item-avatar
                         v-icon.indigo.white--text mdi-calendar-remove-outline
                       v-list-item-content
-                        v-list-item-title {{ $t('admin:ssl.expiration') }}
+                        v-list-item-title {{ $t('admin.ssl.expiration') }}
                         v-list-item-subtitle {{ info.sslExpirationDate | moment('calendar') }}
                     v-list-item
                       v-list-item-avatar
                         v-icon.indigo.white--text mdi-traffic-light
                       v-list-item-content
-                        v-list-item-title {{ $t(`admin:ssl.status`) }}
+                        v-list-item-title {{ $t(`admin.ssl.status`) }}
                         v-list-item-subtitle {{ info.sslStatus }}
 
             v-flex(lg6 xs12)
               v-card.animated.fadeInUp.wait-p2s
-                v-subheader {{ $t('admin:ssl.ports') }}
+                v-subheader {{ $t('admin.ssl.ports') }}
                 v-list(two-line, dense)
                   v-list-item
                     v-list-item-avatar
                       v-icon.blue.white--text mdi-lock-open-variant
                     v-list-item-content
-                      v-list-item-title {{ $t(`admin:ssl.httpPort`) }}
+                      v-list-item-title {{ $t(`admin.ssl.httpPort`) }}
                       v-list-item-subtitle {{ info.httpPort }}
                   template(v-if='info.httpsPort > 0')
                     v-divider
@@ -73,14 +73,14 @@
                       v-list-item-avatar
                         v-icon.green.white--text mdi-lock
                       v-list-item-content
-                        v-list-item-title {{ $t(`admin:ssl.httpsPort`) }}
+                        v-list-item-title {{ $t(`admin.ssl.httpsPort`) }}
                         v-list-item-subtitle {{ info.httpsPort }}
                     v-divider
                     v-list-item
                       v-list-item-avatar
                         v-icon.indigo.white--text mdi-sign-direction
                       v-list-item-content
-                        v-list-item-title {{ $t(`admin:ssl.httpPortRedirect`) }}
+                        v-list-item-title {{ $t(`admin.ssl.httpPortRedirect`) }}
                         v-list-item-subtitle {{ info.httpRedirection }}
                       v-list-item-action
                         v-btn.red--text(
@@ -92,7 +92,7 @@
                           :loading='loadingRedir'
                           )
                           v-icon(left) mdi-power
-                          span {{$t('admin:ssl.httpPortRedirectTurnOff')}}
+                          span {{$t('admin.ssl.httpPortRedirectTurnOff')}}
                         v-btn.green--text(
                           v-else
                           depressed
@@ -102,7 +102,7 @@
                           :loading='loadingRedir'
                           )
                           v-icon(left) mdi-power
-                          span {{$t('admin:ssl.httpPortRedirectTurnOn')}}
+                          span {{$t('admin.ssl.httpPortRedirectTurnOn')}}
 
     v-dialog(
       v-model='loadingRenew'
@@ -117,8 +117,8 @@
             color='#FFF'
             style='margin: 0 auto;'
           )
-          .mt-5.body-1.white--text {{$t('admin:ssl.renewCertificateLoadingTitle')}}
-          .caption.mt-4 {{$t('admin:ssl.renewCertificateLoadingSubtitle')}}
+          .mt-5.body-1.white--text {{$t('admin.ssl.renewCertificateLoadingTitle')}}
+          .caption.mt-4 {{$t('admin.ssl.renewCertificateLoadingSubtitle')}}
 
 </template>
 
@@ -152,11 +152,11 @@ export default {
     providerTitle () {
       switch (this.info.sslProvider) {
         case 'custom':
-          return this.$t('admin:ssl.providerCustomCertificate')
+          return this.$t('admin.ssl.providerCustomCertificate')
         case 'letsencrypt':
-          return this.$t('admin:ssl.providerLetsEncrypt')
+          return this.$t('admin.ssl.providerLetsEncrypt')
         default:
-          return this.$t('admin:ssl.providerDisabled')
+          return this.$t('admin.ssl.providerDisabled')
       }
     }
   },
@@ -189,7 +189,7 @@ export default {
         })
         this.$store.commit('showNotification', {
           style: 'success',
-          message: this.$t('admin:ssl.httpPortRedirectSaveSuccess'),
+          message: this.$t('admin.ssl.httpPortRedirectSaveSuccess'),
           icon: 'check'
         })
       } catch (err) {
@@ -224,7 +224,7 @@ export default {
         if (resp.succeeded) {
           this.$store.commit('showNotification', {
             style: 'success',
-            message: this.$t('admin:ssl.renewCertificateSuccess'),
+            message: this.$t('admin.ssl.renewCertificateSuccess'),
             icon: 'check'
           })
         } else {

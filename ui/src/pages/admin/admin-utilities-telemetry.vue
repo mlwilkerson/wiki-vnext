@@ -1,7 +1,7 @@
 <template lang='pug'>
   v-card
     v-toolbar(flat, color='primary', dark, dense)
-      .subtitle-1 {{ $t('admin:utilities.telemetryTitle') }}
+      .subtitle-1 {{ $t('admin.utilities.telemetryTitle') }}
     v-form
       v-card-text
         .subtitle-2 What is telemetry?

@@ -4,7 +4,7 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-people.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:groups.edit') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.groups.edit') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{group.name}}
       .col-auto
         q-btn.acrylic-btn.q-mr-sm(
@@ -24,7 +24,7 @@
         q-btn(
           unelevated
           icon='mdi-check'
-          :label='$t(`common:actions.apply`)'
+          :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
           :loading='loading'
@@ -66,18 +66,18 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:groups.name`)}}
-              q-item-label(caption) {{$t(`admin:groups.nameHint`)}}
+              q-item-label {{$t(`admin.groups.name`)}}
+              q-item-label(caption) {{$t(`admin.groups.nameHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='group.name'
                 dense
                 :rules=`[
-                  val => /^[^<>"]+$/.test(val) || $t('admin:groups.nameInvalidChars')
+                  val => /^[^<>"]+$/.test(val) || $t('admin.groups.nameInvalidChars')
                 ]`
                 hide-bottom-space
-                :aria-label='$t(`admin:groups.name`)'
+                :aria-label='$t(`admin.groups.name`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -88,14 +88,14 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:groups.redirectOnLogin`)}}
-              q-item-label(caption) {{$t(`admin:groups.redirectOnLoginHint`)}}
+              q-item-label {{$t(`admin.groups.redirectOnLogin`)}}
+              q-item-label(caption) {{$t(`admin.groups.redirectOnLoginHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='group.redirectOnLogin'
                 dense
-                :aria-label='$t(`admin:groups.redirectOnLogin`)'
+                :aria-label='$t(`admin.groups.redirectOnLogin`)'
                 )
         //-----------------------------
         //- RULES
@@ -105,7 +105,7 @@
             q-card.shadow-1.q-pb-sm
               .flex.justify-between
                 q-card-section
-                  .text-subtitle1 {{$t(`admin:groups.rules`)}}
+                  .text-subtitle1 {{$t(`admin.groups.rules`)}}
                 q-card-section
                   q-btn(
                     unelevated
@@ -135,23 +135,22 @@
                     q-card-section.admin-groups-rule-card-permissions(:class='rule.deny ? `is-deny` : `is-allow`')
                       q-select.q-mt-xs(
                         standout
-                        v-model='rule.sites'
+                        v-model='rule.roles'
                         emit-value
                         map-options
                         dense
-                        :aria-label='$t(`admin:groups.ruleSites`)'
+                        :aria-label='$t(`admin.groups.ruleSites`)'
                         :options='rules'
+                        placeholder='Select permissions...'
                         option-value='permission'
                         option-label='title'
+                        options-dense
                         multiple
-                        behavior='dialog'
                         use-chips
                         stack-label
                         )
                         template(v-slot:option='{ itemProps, itemEvents, opt, selected, toggleOption }')
                           q-item(v-bind='itemProps', v-on='itemEvents')
-                            q-item-section
-                              q-item-label {{opt.title}}
                             q-item-section(side)
                               q-toggle(
                                 :value='selected'
@@ -161,10 +160,20 @@
                                 unchecked-icon='las la-times'
                                 :aria-label='opt.label'
                               )
+                            //- q-item-section(side, style='flex-basis: 150px;')
+                            //-   q-chip.text-caption(
+                            //-     square
+                            //-     color='teal'
+                            //-     text-color='white'
+                            //-     dense
+                            //-   ) {{opt.permission}}
+                            q-item-section
+                              q-item-label {{opt.title}}
+                              q-item-label(caption) {{opt.hint}}
                       q-btn.acrylic-btn.q-ml-md(
                         flat
                         icon='las la-trash'
-                        :color='rule.deny ? `negative` : `positive`'
+                        color='negative'
                         padding='sm sm'
                         size='md'
                       )
@@ -177,7 +186,7 @@
                           emit-value
                           map-options
                           dense
-                          :aria-label='$t(`admin:groups.ruleSites`)'
+                          :aria-label='$t(`admin.groups.ruleSites`)'
                           :options='sites'
                           option-value='id'
                           option-label='title'
@@ -204,7 +213,7 @@
                           emit-value
                           map-options
                           dense
-                          :aria-label='$t(`admin:groups.ruleLocales`)'
+                          :aria-label='$t(`admin.groups.ruleLocales`)'
                           :options='locales'
                           option-value='code'
                           option-label='name'
@@ -233,22 +242,23 @@
                           emit-value
                           map-options
                           dense
-                          :aria-label='$t(`admin:groups.ruleMatch`)'
+                          :aria-label='$t(`admin.groups.ruleMatch`)'
                           :options=`[
-                            { label: $t('admin:groups.ruleMatchStart'), value: 'START' },
-                            { label: $t('admin:groups.ruleMatchEnd'), value: 'END' },
-                            { label: $t('admin:groups.ruleMatchRegex'), value: 'REGEX' },
-                            { label: $t('admin:groups.ruleMatchTag'), value: 'TAG' },
-                            { label: $t('admin:groups.ruleMatchTagAll'), value: 'TAGALL' },
-                            { label: $t('admin:groups.ruleMatchExact'), value: 'EXACT' }
+                            { label: $t('admin.groups.ruleMatchStart'), value: 'START' },
+                            { label: $t('admin.groups.ruleMatchEnd'), value: 'END' },
+                            { label: $t('admin.groups.ruleMatchRegex'), value: 'REGEX' },
+                            { label: $t('admin.groups.ruleMatchTag'), value: 'TAG' },
+                            { label: $t('admin.groups.ruleMatchTagAll'), value: 'TAGALL' },
+                            { label: $t('admin.groups.ruleMatchExact'), value: 'EXACT' }
                           ]`
                         )
                         q-input.q-mt-sm(
                           standout
                           v-model='rule.path'
                           dense
-                          prefix='/'
-                          :aria-label='$t(`admin:groups.rulePath`)'
+                          :prefix='[`START`, `REGEX`, `EXACT`].includes(rule.match) ? `/` : null'
+                          :suffix='rule.match === `REGEX` ? `/` : null'
+                          :aria-label='$t(`admin.groups.rulePath`)'
                         )
         //-----------------------------
         //- PERMISSIONS
@@ -257,7 +267,7 @@
           .col-12.col-lg-7
             q-card.shadow-1.q-pb-sm
               q-card-section
-                .text-subtitle1 {{$t(`admin:groups.permisions`)}}
+                .text-subtitle1 {{$t(`admin.groups.permisions`)}}
               template(v-for='(perm, idx) of permissions')
                 q-item(tag='label', v-ripple, :key='perm.permission')
                   q-item-section.items-center(style='flex: 0 0 40px;')
@@ -276,7 +286,7 @@
                       color='primary'
                       checked-icon='las la-check'
                       unchecked-icon='las la-times'
-                      :aria-label='$t(`admin:general.allowComments`)'
+                      :aria-label='$t(`admin.general.allowComments`)'
                       )
                 q-separator.q-my-sm(inset, v-if='idx < permissions.length - 1')
 
@@ -291,7 +301,7 @@ import { v4 as uuid } from 'uuid'
 export default {
   meta () {
     return {
-      title: this.$t('admin:groups.edit')
+      title: this.$t('admin.groups.edit')
     }
   },
   data () {

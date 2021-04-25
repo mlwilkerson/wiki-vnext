@@ -3,7 +3,7 @@
     q-card(style='min-width: 350px;')
       q-card-section.card-header
         q-icon(name='las la-plus', left)
-        span {{$t(`admin:sites.new`)}}
+        span {{$t(`admin.sites.new`)}}
       q-card-section
         q-form.q-gutter-md(ref='createSiteForm')
           q-input(
@@ -11,12 +11,12 @@
             v-model='siteName'
             dense
             :rules=`[
-              val => val.length > 0 || $t('admin:sites.nameMissing'),
-              val => /^[^<>"]+$/.test(val) || $t('admin:sites.nameInvalidChars')
+              val => val.length > 0 || $t('admin.sites.nameMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin.sites.nameInvalidChars')
             ]`
             hide-bottom-space
-            :label='$t(`common:field.name`)'
-            :aria-label='$t(`common:field.name`)'
+            :label='$t(`common.field.name`)'
+            :aria-label='$t(`common.field.name`)'
             autofocus
             )
           q-input(
@@ -24,25 +24,25 @@
             v-model='siteHostname'
             dense
             :rules=`[
-              val => val.length > 0 || $t('admin:sites.hostnameMissing'),
-              val => /^(\\*)|([a-z0-9\-.:]+)$/.test(val) || $t('admin:sites.hostnameInvalidChars')
+              val => val.length > 0 || $t('admin.sites.hostnameMissing'),
+              val => /^(\\*)|([a-z0-9\-.:]+)$/.test(val) || $t('admin.sites.hostnameInvalidChars')
             ]`
             hide-bottom-space
-            :label='$t(`admin:sites.hostname`)'
-            :aria-label='$t(`admin:sites.hostname`)'
+            :label='$t(`admin.sites.hostname`)'
+            :aria-label='$t(`admin.sites.hostname`)'
             )
       q-card-actions.card-actions
         q-space
         q-btn.acrylic-btn(
           flat
-          :label='$t(`common:actions.cancel`)'
+          :label='$t(`common.actions.cancel`)'
           color='grey'
           padding='xs md'
           @click='hide'
           )
         q-btn(
           unelevated
-          :label='$t(`common:actions.create`)'
+          :label='$t(`common.actions.create`)'
           color='primary'
           padding='xs md'
           @click='create'
@@ -76,7 +76,7 @@ export default {
       try {
         const isFormValid = await this.$refs.createSiteForm.validate(true)
         if (!isFormValid) {
-          throw new Error(this.$t('admin:sites.createInvalidData'))
+          throw new Error(this.$t('admin.sites.createInvalidData'))
         }
         const resp = await this.$apollo.mutate({
           mutation: gql`
@@ -103,7 +103,7 @@ export default {
         if (resp?.data?.createSite?.status?.succeeded) {
           this.$q.notify({
             type: 'positive',
-            message: this.$t('admin:sites.createSuccess')
+            message: this.$t('admin.sites.createSuccess')
           })
           await this.$store.dispatch('admin/fetchSites')
           this.$emit('ok')

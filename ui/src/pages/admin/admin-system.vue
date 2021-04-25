@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-processor.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:system.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:system.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.system.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.system.subtitle') }}
       .col-auto
         q-btn(
           outline
@@ -31,7 +31,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.currentVersion') }}
+              q-item-label {{ $t('admin.system.currentVersion') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.currentVersion }}
           q-separator(inset)
           q-item
@@ -43,7 +43,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.latestVersion') }}
+              q-item-label {{ $t('admin.system.latestVersion') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.latestVersion }}
 
         //- -----------------------
@@ -94,7 +94,7 @@
         //- -----------------------
         q-card.q-pb-sm.shadow-1
           q-card-section
-            .text-subtitle1 {{ $t('admin:system.hostInfo') }}
+            .text-subtitle1 {{ $t('admin.system.hostInfo') }}
           q-item
             q-item-section(avatar)
               q-avatar(
@@ -104,7 +104,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.os') }}
+              q-item-label {{ $t('admin.system.os') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
           q-separator(inset)
           q-item
@@ -116,7 +116,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.hostname') }}
+              q-item-label {{ $t('admin.system.hostname') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.hostname }}
           q-separator(inset)
           q-item
@@ -128,7 +128,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.cpuCores') }}
+              q-item-label {{ $t('admin.system.cpuCores') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.cpuCores }}
           q-separator(inset)
           q-item
@@ -140,7 +140,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.totalRAM') }}
+              q-item-label {{ $t('admin.system.totalRAM') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.ramTotal }}
           q-separator(inset)
           q-item
@@ -152,7 +152,7 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.workingDirectory') }}
+              q-item-label {{ $t('admin.system.workingDirectory') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.workingDirectory }}
           q-separator(inset)
           q-item
@@ -164,10 +164,10 @@
                 color='primary'
                 )
             q-item-section
-              q-item-label {{ $t('admin:system.configFile') }}
+              q-item-label {{ $t('admin.system.configFile') }}
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.configFile }}
 
-    //-                 v-list-item-action-text {{ $t('admin:system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
+    //-                 v-list-item-action-text {{ $t('admin.system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
     //-           v-card-actions(v-if='info.upgradeCapable && !isLatestVersion && info.platform === `docker`', :class='$vuetify.theme.dark ? `grey darken-3-d5` : `indigo lighten-5`')
     //-             .caption.indigo--text.pl-3(:class='$vuetify.theme.dark ? `text--lighten-4` : ``') Wiki.js can perform the upgrade to the latest version for you.
     //-             v-spacer
@@ -217,7 +217,7 @@ export default {
   },
   meta () {
     return {
-      title: this.$t('admin:system.title')
+      title: this.$t('admin.system.title')
     }
   },
   data () {
@@ -261,7 +261,7 @@ export default {
     async refresh () {
       await this.$apollo.queries.info.refetch()
       this.$store.commit('showNotification', {
-        message: this.$t('admin:system.refreshSuccess'),
+        message: this.$t('admin.system.refreshSuccess'),
         style: 'success',
         icon: 'cached'
       })

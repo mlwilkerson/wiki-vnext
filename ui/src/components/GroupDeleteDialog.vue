@@ -3,26 +3,26 @@
     q-card(style='min-width: 350px; max-width: 450px;')
       q-card-section.card-header
         q-icon(name='las la-trash', left, size='sm')
-        span {{$t(`admin:groups.delete`)}}
+        span {{$t(`admin.groups.delete`)}}
       q-card-section
         .text-body2
-          i18n(path='admin:groups.deleteConfirm')
+          i18n(path='admin.groups.deleteConfirm')
             template(v-slot:groupName)
               strong {{group.name}}
         .text-body2.q-mt-md
-          strong.text-negative {{$t(`admin:groups.deleteConfirmWarn`)}}
+          strong.text-negative {{$t(`admin.groups.deleteConfirmWarn`)}}
       q-card-actions.card-actions
         q-space
         q-btn.acrylic-btn(
           flat
-          :label='$t(`common:actions.cancel`)'
+          :label='$t(`common.actions.cancel`)'
           color='grey'
           padding='xs md'
           @click='hide'
           )
         q-btn(
           unelevated
-          :label='$t(`common:actions.delete`)'
+          :label='$t(`common.actions.delete`)'
           color='negative'
           padding='xs md'
           @click='confirm'
@@ -71,7 +71,7 @@ export default {
         if (resp?.data?.deleteGroup?.status?.succeeded) {
           this.$q.notify({
             type: 'positive',
-            message: this.$t('admin:groups.deleteSuccess')
+            message: this.$t('admin.groups.deleteSuccess')
           })
           this.$emit('ok')
           this.hide()

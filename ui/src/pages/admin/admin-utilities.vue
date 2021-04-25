@@ -5,21 +5,21 @@
         .admin-header
           img(src='/_assets/svg/icon-maintenance.svg', alt='Utilities', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text {{$t('admin:utilities.title')}}
-            .subtitle-1.grey--text {{$t('admin:utilities.subtitle')}}
+            .headline.primary--text {{$t('admin.utilities.title')}}
+            .subtitle-1.grey--text {{$t('admin.utilities.subtitle')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp
           v-toolbar(flat, color='primary', dark, dense)
-            .subtitle-1 {{$t('admin:utilities.tools')}}
+            .subtitle-1 {{$t('admin.utilities.tools')}}
           v-list(two-line, dense).py-0
             template(v-for='(tool, idx) in tools')
               v-list-item(:key='tool.key', @click='selectedTool = tool.key', :disabled='!tool.isAvailable')
                 v-list-item-avatar
                   v-icon(:color='!tool.isAvailable ? `grey lighten-1` : (selectedTool === tool.key ? `blue ` : `grey darken-1`)') {{ tool.icon }}
                 v-list-item-content
-                  v-list-item-title.body-2(:class='!tool.isAvailable ? `grey--text` : (selectedTool === tool.key ? `primary--text` : ``)') {{ $t('admin:utilities.' + tool.i18nKey + 'Title') }}
-                  v-list-item-subtitle: .caption(:class='!tool.isAvailable ? `grey--text text--lighten-1` : (selectedTool === tool.key ? `blue--text ` : ``)') {{ $t('admin:utilities.' + tool.i18nKey + 'Subtitle') }}
+                  v-list-item-title.body-2(:class='!tool.isAvailable ? `grey--text` : (selectedTool === tool.key ? `primary--text` : ``)') {{ $t('admin.utilities.' + tool.i18nKey + 'Title') }}
+                  v-list-item-subtitle: .caption(:class='!tool.isAvailable ? `grey--text text--lighten-1` : (selectedTool === tool.key ? `blue--text ` : ``)') {{ $t('admin.utilities.' + tool.i18nKey + 'Subtitle') }}
                 v-list-item-avatar(v-if='selectedTool === tool.key')
                   v-icon.animated.fadeInLeft(color='primary', large) mdi-chevron-right
               v-divider(v-if='idx < tools.length - 1')

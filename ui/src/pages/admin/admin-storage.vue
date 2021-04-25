@@ -5,8 +5,8 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-cloud-storage.svg', alt='Storage', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{$t('admin:storage.title')}}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{$t('admin:storage.subtitle')}}
+            .headline.primary--text.animated.fadeInLeft {{$t('admin.storage.title')}}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{$t('admin.storage.subtitle')}}
           v-spacer
           v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/storage', target='_blank')
             v-icon mdi-help-circle
@@ -14,12 +14,12 @@
             v-icon mdi-refresh
           v-btn.animated.fadeInDown(color='success', @click='save', depressed, large)
             v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp
           v-toolbar(flat, color='primary', dark, dense)
-            .subtitle-1 {{$t('admin:storage.targets')}}
+            .subtitle-1 {{$t('admin.storage.targets')}}
           v-list(two-line, dense).py-0
             template(v-for='(tgt, idx) in targets')
               v-list-item(:key='tgt.key', @click='selectedTarget = tgt.key', :disabled='!tgt.isAvailable')
@@ -36,7 +36,7 @@
 
         v-card.mt-3.animated.fadeInUp.wait-p2s
           v-toolbar(flat, :color='$vuetify.theme.dark ? `grey darken-3-l5` : `grey darken-3`', dark, dense)
-            .subtitle-1 {{$t('admin:storage.status')}}
+            .subtitle-1 {{$t('admin.storage.status')}}
             v-spacer
             looping-rhombuses-spinner(
               :animation-duration='5000'
@@ -59,25 +59,25 @@
                     v-icon(color='white') mdi-check-circle
                   v-list-item-content
                     v-list-item-title.body-2 {{tgt.title}}
-                    v-list-item-subtitle.green--text.caption {{$t('admin:storage.lastSync', { time: $options.filters.moment(tgt.lastAttempt, 'from') })}}
+                    v-list-item-subtitle.green--text.caption {{$t('admin.storage.lastSync', { time: $options.filters.moment(tgt.lastAttempt, 'from') })}}
                 template(v-else)
                   v-list-item-avatar(color='red')
                     v-icon(color='white') mdi-close-circle-outline
                   v-list-item-content
                     v-list-item-title.body-2 {{tgt.title}}
-                    v-list-item-subtitle.red--text.caption {{$t('admin:storage.lastSyncAttempt', { time: $options.filters.moment(tgt.lastAttempt, 'from') })}}
+                    v-list-item-subtitle.red--text.caption {{$t('admin.storage.lastSyncAttempt', { time: $options.filters.moment(tgt.lastAttempt, 'from') })}}
                   v-list-item-action
                     v-menu
                       template(v-slot:activator='{ on }')
                         v-btn(icon, v-on='on')
                           v-icon(color='red') mdi-information
                       v-card(width='450')
-                        v-toolbar(flat, color='red', dark, dense) {{$t('admin:storage.errorMsg')}}
+                        v-toolbar(flat, color='red', dark, dense) {{$t('admin.storage.errorMsg')}}
                         v-card-text {{tgt.message}}
 
               v-divider(v-if='n < status.length - 1')
             v-list-item(v-if='status.length < 1')
-              em {{$t('admin:storage.noTarget')}}
+              em {{$t('admin.storage.noTarget')}}
 
       v-flex(xs12, lg9)
         v-card.wiki-form.animated.fadeInUp.wait-p2s
@@ -101,13 +101,13 @@
               img(:src='target.logo', :alt='target.title')
           v-card-text
             v-form
-              i18next.body-2(path='admin:storage.targetState', tag='div', v-if='target.isEnabled')
-                v-chip(color='green', small, dark, label, place='state') {{$t('admin:storage.targetStateActive')}}
-              i18next.body-2(path='admin:storage.targetState', tag='div', v-else)
-                v-chip(color='red', small, dark, label, place='state') {{$t('admin:storage.targetStateInactive')}}
+              i18next.body-2(path='admin.storage.targetState', tag='div', v-if='target.isEnabled')
+                v-chip(color='green', small, dark, label, place='state') {{$t('admin.storage.targetStateActive')}}
+              i18next.body-2(path='admin.storage.targetState', tag='div', v-else)
+                v-chip(color='red', small, dark, label, place='state') {{$t('admin.storage.targetStateInactive')}}
               v-divider.mt-3
-              .overline.my-5 {{$t('admin:storage.targetConfig')}}
-              .body-2.ml-3(v-if='!target.config || target.config.length < 1'): em {{$t('admin:storage.noConfigOption')}}
+              .overline.my-5 {{$t('admin.storage.targetConfig')}}
+              .body-2.ml-3(v-if='!target.config || target.config.length < 1'): em {{$t('admin.storage.noConfigOption')}}
               template(v-else, v-for='cfg in target.config')
                 v-select(
                   v-if='cfg.value.type === "string" && cfg.value.enum'
@@ -155,52 +155,52 @@
                   :class='cfg.value.hint ? "mb-2" : ""'
                   )
               v-divider.mt-3
-              .overline.my-5 {{$t('admin:storage.syncDirection')}}
-              .body-2.ml-3 {{$t('admin:storage.syncDirectionSubtitle')}}
+              .overline.my-5 {{$t('admin.storage.syncDirection')}}
+              .body-2.ml-3 {{$t('admin.storage.syncDirectionSubtitle')}}
               .pr-3.pt-3
                 v-radio-group.ml-3.py-0(v-model='target.mode')
                   v-radio(
-                    :label='$t(`admin:storage.syncDirBi`)'
+                    :label='$t(`admin.storage.syncDirBi`)'
                     color='primary'
                     value='sync'
                     :disabled='target.supportedModes.indexOf(`sync`) < 0'
                   )
                   v-radio(
-                    :label='$t(`admin:storage.syncDirPush`)'
+                    :label='$t(`admin.storage.syncDirPush`)'
                     color='primary'
                     value='push'
                     :disabled='target.supportedModes.indexOf(`push`) < 0'
                   )
                   v-radio(
-                    :label='$t(`admin:storage.syncDirPull`)'
+                    :label='$t(`admin.storage.syncDirPull`)'
                     color='primary'
                     value='pull'
                     :disabled='target.supportedModes.indexOf(`pull`) < 0'
                   )
               .body-2.ml-3
-                strong {{$t('admin:storage.syncDirBi')}} #[em.red--text.text--lighten-2(v-if='target.supportedModes.indexOf(`sync`) < 0') {{$t('admin:storage.unsupported')}}]
-                .pb-3 {{$t('admin:storage.syncDirBiHint')}}
-                strong {{$t('admin:storage.syncDirPush')}} #[em.red--text.text--lighten-2(v-if='target.supportedModes.indexOf(`push`) < 0') {{$t('admin:storage.unsupported')}}]
-                .pb-3 {{$t('admin:storage.syncDirPushHint')}}
-                strong {{$t('admin:storage.syncDirPull')}} #[em.red--text.text--lighten-2(v-if='target.supportedModes.indexOf(`pull`) < 0') {{$t('admin:storage.unsupported')}}]
-                .pb-3 {{$t('admin:storage.syncDirPullHint')}}
+                strong {{$t('admin.storage.syncDirBi')}} #[em.red--text.text--lighten-2(v-if='target.supportedModes.indexOf(`sync`) < 0') {{$t('admin.storage.unsupported')}}]
+                .pb-3 {{$t('admin.storage.syncDirBiHint')}}
+                strong {{$t('admin.storage.syncDirPush')}} #[em.red--text.text--lighten-2(v-if='target.supportedModes.indexOf(`push`) < 0') {{$t('admin.storage.unsupported')}}]
+                .pb-3 {{$t('admin.storage.syncDirPushHint')}}
+                strong {{$t('admin.storage.syncDirPull')}} #[em.red--text.text--lighten-2(v-if='target.supportedModes.indexOf(`pull`) < 0') {{$t('admin.storage.unsupported')}}]
+                .pb-3 {{$t('admin.storage.syncDirPullHint')}}
 
               template(v-if='target.hasSchedule')
                 v-divider.mt-3
-                .overline.my-5 {{$t('admin:storage.syncSchedule')}}
-                .body-2.ml-3 {{$t('admin:storage.syncScheduleHint')}}
+                .overline.my-5 {{$t('admin.storage.syncSchedule')}}
+                .body-2.ml-3 {{$t('admin.storage.syncScheduleHint')}}
                 .pa-3
                   duration-picker(v-model='target.syncInterval')
-                  i18next.caption.mt-3(path='admin:storage.syncScheduleCurrent', tag='div')
+                  i18next.caption.mt-3(path='admin.storage.syncScheduleCurrent', tag='div')
                     strong(place='schedule') {{getDefaultSchedule(target.syncInterval)}}
-                  i18next.caption(path='admin:storage.syncScheduleDefault', tag='div')
+                  i18next.caption(path='admin.storage.syncScheduleDefault', tag='div')
                     strong(place='schedule') {{getDefaultSchedule(target.syncIntervalDefault)}}
 
               template(v-if='target.actions && target.actions.length > 0')
                 v-divider.mt-3
-                .overline.my-5 {{$t('admin:storage.actions')}}
+                .overline.my-5 {{$t('admin.storage.actions')}}
                 v-alert(outlined, :value='!target.isEnabled', color='red', icon='mdi-alert')
-                  .body-2 {{$t('admin:storage.actionsInactiveWarn')}}
+                  .body-2 {{$t('admin.storage.actionsInactiveWarn')}}
                 v-container.pt-0(grid-list-xl, fluid)
                   v-layout(row, wrap, fill-height)
                     v-flex(xs12, lg6, xl4, v-for='act of target.actions', :key='act.handler')
@@ -214,7 +214,7 @@
                             :color='$vuetify.theme.dark ? `blue` : `primary`'
                             :disabled='runningAction || !target.isEnabled'
                             :loading='runningActionHandler === act.handler'
-                            ) {{$t('admin:storage.actionRun')}}
+                            ) {{$t('admin.storage.actionRun')}}
 
 </template>
 

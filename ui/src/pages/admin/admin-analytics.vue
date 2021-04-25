@@ -5,19 +5,19 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-line-chart.svg', alt='Analytics', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:analytics.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin:analytics.subtitle') }}
+            .headline.primary--text.animated.fadeInLeft {{ $t('admin.analytics.title') }}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin.analytics.subtitle') }}
           v-spacer
           v-btn.animated.fadeInDown.wait-p2s.mr-3(icon, outlined, color='grey', @click='refresh')
             v-icon mdi-refresh
           v-btn.animated.fadeInDown(color='success', @click='save', depressed, large)
             v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp
           v-toolbar(flat, color='primary', dark, dense)
-            .subtitle-1 {{$t('admin:analytics.providers')}}
+            .subtitle-1 {{$t('admin.analytics.providers')}}
           v-list(two-line, dense).py-0
             template(v-for='(str, idx) in providers')
               v-list-item(:key='str.key', @click='selectedProvider = str.key', :disabled='!str.isAvailable')
@@ -55,8 +55,8 @@
               img(:src='provider.logo', :alt='provider.title')
           v-card-text
             v-form
-              .overline.pb-5 {{$t('admin:analytics.providerConfiguration')}}
-              .body-1.ml-3(v-if='!provider.config || provider.config.length < 1'): em {{$t('admin:analytics.providerNoConfiguration')}}
+              .overline.pb-5 {{$t('admin.analytics.providerConfiguration')}}
+              .body-1.ml-3(v-if='!provider.config || provider.config.length < 1'): em {{$t('admin.analytics.providerNoConfiguration')}}
               template(v-else, v-for='cfg in provider.config')
                 v-select(
                   v-if='cfg.value.type === "string" && cfg.value.enum'
@@ -132,7 +132,7 @@ export default {
     async refresh() {
       await this.$apollo.queries.providers.refetch()
       this.$store.commit('showNotification', {
-        message: this.$t('admin:analytics.refreshSuccess'),
+        message: this.$t('admin.analytics.refreshSuccess'),
         style: 'success',
         icon: 'cached'
       })
@@ -151,7 +151,7 @@ export default {
           }
         })
         this.$store.commit('showNotification', {
-          message: this.$t('admin:analytics.saveSuccess'),
+          message: this.$t('admin.analytics.saveSuccess'),
           style: 'success',
           icon: 'check'
         })

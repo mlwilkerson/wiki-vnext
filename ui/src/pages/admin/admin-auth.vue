@@ -5,8 +5,8 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-unlock.svg', alt='Authentication', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:auth.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin:auth.subtitle') }}
+            .headline.primary--text.animated.fadeInLeft {{ $t('admin.auth.title') }}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin.auth.subtitle') }}
           v-spacer
           v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/auth', target='_blank')
             v-icon mdi-help-circle
@@ -14,12 +14,12 @@
             v-icon mdi-refresh
           v-btn.animated.fadeInDown(color='success', @click='save', depressed, large)
             v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp
           v-toolbar(flat, color='teal', dark, dense)
-            .subtitle-1 {{$t('admin:auth.activeStrategies')}}
+            .subtitle-1 {{$t('admin.auth.activeStrategies')}}
           v-list(two-line, dense).py-0
             draggable(
               v-model='activeStrategies'
@@ -45,7 +45,7 @@
               template(v-slot:activator='{ on }')
                 v-btn(v-on='on', color='primary', depressed, block)
                   v-icon(left) mdi-plus
-                  span {{$t('admin:auth.addStrategy')}}
+                  span {{$t('admin.auth.addStrategy')}}
               v-list(dense)
                 template(v-for='(str, idx) of strategies')
                   v-list-item(
@@ -67,7 +67,7 @@
             v-spacer
             v-btn(small, outlined, dark, color='white', :disabled='strategy.key === `local`', @click='deleteStrategy()')
               v-icon(left) mdi-close
-              span {{$t('common:actions.delete')}}
+              span {{$t('common.actions.delete')}}
           v-card-info(color='blue')
             div
               span {{strategy.strategy.description}}
@@ -80,26 +80,26 @@
               .col-8
                 v-text-field(
                   outlined
-                  :label='$t(`admin:auth.displayName`)'
+                  :label='$t(`admin.auth.displayName`)'
                   v-model='strategy.displayName'
                   prepend-icon='mdi-format-title'
-                  :hint='$t(`admin:auth.displayNameHint`)'
+                  :hint='$t(`admin.auth.displayNameHint`)'
                   persistent-hint
                   )
               .col-4
                 v-switch.mt-1(
-                  :label='$t(`admin:auth.strategyIsEnabled`)'
+                  :label='$t(`admin.auth.strategyIsEnabled`)'
                   v-model='strategy.isEnabled'
                   color='primary'
                   prepend-icon='mdi-power'
-                  :hint='$t(`admin:auth.strategyIsEnabledHint`)'
+                  :hint='$t(`admin.auth.strategyIsEnabledHint`)'
                   persistent-hint
                   inset
                   :disabled='strategy.key === `local`'
                   )
             template(v-if='strategy.config && Object.keys(strategy.config).length > 0')
               v-divider
-              .overline.my-5 {{$t('admin:auth.strategyConfiguration')}}
+              .overline.my-5 {{$t('admin.auth.strategyConfiguration')}}
               .pr-3
                 template(v-for='cfg in strategy.config')
                   v-select.mb-3(
@@ -150,23 +150,23 @@
                     :style='cfg.value.maxWidth > 0 ? `max-width:` + cfg.value.maxWidth + `px;` : ``'
                     )
             v-divider
-            .overline.my-5 {{$t('admin:auth.registration')}}
+            .overline.my-5 {{$t('admin.auth.registration')}}
             .pr-3
               v-switch.ml-3(
                 v-model='strategy.selfRegistration'
-                :label='$t(`admin:auth.selfRegistration`)'
+                :label='$t(`admin.auth.selfRegistration`)'
                 color='primary'
-                :hint='$t(`admin:auth.selfRegistrationHint`)'
+                :hint='$t(`admin.auth.selfRegistrationHint`)'
                 persistent-hint
                 inset
               )
               v-combobox.ml-3.mt-5(
-                :label='$t(`admin:auth.domainsWhitelist`)'
+                :label='$t(`admin.auth.domainsWhitelist`)'
                 v-model='strategy.domainWhitelist'
                 prepend-icon='mdi-email-check-outline'
                 outlined
                 :disabled='!strategy.selfRegistration'
-                :hint='$t(`admin:auth.domainsWhitelistHint`)'
+                :hint='$t(`admin.auth.domainsWhitelistHint`)'
                 persistent-hint
                 small-chips
                 deletable-chips
@@ -180,10 +180,10 @@
                 :items='groups'
                 item-text='name'
                 item-value='id'
-                :label='$t(`admin:auth.autoEnrollGroups`)'
+                :label='$t(`admin.auth.autoEnrollGroups`)'
                 v-model='strategy.autoEnrollGroups'
                 prepend-icon='mdi-account-group'
-                :hint='$t(`admin:auth.autoEnrollGroupsHint`)'
+                :hint='$t(`admin.auth.autoEnrollGroupsHint`)'
                 small-chips
                 persistent-hint
                 deletable-chips
@@ -194,27 +194,27 @@
 
         v-card.mt-4.wiki-form.animated.fadeInUp.wait-p4s(v-if='selectedStrategy !== `local`')
           v-toolbar(color='primary', dense, flat, dark)
-            .subtitle-1 {{$t('admin:auth.configReference')}}
+            .subtitle-1 {{$t('admin.auth.configReference')}}
           v-card-text
-            .body-2 {{$t('admin:auth.configReferenceSubtitle')}}
+            .body-2 {{$t('admin.auth.configReferenceSubtitle')}}
             v-alert.mt-3.radius-7(v-if='host.length < 8', color='red', outlined, :value='true', icon='mdi-alert')
-              i18next(path='admin:auth.siteUrlNotSetup', tag='span')
-                strong(place='siteUrl') {{$t('admin:general.siteUrl')}}
-                strong(place='general') {{$t('admin:general.title')}}
+              i18next(path='admin.auth.siteUrlNotSetup', tag='span')
+                strong(place='siteUrl') {{$t('admin.general.siteUrl')}}
+                strong(place='general') {{$t('admin.general.title')}}
             .pa-3.mt-3.radius-7.grey(v-else, :class='$vuetify.theme.dark ? `darken-3-d5` : `lighten-3`')
-              .body-2: strong {{$t('admin:auth.allowedWebOrigins')}}
+              .body-2: strong {{$t('admin.auth.allowedWebOrigins')}}
               .body-2 {{host}}
               v-divider.my-3
-              .body-2: strong {{$t('admin:auth.callbackUrl')}}
+              .body-2: strong {{$t('admin.auth.callbackUrl')}}
               .body-2 {{host}}/login/{{strategy.key}}/callback
               v-divider.my-3
-              .body-2: strong {{$t('admin:auth.loginUrl')}}
+              .body-2: strong {{$t('admin.auth.loginUrl')}}
               .body-2 {{host}}/login
               v-divider.my-3
-              .body-2: strong {{$t('admin:auth.logoutUrl')}}
+              .body-2: strong {{$t('admin.auth.logoutUrl')}}
               .body-2 {{host}}
               v-divider.my-3
-              .body-2: strong {{$t('admin:auth.tokenEndpointAuthMethod')}}
+              .body-2: strong {{$t('admin.auth.tokenEndpointAuthMethod')}}
               .body-2 HTTP-POST
 </template>
 
@@ -260,7 +260,7 @@ export default {
       await this.$apollo.queries.strategies.refetch()
       await this.$apollo.queries.activeStrategies.refetch()
       this.$store.commit('showNotification', {
-        message: this.$t('admin:auth.refreshSuccess'),
+        message: this.$t('admin.auth.refreshSuccess'),
         style: 'success',
         icon: 'cached'
       })
@@ -325,12 +325,12 @@ export default {
         })
         if (_.get(resp, 'data.authentication.updateStrategies.responseResult.succeeded', false)) {
           this.$store.commit('showNotification', {
-            message: this.$t('admin:auth.saveSuccess'),
+            message: this.$t('admin.auth.saveSuccess'),
             style: 'success',
             icon: 'check'
           })
         } else {
-          throw new Error(_.get(resp, 'data.authentication.updateStrategies.responseResult.message', this.$t('common:error.unexpected')))
+          throw new Error(_.get(resp, 'data.authentication.updateStrategies.responseResult.message', this.$t('common.error.unexpected')))
         }
       } catch (err) {
         this.$store.commit('pushGraphError', err)

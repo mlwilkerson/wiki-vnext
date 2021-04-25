@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-tree-structure.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:navigation.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:navigation.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.navigation.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.navigation.subtitle') }}
       .col-auto
         q-btn.acrylic-btn.q-mr-sm(
           icon='las la-question-circle'
@@ -17,7 +17,7 @@
         q-btn(
           unelevated
           icon='mdi-check'
-          :label='$t(`common:actions.apply`)'
+          :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
           :loading='loading'
@@ -40,21 +40,21 @@
   //-           v-icon mdi-refresh
   //-         v-btn.animated.fadeInDown(color='success', depressed, @click='save', large)
   //-           v-icon(left) mdi-check
-  //-           span {{$t('common:actions.apply')}}
+  //-           span {{$t('common.actions.apply')}}
   //-       v-container.pa-0.mt-3(fluid, grid-list-lg)
   //-         v-row(dense)
   //-           v-col(cols='3')
   //-             v-card.animated.fadeInUp
   //-               v-toolbar(color='teal', dark, dense, flat, height='56')
-  //-                 v-toolbar-title.subtitle-1 {{$t('admin:navigation.mode')}}
+  //-                 v-toolbar-title.subtitle-1 {{$t('admin.navigation.mode')}}
   //-               v-list(nav, two-line)
   //-                 v-list-item-group(v-model='config.mode', mandatory, :color='$vuetify.theme.dark ? `teal lighten-3` : `teal`')
   //-                   v-list-item(value='TREE')
   //-                     v-list-item-avatar
   //-                       img(src='/_assets/svg/icon-tree-structure-dotted.svg', alt='Site Tree')
   //-                     v-list-item-content
-  //-                       v-list-item-title {{$t('admin:navigation.modeSiteTree.title')}}
-  //-                       v-list-item-subtitle {{$t('admin:navigation.modeSiteTree.description')}}
+  //-                       v-list-item-title {{$t('admin.navigation.modeSiteTree.title')}}
+  //-                       v-list-item-subtitle {{$t('admin.navigation.modeSiteTree.description')}}
   //-                     v-list-item-avatar
   //-                       v-icon(v-if='$vuetify.theme.dark', :color='config.mode === `TREE` ? `teal lighten-3` : `grey darken-2`') mdi-check-circle
   //-                       v-icon(v-else, :color='config.mode === `TREE` ? `teal` : `grey lighten-3`') mdi-check-circle
@@ -62,8 +62,8 @@
   //-                     v-list-item-avatar
   //-                       img(src='/_assets/svg/icon-features-list.svg', alt='Static Navigation')
   //-                     v-list-item-content
-  //-                       v-list-item-title {{$t('admin:navigation.modeStatic.title')}}
-  //-                       v-list-item-subtitle {{$t('admin:navigation.modeStatic.description')}}
+  //-                       v-list-item-title {{$t('admin.navigation.modeStatic.title')}}
+  //-                       v-list-item-subtitle {{$t('admin.navigation.modeStatic.description')}}
   //-                     v-list-item-avatar
   //-                       v-icon(v-if='$vuetify.theme.dark', :color='config.mode === `STATIC` ? `teal lighten-3` : `grey darken-2`') mdi-check-circle
   //-                       v-icon(v-else, :color='config.mode === `STATIC` ? `teal` : `grey lighten-3`') mdi-check-circle
@@ -71,8 +71,8 @@
   //-                     v-list-item-avatar
   //-                       img(src='/_assets/svg/icon-user-menu-male-dotted.svg', alt='Custom Navigation')
   //-                     v-list-item-content
-  //-                       v-list-item-title {{$t('admin:navigation.modeCustom.title')}}
-  //-                       v-list-item-subtitle {{$t('admin:navigation.modeCustom.description')}}
+  //-                       v-list-item-title {{$t('admin.navigation.modeCustom.title')}}
+  //-                       v-list-item-subtitle {{$t('admin.navigation.modeCustom.description')}}
   //-                     v-list-item-avatar
   //-                       v-icon(v-if='$vuetify.theme.dark', :color='config.mode === `MIXED` ? `teal lighten-3` : `grey darken-2`') mdi-check-circle
   //-                       v-icon(v-else, :color='config.mode === `MIXED` ? `teal` : `grey lighten-3`') mdi-check-circle
@@ -80,8 +80,8 @@
   //-                     v-list-item-avatar
   //-                       img(src='/_assets/svg/icon-cancel-dotted.svg', alt='None')
   //-                     v-list-item-content
-  //-                       v-list-item-title {{$t('admin:navigation.modeNone.title')}}
-  //-                       v-list-item-subtitle {{$t('admin:navigation.modeNone.description')}}
+  //-                       v-list-item-title {{$t('admin.navigation.modeNone.title')}}
+  //-                       v-list-item-subtitle {{$t('admin.navigation.modeNone.description')}}
   //-                     v-list-item-avatar
   //-                       v-icon(v-if='$vuetify.theme.dark', :color='config.mode === `none` ? `teal lighten-3` : `grey darken-2`') mdi-check-circle
   //-                       v-icon(v-else, :color='config.mode === `none` ? `teal` : `grey lighten-3`') mdi-check-circle
@@ -109,7 +109,7 @@
   //-                         template(v-slot:activator='{ on }')
   //-                           v-btn.ml-2(icon, tile, color='white', v-on='on', @click='copyFromLocaleDialogIsShown = true')
   //-                             v-icon mdi-arrange-send-backward
-  //-                         span {{$t('admin:navigation.copyFromLocale')}}
+  //-                         span {{$t('admin.navigation.copyFromLocale')}}
   //-                     v-list.py-2(dense, nav, dark, class='blue darken-2', style='border-radius: 0;')
   //-                       v-list-item(v-if='currentTree.length < 1')
   //-                         v-list-item-avatar(size='24'): v-icon(color='blue lighten-3') mdi-alert
@@ -145,7 +145,7 @@
   //-                         template(v-slot:activator='{ on }')
   //-                           v-btn(v-on='on', color='primary', depressed, block)
   //-                             v-icon(left) mdi-plus
-  //-                             span {{$t('common:actions.add')}}
+  //-                             span {{$t('common.actions.add')}}
   //-                         v-list
   //-                           v-list-item(@click='addItem("link")')
   //-                             v-list-item-avatar(size='24'): v-icon mdi-link
@@ -212,7 +212,7 @@
   //-                             @click='selectPage'
   //-                             )
   //-                             v-icon(left) mdi-magnify
-  //-                             span {{$t('admin:navigation.selectPageButton')}}
+  //-                             span {{$t('admin.navigation.selectPageButton')}}
   //-                           .caption.ml-4.primary--text {{current.target}}
   //-                         v-text-field(
   //-                           v-else-if='current.targetType === `search`'
@@ -249,8 +249,8 @@
 
   //-                     v-card-text(v-if='current.kind')
   //-                       v-radio-group.pl-8(v-model='current.visibilityMode', mandatory, hide-details)
-  //-                         v-radio(:label='$t("admin:navigation.visibilityMode.all")', value='all', color='primary')
-  //-                         v-radio.mt-3(:label='$t("admin:navigation.visibilityMode.restricted")', value='restricted', color='primary')
+  //-                         v-radio(:label='$t("admin.navigation.visibilityMode.all")', value='all', color='primary')
+  //-                         v-radio.mt-3(:label='$t("admin.navigation.visibilityMode.restricted")', value='restricted', color='primary')
   //-                       .pl-8
   //-                         v-select.pl-8.mt-3(
   //-                           item-text='name'
@@ -274,9 +274,9 @@
   //-     v-card
   //-       .dialog-header.is-short.is-teal
   //-         v-icon.mr-3(color='white') mdi-arrange-send-backward
-  //-         span {{$t('admin:navigation.copyFromLocale')}}
+  //-         span {{$t('admin.navigation.copyFromLocale')}}
   //-       v-card-text.pt-5
-  //-         .body-2 {{$t('admin:navigation.copyFromLocaleInfoText')}}
+  //-         .body-2 {{$t('admin.navigation.copyFromLocaleInfoText')}}
   //-         v-select.mt-3(
   //-           :items='locales'
   //-           item-text='nativeName'
@@ -284,16 +284,16 @@
   //-           outlined
   //-           prepend-icon='mdi-web'
   //-           v-model='copyFromLocaleCode'
-  //-           :label='$t(`admin:navigation.sourceLocale`)'
-  //-           :hint='$t(`admin:navigation.sourceLocaleHint`)'
+  //-           :label='$t(`admin.navigation.sourceLocale`)'
+  //-           :hint='$t(`admin.navigation.sourceLocaleHint`)'
   //-           persistent-hint
   //-           )
   //-       v-card-chin
   //-         v-spacer
-  //-         v-btn(text, @click='copyFromLocaleDialogIsShown = false') {{$t('common:actions.cancel')}}
+  //-         v-btn(text, @click='copyFromLocaleDialogIsShown = false') {{$t('common.actions.cancel')}}
   //-         v-btn.px-3(depressed, color='primary', @click='copyFromLocale')
   //-           v-icon(left) mdi-chevron-right
-  //-           span {{$t('common:actions.copy')}}
+  //-           span {{$t('common.actions.copy')}}
 
   //-   page-selector(mode='select', v-model='selectPageModal', :open-handler='selectPageHandle', path='home', :locale='currentLang')
 </template>
@@ -314,7 +314,7 @@ export default {
   },
   meta () {
     return {
-      title: this.$t('admin:navigation.title')
+      title: this.$t('admin.navigation.title')
     }
   },
   data () {

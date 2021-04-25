@@ -1,7 +1,7 @@
 <template lang='pug'>
   v-card
     v-toolbar(flat, color='primary', dark, dense)
-      .subtitle-1 {{ $t('admin:utilities.cacheTitle') }}
+      .subtitle-1 {{ $t('admin.utilities.cacheTitle') }}
     v-card-text
       .subtitle-1.pb-3.primary--text Flush Pages and Assets Cache
       .body-2 Pages and Assets are cached to disk for better performance. You can flush the cache to force all content to be fetched from the DB again.

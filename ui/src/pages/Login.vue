@@ -20,7 +20,7 @@
     //-------------------------------------------------
     template(v-if='screen === `login` && strategies.length > 1')
       .auth-login-subtitle
-        .text-subtitle1 {{$t('auth:selectAuthProvider')}}
+        .text-subtitle1 {{$t('auth.selectAuthProvider')}}
       .auth-login-list
         q-list.bg-white.shadow-2.rounded-borders.q-pa-sm(separator)
           q-item.rounded-borders(
@@ -41,14 +41,14 @@
     //-------------------------------------------------
     template(v-if='screen === `login` && selectedStrategy.strategy.useForm')
       .auth-login-subtitle
-        .text-subtitle1 {{$t('auth:enterCredentials')}}
+        .text-subtitle1 {{$t('auth.enterCredentials')}}
       .auth-login-form
         q-input.text-black(
           outlined
           bg-color='white'
           ref='iptEmail'
           v-model='username'
-          :label='isUsernameEmail ? $t(`auth:fields.email`) : $t(`auth:fields.username`)'
+          :label='isUsernameEmail ? $t(`auth.fields.email`) : $t(`auth.fields.username`)'
           :type='isUsernameEmail ? `email` : `text`'
           :autocomplete='isUsernameEmail ? `email` : `username`'
           )
@@ -77,7 +77,7 @@
           push
           @click='login'
           :loading='isLoading'
-          :label='$t(`auth:actions.login`)'
+          :label='$t(`auth.actions.login`)'
           icon='las la-arrow-right'
           )
         .text-center.q-mt-lg
@@ -88,7 +88,7 @@
             color='grey-8'
             @click.stop.prevent='forgotPassword'
             href='#forgot'
-            ): .text-caption {{ $t('auth:forgotPasswordLink') }}
+            ): .text-caption {{ $t('auth.forgotPasswordLink') }}
           q-btn(
             v-if='selectedStrategyKey === `local` && selectedStrategy.selfRegistration'
             color='indigo darken-2'
@@ -96,7 +96,7 @@
             no-caps
             rounded
             href='/register'
-            ): .text-caption {{ $t('auth:switchToRegister.link') }}
+            ): .text-caption {{ $t('auth.switchToRegister.link') }}
 </template>
 
 <script>
@@ -192,16 +192,16 @@ export default {
     async login () {
       this.errorShown = false
       if (this.username.length < 2) {
-        this.errorMessage = this.$t('auth:invalidEmailUsername')
+        this.errorMessage = this.$t('auth.invalidEmailUsername')
         this.errorShown = true
         this.$refs.iptEmail.focus()
       } else if (this.password.length < 2) {
-        this.errorMessage = this.$t('auth:invalidPassword')
+        this.errorMessage = this.$t('auth.invalidPassword')
         this.errorShown = true
         this.$refs.iptPassword.focus()
       } else {
         this.loaderColor = 'grey darken-4'
-        this.loaderTitle = this.$t('auth:signingIn')
+        this.loaderTitle = this.$t('auth.signingIn')
         this.isLoading = true
         try {
           const resp = await this.$apollo.mutate({
@@ -240,7 +240,7 @@ export default {
               throw new Error(respObj.responseResult.message)
             }
           } else {
-            throw new Error(this.$t('auth:genericError'))
+            throw new Error(this.$t('auth.genericError'))
           }
         } catch (err) {
           console.error(err)
@@ -269,7 +269,7 @@ export default {
         }
       } else {
         this.loaderColor = 'grey darken-4'
-        this.loaderTitle = this.$t('auth:signingIn')
+        this.loaderTitle = this.$t('auth.signingIn')
         this.isLoading = true
         try {
           const resp = await this.$apollo.mutate({
@@ -316,7 +316,7 @@ export default {
               throw new Error(respObj.responseResult.message)
             }
           } else {
-            throw new Error(this.$t('auth:genericError'))
+            throw new Error(this.$t('auth.genericError'))
           }
         } catch (err) {
           console.error(err)
@@ -333,7 +333,7 @@ export default {
      */
     async changePassword () {
       this.loaderColor = 'grey darken-4'
-      this.loaderTitle = this.$t('auth:changePwd.loading')
+      this.loaderTitle = this.$t('auth.changePwd.loading')
       this.isLoading = true
       try {
         const resp = await this.$apollo.mutate({
@@ -373,7 +373,7 @@ export default {
             throw new Error(respObj.responseResult.message)
           }
         } else {
-          throw new Error(this.$t('auth:genericError'))
+          throw new Error(this.$t('auth.genericError'))
         }
       } catch (err) {
         console.error(err)
@@ -399,7 +399,7 @@ export default {
      */
     async forgotPasswordSubmit () {
       this.loaderColor = 'grey darken-4'
-      this.loaderTitle = this.$t('auth:forgotPasswordLoading')
+      this.loaderTitle = this.$t('auth.forgotPasswordLoading')
       this.isLoading = true
       try {
         const resp = await this.$apollo.mutate({
@@ -430,7 +430,7 @@ export default {
           if (respObj.succeeded === true) {
             this.$store.commit('showNotification', {
               style: 'success',
-              message: this.$t('auth:forgotPasswordSuccess'),
+              message: this.$t('auth.forgotPasswordSuccess'),
               icon: 'email'
             })
             this.screen = 'login'
@@ -438,7 +438,7 @@ export default {
             throw new Error(respObj.message)
           }
         } else {
-          throw new Error(this.$t('auth:genericError'))
+          throw new Error(this.$t('auth.genericError'))
         }
       } catch (err) {
         console.error(err)
@@ -475,7 +475,7 @@ export default {
         this.isLoading = false
       } else {
         this.loaderColor = 'green darken-1'
-        this.loaderTitle = this.$t('auth:loginSuccess')
+        this.loaderTitle = this.$t('auth.loginSuccess')
         Cookies.set('jwt', respObj.jwt, { expires: 365 })
         setTimeout(() => {
           const loginRedirect = Cookies.get('loginRedirect')

@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-people.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:groups.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:groups.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.groups.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.groups.subtitle') }}
       .col-auto
         q-btn.acrylic-btn.q-mr-sm(
           icon='las la-question-circle'
@@ -24,7 +24,7 @@
         q-btn(
           unelevated
           icon='las la-plus'
-          :label='$t(`admin:groups.create`)'
+          :label='$t(`admin.groups.create`)'
           color='primary'
           @click='createGroup'
           )
@@ -54,7 +54,7 @@
                   q-tooltip(
                     anchor='center left'
                     self='center right'
-                  ) {{$t('common:clipboard.uuid')}}
+                  ) {{$t('common.clipboard.uuid')}}
             template(v-slot:body-cell-name='props')
               q-td.flex.items-center(:props='props')
                 strong {{props.value}}
@@ -100,7 +100,7 @@ import { copyToClipboard } from 'quasar'
 export default {
   meta () {
     return {
-      title: this.$t('admin:groups.title')
+      title: this.$t('admin.groups.title')
     }
   },
   data () {
@@ -113,7 +113,7 @@ export default {
     headers () {
       return [
         {
-          label: this.$t('common:field.id'),
+          label: this.$t('common.field.id'),
           align: 'center',
           field: 'id',
           name: 'id',
@@ -121,14 +121,14 @@ export default {
           style: 'width: 50px'
         },
         {
-          label: this.$t('common:field.name'),
+          label: this.$t('common.field.name'),
           align: 'left',
           field: 'name',
           name: 'name',
           sortable: true
         },
         {
-          label: this.$t('admin:groups.userCount'),
+          label: this.$t('admin.groups.userCount'),
           align: 'center',
           field: 'userCount',
           name: 'usercount',
@@ -136,7 +136,7 @@ export default {
           style: 'width: 150px'
         },
         {
-          label: this.$t('admin:groups.edit'),
+          label: this.$t('admin.groups.edit'),
           align: 'center',
           field: 'edit',
           name: 'edit',
@@ -144,7 +144,7 @@ export default {
           style: 'width: 150px'
         },
         {
-          label: this.$t('admin:groups.delete'),
+          label: this.$t('admin.groups.delete'),
           align: 'center',
           field: 'remove',
           name: 'remove',
@@ -159,7 +159,7 @@ export default {
       await this.$apollo.queries.groups.refetch()
       this.$q.notify({
         type: 'positive',
-        message: this.$t('admin:groups.refreshSuccess')
+        message: this.$t('admin.groups.refreshSuccess')
       })
     },
     createGroup () {
@@ -186,12 +186,12 @@ export default {
       copyToClipboard(uid).then(() => {
         this.$q.notify({
           type: 'positive',
-          message: this.$t('common:clipboard.uuidSuccess')
+          message: this.$t('common.clipboard.uuidSuccess')
         })
       }).catch(() => {
         this.$q.notify({
           type: 'negative',
-          message: this.$t('common:clipboard.uuidFailure')
+          message: this.$t('common.clipboard.uuidFailure')
         })
       })
     }

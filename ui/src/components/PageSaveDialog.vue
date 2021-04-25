@@ -1,7 +1,7 @@
 <template lang="pug">
   q-card.page-save-dialog(style='width: 860px; max-width: 90vw;')
     q-toolbar.bg-primary.text-white
-      .text-subtitle2 {{$t('editor:pageSave.title')}}
+      .text-subtitle2 {{$t('editor.pageSave.title')}}
     page-browser
     q-card-section
       q-input(
@@ -14,7 +14,7 @@
       q-space
       q-btn.acrylic-btn(
         icon='las la-times'
-        :label='$t(`common:actions.cancel`)'
+        :label='$t(`common.actions.cancel`)'
         color='grey-7'
         padding='xs md'
         v-close-popup
@@ -22,7 +22,7 @@
       )
       q-btn(
         icon='las la-check'
-        :label='$t(`common:actions.save`)'
+        :label='$t(`common.actions.save`)'
         unelevated
         color='primary'
         padding='xs md'

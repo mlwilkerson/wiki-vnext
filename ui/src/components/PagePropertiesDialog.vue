@@ -13,7 +13,7 @@
           q-tooltip(anchor='center left' self='center right') {{qa.label}}
         q-separator(dark, v-if='idx < quickaccess.length - 1')
     q-toolbar.bg-primary.text-white.flex
-      .text-subtitle2 {{$t('editor:props.pageProperties')}}
+      .text-subtitle2 {{$t('editor.props.pageProperties')}}
       q-space
       q-btn(
         icon='las la-times'
@@ -28,22 +28,22 @@
       style='height: calc(100% - 50px);'
       )
       q-card-section(ref='card-info')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-info-circle', size='xs')] {{$t('editor:props.info')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-info-circle', size='xs')] {{$t('editor.props.info')}}
         q-form.q-gutter-sm
           q-input(
             v-model='title'
-            :label='$t(`editor:props.title`)'
+            :label='$t(`editor.props.title`)'
             outlined
             dense
           )
           q-input(
             v-model='description'
-            :label='$t(`editor:props.shortDescription`)'
+            :label='$t(`editor.props.shortDescription`)'
             outlined
             dense
           )
       q-card-section.alt-card(ref='card-publishstate')
-        .text-overline.q-pb-xs.items-center.flex #[q-icon.q-mr-sm(name='las la-power-off', size='xs')] {{$t('editor:props.publishState')}}
+        .text-overline.q-pb-xs.items-center.flex #[q-icon.q-mr-sm(name='las la-power-off', size='xs')] {{$t('editor.props.publishState')}}
         q-form.q-gutter-md
           div
             q-btn-toggle(
@@ -53,15 +53,15 @@
               no-caps
               toggle-color='primary'
               :options=`[
-                { label: $t('editor:props.draft'), value: false },
-                { label: $t('editor:props.published'), value: true },
-                { label: $t('editor:props.dateRange'), value: null }
+                { label: $t('editor.props.draft'), value: false },
+                { label: $t('editor.props.published'), value: true },
+                { label: $t('editor.props.dateRange'), value: null }
               ]`
             )
-          .text-caption(v-if='isPublished'): em {{$t('editor:props.publishedHint')}}
-          .text-caption(v-else-if='isPublished === false'): em {{$t('editor:props.draftHint')}}
+          .text-caption(v-if='isPublished'): em {{$t('editor.props.publishedHint')}}
+          .text-caption(v-else-if='isPublished === false'): em {{$t('editor.props.draftHint')}}
           template(v-else-if='isPublished === null')
-            .text-caption: em {{$t('editor:props.dateRangeHint')}}
+            .text-caption: em {{$t('editor.props.dateRangeHint')}}
             q-date(
               v-model='publishingRange'
               range
@@ -71,7 +71,7 @@
               minimal
               )
       q-card-section(ref='card-relations')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-sun', size='xs')] {{$t('editor:props.relations')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-sun', size='xs')] {{$t('editor.props.relations')}}
         q-list.rounded-borders.q-mb-sm.bg-white(
           v-if='relations.length > 0'
           separator
@@ -108,51 +108,51 @@
                 @click='removeRelation(rel)'
               )
         q-btn.full-width(
-          :label='$t(`editor:props.relationAdd`)'
+          :label='$t(`editor.props.relationAdd`)'
           icon='las la-plus'
           no-caps
           unelevated
           color='secondary'
           @click='newRelation'
           )
-          q-tooltip {{$t('editor:props.relationAddHint')}}
+          q-tooltip {{$t('editor.props.relationAddHint')}}
       q-card-section.alt-card(ref='card-scripts')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-code', size='xs')] {{$t('editor:props.scripts')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-code', size='xs')] {{$t('editor.props.scripts')}}
         q-btn.full-width(
-          :label='$t(`editor:props.jsLoad`)'
+          :label='$t(`editor.props.jsLoad`)'
           icon='lab la-js-square'
           no-caps
           unelevated
           color='secondary'
           @click='editScripts(`jsLoad`)'
           )
-          q-tooltip {{$t('editor:props.jsLoadHint')}}
+          q-tooltip {{$t('editor.props.jsLoadHint')}}
         q-btn.full-width.q-mt-sm(
-          :label='$t(`editor:props.jsUnload`)'
+          :label='$t(`editor.props.jsUnload`)'
           icon='lab la-js-square'
           no-caps
           unelevated
           color='secondary'
           @click='editScripts(`jsUnload`)'
           )
-          q-tooltip {{$t('editor:props.jsUnloadHint')}}
+          q-tooltip {{$t('editor.props.jsUnloadHint')}}
         q-btn.full-width.q-mt-sm(
-          :label='$t(`editor:props.styles`)'
+          :label='$t(`editor.props.styles`)'
           icon='lab la-css3-alt'
           no-caps
           unelevated
           color='secondary'
           @click='editScripts(`styles`)'
           )
-          q-tooltip {{$t('editor:props.stylesHint')}}
+          q-tooltip {{$t('editor.props.stylesHint')}}
       q-card-section.q-pb-lg(ref='card-sidebar')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-ruler-vertical', size='xs')] {{$t('editor:props.sidebar')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-ruler-vertical', size='xs')] {{$t('editor.props.sidebar')}}
         q-form.q-gutter-md.q-pt-sm
           div
             q-toggle(
               v-model='showSidebar'
               dense
-              :label='$t(`editor:props.showSidebar`)'
+              :label='$t(`editor.props.showSidebar`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
@@ -162,7 +162,7 @@
               v-if='showSidebar'
               v-model='showToc'
               dense
-              :label='$t(`editor:props.showToc`)'
+              :label='$t(`editor.props.showToc`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
@@ -171,7 +171,7 @@
             v-if='showSidebar && showToc'
             style='padding-left: 40px;'
             )
-            .text-caption {{$t('editor:props.tocMaxDepth')}} #[strong (H{{tocDepth}})]
+            .text-caption {{$t('editor.props.tocMaxDepth')}} #[strong (H{{tocDepth}})]
             q-slider(
               v-model='tocDepth'
               :min='1'
@@ -186,19 +186,19 @@
               v-if='showSidebar'
               v-model='showTags'
               dense
-              :label='$t(`editor:props.showTags`)'
+              :label='$t(`editor.props.showTags`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
             )
       q-card-section.alt-card.q-pb-lg(ref='card-social')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-comments', size='xs')] {{$t('editor:props.social')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-comments', size='xs')] {{$t('editor.props.social')}}
         q-form.q-gutter-md.q-pt-sm
           div
             q-toggle(
               v-model='allowComments'
               dense
-              :label='$t(`editor:props.allowComments`)'
+              :label='$t(`editor.props.allowComments`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
@@ -207,7 +207,7 @@
             q-toggle(
               v-model='allowContributions'
               dense
-              :label='$t(`editor:props.allowContributions`)'
+              :label='$t(`editor.props.allowContributions`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
@@ -216,22 +216,22 @@
             q-toggle(
               v-model='allowRatings'
               dense
-              :label='$t(`editor:props.allowRatings`)'
+              :label='$t(`editor.props.allowRatings`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
             )
       q-card-section.q-pb-lg(ref='card-tags')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-tags', size='xs')] {{$t('editor:props.tags')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-tags', size='xs')] {{$t('editor.props.tags')}}
         page-tags(edit)
       q-card-section.alt-card.q-pb-lg(ref='card-visibility')
-        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-eye', size='xs')] {{$t('editor:props.visibility')}}
+        .text-overline.items-center.flex #[q-icon.q-mr-sm(name='las la-eye', size='xs')] {{$t('editor.props.visibility')}}
         q-form.q-gutter-md.q-pt-sm
           div
             q-toggle(
               v-model='showInTree'
               dense
-              :label='$t(`editor:props.showInTree`)'
+              :label='$t(`editor.props.showInTree`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
@@ -240,7 +240,7 @@
             q-toggle(
               v-model='requirePassword'
               dense
-              :label='$t(`editor:props.requirePassword`)'
+              :label='$t(`editor.props.requirePassword`)'
               color='primary'
               checked-icon='las la-check'
               unchecked-icon='las la-times'
@@ -252,8 +252,8 @@
             q-input(
               ref='iptPagePassword'
               v-model='password'
-              :label='$t(`editor:props.password`)'
-              :hint='$t(`editor:props.passwordHint`)'
+              :label='$t(`editor.props.password`)'
+              :hint='$t(`editor.props.passwordHint`)'
               outlined
               dense
             )
@@ -301,14 +301,14 @@ export default {
     barStyle: get('site/barStyle'),
     quickaccess () {
       return [
-        { key: 'info', icon: 'las la-info-circle', label: this.$t('editor:props.info') },
-        { key: 'publishstate', icon: 'las la-power-off', label: this.$t('editor:props.publishState') },
-        { key: 'relations', icon: 'las la-sun', label: this.$t('editor:props.relations') },
-        { key: 'scripts', icon: 'las la-code', label: this.$t('editor:props.scripts') },
-        { key: 'sidebar', icon: 'las la-ruler-vertical', label: this.$t('editor:props.sidebar') },
-        { key: 'social', icon: 'las la-comments', label: this.$t('editor:props.social') },
-        { key: 'tags', icon: 'las la-tags', label: this.$t('editor:props.tags') },
-        { key: 'visibility', icon: 'las la-eye', label: this.$t('editor:props.visibility') }
+        { key: 'info', icon: 'las la-info-circle', label: this.$t('editor.props.info') },
+        { key: 'publishstate', icon: 'las la-power-off', label: this.$t('editor.props.publishState') },
+        { key: 'relations', icon: 'las la-sun', label: this.$t('editor.props.relations') },
+        { key: 'scripts', icon: 'las la-code', label: this.$t('editor.props.scripts') },
+        { key: 'sidebar', icon: 'las la-ruler-vertical', label: this.$t('editor.props.sidebar') },
+        { key: 'social', icon: 'las la-comments', label: this.$t('editor.props.social') },
+        { key: 'tags', icon: 'las la-tags', label: this.$t('editor.props.tags') },
+        { key: 'visibility', icon: 'las la-eye', label: this.$t('editor.props.visibility') }
       ]
     }
   },

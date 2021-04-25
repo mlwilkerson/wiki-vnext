@@ -17,7 +17,7 @@
                 v-toolbar(:color='$vuetify.theme.dark ? `grey darken-3-d5` : `grey lighten-4`', flat)
                   v-text-field(
                     v-model='filter'
-                    :label='$t(`admin:tags.filter`)'
+                    :label='$t(`admin.tags.filter`)'
                     hide-details
                     single-line
                     solo
@@ -54,7 +54,7 @@
                       small
                       :href='`/t/` + current.tag'
                       )
-                      span.text-none {{$t('admin:tags.viewLinkedPages')}}
+                      span.text-none {{$t('admin.tags.viewLinkedPages')}}
                       v-icon(right) mdi-chevron-right
                   v-card-text
                     v-text-field(
@@ -72,7 +72,7 @@
                       hide-details
                     )
                   v-card-chin
-                    i18next.caption.pl-3(path='admin:tags.date', tag='div')
+                    i18next.caption.pl-3(path='admin.tags.date', tag='div')
                       strong(place='created') {{current.createdAt | moment('from')}}
                       strong(place='updated') {{current.updatedAt | moment('from')}}
                     v-spacer
@@ -81,17 +81,17 @@
                         v-btn(color='red', outlined, v-on='on')
                           v-icon(color='red') mdi-trash-can-outline
                       v-card
-                        .dialog-header.is-red {{$t('admin:tags.deleteConfirm')}}
+                        .dialog-header.is-red {{$t('admin.tags.deleteConfirm')}}
                         v-card-text.pa-4
-                          i18next(tag='span', path='admin:tags.deleteConfirmText')
+                          i18next(tag='span', path='admin.tags.deleteConfirmText')
                             strong(place='tag') {{ current.tag }}
                         v-card-actions
                           v-spacer
-                          v-btn(text, @click='deleteTagDialog = false') {{$t('common:actions.cancel')}}
-                          v-btn(color='red', dark, @click='deleteTag(current)') {{$t('common:actions.delete')}}
+                          v-btn(text, @click='deleteTagDialog = false') {{$t('common.actions.cancel')}}
+                          v-btn(color='red', dark, @click='deleteTag(current)') {{$t('common.actions.delete')}}
                     v-btn.px-5.mr-2(color='success', depressed, dark, @click='saveTag(current)')
                       v-icon(left) mdi-content-save
-                      span {{$t('common:actions.save')}}
+                      span {{$t('common.actions.save')}}
               v-card(v-else)
                 v-card-text.grey--text(v-if='tags.length > 0') {{$t('tags.noSelectionText')}}
                 v-card-text.grey--text(v-else) {{$t('tags.noItemsText')}}

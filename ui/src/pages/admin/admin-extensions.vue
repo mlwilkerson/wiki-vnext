@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-module.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:extensions.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:extensions.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.extensions.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.extensions.subtitle') }}
       .col-auto
         q-btn.acrylic-btn(
           icon='las la-question-circle'
@@ -51,7 +51,7 @@ import gql from 'graphql-tag'
 export default {
   meta () {
     return {
-      title: this.$t('admin:extensions.title')
+      title: this.$t('admin.extensions.title')
     }
   },
   data () {

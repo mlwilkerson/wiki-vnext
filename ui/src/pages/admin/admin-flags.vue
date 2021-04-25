@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-windsock.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:flags.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:flags.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.flags.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.flags.subtitle') }}
       .col-auto
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
@@ -17,7 +17,7 @@
         q-btn(
           unelevated
           icon='mdi-check'
-          :label='$t(`common:actions.apply`)'
+          :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
           :loading='loading'
@@ -33,8 +33,8 @@
                   q-card-section.col-auto.q-pr-none
                     q-icon(name='las la-exclamation-triangle', size='md')
                   q-card-section
-                    span {{ $t('admin:flags.warn.label') }}
-                    .text-caption.text-red-1 {{ $t('admin:flags.warn.hint') }}
+                    span {{ $t('admin.flags.warn.label') }}
+                    .text-caption.text-red-1 {{ $t('admin.flags.warn.hint') }}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -43,15 +43,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:flags.ldapdebug.label`)}}
-              q-item-label(caption) {{$t(`admin:flags.ldapdebug.hint`)}}
+              q-item-label {{$t(`admin.flags.ldapdebug.label`)}}
+              q-item-label(caption) {{$t(`admin.flags.ldapdebug.hint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='flags.ldapdebug'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:flags.ldapdebug.label`)'
+                :aria-label='$t(`admin.flags.ldapdebug.label`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -62,15 +62,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:flags.sqllog.label`)}}
-              q-item-label(caption) {{$t(`admin:flags.sqllog.hint`)}}
+              q-item-label {{$t(`admin.flags.sqllog.label`)}}
+              q-item-label(caption) {{$t(`admin.flags.sqllog.hint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='flags.sqllog'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:flags.sqllog.label`)'
+                :aria-label='$t(`admin.flags.sqllog.label`)'
                 )
         q-card.shadow-1.q-py-sm.q-mt-md
           q-item(tag='label', v-ripple)
@@ -81,15 +81,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:flags.hidedonatebtn.label`)}}
-              q-item-label(caption) {{$t(`admin:flags.hidedonatebtn.hint`)}}
+              q-item-label {{$t(`admin.flags.hidedonatebtn.label`)}}
+              q-item-label(caption) {{$t(`admin.flags.hidedonatebtn.hint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='flags.hidedonatebtn'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:flags.hidedonatebtn.label`)'
+                :aria-label='$t(`admin.flags.hidedonatebtn.label`)'
                 )
 </template>
 
@@ -101,7 +101,7 @@ import _transform from 'lodash/transform'
 export default {
   meta () {
     return {
-      title: this.$t('admin:flags.title')
+      title: this.$t('admin.flags.title')
     }
   },
   data () {

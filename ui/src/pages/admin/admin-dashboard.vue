@@ -4,21 +4,21 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-change-theme.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:dashboard.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:dashboard.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.dashboard.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.dashboard.subtitle') }}
   //- v-container(fluid, grid-list-lg)
   //-   v-layout(row, wrap)
   //-     v-flex(xs12)
   //-       .admin-header
   //-         img.animated.fadeInUp(src='/_assets/svg/icon-browse-page.svg', alt='Dashboard', style='width: 80px;')
   //-         .admin-header-title
-  //-           .headline.primary--text.animated.fadeInLeft {{ $t('admin:dashboard.title') }}
-  //-           .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{ $t('admin:dashboard.subtitle') }}
+  //-           .headline.primary--text.animated.fadeInLeft {{ $t('admin.dashboard.title') }}
+  //-           .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{ $t('admin.dashboard.subtitle') }}
   //-     v-flex(xs12 md6 lg4 xl3 d-flex)
   //-       v-card.primary.dashboard-card.animated.fadeInUp(dark)
   //-         v-card-text
   //-           v-icon.dashboard-icon mdi-file-document-outline
-  //-           .overline {{$t('admin:dashboard.pages')}}
+  //-           .overline {{$t('admin.dashboard.pages')}}
   //-           animated-number.display-1(
   //-             :value='info.pagesTotal'
   //-             :duration='2000'
@@ -29,7 +29,7 @@
   //-       v-card.blue.darken-3.dashboard-card.animated.fadeInUp.wait-p2s(dark)
   //-         v-card-text
   //-           v-icon.dashboard-icon mdi-account
-  //-           .overline {{$t('admin:dashboard.users')}}
+  //-           .overline {{$t('admin.dashboard.users')}}
   //-           animated-number.display-1(
   //-             :value='info.usersTotal'
   //-             :duration='2000'
@@ -40,7 +40,7 @@
   //-       v-card.blue.darken-4.dashboard-card.animated.fadeInUp.wait-p4s(dark)
   //-         v-card-text
   //-           v-icon.dashboard-icon mdi-account-group
-  //-           .overline {{$t('admin:dashboard.groups')}}
+  //-           .overline {{$t('admin.dashboard.groups')}}
   //-           animated-number.display-1(
   //-             :value='info.groupsTotal'
   //-             :duration='2000'
@@ -57,13 +57,13 @@
   //-         v-card-text
   //-           v-icon.dashboard-icon mdi-blur
   //-           .subtitle-1 Wiki.js {{info.currentVersion}}
-  //-           .body-2(v-if='isLatestVersion') {{$t('admin:dashboard.versionLatest')}}
-  //-           .body-2(v-else) {{$t('admin:dashboard.versionNew', { version: info.latestVersion })}}
+  //-           .body-2(v-if='isLatestVersion') {{$t('admin.dashboard.versionLatest')}}
+  //-           .body-2(v-else) {{$t('admin.dashboard.versionNew', { version: info.latestVersion })}}
   //-     v-flex(xs12, xl6)
   //-       v-card.radius-7.animated.fadeInUp.wait-p2s
   //-         v-toolbar(:color='$q.dark.isActive ? `grey darken-2` : `grey lighten-5`', dense, flat)
   //-           v-spacer
-  //-           .overline {{$t('admin:dashboard.recentPages')}}
+  //-           .overline {{$t('admin.dashboard.recentPages')}}
   //-           v-spacer
   //-         v-data-table.pb-2(
   //-           :items='recentPages'
@@ -84,7 +84,7 @@
   //-       v-card.radius-7.animated.fadeInUp.wait-p4s
   //-         v-toolbar(:color='$q.dark.isActive ? `grey darken-2` : `grey lighten-5`', dense, flat)
   //-           v-spacer
-  //-           .overline {{$t('admin:dashboard.lastLogins')}}
+  //-           .overline {{$t('admin.dashboard.lastLogins')}}
   //-           v-spacer
   //-         v-data-table.pb-2(
   //-           :items='lastLogins'
@@ -104,11 +104,11 @@
   //-         v-card-text
   //-           img(src='/_assets/svg/icon-heart-health.svg', alt='Contribute', style='height: 80px;')
   //-           .pl-5
-  //-             .subtitle-1 {{$t('admin:contribute.title')}}
-  //-             .body-2.mt-3: strong {{$t('admin:dashboard.contributeSubtitle')}}
-  //-             .body-2 {{$t('admin:dashboard.contributeHelp')}}
+  //-             .subtitle-1 {{$t('admin.contribute.title')}}
+  //-             .body-2.mt-3: strong {{$t('admin.dashboard.contributeSubtitle')}}
+  //-             .body-2 {{$t('admin.dashboard.contributeHelp')}}
   //-             v-btn.mx-0.mt-4(:color='$q.dark.isActive ? `indigo lighten-3` : `indigo`', outlined, small, to='/contribute')
-  //-               .caption: strong {{$t('admin:dashboard.contributeLearnMore')}}
+  //-               .caption: strong {{$t('admin.dashboard.contributeLearnMore')}}
 
 </template>
 
@@ -127,7 +127,7 @@ export default {
   },
   meta () {
     return {
-      title: this.$t('admin:dashboard.title')
+      title: this.$t('admin.dashboard.title')
     }
   },
   data () {

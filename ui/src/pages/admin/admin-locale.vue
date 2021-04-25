@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-language.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:locale.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:locale.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.locale.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.locale.subtitle') }}
       .col-auto
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
@@ -17,7 +17,7 @@
         q-btn(
           unelevated
           icon='mdi-check'
-          :label='$t(`common:actions.apply`)'
+          :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
           :loading='loading'
@@ -30,7 +30,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
-            .text-subtitle1 {{$t('admin:locale.settings')}}
+            .text-subtitle1 {{$t('admin.locale.settings')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -39,8 +39,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{namespacing ? $t(`admin:locale.base.labelWithNS`) : $t(`admin:locale.base.label`)}}
-              q-item-label(caption) {{$t(`admin:locale.base.hint`)}}
+              q-item-label {{namespacing ? $t(`admin.locale.base.labelWithNS`) : $t(`admin.locale.base.label`)}}
+              q-item-label(caption) {{$t(`admin.locale.base.hint`)}}
             q-item-section
               q-select(
                 outlined
@@ -51,7 +51,7 @@
                 emit-value
                 map-options
                 dense
-                :aria-label='$t(`admin:locale.base.label`)'
+                :aria-label='$t(`admin.locale.base.label`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -62,15 +62,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:locale.autoUpdate.label`)}}
-              q-item-label(caption) {{namespacing ? $t(`admin:locale.autoUpdate.hintWithNS`) : $t(`admin:locale.autoUpdate.hint`)}}
+              q-item-label {{$t(`admin.locale.autoUpdate.label`)}}
+              q-item-label(caption) {{namespacing ? $t(`admin.locale.autoUpdate.hintWithNS`) : $t(`admin.locale.autoUpdate.hint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='autoUpdate'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:locale.autoUpdate.label`)'
+                :aria-label='$t(`admin.locale.autoUpdate.label`)'
                 )
 
         //- -----------------------
@@ -78,7 +78,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm.q-mt-md
           q-card-section
-            .text-subtitle1 {{$t('admin:locale.namespacing')}}
+            .text-subtitle1 {{$t('admin.locale.namespacing')}}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -87,15 +87,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:locale.namespaces.label`)}}
-              q-item-label(caption) {{$t(`admin:locale.namespaces.hint`)}}
+              q-item-label {{$t(`admin.locale.namespaces.label`)}}
+              q-item-label(caption) {{$t(`admin.locale.namespaces.hint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='namespacing'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:locale.namespaces.label`)'
+                :aria-label='$t(`admin.locale.namespaces.label`)'
                 )
           q-item
             q-item-section
@@ -104,8 +104,8 @@
                   q-card-section.col-auto.q-pr-none
                     q-icon(name='las la-exclamation-circle', size='md')
                   q-card-section
-                    span {{ $t('admin:locale.namespacingPrefixWarning.title', { langCode: selectedLocale }) }}
-                    .text-caption.text-yellow-1 {{ $t('admin:locale.namespacingPrefixWarning.subtitle') }}
+                    span {{ $t('admin.locale.namespacingPrefixWarning.title', { langCode: selectedLocale }) }}
+                    .text-caption.text-yellow-1 {{ $t('admin.locale.namespacingPrefixWarning.subtitle') }}
           q-separator.q-my-sm(inset)
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
@@ -115,8 +115,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:locale.activeNamespaces.label`)}}
-              q-item-label(caption) {{$t(`admin:locale.activeNamespaces.hint`)}}
+              q-item-label {{$t(`admin.locale.activeNamespaces.label`)}}
+              q-item-label(caption) {{$t(`admin.locale.activeNamespaces.hint`)}}
             q-item-section
               q-select(
                 outlined
@@ -130,7 +130,7 @@
                 emit-value
                 map-options
                 dense
-                :aria-label='$t(`admin:locale.activeNamespaces.label`)'
+                :aria-label='$t(`admin.locale.activeNamespaces.label`)'
                 )
 
       .col-6
@@ -139,7 +139,7 @@
         //- -----------------------
         q-card.shadow-1
           q-card-section
-            .text-subtitle1 {{$t('admin:locale.downloadTitle')}}
+            .text-subtitle1 {{$t('admin.locale.downloadTitle')}}
           q-card-section.q-pa-none
             q-table.no-border-radius(
               :data='locales'
@@ -215,12 +215,12 @@
                     )
   //-             v-card.wiki-form.mt-3.animated.fadeInUp.wait-p5s
   //-               v-toolbar(color='teal', dark, dense, flat)
-  //-                 v-toolbar-title.subtitle-1 {{ $t('admin:locale.sideload') }}
+  //-                 v-toolbar-title.subtitle-1 {{ $t('admin.locale.sideload') }}
   //-                 v-spacer
   //-                 v-chip(label, color='white', small).teal--text coming soon
   //-               v-card-text
-  //-                 div {{ $t('admin:locale.sideloadHelp') }}
-  //-                 v-btn.ml-0.mt-3(color='teal', disabled) {{ $t('common:actions.browse') }}
+  //-                 div {{ $t('admin.locale.sideloadHelp') }}
+  //-                 v-btn.ml-0.mt-3(color='teal', disabled) {{ $t('common.actions.browse') }}
 </template>
 
 <script>
@@ -255,7 +255,7 @@ const fetchLocaleGql = gql`
 export default {
   meta () {
     return {
-      title: this.$t('admin:locale.title')
+      title: this.$t('admin.locale.title')
     }
   },
   data () {
@@ -275,7 +275,7 @@ export default {
     headers () {
       return [
         {
-          label: this.$t('admin:locale.code'),
+          label: this.$t('admin.locale.code'),
           align: 'left',
           field: 'code',
           name: 'code',
@@ -283,21 +283,21 @@ export default {
           style: 'width: 90px'
         },
         {
-          label: this.$t('admin:locale.name'),
+          label: this.$t('admin.locale.name'),
           align: 'left',
           field: 'name',
           name: 'name',
           sortable: true
         },
         {
-          label: this.$t('admin:locale.nativeName'),
+          label: this.$t('admin.locale.nativeName'),
           align: 'left',
           field: 'nativeName',
           name: 'nativeName',
           sortable: true
         },
         {
-          label: this.$t('admin:locale.rtl'),
+          label: this.$t('admin.locale.rtl'),
           align: 'center',
           field: 'isRTL',
           name: 'isRTL',
@@ -305,7 +305,7 @@ export default {
           style: 'width: 10px'
         },
         {
-          label: this.$t('admin:locale.availability'),
+          label: this.$t('admin.locale.availability'),
           align: 'center',
           field: 'availability',
           name: 'availability',
@@ -313,7 +313,7 @@ export default {
           style: 'width: 120px'
         },
         {
-          label: this.$t('admin:locale.download'),
+          label: this.$t('admin.locale.download'),
           align: 'center',
           field: 'isInstalled',
           name: 'isInstalled',

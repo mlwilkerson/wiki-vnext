@@ -15,7 +15,7 @@
             span Live Trail
           v-btn(color='success', @click='save', depressed, large)
             v-icon(left) check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
         v-card.mt-3
           v-tabs(color='grey darken-2', fixed-tabs, slider-color='white', show-arrows, dark)

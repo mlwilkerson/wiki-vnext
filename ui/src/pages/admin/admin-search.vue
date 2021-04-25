@@ -5,8 +5,8 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-search.svg', alt='Search Engine', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{$t('admin:search.title')}}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{$t('admin:search.subtitle')}}
+            .headline.primary--text.animated.fadeInLeft {{$t('admin.search.title')}}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{$t('admin.search.subtitle')}}
           v-spacer
           v-btn.mr-3.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/search', target='_blank')
             v-icon mdi-help-circle
@@ -14,15 +14,15 @@
             v-icon mdi-refresh
           v-btn.mx-3.animated.fadeInDown.wait-p1s(color='black', dark, depressed, @click='rebuild')
             v-icon(left) mdi-cached
-            span {{$t('admin:search.rebuildIndex')}}
+            span {{$t('admin.search.rebuildIndex')}}
           v-btn.animated.fadeInDown(color='success', @click='save', depressed, large)
             v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp
           v-toolbar(flat, color='primary', dark, dense)
-            .subtitle-1 {{$t('admin:search.searchEngine')}}
+            .subtitle-1 {{$t('admin.search.searchEngine')}}
           v-list.py-0(two-line, dense)
             template(v-for='(eng, idx) in engines')
               v-list-item(:key='eng.key', @click='selectedEngine = eng.key', :disabled='!eng.isAvailable')
@@ -49,8 +49,8 @@
             .admin-providerlogo
               img(:src='engine.logo', :alt='engine.title')
           v-card-text
-            .overline.mb-5 {{$t('admin:search.engineConfig')}}
-            .body-2.ml-3(v-if='!engine.config || engine.config.length < 1'): em {{$t('admin:search.engineNoConfig')}}
+            .overline.mb-5 {{$t('admin.search.engineConfig')}}
+            .body-2.ml-3(v-if='!engine.config || engine.config.length < 1'): em {{$t('admin.search.engineNoConfig')}}
             template(v-else, v-for='cfg in engine.config')
               v-select(
                 v-if='cfg.value.type === "string" && cfg.value.enum'
@@ -126,7 +126,7 @@ export default {
     async refresh() {
       await this.$apollo.queries.engines.refetch()
       this.$store.commit('showNotification', {
-        message: this.$t('admin:search.listRefreshSuccess'),
+        message: this.$t('admin.search.listRefreshSuccess'),
         style: 'success',
         icon: 'cached'
       })
@@ -146,12 +146,12 @@ export default {
         })
         if (_.get(resp, 'data.search.updateSearchEngines.responseResult.succeeded', false)) {
           this.$store.commit('showNotification', {
-            message: this.$t('admin:search.configSaveSuccess'),
+            message: this.$t('admin.search.configSaveSuccess'),
             style: 'success',
             icon: 'check'
           })
         } else {
-          throw new Error(_.get(resp, 'data.search.updateSearchEngines.responseResult.message', this.$t('common:error.unexpected')))
+          throw new Error(_.get(resp, 'data.search.updateSearchEngines.responseResult.message', this.$t('common.error.unexpected')))
         }
       } catch (err) {
         this.$store.commit('pushGraphError', err)
@@ -166,12 +166,12 @@ export default {
         })
         if (_.get(resp, 'data.search.rebuildIndex.responseResult.succeeded', false)) {
           this.$store.commit('showNotification', {
-            message: this.$t('admin:search.indexRebuildSuccess'),
+            message: this.$t('admin.search.indexRebuildSuccess'),
             style: 'success',
             icon: 'check'
           })
         } else {
-          throw new Error(_.get(resp, 'data.search.rebuildIndex.responseResult.message', this.$t('common:error.unexpected')))
+          throw new Error(_.get(resp, 'data.search.rebuildIndex.responseResult.message', this.$t('common.error.unexpected')))
         }
       } catch (err) {
         this.$store.commit('pushGraphError', err)

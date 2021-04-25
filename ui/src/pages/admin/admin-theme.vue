@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-paint-roller.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:theme.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:theme.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.theme.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.theme.subtitle') }}
       .col-auto
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
@@ -17,7 +17,7 @@
         q-btn(
           unelevated
           icon='mdi-check'
-          :label='$t(`common:actions.apply`)'
+          :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
           :loading='loading'
@@ -30,7 +30,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
-            .text-subtitle1 {{$t('admin:theme.options')}}
+            .text-subtitle1 {{$t('admin.theme.options')}}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -39,15 +39,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.darkMode`)}}
-              q-item-label(caption) {{$t(`admin:theme.darkModeHint`)}}
+              q-item-label {{$t(`admin.theme.darkMode`)}}
+              q-item-label(caption) {{$t(`admin.theme.darkModeHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.darkMode'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:theme.darkMode`)'
+                :aria-label='$t(`admin.theme.darkMode`)'
                 )
           template(v-for='(cl, idx) of colorKeys')
             q-separator.q-my-sm(inset)
@@ -59,8 +59,8 @@
                   size='sm'
                   )
               q-item-section
-                q-item-label {{$t(`admin:theme.` + cl + `Color`)}}
-                q-item-label(caption) {{$t(`admin:theme.` + cl + `ColorHint`)}}
+                q-item-label {{$t(`admin.theme.` + cl + `Color`)}}
+                q-item-label(caption) {{$t(`admin.theme.` + cl + `ColorHint`)}}
               q-item-section(avatar)
                 q-btn(
                   flat
@@ -93,8 +93,8 @@
           //-       size='sm'
           //-       )
           //-   q-item-section
-          //-     q-item-label {{$t(`admin:theme.iconset`)}}
-          //-     q-item-label(caption) {{$t(`admin:theme.iconsetHint`)}}
+          //-     q-item-label {{$t(`admin.theme.iconset`)}}
+          //-     q-item-label(caption) {{$t(`admin.theme.iconsetHint`)}}
           //-   q-item-section
           //-     q-select(
           //-       outlined
@@ -103,7 +103,7 @@
           //-       emit-value
           //-       map-options
           //-       dense
-          //-       :aria-label='$t(`admin:theme.iconset`)'
+          //-       :aria-label='$t(`admin.theme.iconset`)'
           //-       )
           //- q-separator.q-my-sm(inset)
           //- q-item(tag='label', v-ripple)
@@ -114,15 +114,15 @@
           //-       size='sm'
           //-       )
           //-   q-item-section
-          //-     q-item-label {{$t(`admin:theme.reduceMotion`)}}
-          //-     q-item-label(caption) {{$t(`admin:theme.reduceMotionHint`)}}
+          //-     q-item-label {{$t(`admin.theme.reduceMotion`)}}
+          //-     q-item-label(caption) {{$t(`admin.theme.reduceMotionHint`)}}
           //-   q-item-section(avatar)
           //-     q-toggle(
           //-       v-model='config.reduceMotion'
           //-       color='primary'
           //-       checked-icon='las la-check'
           //-       unchecked-icon='las la-times'
-          //-       :aria-label='$t(`admin:theme.reduceMotion`)'
+          //-       :aria-label='$t(`admin.theme.reduceMotion`)'
           //-       )
 
         //- -----------------------
@@ -130,7 +130,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm.q-mt-md
           q-card-section
-            .text-subtitle1 {{$t('admin:theme.layout')}}
+            .text-subtitle1 {{$t('admin.theme.layout')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -139,8 +139,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.sidebarPosition`)}}
-              q-item-label(caption) {{$t(`admin:theme.sidebarPositionHint`)}}
+              q-item-label {{$t(`admin.theme.sidebarPosition`)}}
+              q-item-label(caption) {{$t(`admin.theme.sidebarPositionHint`)}}
             q-item-section.col-auto
               q-btn-toggle(
                 v-model='config.sidebarPosition'
@@ -162,8 +162,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.tocPosition`)}}
-              q-item-label(caption) {{$t(`admin:theme.tocPositionHint`)}}
+              q-item-label {{$t(`admin.theme.tocPosition`)}}
+              q-item-label(caption) {{$t(`admin.theme.tocPositionHint`)}}
             q-item-section.col-auto
               q-btn-toggle(
                 v-model='config.tocPosition'
@@ -185,15 +185,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.showSharingMenu`)}}
-              q-item-label(caption) {{$t(`admin:theme.showSharingMenuHint`)}}
+              q-item-label {{$t(`admin.theme.showSharingMenu`)}}
+              q-item-label(caption) {{$t(`admin.theme.showSharingMenuHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.showSharingMenu'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:theme.showSharingMenu`)'
+                :aria-label='$t(`admin.theme.showSharingMenu`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -204,15 +204,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.showPrintBtn`)}}
-              q-item-label(caption) {{$t(`admin:theme.showPrintBtnHint`)}}
+              q-item-label {{$t(`admin.theme.showPrintBtn`)}}
+              q-item-label(caption) {{$t(`admin.theme.showPrintBtnHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.showPrintBtn'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:theme.showPrintBtn`)'
+                :aria-label='$t(`admin.theme.showPrintBtn`)'
                 )
 
       .col-6
@@ -221,7 +221,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
-            .text-subtitle1 {{$t('admin:theme.codeInjection')}}
+            .text-subtitle1 {{$t('admin.theme.codeInjection')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -230,11 +230,11 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.cssOverride`)}}
-              q-item-label(caption) {{$t(`admin:theme.cssOverrideHint`)}}
+              q-item-label {{$t(`admin.theme.cssOverride`)}}
+              q-item-label(caption) {{$t(`admin.theme.cssOverrideHint`)}}
           q-item
             q-item-section
-              q-no-ssr(:placeholder='$t(`common:loading`)')
+              q-no-ssr(:placeholder='$t(`common.loading`)')
                 codemirror.admin-theme-cm(
                   ref='cmCSS'
                   v-model='config.injectCSS'
@@ -250,11 +250,11 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.headHtmlInjection`)}}
-              q-item-label(caption) {{$t(`admin:theme.headHtmlInjectionHint`)}}
+              q-item-label {{$t(`admin.theme.headHtmlInjection`)}}
+              q-item-label(caption) {{$t(`admin.theme.headHtmlInjectionHint`)}}
           q-item
             q-item-section
-              q-no-ssr(:placeholder='$t(`common:loading`)')
+              q-no-ssr(:placeholder='$t(`common.loading`)')
                 codemirror.admin-theme-cm(
                   ref='cmHead'
                   v-model='config.injectHead'
@@ -270,11 +270,11 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:theme.bodyHtmlInjection`)}}
-              q-item-label(caption) {{$t(`admin:theme.bodyHtmlInjectionHint`)}}
+              q-item-label {{$t(`admin.theme.bodyHtmlInjection`)}}
+              q-item-label(caption) {{$t(`admin.theme.bodyHtmlInjectionHint`)}}
           q-item
             q-item-section
-              q-no-ssr(:placeholder='$t(`common:loading`)')
+              q-no-ssr(:placeholder='$t(`common.loading`)')
                 codemirror.admin-theme-cm(
                   ref='cmBody'
                   v-model='config.injectBody'
@@ -293,7 +293,7 @@ import { colors } from 'quasar'
 export default {
   meta () {
     return {
-      title: this.$t('admin:theme.title')
+      title: this.$t('admin.theme.title')
     }
   },
   data () {
@@ -335,17 +335,17 @@ export default {
     headers () {
       return [
         {
-          text: this.$t('admin:theme.downloadName'),
+          text: this.$t('admin.theme.downloadName'),
           align: 'left',
           value: 'text'
         },
         {
-          text: this.$t('admin:theme.downloadAuthor'),
+          text: this.$t('admin.theme.downloadAuthor'),
           align: 'left',
           value: 'author'
         },
         {
-          text: this.$t('admin:theme.downloadDownload'),
+          text: this.$t('admin.theme.downloadDownload'),
           align: 'center',
           value: 'value',
           sortable: false,

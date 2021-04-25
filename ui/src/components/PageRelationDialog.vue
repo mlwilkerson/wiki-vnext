@@ -1,10 +1,10 @@
 <template lang="pug">
   q-card.page-relation-dialog(style='width: 500px;')
     q-toolbar.bg-primary.text-white
-      .text-subtitle2(v-if='isEditMode') {{$t('editor:pageRel.titleEdit')}}
-      .text-subtitle2(v-else) {{$t('editor:pageRel.title')}}
+      .text-subtitle2(v-if='isEditMode') {{$t('editor.pageRel.titleEdit')}}
+      .text-subtitle2(v-else) {{$t('editor.pageRel.title')}}
     q-card-section
-      .text-overline {{$t('editor:pageRel.position')}}
+      .text-overline {{$t('editor.pageRel.position')}}
       q-form.q-gutter-md.q-pt-md
         div
           q-btn-toggle(
@@ -14,40 +14,40 @@
             no-caps
             toggle-color='primary'
             :options=`[
-              { label: $t('editor:pageRel.left'), value: 'left' },
-              { label: $t('editor:pageRel.center'), value: 'center' },
-              { label: $t('editor:pageRel.right'), value: 'right' }
+              { label: $t('editor.pageRel.left'), value: 'left' },
+              { label: $t('editor.pageRel.center'), value: 'center' },
+              { label: $t('editor.pageRel.right'), value: 'right' }
             ]`
           )
-        .text-overline {{$t('editor:pageRel.button')}}
+        .text-overline {{$t('editor.pageRel.button')}}
         q-input(
           ref='iptRelLabel'
           outlined
           dense
-          :label='$t(`editor:pageRel.label`)'
+          :label='$t(`editor.pageRel.label`)'
           v-model='label'
           )
         template(v-if='pos !== `center`')
           q-input(
             outlined
             dense
-            :label='$t(`editor:pageRel.caption`)'
+            :label='$t(`editor.pageRel.caption`)'
             v-model='caption'
             )
         q-btn.rounded-borders(
-          :label='$t(`editor:pageRel.selectIcon`)'
+          :label='$t(`editor.pageRel.selectIcon`)'
           color='primary'
           outline
           )
           q-menu(content-class='shadow-7')
             icon-picker-dialog(v-model='icon')
-        .text-overline {{$t('editor:pageRel.target')}}
+        .text-overline {{$t('editor.pageRel.target')}}
         q-btn.rounded-borders(
-          :label='$t(`editor:pageRel.selectPage`)'
+          :label='$t(`editor.pageRel.selectPage`)'
           color='primary'
           outline
           )
-        .text-overline {{$t('editor:pageRel.preview')}}
+        .text-overline {{$t('editor.pageRel.preview')}}
         q-btn(
           v-if='pos === `left`'
           padding='sm md'
@@ -82,7 +82,7 @@
       q-space
       q-btn.acrylic-btn(
         icon='las la-times'
-        :label='$t(`common:actions.discard`)'
+        :label='$t(`common.actions.discard`)'
         color='grey-7'
         padding='xs md'
         v-close-popup
@@ -92,7 +92,7 @@
         v-if='isEditMode'
         :disabled='!canSubmit'
         icon='las la-check'
-        :label='$t(`common:actions.save`)'
+        :label='$t(`common.actions.save`)'
         unelevated
         color='primary'
         padding='xs md'
@@ -103,7 +103,7 @@
         v-else
         :disabled='!canSubmit'
         icon='las la-plus'
-        :label='$t(`common:actions.create`)'
+        :label='$t(`common.actions.create`)'
         unelevated
         color='primary'
         padding='xs md'

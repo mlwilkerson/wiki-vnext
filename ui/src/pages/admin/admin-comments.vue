@@ -5,8 +5,8 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-chat-bubble.svg', alt='Comments', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{$t('admin:comments.title')}}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{$t('admin:comments.subtitle')}}
+            .headline.primary--text.animated.fadeInLeft {{$t('admin.comments.title')}}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s {{$t('admin.comments.subtitle')}}
           v-spacer
           v-btn.animated.fadeInDown.wait-p3s(icon, outlined, color='grey', href='https://docs.requarks.io/comments', target='_blank')
             v-icon mdi-help-circle
@@ -14,12 +14,12 @@
             v-icon mdi-refresh
           v-btn.animated.fadeInDown(color='success', @click='save', depressed, large)
             v-icon(left) mdi-check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp
           v-toolbar(flat, color='primary', dark, dense)
-            .subtitle-1 {{$t('admin:comments.provider')}}
+            .subtitle-1 {{$t('admin.comments.provider')}}
           v-list.py-0(two-line, dense)
             template(v-for='(provider, idx) in providers')
               v-list-item(:key='provider.key', @click='selectedProvider = provider.key', :disabled='!provider.isAvailable')
@@ -46,8 +46,8 @@
             .admin-providerlogo
               img(:src='provider.logo', :alt='provider.title')
           v-card-text
-            .overline.my-5 {{$t('admin:comments.providerConfig')}}
-            .body-2.ml-3(v-if='!provider.config || provider.config.length < 1'): em {{$t('admin:comments.providerNoConfig')}}
+            .overline.my-5 {{$t('admin.comments.providerConfig')}}
+            .body-2.ml-3(v-if='!provider.config || provider.config.length < 1'): em {{$t('admin.comments.providerNoConfig')}}
             template(v-else, v-for='cfg in provider.config')
               v-select.mb-3(
                 v-if='cfg.value.type === "string" && cfg.value.enum'
@@ -122,7 +122,7 @@ export default {
     async refresh() {
       await this.$apollo.queries.providers.refetch()
       this.$store.commit('showNotification', {
-        message: this.$t('admin:comments.listRefreshSuccess'),
+        message: this.$t('admin.comments.listRefreshSuccess'),
         style: 'success',
         icon: 'cached'
       })
@@ -155,12 +155,12 @@ export default {
         })
         if (_.get(resp, 'data.comments.updateProviders.responseResult.succeeded', false)) {
           this.$store.commit('showNotification', {
-            message: this.$t('admin:comments.configSaveSuccess'),
+            message: this.$t('admin.comments.configSaveSuccess'),
             style: 'success',
             icon: 'check'
           })
         } else {
-          throw new Error(_.get(resp, 'data.comments.updateProviders.responseResult.message', this.$t('common:error.unexpected')))
+          throw new Error(_.get(resp, 'data.comments.updateProviders.responseResult.message', this.$t('common.error.unexpected')))
         }
       } catch (err) {
         this.$store.commit('pushGraphError', err)

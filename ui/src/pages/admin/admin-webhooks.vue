@@ -5,12 +5,12 @@
         .admin-header
           img.animated.fadeInUp(src='/_assets/svg/icon-winter.svg', alt='Mail', style='width: 80px;')
           .admin-header-title
-            .headline.primary--text.animated.fadeInLeft {{ $t('admin:webhooks.title') }}
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin:webhooks.subtitle') }}
+            .headline.primary--text.animated.fadeInLeft {{ $t('admin.webhooks.title') }}
+            .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin.webhooks.subtitle') }}
           v-spacer
           v-btn.animated.fadeInDown(color='success', depressed, @click='save', large, disabled)
             v-icon(left) check
-            span {{$t('common:actions.apply')}}
+            span {{$t('common.actions.apply')}}
 
       v-flex(lg3, xs12)
         v-card.animated.fadeInUp

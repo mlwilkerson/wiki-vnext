@@ -3,24 +3,24 @@
     q-card(style='min-width: 350px; max-width: 450px;')
       q-card-section.card-header
         q-icon(name='las la-power-off', left, size='sm')
-        span {{value ? $t(`admin:sites.activate`) : $t(`admin:sites.deactivate`)}}
+        span {{value ? $t(`admin.sites.activate`) : $t(`admin.sites.deactivate`)}}
       q-card-section
         .text-body2
-          i18n(:path='value ? `admin:sites.activateConfirm` : `admin:sites.deactivateConfirm`')
+          i18n(:path='value ? `admin.sites.activateConfirm` : `admin.sites.deactivateConfirm`')
             template(v-slot:siteTitle)
               strong {{site.title}}
       q-card-actions.card-actions
         q-space
         q-btn.acrylic-btn(
           flat
-          :label='$t(`common:actions.cancel`)'
+          :label='$t(`common.actions.cancel`)'
           color='grey'
           padding='xs md'
           @click='hide'
           )
         q-btn(
           unelevated
-          :label='value ? $t(`common:actions.activate`) : $t(`common:actions.deactivate`)'
+          :label='value ? $t(`common.actions.activate`) : $t(`common.actions.deactivate`)'
           :color='value ? `positive` : `negative`'
           padding='xs md'
           @click='confirm'
@@ -84,7 +84,7 @@ export default {
         if (resp?.data?.updateSite?.status?.succeeded) {
           this.$q.notify({
             type: 'positive',
-            message: this.$t('admin:sites.updateSuccess')
+            message: this.$t('admin.sites.updateSuccess')
           })
           this.$store.set('admin/sites', this.$store.get('admin/sites').map(s => {
             if (s.id === siteId) {

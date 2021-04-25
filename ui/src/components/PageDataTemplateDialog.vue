@@ -1,7 +1,7 @@
 <template lang="pug">
   q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
     q-toolbar.bg-primary.text-white
-      .text-subtitle2 {{$t('editor:pageData.manageTemplates')}}
+      .text-subtitle2 {{$t('editor.pageData.manageTemplates')}}
       q-space
       q-btn(
         icon='las la-times'
@@ -15,7 +15,7 @@
           v-model='selectedTemplateId'
           :options='templates'
           standout
-          :label='$t(`editor:pageData.template`)'
+          :label='$t(`editor.pageData.template`)'
           dense
           dark
           option-value='id'
@@ -24,7 +24,7 @@
         )
         q-btn(
           icon='las la-plus'
-          :label='$t(`common:actions.new`)'
+          :label='$t(`common.actions.new`)'
           unelevated
           color='primary'
           no-caps
@@ -34,13 +34,13 @@
       .col-auto.page-datatmpl-sd
         .q-pa-md
           q-btn.acrylic-btn.full-width(
-            :label='$t(`common:actions.howItWorks`)'
+            :label='$t(`common.actions.howItWorks`)'
             icon='las la-question-circle'
             flat
             color='pink'
             no-caps
           )
-        q-item-label(header, style='margin-top: 2px;') {{$t('editor:pageData.templateFullRowTypes')}}
+        q-item-label(header, style='margin-top: 2px;') {{$t('editor.pageData.templateFullRowTypes')}}
         .q-px-md
           draggable(
             class='q-list rounded-borders'
@@ -61,7 +61,7 @@
                 q-icon(:name='item.icon', color='primary')
               q-item-section
                 q-item-label {{item.label}}
-        q-item-label(header) {{$t('editor:pageData.templateKeyValueTypes')}}
+        q-item-label(header) {{$t('editor.pageData.templateKeyValueTypes')}}
         .q-px-md.q-pb-md
           draggable(
             class='q-list rounded-borders'
@@ -92,14 +92,14 @@
             .col.page-datatmpl-meta.q-px-md.q-py-md.flex.q-gutter-md
               q-input.col(
                 ref='tmplTitleIpt'
-                :label='$t(`editor:pageData.templateTitle`)'
+                :label='$t(`editor.pageData.templateTitle`)'
                 outlined
                 dense
                 v-model='tmpl.label'
               )
               q-btn.acrylic-btn(
                 icon='las la-check'
-                :label='$t(`common:actions.commit`)'
+                :label='$t(`common.actions.commit`)'
                 no-caps
                 flat
                 color='positive'
@@ -107,15 +107,15 @@
               )
               q-btn.acrylic-btn(
                 icon='las la-trash'
-                :aria-label='$t(`common:actions.delete`)'
+                :aria-label='$t(`common.actions.delete`)'
                 flat
                 color='negative'
                 @click='remove'
               )
-            q-item-label(header) {{$t('editor:pageData.templateStructure')}}
+            q-item-label(header) {{$t('editor.pageData.templateStructure')}}
             .q-px-md.q-pb-md
               div(:class='(dragStarted || tmpl.data.length < 1 ? `page-datatmpl-box` : ``)')
-                .text-caption.text-primary.q-pa-md(v-if='tmpl.data.length < 1 && !dragStarted'): em {{$t('editor:pageData.dragDropHint')}}
+                .text-caption.text-primary.q-pa-md(v-if='tmpl.data.length < 1 && !dragStarted'): em {{$t('editor.pageData.dragDropHint')}}
                 draggable(
                   class='q-list rounded-borders'
                   :list='tmpl.data'
@@ -134,14 +134,14 @@
                       q-icon(:name='item.icon', color='primary')
                     q-item-section
                       q-input(
-                        :label='$t(`editor:pageData.label`)'
+                        :label='$t(`editor.pageData.label`)'
                         v-model='item.label'
                         outlined
                         dense
                       )
                     q-item-section(v-if='item.type !== `header`')
                       q-input(
-                        :label='$t(`editor:pageData.uniqueKey`)'
+                        :label='$t(`editor.pageData.uniqueKey`)'
                         v-model='item.key'
                         outlined
                         dense
@@ -149,7 +149,7 @@
                     q-item-section(side)
                       q-btn.acrylic-btn(
                         color='negative'
-                        :aria-label='$t(`common:actions.delete`)'
+                        :aria-label='$t(`common.actions.delete`)'
                         padding='xs'
                         icon='las la-times'
                         flat
@@ -158,9 +158,9 @@
             .page-datatmpl-scrollend(ref='scrollAreaEnd')
 
     .q-pa-md.text-center(v-else-if='templates.length > 0')
-      em.text-grey-6 {{$t('editor:pageData.selectTemplateAbove')}}
+      em.text-grey-6 {{$t('editor.pageData.selectTemplateAbove')}}
     .q-pa-md.text-center(v-else)
-      em.text-grey-6 {{$t('editor:pageData.noTemplate')}}
+      em.text-grey-6 {{$t('editor.pageData.noTemplate')}}
 </template>
 
 <script>
@@ -195,12 +195,12 @@ export default {
       return [
         {
           key: 'header',
-          label: this.$t('editor:pageData.fieldTypeHeader'),
+          label: this.$t('editor.pageData.fieldTypeHeader'),
           icon: 'las la-heading'
         },
         {
           key: 'image',
-          label: this.$t('editor:pageData.fieldTypeImage'),
+          label: this.$t('editor.pageData.fieldTypeImage'),
           icon: 'las la-image'
         }
       ]
@@ -209,22 +209,22 @@ export default {
       return [
         {
           key: 'text',
-          label: this.$t('editor:pageData.fieldTypeText'),
+          label: this.$t('editor.pageData.fieldTypeText'),
           icon: 'las la-font'
         },
         {
           key: 'number',
-          label: this.$t('editor:pageData.fieldTypeNumber'),
+          label: this.$t('editor.pageData.fieldTypeNumber'),
           icon: 'las la-infinity'
         },
         {
           key: 'boolean',
-          label: this.$t('editor:pageData.fieldTypeBoolean'),
+          label: this.$t('editor.pageData.fieldTypeBoolean'),
           icon: 'las la-check-square'
         },
         {
           key: 'link',
-          label: this.$t('editor:pageData.fieldTypeLink'),
+          label: this.$t('editor.pageData.fieldTypeLink'),
           icon: 'las la-link'
         }
       ]
@@ -268,7 +268,7 @@ export default {
     create () {
       this.tmpl = {
         id: uuid(),
-        label: this.$t('editor:pageData.templateUntitled'),
+        label: this.$t('editor.pageData.templateUntitled'),
         data: []
       }
       this.$nextTick(() => {
@@ -281,18 +281,18 @@ export default {
     commit () {
       try {
         if (this.tmpl.label.length < 1) {
-          throw new Error(this.$t('editor:pageData.invalidTemplateName'))
+          throw new Error(this.$t('editor.pageData.invalidTemplateName'))
         } else if (this.tmpl.data.length < 1) {
-          throw new Error(this.$t('editor:pageData.emptyTemplateStructure'))
+          throw new Error(this.$t('editor.pageData.emptyTemplateStructure'))
         } else if (this.tmpl.data.some(f => f.label.length < 1)) {
-          throw new Error(this.$t('editor:pageData.invalidTemplateLabels'))
+          throw new Error(this.$t('editor.pageData.invalidTemplateLabels'))
         } else if (this.tmpl.data.some(f => f.type !== 'header' && f.key.length < 1)) {
-          throw new Error(this.$t('editor:pageData.invalidTemplateKeys'))
+          throw new Error(this.$t('editor.pageData.invalidTemplateKeys'))
         }
 
         const keys = this.tmpl.data.filter(f => f.type !== 'header').map(f => f.key)
         if ((new Set(keys)).size !== keys.length) {
-          throw new Error(this.$t('editor:pageData.duplicateTemplateKeys'))
+          throw new Error(this.$t('editor.pageData.duplicateTemplateKeys'))
         }
 
         if (this.templates.some(t => t.id === this.tmpl.id)) {
@@ -310,8 +310,8 @@ export default {
     },
     remove () {
       this.$q.dialog({
-        title: this.$t('editor:pageData.templateDeleteConfirmTitle'),
-        message: this.$t('editor:pageData.templateDeleteConfirmText'),
+        title: this.$t('editor.pageData.templateDeleteConfirmTitle'),
+        message: this.$t('editor.pageData.templateDeleteConfirmText'),
         cancel: true,
         persistent: true,
         color: 'negative'

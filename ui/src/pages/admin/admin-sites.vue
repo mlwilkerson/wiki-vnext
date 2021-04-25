@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-change-theme.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:sites.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:sites.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.sites.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.sites.subtitle') }}
       .col-auto
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
@@ -24,7 +24,7 @@
         q-btn(
           unelevated
           icon='las la-plus'
-          :label='$t(`admin:sites.new`)'
+          :label='$t(`admin.sites.new`)'
           color='primary'
           @click='createSite'
           )
@@ -55,7 +55,7 @@
                     q-tooltip(
                       anchor='center left'
                       self='center right'
-                    ) {{$t('common:clipboard.uuid')}}
+                    ) {{$t('common.clipboard.uuid')}}
               template(v-slot:body-cell-title='props')
                 q-td(:props='props')
                   strong {{props.value}}
@@ -82,7 +82,7 @@
                     color='primary'
                     checked-icon='las la-check'
                     unchecked-icon='las la-times'
-                    :aria-label='$t(`admin:sites.isActive`)'
+                    :aria-label='$t(`admin.sites.isActive`)'
                     @input='(val) => { toggleSiteState(props.row, val) }'
                     )
               template(v-slot:body-cell-edit='props')
@@ -113,7 +113,7 @@ import Vue from 'vue'
 export default {
   meta () {
     return {
-      title: this.$t('admin:sites.title')
+      title: this.$t('admin.sites.title')
     }
   },
   data () {
@@ -126,7 +126,7 @@ export default {
     headers () {
       return [
         {
-          label: this.$t('common:field.id'),
+          label: this.$t('common.field.id'),
           align: 'center',
           field: 'id',
           name: 'id',
@@ -134,21 +134,21 @@ export default {
           style: 'width: 50px'
         },
         {
-          label: this.$t('common:field.name'),
+          label: this.$t('common.field.name'),
           align: 'left',
           field: 'title',
           name: 'title',
           sortable: true
         },
         {
-          label: this.$t('admin:sites.hostname'),
+          label: this.$t('admin.sites.hostname'),
           align: 'left',
           field: 'hostname',
           name: 'hostname',
           sortable: true
         },
         {
-          label: this.$t('admin:sites.isActive'),
+          label: this.$t('admin.sites.isActive'),
           align: 'center',
           field: 'isEnabled',
           name: 'isEnabled',
@@ -156,7 +156,7 @@ export default {
           style: 'width: 10px'
         },
         {
-          label: this.$t('admin:sites.edit'),
+          label: this.$t('admin.sites.edit'),
           align: 'center',
           field: 'edit',
           name: 'edit',
@@ -164,7 +164,7 @@ export default {
           style: 'width: 150px'
         },
         {
-          label: this.$t('admin:sites.delete'),
+          label: this.$t('admin.sites.delete'),
           align: 'center',
           field: 'remove',
           name: 'remove',
@@ -179,12 +179,12 @@ export default {
       copyToClipboard(uid).then(() => {
         this.$q.notify({
           type: 'positive',
-          message: this.$t('common:clipboard.uuidSuccess')
+          message: this.$t('common.clipboard.uuidSuccess')
         })
       }).catch(() => {
         this.$q.notify({
           type: 'negative',
-          message: this.$t('common:clipboard.uuidFailure')
+          message: this.$t('common.clipboard.uuidFailure')
         })
       })
     },
@@ -192,7 +192,7 @@ export default {
       await this.$store.dispatch('admin/fetchSites')
       this.$q.notify({
         type: 'positive',
-        message: this.$t('admin:sites.refreshSuccess')
+        message: this.$t('admin.sites.refreshSuccess')
       })
     },
     createSite () {

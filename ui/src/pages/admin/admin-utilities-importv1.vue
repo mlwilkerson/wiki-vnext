@@ -1,7 +1,7 @@
 <template lang='pug'>
   v-card
     v-toolbar(flat, color='primary', dark, dense)
-      .subtitle-1 {{ $t('admin:utilities.importv1Title') }}
+      .subtitle-1 {{ $t('admin.utilities.importv1Title') }}
     v-card-text
       .text-center
         img.animated.fadeInUp.wait-p1s(src='/_assets/svg/icon-software.svg')

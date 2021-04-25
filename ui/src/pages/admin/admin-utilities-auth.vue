@@ -1,7 +1,7 @@
 <template lang='pug'>
   v-card
     v-toolbar(flat, color='primary', dark, dense)
-      .subtitle-1 {{ $t('admin:utilities.authTitle') }}
+      .subtitle-1 {{ $t('admin.utilities.authTitle') }}
     v-card-text
       .subtitle-1.pb-3.primary--text Generate New Authentication Public / Private Key Certificates
       .body-2 This will invalidate all current session tokens and cause all users to be logged out.

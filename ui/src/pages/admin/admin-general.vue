@@ -4,8 +4,8 @@
       .col-auto
         img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-web.svg')
       .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin:general.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin:general.subtitle') }}
+        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.general.title') }}
+        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.general.subtitle') }}
       .col-auto
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
@@ -17,7 +17,7 @@
         q-btn(
           unelevated
           icon='mdi-check'
-          :label='$t(`common:actions.apply`)'
+          :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
           :loading='loading'
@@ -30,7 +30,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
-            .text-subtitle1 {{$t('admin:general.siteInfo')}}
+            .text-subtitle1 {{$t('admin.general.siteInfo')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -39,18 +39,18 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.siteTitle`)}}
-              q-item-label(caption) {{$t(`admin:general.siteTitleHint`)}}
+              q-item-label {{$t(`admin.general.siteTitle`)}}
+              q-item-label(caption) {{$t(`admin.general.siteTitleHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='config.title'
                 dense
                 :rules=`[
-                  val => /^[^<>"]+$/.test(val) || $t('admin:general.siteTitleInvalidChars')
+                  val => /^[^<>"]+$/.test(val) || $t('admin.general.siteTitleInvalidChars')
                 ]`
                 hide-bottom-space
-                :aria-label='$t(`admin:general.siteTitle`)'
+                :aria-label='$t(`admin.general.siteTitle`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -61,14 +61,14 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.siteDescription`)}}
-              q-item-label(caption) {{$t(`admin:general.siteDescriptionHint`)}}
+              q-item-label {{$t(`admin.general.siteDescription`)}}
+              q-item-label(caption) {{$t(`admin.general.siteDescriptionHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='config.description'
                 dense
-                :aria-label='$t(`admin:general.siteDescription`)'
+                :aria-label='$t(`admin.general.siteDescription`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -79,18 +79,18 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.siteHostname`)}}
-              q-item-label(caption) {{$t(`admin:general.siteHostnameHint`)}}
+              q-item-label {{$t(`admin.general.siteHostname`)}}
+              q-item-label(caption) {{$t(`admin.general.siteHostnameHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='config.hostname'
                 dense
                 :rules=`[
-                  val => /^(([a-z0-9.-]+)|([*]{1}))$/.test(val) || $t('admin:general.siteHostnameInvalid')
+                  val => /^(([a-z0-9.-]+)|([*]{1}))$/.test(val) || $t('admin.general.siteHostnameInvalid')
                 ]`
                 hide-bottom-space
-                :aria-label='$t(`admin:general.siteHostname`)'
+                :aria-label='$t(`admin.general.siteHostname`)'
                 )
 
         //- -----------------------
@@ -98,7 +98,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm.q-mt-md
           q-card-section
-            .text-subtitle1 {{$t('admin:general.footerCopyright')}}
+            .text-subtitle1 {{$t('admin.general.footerCopyright')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -107,14 +107,14 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.companyName`)}}
-              q-item-label(caption) {{$t(`admin:general.companyNameHint`)}}
+              q-item-label {{$t(`admin.general.companyName`)}}
+              q-item-label(caption) {{$t(`admin.general.companyNameHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='config.company'
                 dense
-                :aria-label='$t(`admin:general.companyName`)'
+                :aria-label='$t(`admin.general.companyName`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -125,8 +125,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.contentLicense`)}}
-              q-item-label(caption) {{$t(`admin:general.contentLicenseHint`)}}
+              q-item-label {{$t(`admin.general.contentLicense`)}}
+              q-item-label(caption) {{$t(`admin.general.contentLicenseHint`)}}
             q-item-section
               q-select(
                 outlined
@@ -137,7 +137,7 @@
                 emit-value
                 map-options
                 dense
-                :aria-label='$t(`admin:general.contentLicense`)'
+                :aria-label='$t(`admin.general.contentLicense`)'
                 )
 
         //- -----------------------
@@ -145,7 +145,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm.q-mt-md
           q-card-section
-            .text-subtitle1 {{$t('admin:general.features')}}
+            .text-subtitle1 {{$t('admin.general.features')}}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -154,15 +154,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.allowComments`)}}
-              q-item-label(caption) {{$t(`admin:general.allowCommentsHint`)}}
+              q-item-label {{$t(`admin.general.allowComments`)}}
+              q-item-label(caption) {{$t(`admin.general.allowCommentsHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.features.comments'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.allowComments`)'
+                :aria-label='$t(`admin.general.allowComments`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -173,15 +173,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.allowContributions`)}}
-              q-item-label(caption) {{$t(`admin:general.allowContributionsHint`)}}
+              q-item-label {{$t(`admin.general.allowContributions`)}}
+              q-item-label(caption) {{$t(`admin.general.allowContributionsHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.features.contributions'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.allowContributions`)'
+                :aria-label='$t(`admin.general.allowContributions`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -192,15 +192,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.allowProfile`)}}
-              q-item-label(caption) {{$t(`admin:general.allowProfileHint`)}}
+              q-item-label {{$t(`admin.general.allowProfile`)}}
+              q-item-label(caption) {{$t(`admin.general.allowProfileHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.features.profile'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.allowProfile`)'
+                :aria-label='$t(`admin.general.allowProfile`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -211,8 +211,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.allowRatings`)}}
-              q-item-label(caption) {{$t(`admin:general.allowRatingsHint`)}}
+              q-item-label {{$t(`admin.general.allowRatings`)}}
+              q-item-label(caption) {{$t(`admin.general.allowRatingsHint`)}}
             q-item-section.col-auto
               q-btn-toggle(
                 v-model='config.features.ratingsMode'
@@ -221,9 +221,9 @@
                 no-caps
                 toggle-color='primary'
                 :options=`[
-                  { label: $t('admin:general.ratingsOff'), value: 'off' },
-                  { label: $t('admin:general.ratingsThumbs'), value: 'thumbs' },
-                  { label: $t('admin:general.ratingsStars'), value: 'stars' }
+                  { label: $t('admin.general.ratingsOff'), value: 'off' },
+                  { label: $t('admin.general.ratingsThumbs'), value: 'thumbs' },
+                  { label: $t('admin.general.ratingsStars'), value: 'stars' }
                 ]`
               )
           q-separator.q-my-sm(inset)
@@ -235,15 +235,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.allowSearch`)}}
-              q-item-label(caption) {{$t(`admin:general.allowSearchHint`)}}
+              q-item-label {{$t(`admin.general.allowSearch`)}}
+              q-item-label(caption) {{$t(`admin.general.allowSearchHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.features.search'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.allowSearch`)'
+                :aria-label='$t(`admin.general.allowSearch`)'
                 )
 
       .col-12.col-lg-5
@@ -252,7 +252,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm
           q-card-section
-            .text-subtitle1 {{$t('admin:general.logo')}}
+            .text-subtitle1 {{$t('admin.general.logo')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -261,8 +261,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.logoUpl`)}}
-              q-item-label(caption) {{$t(`admin:general.logoUplHint`)}}
+              q-item-label {{$t(`admin.general.logoUpl`)}}
+              q-item-label(caption) {{$t(`admin.general.logoUplHint`)}}
             q-item-section.col-auto
               q-btn(
                 label='Upload'
@@ -280,8 +280,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.favicon`)}}
-              q-item-label(caption) {{$t(`admin:general.faviconHint`)}}
+              q-item-label {{$t(`admin.general.favicon`)}}
+              q-item-label(caption) {{$t(`admin.general.faviconHint`)}}
             q-item-section.col-auto
               q-btn(
                 label='Upload'
@@ -299,15 +299,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.displaySiteTitle`)}}
-              q-item-label(caption) {{$t(`admin:general.displaySiteTitleHint`)}}
+              q-item-label {{$t(`admin.general.displaySiteTitle`)}}
+              q-item-label(caption) {{$t(`admin.general.displaySiteTitleHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.logoText'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.displaySiteTitle`)'
+                :aria-label='$t(`admin.general.displaySiteTitle`)'
                 )
 
         //- -----------------------
@@ -315,7 +315,7 @@
         //- -----------------------
         q-card.shadow-1.q-pb-sm.q-mt-md(v-if='config.defaults')
           q-card-section
-            .text-subtitle1 {{$t('admin:general.defaults')}}
+            .text-subtitle1 {{$t('admin.general.defaults')}}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -324,8 +324,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.defaultTimezone`)}}
-              q-item-label(caption) {{$t(`admin:general.defaultTimezoneHint`)}}
+              q-item-label {{$t(`admin.general.defaultTimezone`)}}
+              q-item-label(caption) {{$t(`admin.general.defaultTimezoneHint`)}}
             q-item-section
               q-select(
                 outlined
@@ -337,7 +337,7 @@
                 map-options
                 dense
                 options-dense
-                :aria-label='$t(`admin:general.defaultTimezone`)'
+                :aria-label='$t(`admin.general.defaultTimezone`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -348,8 +348,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.defaultDateFormat`)}}
-              q-item-label(caption) {{$t(`admin:general.defaultDateFormatHint`)}}
+              q-item-label {{$t(`admin.general.defaultDateFormat`)}}
+              q-item-label(caption) {{$t(`admin.general.defaultDateFormatHint`)}}
             q-item-section
               q-select(
                 outlined
@@ -357,7 +357,7 @@
                 emit-value
                 map-options
                 dense
-                :aria-label='$t(`admin:general.defaultDateFormat`)'
+                :aria-label='$t(`admin.general.defaultDateFormat`)'
                 :options=`[
                   { label: $t('profile:localeDefault'), value: '' },
                   { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
@@ -376,8 +376,8 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.defaultTimeFormat`)}}
-              q-item-label(caption) {{$t(`admin:general.defaultTimeFormatHint`)}}
+              q-item-label {{$t(`admin.general.defaultTimeFormat`)}}
+              q-item-label(caption) {{$t(`admin.general.defaultTimeFormatHint`)}}
             q-item-section.col-auto
               q-btn-toggle(
                 v-model='config.defaults.timeFormat'
@@ -386,8 +386,8 @@
                 no-caps
                 toggle-color='primary'
                 :options=`[
-                  { label: $t('admin:general.defaultTimeFormat12h'), value: '12h' },
-                  { label: $t('admin:general.defaultTimeFormat24h'), value: '24h' }
+                  { label: $t('admin.general.defaultTimeFormat12h'), value: '12h' },
+                  { label: $t('admin.general.defaultTimeFormat24h'), value: '24h' }
                 ]`
               )
 
@@ -405,15 +405,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.searchAllowIndexing`)}}
-              q-item-label(caption) {{$t(`admin:general.searchAllowIndexingHint`)}}
+              q-item-label {{$t(`admin.general.searchAllowIndexing`)}}
+              q-item-label(caption) {{$t(`admin.general.searchAllowIndexingHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.robots.index'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.searchAllowIndexing`)'
+                :aria-label='$t(`admin.general.searchAllowIndexing`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -424,15 +424,15 @@
                 size='sm'
                 )
             q-item-section
-              q-item-label {{$t(`admin:general.searchAllowFollow`)}}
-              q-item-label(caption) {{$t(`admin:general.searchAllowFollowHint`)}}
+              q-item-label {{$t(`admin.general.searchAllowFollow`)}}
+              q-item-label(caption) {{$t(`admin.general.searchAllowFollowHint`)}}
             q-item-section(avatar)
               q-toggle(
                 v-model='config.robots.follow'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
-                :aria-label='$t(`admin:general.searchAllowFollow`)'
+                :aria-label='$t(`admin.general.searchAllowFollow`)'
                 )
 
 </template>
@@ -445,7 +445,7 @@ import cloneDeep from 'lodash/cloneDeep'
 export default {
   meta () {
     return {
-      title: this.$t('admin:general.title')
+      title: this.$t('admin.general.title')
     }
   },
   data () {
@@ -481,15 +481,15 @@ export default {
     currentSiteId: get('admin/currentSiteId'),
     contentLicenses () {
       return [
-        { value: '', text: this.$t('common:license.none') },
-        { value: 'alr', text: this.$t('common:license.alr') },
-        { value: 'cc0', text: this.$t('common:license.cc0') },
-        { value: 'ccby', text: this.$t('common:license.ccby') },
-        { value: 'ccbysa', text: this.$t('common:license.ccbysa') },
-        { value: 'ccbynd', text: this.$t('common:license.ccbynd') },
-        { value: 'ccbync', text: this.$t('common:license.ccbync') },
-        { value: 'ccbyncsa', text: this.$t('common:license.ccbyncsa') },
-        { value: 'ccbyncnd', text: this.$t('common:license.ccbyncnd') }
+        { value: '', text: this.$t('common.license.none') },
+        { value: 'alr', text: this.$t('common.license.alr') },
+        { value: 'cc0', text: this.$t('common.license.cc0') },
+        { value: 'ccby', text: this.$t('common.license.ccby') },
+        { value: 'ccbysa', text: this.$t('common.license.ccbysa') },
+        { value: 'ccbynd', text: this.$t('common.license.ccbynd') },
+        { value: 'ccbync', text: this.$t('common.license.ccbync') },
+        { value: 'ccbyncsa', text: this.$t('common.license.ccbyncsa') },
+        { value: 'ccbyncnd', text: this.$t('common.license.ccbyncnd') }
       ]
     },
     timezones: get('data/timezones')
@@ -550,7 +550,7 @@ export default {
         })
         this.$q.notify({
           type: 'positive',
-          message: this.$t('admin:general.saveSuccess')
+          message: this.$t('admin.general.saveSuccess')
         })
         if (this.currentSiteId === this.$store.get('site/id')) {
           this.$store.set('site/title', this.config.title)

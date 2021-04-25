@@ -3,7 +3,7 @@
     q-card(style='min-width: 350px;')
       q-card-section.card-header
         q-icon(name='las la-plus', left)
-        span {{$t(`admin:groups.create`)}}
+        span {{$t(`admin.groups.create`)}}
       q-card-section
         q-form.q-gutter-md(ref='createGroupForm', @submit='create')
           q-input(
@@ -11,26 +11,26 @@
             v-model='groupName'
             dense
             :rules=`[
-              val => val.length > 0 || $t('admin:groups.nameMissing'),
-              val => /^[^<>"]+$/.test(val) || $t('admin:groups.nameInvalidChars')
+              val => val.length > 0 || $t('admin.groups.nameMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin.groups.nameInvalidChars')
             ]`
             hide-bottom-space
-            :label='$t(`common:field.name`)'
-            :aria-label='$t(`common:field.name`)'
+            :label='$t(`common.field.name`)'
+            :aria-label='$t(`common.field.name`)'
             autofocus
             )
       q-card-actions.card-actions
         q-space
         q-btn.acrylic-btn(
           flat
-          :label='$t(`common:actions.cancel`)'
+          :label='$t(`common.actions.cancel`)'
           color='grey'
           padding='xs md'
           @click='hide'
           )
         q-btn(
           unelevated
-          :label='$t(`common:actions.create`)'
+          :label='$t(`common.actions.create`)'
           color='primary'
           padding='xs md'
           @click='create'
@@ -63,7 +63,7 @@ export default {
       try {
         const isFormValid = await this.$refs.createGroupForm.validate(true)
         if (!isFormValid) {
-          throw new Error(this.$t('admin:groups.createInvalidData'))
+          throw new Error(this.$t('admin.groups.createInvalidData'))
         }
         const resp = await this.$apollo.mutate({
           mutation: gql`
@@ -87,7 +87,7 @@ export default {
         if (resp?.data?.createGroup?.status?.succeeded) {
           this.$q.notify({
             type: 'positive',
-            message: this.$t('admin:groups.createSuccess')
+            message: this.$t('admin.groups.createSuccess')
           })
           this.$emit('ok')
           this.hide()

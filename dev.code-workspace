@@ -1,0 +1,59 @@
+{
+  "folders": [
+    {
+      "path": "core"
+    },
+    {
+      "path": "ui"
+    }
+  ],
+  "settings": {
+    "puglint.enable": true,
+    "editor.formatOnSave": false,
+    "editor.tabSize": 2,
+    "eslint.validate": [
+      "javascript",
+      "vue"
+    ],
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "i18n-ally.localesPaths": ["src/i18n"],
+    "i18n-ally.displayLanguage": "en",
+    "i18n-ally.sourceLanguage": "en",
+    "i18n-ally.enabledFrameworks": ["vue"],
+    "i18n-ally.extract.autoDetect": true,
+    "i18n-ally.extract.keygenStyle": "camelCase",
+    "i18n-ally.extract.keyMaxLength": 255,
+    "i18n-ally.extract.targetPickingStrategy": "most-similar",
+    "i18n-ally.keystyle": "flat",
+    "i18n-ally.disablePathParsing": true,
+    "i18n-ally.pathMatcher": "{locale}.json",
+    "i18n-ally.sortKeys": true,
+    "i18n-ally.tabStyle": "space",
+    "i18n-ally.indent": 2
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "mrmlnc.vscode-json5",
+      "christian-kohler.path-intellisense",
+      "mrmlnc.vscode-puglint",
+      "editorconfig.editorconfig",
+      "octref.vetur",
+      "kumar-harsh.graphql-for-vscode",
+      "lokalise.i18n-ally",
+      "oderwat.indent-rainbow",
+      "codezombiech.gitignore",
+      "visualstudioexptteam.vscodeintellicode",
+      "redhat.vscode-yaml",
+      "wayou.vscode-todo-highlight",
+      "coenraads.bracket-pair-colorizer-2"
+    ],
+    "unwantedRecommendations": [
+      "hookyqr.beautify",
+      "dbaeumer.jshint",
+      "ms-vscode.vscode-typescript-tslint-plugin"
+    ]
+  }
+}

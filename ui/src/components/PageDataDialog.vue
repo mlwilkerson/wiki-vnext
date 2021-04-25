@@ -1,7 +1,7 @@
 <template lang="pug">
   q-card.page-data-dialog(style='width: 750px;')
     q-toolbar.bg-primary.text-white.flex
-      .text-subtitle2 {{$t('editor:pageData.title')}}
+      .text-subtitle2 {{$t('editor.pageData.title')}}
       q-space
       q-btn(
         icon='las la-times'
@@ -10,13 +10,13 @@
         v-close-popup
       )
     q-card-section.page-data-dialog-selector
-      //- .text-overline.text-white {{$t('editor:pageData.template')}}
+      //- .text-overline.text-white {{$t('editor.pageData.template')}}
       .flex.q-gutter-sm
         q-select(
           dark
           v-model='templateId'
-          :label='$t(`editor:pageData.template`)'
-          :aria-label='$t(`editor:pageData.template`)'
+          :label='$t(`editor.pageData.template`)'
+          :aria-label='$t(`editor.pageData.template`)'
           :options='templates'
           option-value='id'
           map-options
@@ -28,7 +28,7 @@
         q-btn.acrylic-btn(
           dark
           icon='las la-pen'
-          :label='$t(`common:actions.manage`)'
+          :label='$t(`common.actions.manage`)'
           unelevated
           no-caps
           color='deep-orange-9'
@@ -76,7 +76,7 @@
               dense
               size='lg'
               )
-      q-no-ssr(v-else, :placeholder='$t(`common:loading`)')
+      q-no-ssr(v-else, :placeholder='$t(`common.loading`)')
         codemirror.admin-theme-cm(
           ref='cmData'
           v-model='content'

@@ -81,7 +81,7 @@
           label='Discard'
           aria-label='Discard'
           no-caps
-          @click='editMode = false'
+          @click='mode = `view`'
         )
         q-btn(
           v-if='editorMode === `edit`'
@@ -91,7 +91,7 @@
           label='Save'
           aria-label='Save'
           no-caps
-          @click='editMode = false'
+          @click='mode = `view`'
         )
         q-btn(
           v-else
@@ -101,7 +101,7 @@
           label='Create'
           aria-label='Create'
           no-caps
-          @click='editMode = false'
+          @click='mode = `view`'
         )
       .col-auto.q-pa-md.flex.items-center.justify-end(v-else)
         q-btn.q-mr-md(
@@ -144,7 +144,7 @@
           label='Edit'
           aria-label='Edit'
           no-caps
-          @click='editMode = true'
+          @click='mode = `edit`'
         )
     .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
       .col(style='order: 1;')

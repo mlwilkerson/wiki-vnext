@@ -1,7 +1,7 @@
 <template lang='pug'>
   v-card
     v-toolbar(flat, color='primary', dark, dense)
-      .subtitle-1 {{ $t('admin:utilities.contentTitle') }}
+      .subtitle-1 {{ $t('admin.utilities.contentTitle') }}
     v-card-text
       .subtitle-1.pb-3.primary--text Rebuild Page Tree
       .body-2 The virtual structure of your wiki is automatically inferred from all page paths. You can trigger a full rebuild of the tree if some virtual folders are missing or not valid anymore.
