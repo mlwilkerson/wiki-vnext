@@ -11,8 +11,9 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.js.wiki/extensions'
+          href='https://docs.js.wiki/admin/extensions'
           target='_blank'
+          type='a'
           )
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md

@@ -103,13 +103,13 @@
               q-icon(name='las la-users')
             q-item-section {{ $t('admin.groups.title') }}
             q-item-section(side)
-              q-badge(color='grey', :label='info.groupsTotal')
+              q-badge(color='dark-3', :label='info.groupsTotal')
           q-item(to='/a/users', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
               q-icon(name='las la-user-friends')
             q-item-section {{ $t('admin.users.title') }}
             q-item-section(side)
-              q-badge(color='grey', :label='info.usersTotal')
+              q-badge(color='dark-3', :label='info.usersTotal')
           q-item-label.q-mt-sm(header).text-caption.text-blue-grey-4 {{ $t('admin.nav.system') }}
           q-item(to='/a/api', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)

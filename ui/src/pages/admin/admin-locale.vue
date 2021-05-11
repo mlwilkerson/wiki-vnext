@@ -11,8 +11,9 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/theming'
+          href='https://docs.requarks.io/admin/locale'
           target='_blank'
+          type='a'
           )
         q-btn(
           unelevated
@@ -102,7 +103,7 @@
               q-card.bg-warning.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
                   q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-exclamation-circle', size='md')
+                    q-icon(name='las la-exclamation-circle', size='sm')
                   q-card-section
                     span {{ $t('admin.locale.namespacingPrefixWarning.title', { langCode: selectedLocale }) }}
                     .text-caption.text-yellow-1 {{ $t('admin.locale.namespacingPrefixWarning.subtitle') }}

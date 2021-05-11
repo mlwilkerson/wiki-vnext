@@ -21,6 +21,7 @@
           color='grey'
           href='https://docs.js.wiki/admin/api'
           target='_blank'
+          type='a'
           )
         q-btn.q-mr-sm(
           unelevated

@@ -25,25 +25,33 @@
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-vector-square'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.currentVersion'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.currentVersion') }}
+              q-item-label(caption) {{$t('admin.system.currentVersionHint')}}
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.currentVersion }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-broadcast-tower'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.latestVersion'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.latestVersion') }}
+              q-item-label(caption) {{$t('admin.system.latestVersionHint')}}
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.latestVersion }}
 
         //- -----------------------
@@ -55,37 +63,49 @@
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='lab la-node-js'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.nodejs'
+                  size='sm'
                 )
             q-item-section
               q-item-label Node.js
+              q-item-label(caption) {{$t('admin.system.nodejsHint')}}
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.nodeVersion }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-database'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.postgresql'
+                  size='sm'
                 )
             q-item-section
-              q-item-label Database
+              q-item-label {{$t('admin.system.database')}}
+              q-item-label(caption) {{$t('admin.system.databaseHint')}}
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono PostgreSQL {{dbVersion}}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-ethernet'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.database'
+                  size='sm'
                 )
             q-item-section
-              q-item-label Database Host
+              q-item-label {{$t('admin.system.databaseHost')}}
+              q-item-label(caption) {{$t('admin.system.databaseHostHint')}}
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.dbHost }}
 
       .col-6
@@ -98,73 +118,97 @@
           q-item
             q-item-section(avatar)
               q-avatar(
-                :icon='platformLogo'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + platformLogo'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.os') }}
+              q-item-label(caption) The OS Wiki.js is running on.
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-server'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.hostname'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.hostname') }}
+              q-item-label(caption) The hostname of the server / container.
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.hostname }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-microchip'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.cpu'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.cpuCores') }}
+              q-item-label(caption) The number of CPU cores available to Wiki.js.
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.cpuCores }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-memory'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.ram'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.totalRAM') }}
+              q-item-label(caption) The total amount of RAM available to Wiki.js.
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.ramTotal }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-terminal'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.workingDir'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.workingDirectory') }}
+              q-item-label(caption) The directory path where Wiki.js is currently running from.
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.workingDirectory }}
           q-separator(inset)
           q-item
             q-item-section(avatar)
               q-avatar(
-                icon='las la-file-code'
-                text-color='white'
+                :color='avatarBgColor'
                 rounded
-                color='primary'
+                )
+                q-icon(
+                  :name='`img:` + icons.configFile'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{ $t('admin.system.configFile') }}
+              q-item-label(caption) The path to the Wiki.js configuration file.
+            q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.configFile }}
 
     //-                 v-list-item-action-text {{ $t('admin.system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
@@ -225,29 +269,48 @@ export default {
       isUpgrading: false,
       isUpgradingStarted: false,
       upgradeProgress: 0,
-      info: {}
+      info: {},
+      icons: {
+        apple: require('assets/icons/ultraviolet-apple-logo.svg'),
+        configFile: require('assets/icons/ultraviolet-automation.svg'),
+        cpu: require('assets/icons/ultraviolet-processor.svg'),
+        currentVersion: require('assets/icons/ultraviolet-breakable.svg'),
+        database: require('assets/icons/ultraviolet-database.svg'),
+        docker: require('assets/icons/ultraviolet-docker-container.svg'),
+        hostname: require('assets/icons/ultraviolet-server.svg'),
+        latestVersion: require('assets/icons/ultraviolet-cloud-checked.svg'),
+        linux: require('assets/icons/ultraviolet-linux.svg'),
+        nodejs: require('assets/icons/color-nodejs.svg'),
+        postgresql: require('assets/icons/color-postgresql.svg'),
+        ram: require('assets/icons/ultraviolet-memory-slot.svg'),
+        ubuntu: require('assets/icons/ultraviolet-ubuntu.svg'),
+        workingDir: require('assets/icons/ultraviolet-program.svg'),
+        windows: require('assets/icons/ultraviolet-windows8.svg'),
+        washingMachine: require('assets/icons/ultraviolet-washing-machine.svg')
+      }
     }
   },
   computed: {
+    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' },
     dbVersion () {
       return _get(this.info, 'dbVersion', '').replace(/(?:\r\n|\r|\n)/g, ', ')
     },
     platformLogo () {
       switch (this.info.platform) {
         case 'docker':
-          return 'lab la-docker'
+          return this.icons.docker
         case 'darwin':
-          return 'lab la-apple'
+          return this.icons.apple
         case 'linux':
-          if (this.info.operatingSystem.indexOf('Ubuntu')) {
-            return 'lab la-ubuntu'
+          if (this.info.operatingSystem.indexOf('Ubuntu') >= 0) {
+            return this.icons.ubuntu
           } else {
-            return 'lab la-linux'
+            return this.icons.linux
           }
         case 'win32':
-          return 'lab la-windows'
+          return this.icons.windows
         default:
-          return 'las la-question'
+          return this.icons.washingMachine
       }
     },
     isDbLimited () {

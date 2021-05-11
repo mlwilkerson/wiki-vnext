@@ -13,6 +13,7 @@
           color='grey'
           href='https://docs.js.wiki/admin/general'
           target='_blank'
+          type='a'
           )
         q-btn(
           unelevated
@@ -32,11 +33,14 @@
           q-card-section
             .text-subtitle1 {{$t('admin.general.siteInfo')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-asterisk'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.title'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.siteTitle`)}}
@@ -54,11 +58,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-pen-nib'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.description'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.siteDescription`)}}
@@ -72,11 +79,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-globe'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.hostname'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.siteHostname`)}}
@@ -100,11 +110,14 @@
           q-card-section
             .text-subtitle1 {{$t('admin.general.footerCopyright')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-landmark'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.company'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.companyName`)}}
@@ -118,11 +131,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-copyright'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.contentLicense'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.contentLicense`)}}
@@ -147,11 +163,14 @@
           q-card-section
             .text-subtitle1 {{$t('admin.general.features')}}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-comments'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.comments'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.allowComments`)}}
@@ -166,11 +185,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-pen-fancy'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.contributions'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.allowContributions`)}}
@@ -185,12 +207,15 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-user-tie'
-                color='primary'
-                size='sm'
-                )
+            q-item-section(avatar)
+                q-avatar(
+                  :color='avatarBgColor'
+                  rounded
+                  )
+                  q-icon(
+                    :name='`img:` + icons.profile'
+                    size='sm'
+                  )
             q-item-section
               q-item-label {{$t(`admin.general.allowProfile`)}}
               q-item-label(caption) {{$t(`admin.general.allowProfileHint`)}}
@@ -204,11 +229,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-star-half-alt'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.ratings'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.allowRatings`)}}
@@ -228,11 +256,14 @@
               )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-search'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.search'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.general.allowSearch`)}}
@@ -474,10 +505,23 @@ export default {
           dateFormat: '',
           timeFormat: ''
         }
+      },
+      icons: {
+        company: require('assets/icons/ultraviolet-building.svg'),
+        contentLicense: require('assets/icons/ultraviolet-copyright.svg'),
+        comments: require('assets/icons/ultraviolet-discussion-forum.svg'),
+        contributions: require('assets/icons/ultraviolet-pen.svg'),
+        profile: require('assets/icons/ultraviolet-administrator-male.svg'),
+        ratings: require('assets/icons/ultraviolet-star-half-empty.svg'),
+        search: require('assets/icons/ultraviolet-search.svg'),
+        title: require('assets/icons/ultraviolet-home.svg'),
+        description: require('assets/icons/ultraviolet-select-all.svg'),
+        hostname: require('assets/icons/ultraviolet-dns.svg')
       }
     }
   },
   computed: {
+    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' },
     currentSiteId: get('admin/currentSiteId'),
     contentLicenses () {
       return [

@@ -47,7 +47,7 @@
                 v-model='config.senderName'
                 dense
                 hide-bottom-space
-                :aria-label='$t(`admin.general.senderName`)'
+                :aria-label='$t(`admin.mail.senderName`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -82,14 +82,14 @@
                 )
             q-item-section
               q-item-label {{$t(`admin.mail.smtpHost`)}}
-              q-item-label(caption) {{$t(`admin.general.smtpHostHint`)}}
+              q-item-label(caption) {{$t(`admin.mail.smtpHostHint`)}}
             q-item-section
               q-input(
                 outlined
                 v-model='config.host'
                 dense
                 hide-bottom-space
-                :aria-label='$t(`admin.general.smtpHost`)'
+                :aria-label='$t(`admin.mail.smtpHost`)'
                 )
           q-separator.q-my-sm(inset)
           q-item
@@ -194,9 +194,8 @@
               q-card.bg-info.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
                   q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-info-circle', size='md')
-                  q-card-section
-                    span {{ $t('admin.mail.dkimHint') }}
+                    q-icon(name='las la-info-circle', size='sm')
+                  q-card-section.text-caption {{ $t('admin.mail.dkimHint') }}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(

@@ -1,9 +1,7 @@
 <template lang='pug'>
   q-layout(view='hHh lpr lff')
-    .auth(:style='`background-image: url(` + bgUrl + `);`')
-      .auth-sd
-        q-page-container
-          router-view
+    q-page-container
+      router-view
 </template>
 
 <script>
@@ -12,7 +10,7 @@ export default {
   name: 'AuthLayout',
   data () {
     return {
-      bgUrl: '_assets/bg/login.jpg'
+      bgUrl: '_assets/bg/login-v3.jpg'
       // bgUrl: 'https://docs.requarks.io/_assets/img/splash/1.jpg'
     }
   }
@@ -21,21 +19,22 @@ export default {
 
 <style lang="scss">
   .auth {
-    background-color: mc('grey', '900');
+    background-color: #FFF;
     background-size: cover;
     background-position: center center;
-    width: 100%;
-    height: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    &-sd {
-      background-color: rgba(255,255,255,.8);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-left: 1px solid rgba(255,255,255,.85);
-      border-right: 1px solid rgba(255,255,255,.85);
-      width: 450px;
-      height: 100%;
-      margin-left: 5vw;
+    &-box {
+      background-color: rgba(255,255,255,.25);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      padding: 32px;
+      border-radius: 8px;
+      width: 500px;
+      max-width: 95vw;
 
       @at-root .no-backdropfilter & {
         background-color: rgba(255,255,255,.95);

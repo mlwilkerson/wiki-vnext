@@ -25,22 +25,22 @@ const routes = [
       { path: 'general', component: () => import('pages/admin/admin-general.vue') },
       { path: 'editors', component: () => import('pages/admin/admin-editors.vue') },
       { path: 'locale', component: () => import('pages/admin/admin-locale.vue') },
+      { path: 'login', component: () => import('pages/admin/admin-login.vue') },
       { path: 'navigation', component: () => import('pages/admin/admin-navigation.vue') },
       // { path: 'pages', component: () => import('pages/admin/admin-pages.vue') },
       // { path: 'pages/:id(\\d+)', component: () => import('pages/admin/admin-pages-edit.vue') },
       // { path: 'pages/visualize', component: () => import('pages/admin/admin-pages-visualize.vue') },
       // { path: 'tags', component: () => import('pages/admin/admin-tags.vue') },
       { path: 'theme', component: () => import('pages/admin/admin-theme.vue') },
+      { path: 'auth', component: () => import('pages/admin/admin-auth.vue') },
       { path: 'groups', component: () => import('pages/admin/admin-groups.vue') },
       { path: 'groups/:id', component: () => import('pages/admin/admin-groups-edit.vue') },
       // { path: 'users', component: () => import('pages/admin/admin-users.vue') },
       // { path: 'users/:id(\\d+)', component: () => import('pages/admin/admin-users-edit.vue') },
       // { path: 'analytics', component: () => import('pages/admin/admin-analytics.vue') },
-      // { path: 'auth', component: () => import('pages/admin/admin-auth.vue') },
       // { path: 'comments', component: () => import('pages/admin/admin-comments.vue') },
       // { path: 'rendering', component: () => import('pages/admin/admin-rendering.vue') },
       // { path: 'logging', component: () => import('pages/admin/admin-logging.vue') },
-      // { path: 'search', component: () => import('pages/admin/admin-search.vue') },
       // { path: 'storage', component: () => import('pages/admin/admin-storage.vue') },
       { path: 'api', component: () => import('pages/admin/admin-api.vue') },
       { path: 'extensions', component: () => import('pages/admin/admin-extensions.vue') },
@@ -51,7 +51,6 @@ const routes = [
       // { path: 'utilities', component: () => import('pages/admin/admin-utilities.vue') },
       // { path: 'webhooks', component: () => import('pages/admin/admin-webhooks.vue') },
       { path: 'flags', component: () => import('pages/admin/admin-flags.vue') }
-      // { path: 'contribute', component: () => import('pages/admin/admin-contribute.vue') }
     ]
   },
   {

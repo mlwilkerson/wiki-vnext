@@ -32,11 +32,14 @@
           q-card-section
             .text-subtitle1 {{$t('admin.theme.options')}}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-adjust'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.dark'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.darkMode`)}}
@@ -52,11 +55,14 @@
           template(v-for='(cl, idx) of colorKeys')
             q-separator.q-my-sm(inset)
             q-item(:key='cl')
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-palette'
-                  color='primary'
-                  size='sm'
+              q-item-section(avatar)
+                q-avatar(
+                  :color='avatarBgColor'
+                  rounded
+                  )
+                  q-icon(
+                    :name='`img:` + icons.palette'
+                    size='sm'
                   )
               q-item-section
                 q-item-label {{$t(`admin.theme.` + cl + `Color`)}}
@@ -132,11 +138,14 @@
           q-card-section
             .text-subtitle1 {{$t('admin.theme.layout')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-ruler-vertical'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.sidebar'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.sidebarPosition`)}}
@@ -155,11 +164,14 @@
               )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-outdent'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.toc'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.tocPosition`)}}
@@ -178,11 +190,14 @@
               )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-share-alt'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.share'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.showSharingMenu`)}}
@@ -197,11 +212,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-print'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.print'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.showPrintBtn`)}}
@@ -223,11 +241,14 @@
           q-card-section
             .text-subtitle1 {{$t('admin.theme.codeInjection')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-seedling'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.css'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.cssOverride`)}}
@@ -243,11 +264,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-hat-wizard'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.html'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.headHtmlInjection`)}}
@@ -263,11 +287,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-tshirt'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.html'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.theme.bodyHtmlInjection`)}}
@@ -328,10 +355,21 @@ export default {
         showSharingMenu: true,
         showPrintBtn: true
       },
-      darkModeInitial: false
+      darkModeInitial: false,
+      icons: {
+        dark: require('assets/icons/ultraviolet-light-on.svg'),
+        palette: require('assets/icons/ultraviolet-fill-color.svg'),
+        sidebar: require('assets/icons/ultraviolet-right-navigation-toolbar.svg'),
+        toc: require('assets/icons/ultraviolet-index.svg'),
+        share: require('assets/icons/ultraviolet-share.svg'),
+        print: require('assets/icons/ultraviolet-print.svg'),
+        css: require('assets/icons/ultraviolet-css.svg'),
+        html: require('assets/icons/ultraviolet-html.svg')
+      }
     }
   },
   computed: {
+    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' },
     headers () {
       return [
         {

@@ -11,8 +11,9 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/nav'
+          href='https://docs.requarks.io/admin/navigation'
           target='_blank'
+          type='a'
           )
         q-btn(
           unelevated

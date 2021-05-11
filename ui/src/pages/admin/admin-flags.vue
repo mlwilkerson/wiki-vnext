@@ -11,8 +11,9 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/flags'
+          href='https://docs.requarks.io/admin/flags'
           target='_blank'
+          type='a'
           )
         q-btn(
           unelevated
@@ -31,16 +32,19 @@
               q-card.bg-negative.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
                   q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-exclamation-triangle', size='md')
+                    q-icon(name='las la-exclamation-triangle', size='sm')
                   q-card-section
                     span {{ $t('admin.flags.warn.label') }}
                     .text-caption.text-red-1 {{ $t('admin.flags.warn.hint') }}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-flag-checkered'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.flag'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.flags.ldapdebug.label`)}}
@@ -55,11 +59,14 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-flag-checkered'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.flag'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.flags.sqllog.label`)}}
@@ -74,11 +81,14 @@
                 )
         q-card.shadow-1.q-py-sm.q-mt-md
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-heart'
-                color='primary'
-                size='sm'
+            q-item-section(avatar)
+              q-avatar(
+                :color='avatarBgColor'
+                rounded
+                )
+                q-icon(
+                  :name='`img:` + icons.heart'
+                  size='sm'
                 )
             q-item-section
               q-item-label {{$t(`admin.flags.hidedonatebtn.label`)}}
@@ -111,8 +121,15 @@ export default {
         ldapdebug: false,
         sqllog: false,
         hidedonatebtn: false
+      },
+      icons: {
+        flag: require('assets/icons/ultraviolet-flag-filled.svg'),
+        heart: require('assets/icons/ultraviolet-heart-outline.svg')
       }
     }
+  },
+  computed: {
+    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' }
   },
   methods: {
     async save () {

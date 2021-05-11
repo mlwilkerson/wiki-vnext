@@ -1,6 +1,5 @@
 const Promise = require('bluebird')
 const crypto = require('crypto')
-const passportJWT = require('passport-jwt')
 
 module.exports = {
   sanitizeCommitUser (user) {
@@ -22,16 +21,5 @@ module.exports = {
     }).then(buf => {
       return buf.toString('hex')
     })
-  },
-
-  extractJWT: passportJWT.ExtractJwt.fromExtractors([
-    passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    (req) => {
-      let token = null
-      if (req && req.cookies) {
-        token = req.cookies['jwt']
-      }
-      return token
-    }
-  ])
+  }
 }

@@ -1,5 +1,3 @@
-const passport = require('passport')
-const passportJWT = require('passport-jwt')
 const _ = require('lodash')
 const jwt = require('jsonwebtoken')
 const ms = require('ms')
@@ -25,26 +23,20 @@ module.exports = {
    * Initialize the authentication module
    */
   init () {
-    this.passport = passport
-
-    passport.serializeUser((user, done) => {
-      done(null, user.id)
-    })
-
-    passport.deserializeUser(async (id, done) => {
-      try {
-        const user = await WIKI.models.users.query().findById(id).withGraphFetched('groups').modifyGraph('groups', builder => {
-          builder.select('groups.id', 'permissions')
-        })
-        if (user) {
-          done(null, user)
-        } else {
-          done(new Error(WIKI.lang.t('auth:errors:usernotfound')), null)
-        }
-      } catch (err) {
-        done(err, null)
-      }
-    })
+    // passport.deserializeUser(async (id, done) => {
+    //   try {
+    //     const user = await WIKI.models.users.query().findById(id).withGraphFetched('groups').modifyGraph('groups', builder => {
+    //       builder.select('groups.id', 'permissions')
+    //     })
+    //     if (user) {
+    //       done(null, user)
+    //     } else {
+    //       done(new Error(WIKI.lang.t('auth.errors.usernotfound')), null)
+    //     }
+    //   } catch (err) {
+    //     done(err, null)
+    //   }
+    // })
 
     this.reloadGroups()
     this.reloadApiKeys()

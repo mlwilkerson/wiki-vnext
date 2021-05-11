@@ -13,6 +13,7 @@
           color='grey'
           href='https://docs.js.wiki/admin/security'
           target='_blank'
+          type='a'
           )
         q-btn(
           unelevated
@@ -36,9 +37,8 @@
               q-card.bg-negative.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
                   q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-exclamation-triangle', size='md')
-                  q-card-section
-                    span {{ $t('admin.security.warn') }}
+                    q-icon(name='las la-exclamation-triangle', size='sm')
+                  q-card-section.text-caption {{ $t('admin.security.warn') }}
           q-item(tag='label', v-ripple)
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(
@@ -175,9 +175,8 @@
               q-card.bg-info.text-white.rounded-borders(flat)
                 q-card-section.items-center(horizontal)
                   q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-info-circle', size='md')
-                  q-card-section
-                    span {{ $t('admin.security.uploadsInfo') }}
+                    q-icon(name='las la-info-circle', size='sm')
+                  q-card-section.text-caption {{ $t('admin.security.uploadsInfo') }}
           q-item
             q-item-section.items-center(style='flex: 0 0 40px;')
               q-icon(

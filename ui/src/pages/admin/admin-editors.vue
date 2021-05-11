@@ -11,8 +11,9 @@
           icon='las la-question-circle'
           flat
           color='grey'
-          href='https://docs.requarks.io/editors'
+          href='https://docs.requarks.io/admin/editors'
           target='_blank'
+          type='a'
           )
         q-btn(
           unelevated
@@ -32,16 +33,16 @@
               :alt='editor.label'
               width='32px'
               )
-            .text-body1: strong {{editor.label}}
+            .text-body1: strong {{$t(`admin.editors.` + editor.id + `Name`)}}
             q-space
-            q-chip(
+            q-chip.text-uppercase(
               v-if='editor.disabled'
               color='pink'
               outline
               square
               dense
               style='font-size: 10px; font-weight: 500;'
-            ) COMING SOON
+            ) {{$t('admin.editors.comingSoon')}}
         q-card-section
           q-list(separator)
             q-item(
@@ -56,27 +57,24 @@
                   color='primary'
                 )
               q-item-section
-                q-item-label: strong {{mode.label}}
-                q-item-label(
-                  v-if='mode.description'
-                  caption
-                  ).flex.items-center
-                  span {{mode.description}}
-                  q-chip.q-ml-sm(
+                q-item-label: strong {{$t(`admin.editors.` + mode.id + `Name`)}}
+                q-item-label.flex.items-center(caption)
+                  span {{$t(`admin.editors.` + mode.id + `Description`)}}
+                  q-chip.q-ml-sm.text-uppercase(
                     v-if='mode.default'
                     color='positive'
                     outline
                     square
                     dense
                     style='font-size: 10px; font-weight: 500;'
-                  ) DEFAULT
+                  ) {{$t('admin.editors.default')}}
               q-item-section(
                 v-if='mode.config'
                 side
                 )
                 q-btn(
                   icon='las la-cog'
-                  label='Configuration'
+                  :label='$t(`admin.editors.configuration`)'
                   :color='$q.dark.isActive ? `blue-grey-3` : `blue-grey-8`'
                   outline
                   no-caps
@@ -94,8 +92,8 @@
                   :disabled='editor.disabled'
                 )
               q-item-section
-                q-item-label: strong Disabled
-                q-item-label(caption) Hide this option from users. Existing pages can still be edited using the default editor.
+                q-item-label: strong {{$t('admin.editors.disabled')}}
+                q-item-label(caption) {{$t('admin.editors.disabledHint')}}
 </template>
 
 <script>
@@ -109,7 +107,7 @@ export default {
     return {
       loading: false,
       config: {
-        wysiwyg: {
+        visual: {
           mode: 'quill'
         },
         markdown: {
@@ -122,78 +120,65 @@ export default {
           mode: 'off'
         },
         redirection: {
-          mode: 'default'
+          mode: 'redirdefault'
         }
       },
       editors: [
         {
-          id: 'wysiwyg',
-          label: 'WYSIWYG / Visual Editor',
+          id: 'visual',
           icon: require('assets/icons/fluent-open-file-under-cursor.svg'),
           modes: [
             {
               id: 'quill',
-              label: 'Quill',
-              description: 'Recommended visual editor.',
               default: true
-            },
-            {
-              id: 'ckeditor',
-              label: 'CKEditor 5 Enterprise',
-              description: 'CKEditor with paid add-ons enabled. REQUIRES a valid subscription with add-ons XYZ.',
-              config: [
-                {}
-              ]
             }
+            // {
+            //   id: 'ckeditor',
+            //   config: [
+            //     {}
+            //   ]
+            // }
           ]
         },
         {
           id: 'markdown',
-          label: 'Markdown Editor',
           icon: require('assets/icons/fluent-markdown.svg'),
           modes: [
             {
               id: 'codemirror',
-              label: 'CodeMirror',
-              description: 'Recommended markdown editor. Includes real-time preview and code completion features.',
               default: true,
               config: [
                 {}
               ]
-            },
-            {
-              id: 'monaco',
-              label: 'Monaco',
-              description: 'Code editor used in Visual Studio Code. Uses more browser resources and isn\'t compatible with non-desktop browsers.',
-              config: [
-                {}
-              ]
             }
+            // {
+            //   id: 'monaco',
+            //   label: 'Monaco',
+            //   description: 'Code editor used in Visual Studio Code. Uses more browser resources and isn\'t compatible with non-desktop browsers.',
+            //   config: [
+            //     {}
+            //   ]
+            // }
           ]
         },
         {
           id: 'blog',
-          label: 'Blog Editor',
           icon: require('assets/icons/color-blog.svg'),
           disabled: true,
           modes: []
         },
         {
           id: 'api',
-          label: 'API Docs Editor',
           icon: require('assets/icons/fluent-api.svg'),
           disabled: true,
           modes: []
         },
         {
           id: 'redirection',
-          label: 'Redirection',
           icon: require('assets/icons/fluent-advance.svg'),
           modes: [
             {
-              id: 'default',
-              label: 'Default',
-              description: 'Default editor to create redirection to other pages / external links.',
+              id: 'redirdefault',
               default: true
             }
           ]

@@ -5,7 +5,7 @@ const os = require('os')
 const filesize = require('filesize')
 const path = require('path')
 const fs = require('fs-extra')
-const moment = require('moment')
+const { DateTime } = require('luxon')
 const graphHelper = require('../../helpers/graph')
 const request = require('request-promise')
 const crypto = require('crypto')
@@ -303,7 +303,7 @@ module.exports = {
       return WIKI.system.updates.version
     },
     latestVersionReleaseDate () {
-      return moment.utc(WIKI.system.updates.releaseDate)
+      return DateTime.fromISO(WIKI.system.updates.releaseDate).toJSDate()
     },
     nodeVersion () {
       return process.version.substr(1)

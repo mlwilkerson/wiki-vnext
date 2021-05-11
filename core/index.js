@@ -5,8 +5,6 @@
 
 const crypto = require('crypto')
 const { DateTime } = require('luxon')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const express = require('express')
 const compression = require('compression')
@@ -56,11 +54,10 @@ WIKI.logger = require('./system/logger').init()
 WIKI.kernel.init().then(async () => {
   // -> Express Middlewares
   WIKI.app.use(compression())
-  WIKI.app.use(cookieParser())
   WIKI.app.use(cors(WIKI.config.cors))
   // WIKI.app.use(WIKI.auth.passport.initialize())
   // WIKI.app.use(WIKI.auth.authenticate)
-  WIKI.app.use(bodyParser.json({ limit: '1mb' }))
+  WIKI.app.use(express.json({ limit: '5mb' }))
 
   // -> Security Middlewares
   WIKI.app.use(mwSecurity)
