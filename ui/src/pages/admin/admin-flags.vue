@@ -37,15 +37,7 @@
                     span {{ $t('admin.flags.warn.label') }}
                     .text-caption.text-red-1 {{ $t('admin.flags.warn.hint') }}
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.flag'
-                  size='sm'
-                )
+            blueprint-icon(icon='flag-filled')
             q-item-section
               q-item-label {{$t(`admin.flags.ldapdebug.label`)}}
               q-item-label(caption) {{$t(`admin.flags.ldapdebug.hint`)}}
@@ -59,15 +51,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.flag'
-                  size='sm'
-                )
+            blueprint-icon(icon='flag-filled')
             q-item-section
               q-item-label {{$t(`admin.flags.sqllog.label`)}}
               q-item-label(caption) {{$t(`admin.flags.sqllog.hint`)}}
@@ -81,15 +65,7 @@
                 )
         q-card.shadow-1.q-py-sm.q-mt-md
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.heart'
-                  size='sm'
-                )
+            blueprint-icon(icon='heart-outline')
             q-item-section
               q-item-label {{$t(`admin.flags.hidedonatebtn.label`)}}
               q-item-label(caption) {{$t(`admin.flags.hidedonatebtn.hint`)}}
@@ -121,15 +97,8 @@ export default {
         ldapdebug: false,
         sqllog: false,
         hidedonatebtn: false
-      },
-      icons: {
-        flag: require('assets/icons/ultraviolet-flag-filled.svg'),
-        heart: require('assets/icons/ultraviolet-heart-outline.svg')
       }
     }
-  },
-  computed: {
-    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' }
   },
   methods: {
     async save () {

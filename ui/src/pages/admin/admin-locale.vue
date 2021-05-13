@@ -33,12 +33,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.locale.settings')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-language'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='translation')
             q-item-section
               q-item-label {{namespacing ? $t(`admin.locale.base.labelWithNS`) : $t(`admin.locale.base.label`)}}
               q-item-label(caption) {{$t(`admin.locale.base.hint`)}}
@@ -56,12 +51,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-cloud-download-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='renew')
             q-item-section
               q-item-label {{$t(`admin.locale.autoUpdate.label`)}}
               q-item-label(caption) {{namespacing ? $t(`admin.locale.autoUpdate.hintWithNS`) : $t(`admin.locale.autoUpdate.hint`)}}
@@ -81,12 +71,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.locale.namespacing')}}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-compress'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='unit')
             q-item-section
               q-item-label {{$t(`admin.locale.namespaces.label`)}}
               q-item-label(caption) {{$t(`admin.locale.namespaces.hint`)}}
@@ -109,12 +94,7 @@
                     .text-caption.text-yellow-1 {{ $t('admin.locale.namespacingPrefixWarning.subtitle') }}
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-tasks'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='test-passed')
             q-item-section
               q-item-label {{$t(`admin.locale.activeNamespaces.label`)}}
               q-item-label(caption) {{$t(`admin.locale.activeNamespaces.hint`)}}

@@ -32,21 +32,13 @@
           q-card-section
             .text-subtitle1 {{$t('admin.theme.options')}}
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.dark'
-                  size='sm'
-                )
+            blueprint-icon(icon='light-on')
             q-item-section
               q-item-label {{$t(`admin.theme.darkMode`)}}
               q-item-label(caption) {{$t(`admin.theme.darkModeHint`)}}
             q-item-section(avatar)
               q-toggle(
-                v-model='config.darkMode'
+                v-model='config.light-on'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
@@ -55,15 +47,7 @@
           template(v-for='(cl, idx) of colorKeys')
             q-separator.q-my-sm(inset)
             q-item(:key='cl')
-              q-item-section(avatar)
-                q-avatar(
-                  :color='avatarBgColor'
-                  rounded
-                  )
-                  q-icon(
-                    :name='`img:` + icons.palette'
-                    size='sm'
-                  )
+              blueprint-icon(icon='fill-color')
               q-item-section
                 q-item-label {{$t(`admin.theme.` + cl + `Color`)}}
                 q-item-label(caption) {{$t(`admin.theme.` + cl + `ColorHint`)}}
@@ -138,15 +122,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.theme.layout')}}
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.sidebar'
-                  size='sm'
-                )
+            blueprint-icon(icon='right-navigation-toolbar')
             q-item-section
               q-item-label {{$t(`admin.theme.sidebarPosition`)}}
               q-item-label(caption) {{$t(`admin.theme.sidebarPositionHint`)}}
@@ -164,15 +140,7 @@
               )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.toc'
-                  size='sm'
-                )
+            blueprint-icon(icon='index')
             q-item-section
               q-item-label {{$t(`admin.theme.tocPosition`)}}
               q-item-label(caption) {{$t(`admin.theme.tocPositionHint`)}}
@@ -190,15 +158,7 @@
               )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.share'
-                  size='sm'
-                )
+            blueprint-icon(icon='share')
             q-item-section
               q-item-label {{$t(`admin.theme.showSharingMenu`)}}
               q-item-label(caption) {{$t(`admin.theme.showSharingMenuHint`)}}
@@ -212,15 +172,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.print'
-                  size='sm'
-                )
+            blueprint-icon(icon='print')
             q-item-section
               q-item-label {{$t(`admin.theme.showPrintBtn`)}}
               q-item-label(caption) {{$t(`admin.theme.showPrintBtnHint`)}}
@@ -241,15 +193,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.theme.codeInjection')}}
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.css'
-                  size='sm'
-                )
+            blueprint-icon(icon='css')
             q-item-section
               q-item-label {{$t(`admin.theme.cssOverride`)}}
               q-item-label(caption) {{$t(`admin.theme.cssOverrideHint`)}}
@@ -264,15 +208,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.html'
-                  size='sm'
-                )
+            blueprint-icon(icon='html')
             q-item-section
               q-item-label {{$t(`admin.theme.headHtmlInjection`)}}
               q-item-label(caption) {{$t(`admin.theme.headHtmlInjectionHint`)}}
@@ -287,15 +223,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.html'
-                  size='sm'
-                )
+            blueprint-icon(icon='html')
             q-item-section
               q-item-label {{$t(`admin.theme.bodyHtmlInjection`)}}
               q-item-label(caption) {{$t(`admin.theme.bodyHtmlInjectionHint`)}}
@@ -355,21 +283,10 @@ export default {
         showSharingMenu: true,
         showPrintBtn: true
       },
-      darkModeInitial: false,
-      icons: {
-        dark: require('assets/icons/ultraviolet-light-on.svg'),
-        palette: require('assets/icons/ultraviolet-fill-color.svg'),
-        sidebar: require('assets/icons/ultraviolet-right-navigation-toolbar.svg'),
-        toc: require('assets/icons/ultraviolet-index.svg'),
-        share: require('assets/icons/ultraviolet-share.svg'),
-        print: require('assets/icons/ultraviolet-print.svg'),
-        css: require('assets/icons/ultraviolet-css.svg'),
-        html: require('assets/icons/ultraviolet-html.svg')
-      }
+      darkModeInitial: false
     }
   },
   computed: {
-    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' },
     headers () {
       return [
         {

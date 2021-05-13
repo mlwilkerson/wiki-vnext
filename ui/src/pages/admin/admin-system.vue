@@ -23,15 +23,7 @@
           q-card-section
             .text-subtitle1 Wiki.js
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.currentVersion'
-                  size='sm'
-                )
+            blueprint-icon(icon='breakable')
             q-item-section
               q-item-label {{ $t('admin.system.currentVersion') }}
               q-item-label(caption) {{$t('admin.system.currentVersionHint')}}
@@ -39,15 +31,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.currentVersion }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.latestVersion'
-                  size='sm'
-                )
+            blueprint-icon(icon='cloud-checked')
             q-item-section
               q-item-label {{ $t('admin.system.latestVersion') }}
               q-item-label(caption) {{$t('admin.system.latestVersionHint')}}
@@ -61,15 +45,7 @@
           q-card-section
             .text-subtitle1 Engines
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.nodejs'
-                  size='sm'
-                )
+            blueprint-icon(icon='nodejs')
             q-item-section
               q-item-label Node.js
               q-item-label(caption) {{$t('admin.system.nodejsHint')}}
@@ -77,15 +53,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.nodeVersion }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.postgresql'
-                  size='sm'
-                )
+            blueprint-icon(icon='postgresql')
             q-item-section
               q-item-label {{$t('admin.system.database')}}
               q-item-label(caption) {{$t('admin.system.databaseHint')}}
@@ -93,15 +61,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono PostgreSQL {{dbVersion}}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.database'
-                  size='sm'
-                )
+            blueprint-icon(icon='database')
             q-item-section
               q-item-label {{$t('admin.system.databaseHost')}}
               q-item-label(caption) {{$t('admin.system.databaseHostHint')}}
@@ -116,15 +76,7 @@
           q-card-section
             .text-subtitle1 {{ $t('admin.system.hostInfo') }}
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + platformLogo'
-                  size='sm'
-                )
+            blueprint-icon(:icon='platformLogo')
             q-item-section
               q-item-label {{ $t('admin.system.os') }}
               q-item-label(caption) The OS Wiki.js is running on.
@@ -132,15 +84,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.hostname'
-                  size='sm'
-                )
+            blueprint-icon(icon='server')
             q-item-section
               q-item-label {{ $t('admin.system.hostname') }}
               q-item-label(caption) The hostname of the server / container.
@@ -148,15 +92,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.hostname }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.cpu'
-                  size='sm'
-                )
+            blueprint-icon(icon='processor')
             q-item-section
               q-item-label {{ $t('admin.system.cpuCores') }}
               q-item-label(caption) The number of CPU cores available to Wiki.js.
@@ -164,15 +100,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.cpuCores }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.ram'
-                  size='sm'
-                )
+            blueprint-icon(icon='memory-slot')
             q-item-section
               q-item-label {{ $t('admin.system.totalRAM') }}
               q-item-label(caption) The total amount of RAM available to Wiki.js.
@@ -180,15 +108,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.ramTotal }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.workingDir'
-                  size='sm'
-                )
+            blueprint-icon(icon='program')
             q-item-section
               q-item-label {{ $t('admin.system.workingDirectory') }}
               q-item-label(caption) The directory path where Wiki.js is currently running from.
@@ -196,15 +116,7 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.workingDirectory }}
           q-separator(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.configFile'
-                  size='sm'
-                )
+            blueprint-icon(icon='automation')
             q-item-section
               q-item-label {{ $t('admin.system.configFile') }}
               q-item-label(caption) The path to the Wiki.js configuration file.
@@ -269,48 +181,29 @@ export default {
       isUpgrading: false,
       isUpgradingStarted: false,
       upgradeProgress: 0,
-      info: {},
-      icons: {
-        apple: require('assets/icons/ultraviolet-apple-logo.svg'),
-        configFile: require('assets/icons/ultraviolet-automation.svg'),
-        cpu: require('assets/icons/ultraviolet-processor.svg'),
-        currentVersion: require('assets/icons/ultraviolet-breakable.svg'),
-        database: require('assets/icons/ultraviolet-database.svg'),
-        docker: require('assets/icons/ultraviolet-docker-container.svg'),
-        hostname: require('assets/icons/ultraviolet-server.svg'),
-        latestVersion: require('assets/icons/ultraviolet-cloud-checked.svg'),
-        linux: require('assets/icons/ultraviolet-linux.svg'),
-        nodejs: require('assets/icons/color-nodejs.svg'),
-        postgresql: require('assets/icons/color-postgresql.svg'),
-        ram: require('assets/icons/ultraviolet-memory-slot.svg'),
-        ubuntu: require('assets/icons/ultraviolet-ubuntu.svg'),
-        workingDir: require('assets/icons/ultraviolet-program.svg'),
-        windows: require('assets/icons/ultraviolet-windows8.svg'),
-        washingMachine: require('assets/icons/ultraviolet-washing-machine.svg')
-      }
+      info: {}
     }
   },
   computed: {
-    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' },
     dbVersion () {
       return _get(this.info, 'dbVersion', '').replace(/(?:\r\n|\r|\n)/g, ', ')
     },
     platformLogo () {
       switch (this.info.platform) {
         case 'docker':
-          return this.icons.docker
+          return 'docker-container'
         case 'darwin':
-          return this.icons.apple
+          return 'apple-logo'
         case 'linux':
           if (this.info.operatingSystem.indexOf('Ubuntu') >= 0) {
-            return this.icons.ubuntu
+            return 'ubuntu'
           } else {
-            return this.icons.linux
+            return 'linux'
           }
         case 'win32':
-          return this.icons.windows
+          return 'windows8'
         default:
-          return this.icons.washingMachine
+          return 'washing-machine'
       }
     },
     isDbLimited () {

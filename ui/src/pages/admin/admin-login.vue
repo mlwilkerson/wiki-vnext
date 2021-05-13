@@ -33,15 +33,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.login.experience')}}
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.bg'
-                  size='sm'
-                )
+            blueprint-icon(icon='full-image')
             q-item-section
               q-item-label {{$t(`admin.login.background`)}}
               q-item-label(caption) {{$t(`admin.login.backgroundHint`)}}
@@ -55,15 +47,7 @@
               )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.bypass'
-                  size='sm'
-                )
+            blueprint-icon(icon='close-pane')
             q-item-section
               q-item-label {{$t(`admin.login.bypassScreen`)}}
               q-item-label(caption) {{$t(`admin.login.bypassScreenHint`)}}
@@ -77,15 +61,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section(avatar)
-              q-avatar(
-                :color='avatarBgColor'
-                rounded
-                )
-                q-icon(
-                  :name='`img:` + icons.redirect'
-                  size='sm'
-                )
+            blueprint-icon(icon='chevron-right')
             q-item-section
               q-item-label {{$t(`admin.login.welcomeRedirect`)}}
               q-item-label(caption) {{$t(`admin.login.welcomeRedirectHint`)}}

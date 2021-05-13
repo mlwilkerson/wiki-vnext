@@ -40,12 +40,7 @@
                     q-icon(name='las la-exclamation-triangle', size='sm')
                   q-card-section.text-caption {{ $t('admin.security.warn') }}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-shield-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='rfid-signal')
             q-item-section
               q-item-label {{$t(`admin.security.disallowFloc`)}}
               q-item-label(caption) {{$t(`admin.security.disallowFlocHint`)}}
@@ -59,12 +54,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-shield-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='maximize-window')
             q-item-section
               q-item-label {{$t(`admin.security.disallowIframe`)}}
               q-item-label(caption) {{$t(`admin.security.disallowIframeHint`)}}
@@ -78,12 +68,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-shield-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='curly-arrow')
             q-item-section
               q-item-label {{$t(`admin.security.disallowOpenRedirect`)}}
               q-item-label(caption) {{$t(`admin.security.disallowOpenRedirectHint`)}}
@@ -97,12 +82,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-shield-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='door-sensor-alarmed')
             q-item-section
               q-item-label {{$t(`admin.security.trustProxy`)}}
               q-item-label(caption) {{$t(`admin.security.trustProxyHint`)}}
@@ -121,12 +101,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.security.hsts')}}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-ethernet'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='hips')
             q-item-section
               q-item-label {{$t(`admin.security.enforceHsts`)}}
               q-item-label(caption) {{$t(`admin.security.enforceHstsHint`)}}
@@ -141,12 +116,7 @@
           template(v-if='config.enforceHsts')
             q-separator.q-my-sm(inset)
             q-item
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-ethernet'
-                  color='primary'
-                  size='sm'
-                  )
+              blueprint-icon(icon='timer')
               q-item-section
                 q-item-label {{$t(`admin.security.hstsDuration`)}}
                 q-item-label(caption) {{$t(`admin.security.hstsDurationHint`)}}
@@ -178,12 +148,7 @@
                     q-icon(name='las la-info-circle', size='sm')
                   q-card-section.text-caption {{ $t('admin.security.uploadsInfo') }}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-cloud-upload-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='upload-to-the-cloud')
             q-item-section
               q-item-label {{$t(`admin.security.maxUploadSize`)}}
               q-item-label(caption) {{$t(`admin.security.maxUploadSizeHint`)}}
@@ -197,12 +162,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-cloud-upload-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='upload-to-ftp')
             q-item-section
               q-item-label {{$t(`admin.security.maxUploadBatch`)}}
               q-item-label(caption) {{$t(`admin.security.maxUploadBatchHint`)}}
@@ -222,12 +182,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.security.cors')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-network-wired'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='firewall')
             q-item-section
               q-item-label {{$t(`admin.security.corsMode`)}}
               q-item-label(caption) {{$t(`admin.security.corsModeHint`)}}
@@ -246,12 +201,7 @@
           template(v-if='config.corsMode === `HOSTNAMES`')
             q-separator.q-my-sm(inset)
             q-item
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-network-wired'
-                  color='primary'
-                  size='sm'
-                  )
+              blueprint-icon(icon='todo-list', key='corsHostnames')
               q-item-section
                 q-item-label {{$t(`admin.security.corsHostnames`)}}
                 q-item-label(caption) {{$t(`admin.security.corsHostnamesHint`)}}
@@ -266,12 +216,7 @@
           template(v-else-if='config.corsMode === `REGEX`')
             q-separator.q-my-sm(inset)
             q-item
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-network-wired'
-                  color='primary'
-                  size='sm'
-                  )
+              blueprint-icon(icon='validation', key='corsRegex')
               q-item-section
                 q-item-label {{$t(`admin.security.corsRegex`)}}
                 q-item-label(caption) {{$t(`admin.security.corsRegexHint`)}}
@@ -290,12 +235,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.security.jwt')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-eraser'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='ticket')
             q-item-section
               q-item-label {{$t(`admin.security.jwtAudience`)}}
               q-item-label(caption) {{$t(`admin.security.jwtAudienceHint`)}}
@@ -308,12 +248,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-eraser'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='expired')
             q-item-section
               q-item-label {{$t(`admin.security.tokenExpiration`)}}
               q-item-label(caption) {{$t(`admin.security.tokenExpirationHint`)}}
@@ -326,12 +261,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-eraser'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='future')
             q-item-section
               q-item-label {{$t(`admin.security.tokenRenewalPeriod`)}}
               q-item-label(caption) {{$t(`admin.security.tokenRenewalPeriodHint`)}}

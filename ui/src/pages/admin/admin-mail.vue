@@ -32,12 +32,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.mail.configuration')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-id-card'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='contact')
             q-item-section
               q-item-label {{$t(`admin.mail.senderName`)}}
               q-item-label(caption) {{$t(`admin.general.senderNameHint`)}}
@@ -51,12 +46,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-envelope'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='envelope')
             q-item-section
               q-item-label {{$t(`admin.mail.senderEmail`)}}
               q-item-label(caption) {{$t(`admin.general.senderEmailHint`)}}
@@ -74,12 +64,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.mail.smtp')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-globe'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='dns')
             q-item-section
               q-item-label {{$t(`admin.mail.smtpHost`)}}
               q-item-label(caption) {{$t(`admin.mail.smtpHostHint`)}}
@@ -93,12 +78,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-plug'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='ethernet-off')
             q-item-section
               q-item-label {{$t(`admin.mail.smtpPort`)}}
               q-item-label(caption) {{$t(`admin.mail.smtpPortHint`)}}
@@ -111,12 +91,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-lock'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='secure')
             q-item-section
               q-item-label {{$t(`admin.mail.smtpTLS`)}}
               q-item-label(caption) {{$t(`admin.mail.smtpTLSHint`)}}
@@ -130,12 +105,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-shield-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='security-ssl')
             q-item-section
               q-item-label {{$t(`admin.mail.smtpVerifySSL`)}}
               q-item-label(caption) {{$t(`admin.mail.smtpVerifySSLHint`)}}
@@ -149,12 +119,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-id-badge'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='test-account')
             q-item-section
               q-item-label {{$t(`admin.mail.smtpUser`)}}
               q-item-label(caption) {{$t(`admin.mail.smtpUserHint`)}}
@@ -167,12 +132,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-key'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='password')
             q-item-section
               q-item-label {{$t(`admin.mail.smtpPwd`)}}
               q-item-label(caption) {{$t(`admin.mail.smtpPwdHint`)}}
@@ -197,12 +157,7 @@
                     q-icon(name='las la-info-circle', size='sm')
                   q-card-section.text-caption {{ $t('admin.mail.dkimHint') }}
           q-item(tag='label', v-ripple)
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-bolt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='received')
             q-item-section
               q-item-label {{$t(`admin.mail.dkimUse`)}}
               q-item-label(caption) {{$t(`admin.mail.dkimUseHint`)}}
@@ -217,12 +172,7 @@
           template(v-if='config.useDKIM')
             q-separator.q-my-sm(inset)
             q-item
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-globe'
-                  color='primary'
-                  size='sm'
-                  )
+              blueprint-icon(icon='dns')
               q-item-section
                 q-item-label {{$t(`admin.mail.dkimDomainName`)}}
                 q-item-label(caption) {{$t(`admin.mail.dkimDomainNameHint`)}}
@@ -235,12 +185,7 @@
                   )
             q-separator.q-my-sm(inset)
             q-item
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-key'
-                  color='primary'
-                  size='sm'
-                  )
+              blueprint-icon(icon='access')
               q-item-section
                 q-item-label {{$t(`admin.mail.dkimKeySelector`)}}
                 q-item-label(caption) {{$t(`admin.mail.dkimKeySelectorHint`)}}
@@ -253,12 +198,7 @@
                   )
             q-separator.q-my-sm(inset)
             q-item
-              q-item-section.items-center(style='flex: 0 0 40px;')
-                q-icon(
-                  name='las la-key'
-                  color='primary'
-                  size='sm'
-                  )
+              blueprint-icon(icon='grand-master-key')
               q-item-section
                 q-item-label {{$t(`admin.mail.dkimPrivateKey`)}}
                 q-item-label(caption) {{$t(`admin.mail.dkimPrivateKeyHint`)}}
@@ -279,12 +219,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.mail.test')}}
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-at'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='email')
             q-item-section
               q-item-label {{$t(`admin.mail.testRecipient`)}}
               q-item-label(caption) {{$t(`admin.mail.testRecipientHint`)}}
