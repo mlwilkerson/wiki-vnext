@@ -38,7 +38,7 @@
               q-item-label(caption) {{$t(`admin.theme.darkModeHint`)}}
             q-item-section(avatar)
               q-toggle(
-                v-model='config.light-on'
+                v-model='config.darkMode'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'

@@ -60,6 +60,20 @@
                 :aria-label='$t(`admin.login.bypassScreen`)'
                 )
           q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            blueprint-icon(icon='no-access')
+            q-item-section
+              q-item-label {{$t(`admin.login.bypassUnauthorized`)}}
+              q-item-label(caption) {{$t(`admin.login.bypassUnauthorizedHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.authBypassUnauthorized'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin.login.bypassUnauthorized`)'
+                )
+          q-separator.q-my-sm(inset)
           q-item
             blueprint-icon(icon='chevron-right')
             q-item-section
@@ -98,8 +112,7 @@
                 )
                 q-item-section(side)
                   q-icon.handle(name='las la-bars')
-                q-item-section(side)
-                  q-icon(:name='item.icon', color='primary')
+                blueprint-icon(:icon='item.icon')
                 q-item-section
                   q-item-label {{item.label}}
                   q-item-label(caption) {{item.provider}}
@@ -142,11 +155,13 @@ export default {
       config: {
         authAutoLogin: false,
         authHideLocal: false,
+        authBypassUnauthorized: false,
         welcomeRedirect: '/'
       },
       providers: [
-        { id: 'local', label: 'Local Authentication', provider: 'Username-Password', icon: 'las la-database', isActive: true },
-        { id: 'google', label: 'Google', provider: 'Google', icon: 'lab la-google', isActive: false }
+        { id: 'local', label: 'Local Authentication', provider: 'Username-Password', icon: 'database', isActive: true },
+        { id: 'google', label: 'Google', provider: 'Google', icon: 'google', isActive: true },
+        { id: 'slack', label: 'Slack', provider: 'Slack', icon: 'slack', isActive: false }
       ],
       icons: {
         bg: require('assets/icons/ultraviolet-full-image.svg'),

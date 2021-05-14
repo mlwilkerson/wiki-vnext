@@ -20,6 +20,10 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+    dark: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -28,7 +32,7 @@ export default {
     }
   },
   computed: {
-    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' }
+    avatarBgColor () { return this.$q.dark.isActive || this.dark ? 'dark-4' : 'blue-1' }
   },
   async mounted () {
     this.imgPath = await iconsContext('./ultraviolet-' + this.icon + '.svg')

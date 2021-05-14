@@ -59,12 +59,7 @@
         //-----------------------------
         q-card.shadow-1.q-py-sm(v-if='tab === `general`')
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-asterisk'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='team')
             q-item-section
               q-item-label {{$t(`admin.groups.name`)}}
               q-item-label(caption) {{$t(`admin.groups.nameHint`)}}
@@ -81,12 +76,7 @@
                 )
           q-separator.q-my-sm(inset)
           q-item
-            q-item-section.items-center(style='flex: 0 0 40px;')
-              q-icon(
-                name='las la-sign-in-alt'
-                color='primary'
-                size='sm'
-                )
+            blueprint-icon(icon='double-right')
             q-item-section
               q-item-label {{$t(`admin.groups.redirectOnLogin`)}}
               q-item-label(caption) {{$t(`admin.groups.redirectOnLoginHint`)}}
@@ -94,6 +84,19 @@
               q-input(
                 outlined
                 v-model='group.redirectOnLogin'
+                dense
+                :aria-label='$t(`admin.groups.redirectOnLogin`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item
+            blueprint-icon(icon='chevron-right')
+            q-item-section
+              q-item-label {{$t(`admin.groups.redirectOnFirstLogin`)}}
+              q-item-label(caption) {{$t(`admin.groups.redirectOnFirstLoginHint`)}}
+            q-item-section
+              q-input(
+                outlined
+                v-model='group.redirectOnFirstLogin'
                 dense
                 :aria-label='$t(`admin.groups.redirectOnLogin`)'
                 )

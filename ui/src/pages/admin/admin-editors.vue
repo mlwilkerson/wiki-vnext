@@ -26,23 +26,18 @@
     q-separator(inset)
     .q-pa-md.q-gutter-md
       q-card.shadow-1(v-for='editor of editors', :key='editor.id')
-        q-card-section(:class='$q.dark.isActive ? `bg-dark-6` : `bg-blue-grey-1`')
-          .flex.items-center
-            q-img.q-mr-sm(
-              :src='editor.icon'
-              :alt='editor.label'
-              width='32px'
-              )
-            .text-body1: strong {{$t(`admin.editors.` + editor.id + `Name`)}}
-            q-space
-            q-chip.text-uppercase(
-              v-if='editor.disabled'
-              color='pink'
-              outline
-              square
-              dense
-              style='font-size: 10px; font-weight: 500;'
-            ) {{$t('admin.editors.comingSoon')}}
+        .flex.items-center.q-pa-sm(:class='$q.dark.isActive ? `bg-dark-6` : `bg-dark-6 text-white`')
+          blueprint-icon(:icon='editor.icon', dark)
+          .text-body2: strong {{$t(`admin.editors.` + editor.id + `Name`)}}
+          q-space
+          q-chip.text-uppercase(
+            v-if='editor.disabled'
+            color='pink'
+            outline
+            square
+            dense
+            style='font-size: 10px; font-weight: 500;'
+          ) {{$t('admin.editors.comingSoon')}}
         q-card-section
           q-list(separator)
             q-item(
@@ -108,7 +103,7 @@ export default {
       loading: false,
       config: {
         visual: {
-          mode: 'quill'
+          mode: 'tiptap'
         },
         markdown: {
           mode: 'codemirror'
@@ -126,10 +121,10 @@ export default {
       editors: [
         {
           id: 'visual',
-          icon: require('assets/icons/fluent-open-file-under-cursor.svg'),
+          icon: 'google-presentation',
           modes: [
             {
-              id: 'quill',
+              id: 'tiptap',
               default: true
             }
             // {
@@ -142,7 +137,7 @@ export default {
         },
         {
           id: 'markdown',
-          icon: require('assets/icons/fluent-markdown.svg'),
+          icon: 'markdown',
           modes: [
             {
               id: 'codemirror',
@@ -163,19 +158,19 @@ export default {
         },
         {
           id: 'blog',
-          icon: require('assets/icons/color-blog.svg'),
+          icon: 'typewriter-with-paper',
           disabled: true,
           modes: []
         },
         {
           id: 'api',
-          icon: require('assets/icons/fluent-api.svg'),
+          icon: 'api',
           disabled: true,
           modes: []
         },
         {
           id: 'redirection',
-          icon: require('assets/icons/fluent-advance.svg'),
+          icon: 'advance',
           modes: [
             {
               id: 'redirdefault',

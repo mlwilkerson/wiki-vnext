@@ -17,33 +17,27 @@
           )
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
-      .col-12.col-lg-7
+      .col-12
         q-card.shadow-1
-          q-list(bordered, separator)
-            q-expansion-item(
-              v-for='(ext, idx) of extensions', :key='`ext-` + ext.key'
-              :default-opened='idx < 1'
-              group='admext'
-              accordeon
-              icon='las la-cube'
-              :label='ext.title'
-              :caption='ext.isInstalled ? `Installed` : ``'
+          q-list(separator)
+            q-item(
+              v-for='(ext, idx) of extensions'
+              :key='`ext-` + ext.key'
               )
-              q-card
-                q-card-section
-                  .body-2 {{ext.description}}
-                  .body-2.q-mt-sm
-                    strong.mr-2 This extension is
-                    q-chip.mr-2(v-if='ext.isCompatible', square, outline, dense, color='green') compatible
-                    q-chip.mr-2(v-else, square, dense, color='red') not compatible
-                    strong with your host.
-                  .flex.justify-end
-                    q-btn(
-                      :label='ext.isInstalled ? `Installed` : `Install`'
-                      color='primary'
-                      unelevated
-                      :disabled='ext.isInstalled'
-                    )
+              blueprint-icon(icon='module')
+              q-item-section
+                q-item-label {{ext.title}}
+                q-item-label(caption) {{ext.description}}
+              q-item-section(side)
+                q-btn(
+                  :label='ext.isInstalled ? `Installed` : `Install`'
+                  color='primary'
+                  unelevated
+                  :disabled='ext.isInstalled'
+                  v-if='ext.isCompatible'
+                )
+                q-chip(v-else, square, dense, color='red', outline) not compatible
+
 </template>
 
 <script>
@@ -78,6 +72,7 @@ export default {
           }
         }
       `,
+      prefetch: false,
       fetchPolicy: 'network-only',
       update: (data) => data.systemExtensions,
       watchLoading (isLoading) {
