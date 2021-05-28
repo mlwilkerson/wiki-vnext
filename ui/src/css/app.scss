@@ -54,12 +54,12 @@ body::-webkit-scrollbar-thumb {
 }
 
 .header, .bg-header {
-  background: #000 !important;
-  background: var(--q-color-header) !important;
+  background: #000;
+  background: var(--q-color-header);
 }
 .sidebar, .bg-sidebar {
-  background: #1976D2 !important;
-  background: var(--q-color-sidebar) !important;
+  background: #1976D2;
+  background: var(--q-color-sidebar);
 }
 
 .bg-dark-6 { background-color: #070a0d; }

@@ -6,29 +6,23 @@
     )
     q-list(padding)
       q-item(clickable, @click='create(`wysiwyg`)')
-        q-item-section.items-center(avatar)
-          q-icon(color='primary', name='las la-file-alt', size='sm')
+        blueprint-icon(icon='google-presentation')
         q-item-section.q-pr-sm New Page
       q-item(clickable, @click='create(`markdown`)')
-        q-item-section.items-center(avatar)
-          q-icon(color='primary', name='lab la-markdown', size='sm')
+        blueprint-icon(icon='markdown')
         q-item-section.q-pr-sm New Markdown Page
-      q-item(clickable, @click='create(`blog`)', disabled)
-        q-item-section.items-center(avatar)
-          q-icon(color='primary', name='las la-blog', size='sm')
+      q-item(clickable, @click='create(`blog`)')
+        blueprint-icon(icon='typewriter-with-paper')
         q-item-section.q-pr-sm New Blog Page
-      q-item(clickable, @click='create(`api`)', disabled)
-        q-item-section.items-center(avatar)
-          q-icon(color='primary', name='las la-code-branch', size='sm')
+      q-item(clickable, @click='create(`api`)')
+        blueprint-icon(icon='api')
         q-item-section.q-pr-sm New API Documentation
-      q-item(clickable, @click='create(`redirect`)', disabled)
-        q-item-section.items-center(avatar)
-          q-icon(color='primary', name='las la-location-arrow', size='sm')
+      q-item(clickable, @click='create(`redirect`)')
+        blueprint-icon(icon='advance')
         q-item-section.q-pr-sm New Redirection
       q-separator.q-my-sm(inset)
       q-item(clickable, to='/f')
-        q-item-section.items-center(avatar)
-          q-icon(color='primary', name='las la-photo-video', size='sm')
+        blueprint-icon(icon='add-image')
         q-item-section.q-pr-sm Upload Media Asset
 </template>
 

@@ -47,6 +47,7 @@ type Site {
   robots: SiteRobots
   features: SiteFeatures
   defaults: SiteDefaults
+  theme: SiteTheme
 }
 
 type SiteRobots {
@@ -69,6 +70,33 @@ type SiteDefaults {
   timeFormat: String
 }
 
+type SiteTheme {
+  dark: Boolean
+  colorPrimary: String
+  colorSecondary: String
+  colorAccent: String
+  colorHeader: String
+  colorSidebar: String
+  injectCSS: String
+  injectHead: String
+  injectBody: String
+  sidebarPosition: SiteThemePosition
+  tocPosition: SiteThemePosition
+  showSharingMenu: Boolean
+  showPrintBtn: Boolean
+}
+
+enum SiteThemePosition {
+  left
+  right
+}
+
+enum SitePageRatingModes {
+  off
+  thumbs
+  stars
+}
+
 type SiteCreateResponse {
   status: ResponseStatus
   site: Site
@@ -85,6 +113,7 @@ input SiteUpdateInput {
   robots: SiteRobotsInput
   features: SiteFeaturesInput
   defaults: SiteDefaultsInput
+  theme: SiteThemeInput
 }
 
 input SiteRobotsInput {
@@ -107,8 +136,18 @@ input SiteDefaultsInput {
   timeFormat: String
 }
 
-enum SitePageRatingModes {
-  off
-  thumbs
-  stars
+input SiteThemeInput {
+  dark: Boolean
+  colorPrimary: String
+  colorSecondary: String
+  colorAccent: String
+  colorHeader: String
+  colorSidebar: String
+  injectCSS: String
+  injectHead: String
+  injectBody: String
+  sidebarPosition: SiteThemePosition
+  tocPosition: SiteThemePosition
+  showSharingMenu: Boolean
+  showPrintBtn: Boolean
 }

@@ -7,14 +7,76 @@
           vertical
           )
         q-btn(
+          v-else-if='menuItem.type === `dropdown`'
+          :key='menuItem.key'
+          flat
+          :icon='menuItem.icon'
+          padding='xs'
+          :class='{ "is-active": menuItem.isActive && menuItem.isActive() }'
+          :color='menuItem.isActive && menuItem.isActive() ? `primary` : `grey-10`'
+          :aria-label='menuItem.title'
+          split
+          :disabled='menuItem.disabled && menuItem.disabled()'
+          )
+          q-menu
+            q-list(
+              dense
+              padding
+              )
+              template(v-for='child of menuItem.children')
+                q-separator.q-my-sm(v-if='child.type === `divider`')
+                q-item(
+                  v-else
+                  :key='menuItem.key + `-` + child.key'
+                  clickable
+                  @click='child.action'
+                  :active='child.isActive && child.isActive()'
+                  active-class='text-primary'
+                  :disabled='child.disabled && child.disabled()'
+                  )
+                  q-item-section(side)
+                    q-icon(
+                      :name='child.icon'
+                      :color='child.color'
+                    )
+                  q-item-section
+                    q-item-label {{child.title}}
+        q-btn-group(
+          v-else-if='menuItem.type === `btngroup`'
+          :key='menuItem.key'
+          flat
+          )
+          q-btn(
+            v-for='child of menuItem.children'
+            :key='menuItem.key + `-` + child.key'
+            flat
+            :icon='child.icon'
+            padding='xs'
+            :class='{ "is-active": child.isActive && child.isActive() }'
+            :color='child.isActive && child.isActive() ? `primary` : `grey-10`'
+            @click='child.action'
+            :aria-label='child.title'
+            :disabled='menuItem.disabled && menuItem.disabled()'
+            )
+        q-btn(
           v-else
           flat
           :icon='menuItem.icon'
           padding='xs'
+          :class='{ "is-active": menuItem.isActive && menuItem.isActive() }'
           :color='menuItem.isActive && menuItem.isActive() ? `primary` : `grey-10`'
           @click='menuItem.action'
           :aria-label='menuItem.title'
+          :disabled='menuItem.disabled && menuItem.disabled()'
           )
+      q-space
+      q-btn(
+        size='sm'
+        unelevated
+        color='red'
+        label='Test'
+        @click='snapshot'
+      )
     q-scroll-area(
       :thumb-style='thumbStyle'
       :bar-style='barStyle'
@@ -30,6 +92,7 @@ import Collaboration from '@tiptap/extension-collaboration'
 import Dropcursor from '@tiptap/extension-dropcursor'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
+import Placeholder from '@tiptap/extension-placeholder'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableCell from '@tiptap/extension-table-cell'
@@ -49,6 +112,7 @@ export default {
   data () {
     return {
       editor: null,
+      ydoc: null,
       thumbStyle: {
         right: '2px',
         borderRadius: '5px',
@@ -63,75 +127,211 @@ export default {
       },
       menuBar: [
         {
+          key: 'bold',
           icon: 'mdi-format-bold',
           title: 'Bold',
           action: () => this.editor.chain().focus().toggleBold().run(),
           isActive: () => this.editor.isActive('bold')
         },
         {
+          key: 'italic',
           icon: 'mdi-format-italic',
           title: 'Italic',
           action: () => this.editor.chain().focus().toggleItalic().run(),
           isActive: () => this.editor.isActive('italic')
         },
         {
+          key: 'strikethrough',
           icon: 'mdi-format-strikethrough',
           title: 'Strike',
           action: () => this.editor.chain().focus().toggleStrike().run(),
           isActive: () => this.editor.isActive('strike')
         },
         {
+          key: 'code',
           icon: 'mdi-code-tags',
           title: 'Code',
           action: () => this.editor.chain().focus().toggleCode().run(),
           isActive: () => this.editor.isActive('code')
         },
         {
+          key: 'highlight',
           icon: 'mdi-marker',
           title: 'Highlight',
-          action: () => this.editor.chain().focus().toggleHighlight().run(),
-          isActive: () => this.editor.isActive('highlight')
+          type: 'dropdown',
+          isActive: () => this.editor.isActive('highlight'),
+          children: [
+            {
+              key: 'yellow',
+              icon: 'mdi-marker',
+              title: 'Yellow',
+              color: 'yellow',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'blue',
+              icon: 'mdi-marker',
+              title: 'Blue',
+              color: 'blue',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'pink',
+              icon: 'mdi-marker',
+              title: 'Pink',
+              color: 'pink',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'green',
+              icon: 'mdi-marker',
+              title: 'Green',
+              color: 'green',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'orange',
+              icon: 'mdi-marker',
+              title: 'Orange',
+              color: 'orange',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'remove',
+              icon: 'mdi-marker-cancel',
+              title: 'Remove',
+              color: 'grey',
+              action: () => this.editor.chain().focus().unsetHighlight().run()
+            }
+          ]
         },
         {
           type: 'divider'
         },
         {
-          icon: 'mdi-format-header-1',
-          title: 'Heading 1',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 1 })
+          key: 'header',
+          icon: 'mdi-format-header-pound',
+          title: 'Header',
+          type: 'dropdown',
+          isActive: () => this.editor.isActive('heading'),
+          children: [
+            {
+              key: 'h1',
+              icon: 'mdi-format-header-1',
+              title: 'Header 1',
+              action: () => this.editor.chain().focus().toggleHeading({ level: 1 }).run(),
+              isActive: () => this.editor.isActive('heading', { level: 1 })
+            },
+            {
+              key: 'h2',
+              icon: 'mdi-format-header-2',
+              title: 'Header 2',
+              action: () => this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
+              isActive: () => this.editor.isActive('heading', { level: 2 })
+            },
+            {
+              key: 'h3',
+              icon: 'mdi-format-header-3',
+              title: 'Header 3',
+              action: () => this.editor.chain().focus().toggleHeading({ level: 3 }).run(),
+              isActive: () => this.editor.isActive('heading', { level: 3 })
+            },
+            {
+              key: 'h4',
+              icon: 'mdi-format-header-4',
+              title: 'Header 4',
+              action: () => this.editor.chain().focus().toggleHeading({ level: 4 }).run(),
+              isActive: () => this.editor.isActive('heading', { level: 4 })
+            },
+            {
+              key: 'h5',
+              icon: 'mdi-format-header-5',
+              title: 'Header 5',
+              action: () => this.editor.chain().focus().toggleHeading({ level: 5 }).run(),
+              isActive: () => this.editor.isActive('heading', { level: 5 })
+            },
+            {
+              key: 'h6',
+              icon: 'mdi-format-header-6',
+              title: 'Header 6',
+              action: () => this.editor.chain().focus().toggleHeading({ level: 6 }).run(),
+              isActive: () => this.editor.isActive('heading', { level: 6 })
+            }
+          ]
         },
         {
-          icon: 'mdi-format-header-2',
-          title: 'Heading 2',
-          action: () => this.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-          isActive: () => this.editor.isActive('heading', { level: 2 })
-        },
-        {
+          key: 'paragraph',
           icon: 'mdi-format-paragraph',
           title: 'Paragraph',
           action: () => this.editor.chain().focus().setParagraph().run(),
           isActive: () => this.editor.isActive('paragraph')
         },
         {
+          type: 'divider'
+        },
+        {
+          key: 'align',
+          type: 'btngroup',
+          children: [
+            {
+              key: 'left',
+              icon: 'mdi-format-align-left',
+              title: 'Left Align',
+              action: () => this.editor.chain().focus().setTextAlign('left').run(),
+              isActive: () => this.editor.isActive({ textAlign: 'left' })
+            },
+            {
+              key: 'center',
+              icon: 'mdi-format-align-center',
+              title: 'Center Align',
+              action: () => this.editor.chain().focus().setTextAlign('center').run(),
+              isActive: () => this.editor.isActive({ textAlign: 'center' })
+            },
+            {
+              key: 'right',
+              icon: 'mdi-format-align-right',
+              title: 'Right Align',
+              action: () => this.editor.chain().focus().setTextAlign('right').run(),
+              isActive: () => this.editor.isActive({ textAlign: 'right' })
+            },
+            {
+              key: 'justify',
+              icon: 'mdi-format-align-justify',
+              title: 'Justify Align',
+              action: () => this.editor.chain().focus().setTextAlign('justify').run(),
+              isActive: () => this.editor.isActive({ textAlign: 'justify' })
+            }
+          ]
+        },
+        {
+          type: 'divider'
+        },
+        {
+          key: 'bulletlist',
           icon: 'mdi-format-list-bulleted',
           title: 'Bullet List',
           action: () => this.editor.chain().focus().toggleBulletList().run(),
           isActive: () => this.editor.isActive('bulletList')
         },
         {
+          key: 'orderedlist',
           icon: 'mdi-format-list-numbered',
           title: 'Ordered List',
           action: () => this.editor.chain().focus().toggleOrderedList().run(),
           isActive: () => this.editor.isActive('orderedList')
         },
         {
+          key: 'tasklist',
           icon: 'mdi-format-list-checkbox',
           title: 'Task List',
           action: () => this.editor.chain().focus().toggleTaskList().run(),
           isActive: () => this.editor.isActive('taskList')
         },
         {
+          key: 'codeblock',
           icon: 'mdi-code-json',
           title: 'Code Block',
           action: () => this.editor.chain().focus().toggleCodeBlock().run(),
@@ -141,25 +341,166 @@ export default {
           type: 'divider'
         },
         {
+          key: 'blockquote',
           icon: 'mdi-format-quote-close',
           title: 'Blockquote',
           action: () => this.editor.chain().focus().toggleBlockquote().run(),
           isActive: () => this.editor.isActive('blockquote')
         },
         {
+          key: 'rule',
           icon: 'mdi-minus',
           title: 'Horizontal Rule',
           action: () => this.editor.chain().focus().setHorizontalRule().run()
         },
         {
+          key: 'link',
+          icon: 'mdi-link-plus',
+          title: 'Link',
+          action: () => {
+            // TODO: insert link
+          }
+        },
+        {
+          key: 'image',
+          icon: 'mdi-image-plus',
+          title: 'Image',
+          action: () => {
+            // TODO: insert image
+          }
+        },
+        {
+          key: 'table',
+          icon: 'mdi-table-large',
+          title: 'Table',
+          type: 'dropdown',
+          isActive: () => this.editor.isActive('table'),
+          children: [
+            {
+              key: 'insert',
+              icon: 'mdi-table-large-plus',
+              title: 'Insert Table',
+              action: () => this.editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'addcolumnbefore',
+              icon: 'mdi-table-column-plus-before',
+              title: 'Add Column Before',
+              action: () => this.editor.chain().focus().addColumnBefore().run(),
+              disabled: () => !this.editor.can().addColumnBefore()
+            },
+            {
+              key: 'addcolumnafter',
+              icon: 'mdi-table-column-plus-after',
+              title: 'Add Column After',
+              action: () => this.editor.chain().focus().addColumnAfter().run(),
+              disabled: () => !this.editor.can().addColumnAfter()
+            },
+            {
+              key: 'deletecolumn',
+              icon: 'mdi-table-column-remove',
+              title: 'Remove Column',
+              action: () => this.editor.chain().focus().deleteColumn().run(),
+              disabled: () => !this.editor.can().deleteColumn()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'addrowbefore',
+              icon: 'mdi-table-row-plus-before',
+              title: 'Add Row Before',
+              action: () => this.editor.chain().focus().addRowBefore().run(),
+              disabled: () => !this.editor.can().addRowBefore()
+            },
+            {
+              key: 'addrowafter',
+              icon: 'mdi-table-row-plus-after',
+              title: 'Add Row After',
+              action: () => this.editor.chain().focus().addRowAfter().run(),
+              disabled: () => !this.editor.can().addRowAfter()
+            },
+            {
+              key: 'deleterow',
+              icon: 'mdi-table-row-remove',
+              title: 'Remove Row',
+              action: () => this.editor.chain().focus().deleteRow().run(),
+              disabled: () => !this.editor.can().deleteRow()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'merge',
+              icon: 'mdi-table-merge-cells',
+              title: 'Merge Cells',
+              action: () => this.editor.chain().focus().mergeCells().run(),
+              disabled: () => !this.editor.can().mergeCells()
+            },
+            {
+              key: 'split',
+              icon: 'mdi-table-split-cell',
+              title: 'Split Cell',
+              action: () => this.editor.chain().focus().splitCell().run(),
+              disabled: () => !this.editor.can().splitCell()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'toggleHeaderColumn',
+              icon: 'mdi-table-column',
+              title: 'Toggle Header Column',
+              action: () => this.editor.chain().focus().toggleHeaderColumn().run(),
+              disabled: () => !this.editor.can().toggleHeaderColumn()
+            },
+            {
+              key: 'toggleHeaderRow',
+              icon: 'mdi-table-row',
+              title: 'Toggle Header Row',
+              action: () => this.editor.chain().focus().toggleHeaderRow().run(),
+              disabled: () => !this.editor.can().toggleHeaderRow()
+            },
+            {
+              key: 'toggleHeaderCell',
+              icon: 'mdi-crop-square',
+              title: 'Toggle Header Cell',
+              action: () => this.editor.chain().focus().toggleHeaderCell().run(),
+              disabled: () => !this.editor.can().toggleHeaderCell()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'fix',
+              icon: 'mdi-table-heart',
+              title: 'Fix Table',
+              action: () => this.editor.chain().focus().fixTables().run(),
+              disabled: () => !this.editor.can().fixTables()
+            },
+            {
+              key: 'remove',
+              icon: 'mdi-table-large-remove',
+              title: 'Delete Table',
+              action: () => this.editor.chain().focus().deleteTable().run(),
+              disabled: () => !this.editor.can().deleteTable()
+            }
+          ]
+        },
+        {
           type: 'divider'
         },
         {
+          key: 'pagebreak',
           icon: 'mdi-format-page-break',
           title: 'Hard Break',
           action: () => this.editor.chain().focus().setHardBreak().run()
         },
         {
+          key: 'clearformat',
           icon: 'mdi-format-clear',
           title: 'Clear Format',
           action: () => this.editor.chain()
@@ -172,14 +513,18 @@ export default {
           type: 'divider'
         },
         {
+          key: 'undo',
           icon: 'mdi-undo-variant',
           title: 'Undo',
-          action: () => this.editor.chain().focus().undo().run()
+          action: () => this.editor.chain().focus().undo().run(),
+          disabled: () => !this.editor.can().undo()
         },
         {
+          key: 'redo',
           icon: 'mdi-redo-variant',
           title: 'Redo',
-          action: () => this.editor.chain().focus().redo().run()
+          action: () => this.editor.chain().focus().redo().run(),
+          disabled: () => !this.editor.can().redo()
         }
       ]
     }
@@ -194,11 +539,11 @@ export default {
   },
   methods: {
     init () {
-      const ydoc = new Y.Doc()
+      this.ydoc = new Y.Doc()
 
       /* eslint-disable no-unused-vars */
-      const dbProvider = new IndexeddbPersistence('example-document', ydoc)
-      // const wsProvider = new WebsocketProvider('ws://127.0.0.1:1234', 'example-document', ydoc)
+      const dbProvider = new IndexeddbPersistence('example-document', this.ydoc)
+      // const wsProvider = new WebsocketProvider('ws://127.0.0.1:1234', 'example-document', this.ydoc)
       /* eslint-enable no-unused-vars */
 
       this.editor = new Editor({
@@ -208,11 +553,16 @@ export default {
             history: false
           }),
           Collaboration.configure({
-            document: ydoc
+            document: this.ydoc
           }),
           Dropcursor,
-          Highlight,
+          Highlight.configure({
+            multicolor: true
+          }),
           Image,
+          Placeholder.configure({
+            placeholder: 'Enter some content here...'
+          }),
           Table.configure({
             resizable: true
           }),
@@ -253,6 +603,9 @@ export default {
     },
     insertTable () {
       // this.ql.getModule('table').insertTable(3, 3)
+    },
+    snapshot () {
+      console.info(Y.encodeStateVector(this.ydoc))
     }
   }
 }
@@ -268,27 +621,150 @@ export default {
     display: flex;
     align-items: center;
     padding: 4px;
+    background: linear-gradient(to top, $grey-1 0%, #FFF 100%);
   }
 
-  .ql-container.ql-snow {
-    border: none;
-  }
-
-  .ql-editor {
+  .ProseMirror {
+    padding: 16px;
     min-height: 75vh;
-  }
 
-  .ql-tooltip {
-    z-index: 2500;
-  }
-  .ql-table-menu {
-    margin-left: 7px;
-  }
-  .ql-table-toggle {
-    margin-left: -13px;
-    border-color: $blue;
-    border-radius: 5px;
-    fill: $blue;
+    &-focused {
+      border: none;
+      outline: none;
+    }
+
+    > * + * {
+      margin-top: 0.75em;
+    }
+
+    ul,
+    ol {
+      padding: 0 1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.1;
+    }
+
+    code {
+      background-color: rgba(#616161, 0.1);
+      color: #616161;
+    }
+
+    pre {
+      background: #0D0D0D;
+      color: #FFF;
+      font-family: 'JetBrainsMono', monospace;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+
+      code {
+        color: inherit;
+        padding: 0;
+        background: none;
+        font-size: 0.8rem;
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    blockquote {
+      padding-left: 1rem;
+      border-left: 2px solid rgba(#0D0D0D, 0.1);
+    }
+
+    hr {
+      border: none;
+      border-top: 2px solid rgba(#0D0D0D, 0.1);
+      margin: 2rem 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
+      width: 100%;
+      margin: 0;
+      overflow: hidden;
+
+      td,
+      th {
+        min-width: 1em;
+        border: 2px solid #ced4da;
+        padding: 3px 5px;
+        vertical-align: top;
+        box-sizing: border-box;
+        position: relative;
+
+        > * {
+          margin-bottom: 0;
+        }
+      }
+
+      th {
+        font-weight: bold;
+        text-align: left;
+        background-color: #f1f3f5;
+      }
+
+      .selectedCell:after {
+        z-index: 2;
+        position: absolute;
+        content: "";
+        left: 0; right: 0; top: 0; bottom: 0;
+        background: rgba(200, 200, 255, 0.4);
+        pointer-events: none;
+      }
+
+      .column-resize-handle {
+        position: absolute;
+        right: -2px;
+        top: 0;
+        bottom: -2px;
+        width: 4px;
+        background-color: #adf;
+        pointer-events: none;
+      }
+    }
+
+    .tableWrapper {
+      overflow-x: auto;
+    }
+
+    .resize-cursor {
+      cursor: ew-resize;
+      cursor: col-resize;
+    }
+
+    ul[data-type="taskList"] {
+      list-style: none;
+      padding: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+
+        > label {
+          flex: 0 0 auto;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      float: left;
+      color: #ced4da;
+      pointer-events: none;
+      height: 0;
+    }
   }
 }
 </style>

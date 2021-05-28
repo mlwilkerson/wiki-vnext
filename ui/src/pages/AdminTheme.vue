@@ -7,6 +7,11 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.theme.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.theme.subtitle') }}
       .col-auto
+        q-spinner-tail.q-mr-md(
+          v-show='loading'
+          color='accent'
+          size='sm'
+        )
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
           flat
@@ -29,8 +34,17 @@
         //- Theme Options
         //- -----------------------
         q-card.shadow-1.q-pb-sm
-          q-card-section
+          q-card-section.flex.items-center
             .text-subtitle1 {{$t('admin.theme.options')}}
+            q-space
+            q-btn.acrylic-btn(
+              icon='las la-redo-alt'
+              :label='$t(`admin.theme.resetDefaults`)'
+              flat
+              size='sm'
+              color='pink'
+              @click='resetColors'
+            )
           q-item(tag='label', v-ripple)
             blueprint-icon(icon='light-on')
             q-item-section
@@ -38,7 +52,7 @@
               q-item-label(caption) {{$t(`admin.theme.darkModeHint`)}}
             q-item-section(avatar)
               q-toggle(
-                v-model='config.darkMode'
+                v-model='config.dark'
                 color='primary'
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
@@ -51,19 +65,13 @@
               q-item-section
                 q-item-label {{$t(`admin.theme.` + cl + `Color`)}}
                 q-item-label(caption) {{$t(`admin.theme.` + cl + `ColorHint`)}}
-              q-item-section(avatar)
-                q-btn(
-                  flat
-                  padding='xs sm'
-                  icon='las la-undo-alt'
-                  color='grey'
-                  size='sm'
-                  )
-              q-item-section(avatar)
+              q-item-section(side)
+                .text-caption.text-grey-6 {{config[`color` + startCase(cl)]}}
+              q-item-section(side)
                 q-btn.q-mr-sm(
-                  push
+                  :key='`btnpick-` + cl'
+                  glossy
                   padding='xs md'
-                  rounded
                   no-caps
                   size='sm'
                   :color='cl'
@@ -72,48 +80,8 @@
                   span Pick...
                   q-menu
                     q-color(
-                      v-model='config[cl + `Color`]'
+                      v-model='config[`color` + startCase(cl)]'
                     )
-          //- q-separator.q-my-sm(inset)
-          //- q-item
-          //-   q-item-section.items-center(style='flex: 0 0 40px;')
-          //-     q-icon(
-          //-       name='las la-icons'
-          //-       color='primary'
-          //-       size='sm'
-          //-       )
-          //-   q-item-section
-          //-     q-item-label {{$t(`admin.theme.iconset`)}}
-          //-     q-item-label(caption) {{$t(`admin.theme.iconsetHint`)}}
-          //-   q-item-section
-          //-     q-select(
-          //-       outlined
-          //-       v-model='config.iconset'
-          //-       :options='iconsets'
-          //-       emit-value
-          //-       map-options
-          //-       dense
-          //-       :aria-label='$t(`admin.theme.iconset`)'
-          //-       )
-          //- q-separator.q-my-sm(inset)
-          //- q-item(tag='label', v-ripple)
-          //-   q-item-section.items-center(style='flex: 0 0 40px;')
-          //-     q-icon(
-          //-       name='las la-swatchbook'
-          //-       color='primary'
-          //-       size='sm'
-          //-       )
-          //-   q-item-section
-          //-     q-item-label {{$t(`admin.theme.reduceMotion`)}}
-          //-     q-item-label(caption) {{$t(`admin.theme.reduceMotionHint`)}}
-          //-   q-item-section(avatar)
-          //-     q-toggle(
-          //-       v-model='config.reduceMotion'
-          //-       color='primary'
-          //-       checked-icon='las la-check'
-          //-       unchecked-icon='las la-times'
-          //-       :aria-label='$t(`admin.theme.reduceMotion`)'
-          //-       )
 
         //- -----------------------
         //- Theme Layout
@@ -240,9 +208,10 @@
 
 <script>
 import gql from 'graphql-tag'
-// import { sync } from 'vuex-pathify'
+import { get } from 'vuex-pathify'
 import _get from 'lodash/get'
-// import clone from 'lodash/clone'
+import cloneDeep from 'lodash/cloneDeep'
+import startCase from 'lodash/startCase'
 import { colors } from 'quasar'
 
 export default {
@@ -254,11 +223,6 @@ export default {
   data () {
     return {
       loading: false,
-      iconsets: [
-        { label: 'Material Design Icons (default)', value: 'mdi' },
-        { label: 'Font Awesome 5', value: 'fa' },
-        { label: 'Font Awesome 4', value: 'fa4' }
-      ],
       colorKeys: [
         'primary',
         'secondary',
@@ -267,17 +231,15 @@ export default {
         'sidebar'
       ],
       config: {
-        darkMode: false,
-        iconset: 'mdi',
+        dark: false,
         injectCSS: '',
         injectHead: '',
         injectBody: '',
-        primaryColor: '#1976D2',
-        secondaryColor: '#02C39A',
-        accentColor: '#f03a47',
-        headerColor: '#000',
-        sidebarColor: '#1976D2',
-        reduceMotion: false,
+        colorPrimary: '#1976D2',
+        colorSecondary: '#02C39A',
+        colorAccent: '#f03a47',
+        colorHeader: '#000',
+        colorSidebar: '#1976D2',
         sidebarPosition: 'left',
         tocPosition: 'right',
         showSharingMenu: true,
@@ -287,62 +249,102 @@ export default {
     }
   },
   computed: {
-    headers () {
-      return [
-        {
-          text: this.$t('admin.theme.downloadName'),
-          align: 'left',
-          value: 'text'
-        },
-        {
-          text: this.$t('admin.theme.downloadAuthor'),
-          align: 'left',
-          value: 'author'
-        },
-        {
-          text: this.$t('admin.theme.downloadDownload'),
-          align: 'center',
-          value: 'value',
-          sortable: false,
-          width: 100
-        }
-      ]
-    }
+    currentSiteId: get('admin/currentSiteId')
   },
   watch: {
-    'config.darkMode' (newValue) {
+    'config.dark' (newValue) {
       this.$q.dark.set(newValue)
       this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
       this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
       this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
     },
-    'config.primaryColor' (newValue) {
+    'config.colorPrimary' (newValue) {
       colors.setBrand('primary', newValue)
     },
-    'config.secondaryColor' (newValue) {
+    'config.colorSecondary' (newValue) {
       colors.setBrand('secondary', newValue)
     },
-    'config.accentColor' (newValue) {
+    'config.colorAccent' (newValue) {
       colors.setBrand('accent', newValue)
     },
-    'config.headerColor' (newValue) {
+    'config.colorHeader' (newValue) {
       colors.setBrand('header', newValue)
     },
-    'config.sidebarColor' (newValue) {
+    'config.colorSidebar' (newValue) {
       colors.setBrand('sidebar', newValue)
+    },
+    currentSiteId () {
+      this.fetchConfig()
     }
   },
   mounted () {
-    this.darkModeInitial = this.darkMode
+    this.fetchConfig()
   },
   beforeDestroy () {
-    this.darkMode = this.darkModeInitial
-    this.$vuetify.theme.dark = this.darkModeInitial
+    this.$q.dark.set(this.darkModeInitial)
   },
   methods: {
+    startCase,
     onCmReady (cm) {
       cm.setOption('theme', this.$q.dark.isActive ? 'material-ocean' : 'elegant')
       cm.setSize(null, 200)
+    },
+    resetColors () {
+      this.config.dark = false
+      this.config.colorPrimary = '#1976D2'
+      this.config.colorSecondary = '#02C39A'
+      this.config.colorAccent = '#f03a47'
+      this.config.colorHeader = '#000'
+      this.config.colorSidebar = '#1976D2'
+    },
+    async fetchConfig () {
+      if (!this.currentSiteId) { return }
+
+      this.loading = true
+      try {
+        const resp = await this.$apollo.query({
+          query: gql`
+            query (
+              $id: UUID!
+            ) {
+              siteById(
+                id: $id
+              ) {
+                theme {
+                  dark
+                  colorPrimary
+                  colorSecondary
+                  colorAccent
+                  colorHeader
+                  colorSidebar
+                  injectCSS
+                  injectHead
+                  injectBody
+                  sidebarPosition
+                  tocPosition
+                  showSharingMenu
+                  showPrintBtn
+                }
+              }
+            }
+          `,
+          variables: {
+            id: this.currentSiteId
+          },
+          fetchPolicy: 'network-only'
+        })
+        if (!resp?.data?.siteById?.theme) {
+          throw new Error('Failed to fetch theme config.')
+        }
+        this.config = cloneDeep(resp.data.siteById.theme)
+        this.darkModeInitial = this.config.dark
+      } catch (err) {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Failed to fetch site theme config'
+        })
+      }
+      this.loading = false
     },
     async save () {
       this.loading = true
@@ -351,82 +353,63 @@ export default {
         const respRaw = await this.$apollo.mutate({
           mutation: gql`
             mutation(
-              $theme: String!
-              $iconset: String!
-              $darkMode: Boolean!
-              $injectCSS: String
-              $injectHead: String
-              $injectBody: String
+              $id: UUID!
+              $patch: SiteUpdateInput!
               ) {
-              theming {
-                setConfig(
-                  theme: $theme
-                  iconset: $iconset
-                  darkMode: $darkMode
-                  injectCSS: $injectCSS
-                  injectHead: $injectHead
-                  injectBody: $injectBody
-                  ) {
-                  responseResult {
-                    succeeded
-                    errorCode
-                    slug
-                    message
-                  }
+              updateSite (
+                id: $id,
+                patch: $patch
+                ) {
+                status {
+                  succeeded
+                  slug
+                  message
                 }
               }
             }
           `,
           variables: {
-            theme: this.config.theme,
-            iconset: this.config.iconset,
-            darkMode: this.darkMode,
-            injectCSS: this.config.injectCSS,
-            injectHead: this.config.injectHead,
-            injectBody: this.config.injectBody
+            id: this.currentSiteId,
+            patch: {
+              theme: {
+                dark: this.config.dark,
+                colorPrimary: this.config.colorPrimary,
+                colorSecondary: this.config.colorSecondary,
+                colorAccent: this.config.colorAccent,
+                colorHeader: this.config.colorHeader,
+                colorSidebar: this.config.colorSidebar,
+                injectCSS: this.config.injectCSS,
+                injectHead: this.config.injectHead,
+                injectBody: this.config.injectBody,
+                sidebarPosition: this.config.sidebarPosition,
+                tocPosition: this.config.tocPosition,
+                showSharingMenu: this.config.showSharingMenu,
+                showPrintBtn: this.config.showPrintBtn
+              }
+            }
           }
         })
-        const resp = _get(respRaw, 'data.theming.setConfig.responseResult', {})
+        const resp = _get(respRaw, 'data.updateSite.status', {})
         if (resp.succeeded) {
           this.darkModeInitial = this.darkMode
-          this.$store.commit('showNotification', {
-            message: 'Theme settings updated successfully.',
-            style: 'success',
-            icon: 'check'
+          this.$q.notify({
+            type: 'positive',
+            message: this.$t('admin.theme.saveSuccess')
           })
         } else {
           throw new Error(resp.message)
         }
       } catch (err) {
-        this.$store.commit('pushGraphError', err)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Failed to save site theme config',
+          caption: err.message
+        })
       }
       this.$store.commit('loadingStop', 'admin-theme-save')
       this.loading = false
     }
   }
-  // apollo: {
-  //   config: {
-  //     query: gql`
-  //       {
-  //         theming {
-  //           config {
-  //             theme
-  //             iconset
-  //             darkMode
-  //             injectCSS
-  //             injectHead
-  //             injectBody
-  //           }
-  //         }
-  //       }
-  //     `,
-  //     fetchPolicy: 'network-only',
-  //     update: (data) => clone(data.theming.config),
-  //     watchLoading (isLoading) {
-  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-theme-refresh')
-  //     }
-  //   }
-  // }
 }
 </script>
 

@@ -171,8 +171,8 @@
             v-if='showSidebar && showToc'
             style='padding-left: 40px;'
             )
-            .text-caption {{$t('editor.props.tocMaxDepth')}} #[strong (H{{tocDepth}})]
-            q-slider(
+            .text-caption {{$t('editor.props.tocMinMaxDepth')}} #[strong (H{{tocDepth.min}} &rarr; H{{tocDepth.max}})]
+            q-range(
               v-model='tocDepth'
               :min='1'
               :max='6'

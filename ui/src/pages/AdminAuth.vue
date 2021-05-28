@@ -272,6 +272,11 @@ export default {
   components: {
     draggable
   },
+  meta () {
+    return {
+      title: this.$t('admin.auth.title')
+    }
+  },
   filters: {
     startCase (val) { return _.startCase(val) }
   },

@@ -29,7 +29,10 @@ const state = {
   showSidebar: true,
   showToc: true,
   showTags: true,
-  tocDepth: 2,
+  tocDepth: {
+    min: 1,
+    max: 2
+  },
   breadcrumbs: [
     {
       id: 1,

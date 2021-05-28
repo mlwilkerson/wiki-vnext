@@ -392,7 +392,7 @@ exports.up = async knex => {
       company: '',
       contentLicense: '',
       defaults: {
-        timezone: 'America/Toronto',
+        timezone: 'America/New_York',
         dateFormat: 'YYYY-MM-DD',
         timeFormat: '12h'
       },
@@ -414,10 +414,18 @@ exports.up = async knex => {
       localeNamespaces: [],
       theme: {
         dark: false,
-        iconSets: ['mdi', 'la'],
+        colorPrimary: '#1976d2',
+        colorSecondary: '#02c39a',
+        colorAccent: '#f03a47',
+        colorHeader: '#000000',
+        colorSidebar: '#1976d2',
         injectCSS: '',
         injectHead: '',
-        injectBody: ''
+        injectBody: '',
+        sidebarPosition: 'left',
+        tocPosition: 'right',
+        showSharingMenu: true,
+        showPrintBtn: true
       }
     }
   })

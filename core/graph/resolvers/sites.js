@@ -1,5 +1,6 @@
 const graphHelper = require('../../helpers/graph')
 const _ = require('lodash')
+const CleanCSS = require('clean-css')
 
 /* global WIKI */
 
@@ -84,15 +85,28 @@ module.exports = {
         if (!site) {
           throw WIKI.ERROR(new Error('Invalid Site ID'), 'SiteInvalidId')
         }
+        // -> Check for bad input
+        if (_.has(args.patch, 'hostname') && _.trim(args.patch.hostname).length < 1) {
+          throw WIKI.ERROR(new Error('Hostname is invalid.'), 'SiteInvalidHostname')
+        }
         // -> Check for duplicate catch-all
-        if (args.hostname === '*' && site.hostname !== '*') {
+        if (args.patch.hostname === '*' && site.hostname !== '*') {
           const dupSite = await WIKI.models.sites.query().where({ hostname: '*' }).first()
           if (dupSite) {
             throw WIKI.ERROR(new Error(`Site ${dupSite.config.title} with a catch-all hostname already exists! Cannot have 2 catch-all hostnames.`), 'SiteUpdateDuplicateCatchAll')
           }
         }
+        // -> Format Code
+        if (args.patch?.theme?.injectCSS) {
+          args.patch.theme.injectCSS = new CleanCSS({ inline: false }).minify(args.patch.theme.injectCSS).styles
+        }
         // -> Update site
-        // TODO: UPDATE SITE
+        await WIKI.models.sites.query().findById(args.id).patch({
+          hostname: args.patch.hostname ?? site.hostname,
+          isEnabled: args.patch.isEnabled ?? site.isEnabled,
+          config: _.defaultsDeep(_.omit(args.patch, ['hostname', 'isEnabled']), site.config)
+        })
+
         return {
           status: graphHelper.generateSuccess('Site updated successfully')
         }
@@ -118,6 +132,11 @@ module.exports = {
       } catch (err) {
         return graphHelper.generateError(err)
       }
+    }
+  },
+  SiteTheme: {
+    injectCSS (obj) {
+      return new CleanCSS({ format: 'beautify' }).minify(obj.injectCSS).styles
     }
   }
 }

@@ -79,7 +79,7 @@
             blueprint-icon(:icon='platformLogo')
             q-item-section
               q-item-label {{ $t('admin.system.os') }}
-              q-item-label(caption) The OS Wiki.js is running on.
+              q-item-label(caption) {{$t('admin.system.osHint')}}
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
           q-separator(inset)
@@ -87,7 +87,7 @@
             blueprint-icon(icon='server')
             q-item-section
               q-item-label {{ $t('admin.system.hostname') }}
-              q-item-label(caption) The hostname of the server / container.
+              q-item-label(caption) {{$t('admin.system.hostnameHint')}}
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.hostname }}
           q-separator(inset)
@@ -95,7 +95,7 @@
             blueprint-icon(icon='processor')
             q-item-section
               q-item-label {{ $t('admin.system.cpuCores') }}
-              q-item-label(caption) The number of CPU cores available to Wiki.js.
+              q-item-label(caption) {{$t('admin.system.cpuCoresHint')}}
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.cpuCores }}
           q-separator(inset)
@@ -103,7 +103,7 @@
             blueprint-icon(icon='memory-slot')
             q-item-section
               q-item-label {{ $t('admin.system.totalRAM') }}
-              q-item-label(caption) The total amount of RAM available to Wiki.js.
+              q-item-label(caption) {{$t('admin.system.totalRAMHint')}}
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.ramTotal }}
           q-separator(inset)
@@ -111,7 +111,7 @@
             blueprint-icon(icon='program')
             q-item-section
               q-item-label {{ $t('admin.system.workingDirectory') }}
-              q-item-label(caption) The directory path where Wiki.js is currently running from.
+              q-item-label(caption) {{$t('admin.system.workingDirectoryHint')}}
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.workingDirectory }}
           q-separator(inset)
@@ -119,7 +119,7 @@
             blueprint-icon(icon='automation')
             q-item-section
               q-item-label {{ $t('admin.system.configFile') }}
-              q-item-label(caption) The path to the Wiki.js configuration file.
+              q-item-label(caption) {{$t('admin.system.configFileHint')}}
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.configFile }}
 
@@ -163,6 +163,7 @@
 
 <script>
 import _get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 
 // import { SelfBuildingSquareSpinner } from 'epic-spinners'
@@ -181,7 +182,9 @@ export default {
       isUpgrading: false,
       isUpgradingStarted: false,
       upgradeProgress: 0,
-      info: {}
+      info: {
+        platform: ''
+      }
     }
   },
   computed: {
@@ -286,8 +289,9 @@ export default {
           }
         }
       `,
+      prefetch: false,
       fetchPolicy: 'network-only',
-      update: (data) => data.systemInfo,
+      update: (data) => cloneDeep(data.systemInfo),
       watchLoading (isLoading) {
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-system-refresh')
       }

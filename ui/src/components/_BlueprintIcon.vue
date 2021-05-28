@@ -34,8 +34,18 @@ export default {
   computed: {
     avatarBgColor () { return this.$q.dark.isActive || this.dark ? 'dark-4' : 'blue-1' }
   },
-  async mounted () {
-    this.imgPath = await iconsContext('./ultraviolet-' + this.icon + '.svg')
+  watch: {
+    icon () {
+      this.generatePath()
+    }
+  },
+  mounted () {
+    this.generatePath()
+  },
+  methods: {
+    async generatePath () {
+      this.imgPath = await iconsContext('./ultraviolet-' + this.icon + '.svg')
+    }
   }
 }
 </script>

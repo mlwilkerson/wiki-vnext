@@ -285,7 +285,7 @@
                 dense
                 :aria-label='$t(`admin.general.defaultDateFormat`)'
                 :options=`[
-                  { label: $t('profile:localeDefault'), value: '' },
+                  { label: $t('profile.localeDefault'), value: '' },
                   { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
                   { label: 'DD.MM.YYYY', value: 'DD.MM.YYYY' },
                   { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
@@ -407,6 +407,7 @@ export default {
   },
   methods: {
     async save () {
+      this.loading = true
       try {
         await this.$apollo.mutate({
           mutation: gql`
@@ -417,13 +418,11 @@ export default {
               updateSite (
                 id: $id
                 patch: $patch
-                ) {
-                  responseResult {
-                    succeeded
-                    errorCode
-                    slug
-                    message
-                  }
+              ) {
+                status {
+                  succeeded
+                  slug
+                  message
                 }
               }
             }
@@ -431,7 +430,7 @@ export default {
           variables: {
             id: this.currentSiteId,
             patch: {
-              hostname: this.config.host ?? '',
+              hostname: this.config.hostname ?? '',
               title: this.config.title ?? '',
               description: this.config.description ?? '',
               company: this.config.company ?? '',
@@ -449,14 +448,11 @@ export default {
                 search: this.config.features?.search ?? false
               },
               defaults: {
-                timezone: this.config.defaults?.timezone ?? 'America/Toronto',
+                timezone: this.config.defaults?.timezone ?? 'America/New_York',
                 dateFormat: this.config.defaults?.dateFormat ?? 'YYYY-MM-DD',
                 timeFormat: this.config.defaults?.timeFormat ?? '12h'
               }
             }
-          },
-          watchLoading (isLoading) {
-            this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-update')
           }
         })
         this.$q.notify({
@@ -470,8 +466,13 @@ export default {
           this.$store.set('site/contentLicense', this.config.contentLicense)
         }
       } catch (err) {
-        this.$store.commit('pushGraphError', err)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Failed to save site configuration.',
+          caption: err.message
+        })
       }
+      this.loading = false
     },
     refreshLogo () {
       this.$forceUpdate()
