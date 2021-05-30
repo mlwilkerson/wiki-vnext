@@ -32,36 +32,30 @@
     .row.q-pa-md.q-col-gutter-md
       .col-12
         q-card.shadow-1
-          q-card-section.q-pa-none
-            q-table.no-border-radius(
-              :data='sites'
-              :columns='headers'
-              row-name='code'
-              flat
-              hide-bottom
-              :rows-per-page-options='[0]'
-              :loading='loading'
+          q-list(separator)
+            q-item(
+              v-for='site of sites'
+              :key='site.id'
               )
-              template(v-slot:body-cell-id='props')
-                q-td(:props='props')
-                  q-btn.acrylic-btn(
+              q-item-section(side)
+                q-icon(name='las la-chalkboard', color='primary')
+              q-item-section
+                strong {{site.title}}
+              q-item-section
+                div
+                  q-chip.q-mx-none(
+                    v-if='site.hostname !== `*`'
+                    square
+                    color='blue-7'
+                    text-color='white'
                     size='sm'
-                    padding='xs'
-                    icon='las la-clipboard'
-                    flat
-                    color='brown'
-                    @click='copyID(props.value)'
                     )
-                    q-tooltip(
-                      anchor='center left'
-                      self='center right'
-                    ) {{$t('common.clipboard.uuid')}}
-              template(v-slot:body-cell-title='props')
-                q-td(:props='props')
-                  strong {{props.value}}
-              template(v-slot:body-cell-hostname='props')
-                q-td(:props='props')
-                  span.font-robotomono(v-if='props.value !== `*`') {{props.value}}
+                    q-avatar(
+                      icon='las la-angle-right'
+                      color='blue-5'
+                      text-color='white'
+                    )
+                    span {{site.hostname}}
                   q-chip.q-mx-none(
                     v-else
                     square
@@ -73,36 +67,34 @@
                       icon='las la-asterisk'
                       color='indigo-5'
                       text-color='white'
-                      )
+                    )
                     span catch-all
-              template(v-slot:body-cell-isEnabled='props')
-                q-td(:props='props')
-                  q-toggle(
-                    :value='props.row.isEnabled'
-                    color='primary'
-                    checked-icon='las la-check'
-                    unchecked-icon='las la-times'
-                    :aria-label='$t(`admin.sites.isActive`)'
-                    @input='(val) => { toggleSiteState(props.row, val) }'
-                    )
-              template(v-slot:body-cell-edit='props')
-                q-td(:props='props')
-                  q-btn.acrylic-btn(
-                    flat
-                    @click='editSite(props.row)'
-                    padding='xs sm'
-                    icon='las la-pen'
-                    color='indigo'
-                    )
-              template(v-slot:body-cell-remove='props')
-                q-td(:props='props')
-                  q-btn.acrylic-btn(
-                    flat
-                    padding='xs sm'
-                    icon='las la-trash'
-                    color='accent'
-                    @click='deleteSite(props.row)'
-                    )
+              q-item-section(side)
+                q-toggle(
+                  :value='site.isEnabled'
+                  color='primary'
+                  checked-icon='las la-check'
+                  unchecked-icon='las la-times'
+                  :label='$t(`admin.sites.isActive`)'
+                  :aria-label='$t(`admin.sites.isActive`)'
+                  @input='(val) => { toggleSiteState(site, val) }'
+                  )
+              q-separator.q-ml-md(vertical)
+              q-item-section(side, style='flex-direction: row; align-items: center;')
+                q-btn.acrylic-btn.q-mr-sm(
+                  flat
+                  @click='editSite(site)'
+                  icon='las la-pen'
+                  color='indigo'
+                  :label='$t(`common.actions.edit`)'
+                  no-caps
+                  )
+                q-btn.acrylic-btn(
+                  flat
+                  icon='las la-trash'
+                  color='accent'
+                  @click='deleteSite(site)'
+                  )
 </template>
 
 <script>
@@ -122,57 +114,7 @@ export default {
     }
   },
   computed: {
-    sites: get('admin/sites'),
-    headers () {
-      return [
-        {
-          label: this.$t('common.field.id'),
-          align: 'center',
-          field: 'id',
-          name: 'id',
-          sortable: false,
-          style: 'width: 50px'
-        },
-        {
-          label: this.$t('common.field.name'),
-          align: 'left',
-          field: 'title',
-          name: 'title',
-          sortable: true
-        },
-        {
-          label: this.$t('admin.sites.hostname'),
-          align: 'left',
-          field: 'hostname',
-          name: 'hostname',
-          sortable: true
-        },
-        {
-          label: this.$t('admin.sites.isActive'),
-          align: 'center',
-          field: 'isEnabled',
-          name: 'isEnabled',
-          sortable: false,
-          style: 'width: 10px'
-        },
-        {
-          label: this.$t('admin.sites.edit'),
-          align: 'center',
-          field: 'edit',
-          name: 'edit',
-          sortable: false,
-          style: 'width: 150px'
-        },
-        {
-          label: this.$t('admin.sites.delete'),
-          align: 'center',
-          field: 'remove',
-          name: 'remove',
-          sortable: false,
-          style: 'width: 100px'
-        }
-      ]
-    }
+    sites: get('admin/sites')
   },
   methods: {
     copyID (uid) {

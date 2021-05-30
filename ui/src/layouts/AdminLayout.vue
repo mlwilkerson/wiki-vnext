@@ -141,7 +141,7 @@
             q-item-section {{ $t('admin.utilities.title') }}
           q-item(to='/a/webhooks', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)
-              q-icon(name='las la-magic')
+              q-icon(name='las la-bolt')
             q-item-section {{ $t('admin.webhooks.title') }}
           q-item(to='/a/flags', v-ripple, active-class='bg-primary text-white')
             q-item-section(avatar)

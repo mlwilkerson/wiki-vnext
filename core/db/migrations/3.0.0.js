@@ -92,6 +92,21 @@ exports.up = async knex => {
       table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now())
       table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now())
     })
+    // HOOKS -------------------------------
+    .createTable('hooks', table => {
+      table.uuid('id').notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'))
+      table.string('name').notNullable()
+      table.jsonb('events').notNullable().defaultTo('[]')
+      table.string('url').notNullable()
+      table.boolean('includeMetadata').notNullable().defaultTo(false)
+      table.boolean('includeContent').notNullable().defaultTo(false)
+      table.boolean('acceptUntrusted').notNullable().defaultTo(false)
+      table.string('authHeader')
+      table.enum('state', ['pending', 'error', 'success']).notNullable().defaultTo('pending')
+      table.string('lastErrorMessage')
+      table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now())
+      table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now())
+    })
     // LOCALES -----------------------------
     .createTable('locales', table => {
       table.string('code', 5).notNullable().primary()

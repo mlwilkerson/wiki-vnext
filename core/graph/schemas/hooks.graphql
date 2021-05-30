@@ -1,0 +1,70 @@
+# ===============================================
+# WEBHOOKS
+# ===============================================
+
+extend type Query {
+  hooks: [Hook] @auth(requires: ["manage:system"])
+
+  hookById(
+    id: UUID!
+  ): Hook @auth(requires: ["manage:system"])
+}
+
+extend type Mutation {
+  createHook(
+    name: String!
+    events: [String]!
+    url: String!
+    includeMetadata: Boolean!
+    includeContent: Boolean!
+    acceptUntrusted: Boolean!
+    authHeader: String
+  ): HookCreateResponse @auth(requires: ["manage:system"])
+
+  updateHook(
+    id: UUID!
+    patch: HookUpdateInput!
+  ): DefaultResponse @auth(requires: ["manage:system"])
+
+  deleteHook (
+    id: UUID!
+  ): DefaultResponse @auth(requires: ["manage:system"])
+}
+
+# -----------------------------------------------
+# TYPES
+# -----------------------------------------------
+
+type Hook {
+  id: UUID
+  name: String
+  events: [String]
+  url: String
+  includeMetadata: Boolean
+  includeContent: Boolean
+  acceptUntrusted: Boolean
+  authHeader: String
+  state: HookState
+  lastErrorMessage: String
+}
+
+input HookUpdateInput {
+  name: String
+  events: [String]
+  url: String
+  includeMetadata: Boolean
+  includeContent: Boolean
+  acceptUntrusted: Boolean
+  authHeader: String
+}
+
+enum HookState {
+  pending
+  error
+  success
+}
+
+type HookCreateResponse {
+  status: ResponseStatus
+  hook: Hook
+}

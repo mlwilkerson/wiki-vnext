@@ -460,6 +460,7 @@ export default {
           message: this.$t('admin.general.saveSuccess')
         })
         if (this.currentSiteId === this.$store.get('site/id')) {
+          await this.$store.dispatch('admin/fetchSites')
           this.$store.set('site/title', this.config.title)
           this.$store.set('site/description', this.config.description)
           this.$store.set('site/company', this.config.company)

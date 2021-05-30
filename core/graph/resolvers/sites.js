@@ -101,7 +101,7 @@ module.exports = {
           args.patch.theme.injectCSS = new CleanCSS({ inline: false }).minify(args.patch.theme.injectCSS).styles
         }
         // -> Update site
-        await WIKI.models.sites.query().findById(args.id).patch({
+        await WIKI.models.sites.updateSite(args.id, {
           hostname: args.patch.hostname ?? site.hostname,
           isEnabled: args.patch.isEnabled ?? site.isEnabled,
           config: _.defaultsDeep(_.omit(args.patch, ['hostname', 'isEnabled']), site.config)

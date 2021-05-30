@@ -104,6 +104,10 @@ module.exports = class Site extends Model {
     })
   }
 
+  static async updateSite (id, patch) {
+    return WIKI.models.sites.query().findById(id).patch(patch)
+  }
+
   static async deleteSite (id) {
     return WIKI.models.sites.query().deleteById(id)
   }
