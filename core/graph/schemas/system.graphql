@@ -10,7 +10,28 @@ extend type Query {
 }
 
 extend type Mutation {
-  system: SystemMutation
+  updateSystemFlags(
+    flags: [SystemFlagInput]!
+  ): DefaultResponse @auth(requires: ["manage:system"])
+
+  updateSystemSecurity(
+    authJwtAudience: String
+    authJwtExpiration: String
+    authJwtRenewablePeriod: String
+    corsConfig: String
+    corsMode: SystemSecurityCorsMode
+    cspDirectives: String
+    disallowFloc: Boolean
+    disallowIframe: Boolean
+    disallowOpenRedirect: Boolean
+    enforceCsp: Boolean
+    enforceHsts: Boolean
+    enforceSameOriginReferrerPolicy: Boolean
+    hstsDuration: Int
+    trustProxy: Boolean
+    uploadMaxFiles: Int
+    uploadMaxFileSize: Int
+  ): DefaultResponse @auth(requires: ["manage:system"])
 }
 
 # -----------------------------------------------
@@ -18,22 +39,7 @@ extend type Mutation {
 # -----------------------------------------------
 
 type SystemMutation {
-  updateFlags(
-    flags: [SystemFlagInput]!
-  ): DefaultResponse @auth(requires: ["manage:system"])
-
-  resetTelemetryClientId: DefaultResponse @auth(requires: ["manage:system"])
-
-  setTelemetry(
-    enabled: Boolean!
-  ): DefaultResponse @auth(requires: ["manage:system"])
-
   performUpgrade: DefaultResponse @auth(requires: ["manage:system"])
-
-  importUsersFromV1(
-    mongoDbConnString: String!
-    groupMode: SystemImportUsersGroupMode!
-  ): SystemImportUsersResponse @auth(requires:  ["manage:system"])
 
   setHTTPSRedirection(
     enabled: Boolean!

@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const autoload = require('auto-load')
 const { createRateLimitTypeDef } = require('graphql-rate-limit-directive')
+const { GraphQLUpload } = require('graphql-upload')
 
 /* global WIKI */
 
@@ -18,7 +19,9 @@ schemas.forEach(schema => {
 
 // Resolvers
 
-const resolvers = {}
+const resolvers = {
+  Upload: GraphQLUpload
+}
 const resolversObj = _.values(autoload(path.join(process.cwd(), 'graph/resolvers')))
 resolversObj.forEach(resolver => {
   _.merge(resolvers, resolver)

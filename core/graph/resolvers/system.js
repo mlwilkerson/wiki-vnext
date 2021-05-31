@@ -8,8 +8,6 @@ const fs = require('fs-extra')
 const { DateTime } = require('luxon')
 const graphHelper = require('../../helpers/graph')
 const request = require('request-promise')
-const crypto = require('crypto')
-const nanoid = require('nanoid/non-secure').customAlphabet('1234567890abcdef', 10)
 
 /* global WIKI */
 
@@ -29,63 +27,30 @@ module.exports = {
       return exts
     },
     systemSecurity () {
-      return {
-        corsConfig: '',
-        corsMode: 'OFF',
-        cspDirectives: '',
-        disallowFloc: false,
-        disallowIframe: false,
-        disallowOpenRedirect: false,
-        enforceCsp: false,
-        enforceHsts: false,
-        enforceSameOriginReferrerPolicy: false,
-        hstsDuration: 300,
-        trustProxy: false,
-        authJwtAudience: 'urn:wiki.js',
-        authJwtExpiration: '30m',
-        authJwtRenewablePeriod: '14d',
-        uploadMaxFileSize: 0,
-        uploadMaxFiles: 0
-      }
+      return WIKI.config.security
     }
   },
   Mutation: {
-    async system () { return {} }
-  },
-  SystemMutation: {
-    async updateFlags (obj, args, context) {
+    async updateSystemFlags (obj, args, context) {
       WIKI.config.flags = _.transform(args.flags, (result, row) => {
         _.set(result, row.key, row.value)
       }, {})
       await WIKI.configSvc.applyFlags()
       await WIKI.configSvc.saveToDb(['flags'])
       return {
-        responseResult: graphHelper.generateSuccess('System Flags applied successfully')
+        status: graphHelper.generateSuccess('System Flags applied successfully')
       }
     },
-    async resetTelemetryClientId (obj, args, context) {
-      try {
-        WIKI.telemetry.generateClientId()
-        await WIKI.configSvc.saveToDb(['telemetry'])
-        return {
-          responseResult: graphHelper.generateSuccess('Telemetry state updated successfully')
-        }
-      } catch (err) {
-        return graphHelper.generateError(err)
+    async updateSystemSecurity (obj, args, context) {
+      WIKI.config.security = _.defaultsDeep(_.omit(args, ['__typename']), WIKI.config.security)
+      // TODO: broadcast config update
+      await WIKI.configSvc.saveToDb(['security'])
+      return {
+        status: graphHelper.generateSuccess('System Security configuration applied successfully')
       }
-    },
-    async setTelemetry (obj, args, context) {
-      try {
-        _.set(WIKI.config, 'telemetry.isEnabled', args.enabled)
-        WIKI.telemetry.enabled = args.enabled
-        await WIKI.configSvc.saveToDb(['telemetry'])
-        return {
-          responseResult: graphHelper.generateSuccess('Telemetry Client ID has been reset successfully')
-        }
-      } catch (err) {
-        return graphHelper.generateError(err)
-      }
-    },
+    }
+  },
+  SystemMutation: {
     async performUpgrade (obj, args, context) {
       try {
         if (process.env.UPGRADE_COMPANION) {
@@ -98,141 +63,6 @@ module.exports = {
           }
         } else {
           throw new Error('You must run the wiki-update-companion container and pass the UPGRADE_COMPANION env var in order to use this feature.')
-        }
-      } catch (err) {
-        return graphHelper.generateError(err)
-      }
-    },
-    /**
-     * Import Users from a v1 installation
-     */
-    async importUsersFromV1 (obj, args, context) {
-      try {
-        const MongoClient = require('mongodb').MongoClient
-        if (args.mongoDbConnString && args.mongoDbConnString.length > 10) {
-          // -> Connect to DB
-
-          const client = await MongoClient.connect(args.mongoDbConnString, {
-            appname: `Wiki.js ${WIKI.version} Migration Tool`
-          })
-          const dbUsers = client.db().collection('users')
-          const userCursor = dbUsers.find({ email: { $ne: 'guest' } })
-
-          const curDateISO = new Date().toISOString()
-
-          const failed = []
-          let usersCount = 0
-          let groupsCount = 0
-          const assignableGroups = []
-          const reuseGroups = []
-
-          // -> Create SINGLE group
-
-          if (args.groupMode === 'SINGLE') {
-            const singleGroup = await WIKI.models.groups.query().insert({
-              name: `Import_${curDateISO}`,
-              permissions: JSON.stringify(WIKI.data.groups.defaultPermissions),
-              pageRules: JSON.stringify(WIKI.data.groups.defaultPageRules)
-            })
-            groupsCount++
-            assignableGroups.push(singleGroup.id)
-          }
-
-          // -> Iterate all users
-
-          while (await userCursor.hasNext()) {
-            const usr = await userCursor.next()
-
-            const usrGroup = []
-            if (args.groupMode === 'MULTI') {
-              // -> Check if global admin
-
-              if (_.some(usr.rights, ['role', 'admin'])) {
-                usrGroup.push(1)
-              } else {
-                // -> Check if identical group already exists
-
-                const currentRights = _.sortBy(_.map(usr.rights, r => _.pick(r, ['role', 'path', 'exact', 'deny'])), ['role', 'path', 'exact', 'deny'])
-                const ruleSetId = crypto.createHash('sha1').update(JSON.stringify(currentRights)).digest('base64')
-                const existingGroup = _.find(reuseGroups, ['hash', ruleSetId])
-                if (existingGroup) {
-                  usrGroup.push(existingGroup.groupId)
-                } else {
-                  // -> Build new group
-
-                  const pageRules = _.map(usr.rights, r => {
-                    let roles = ['read:pages', 'read:assets', 'read:comments', 'write:comments']
-                    if (r.role === 'write') {
-                      roles = _.concat(roles, ['write:pages', 'manage:pages', 'read:source', 'read:history', 'write:assets', 'manage:assets'])
-                    }
-                    return {
-                      id: nanoid(),
-                      roles: roles,
-                      match: r.exact ? 'EXACT' : 'START',
-                      deny: r.deny,
-                      path: (r.path.indexOf('/') === 0) ? r.path.substring(1) : r.path,
-                      locales: []
-                    }
-                  })
-
-                  const perms = _.chain(pageRules).reject('deny').map('roles').union().flatten().value()
-
-                  // -> Create new group
-
-                  const newGroup = await WIKI.models.groups.query().insert({
-                    name: `Import_${curDateISO}_${groupsCount + 1}`,
-                    permissions: JSON.stringify(perms),
-                    pageRules: JSON.stringify(pageRules)
-                  })
-                  reuseGroups.push({
-                    groupId: newGroup.id,
-                    hash: ruleSetId
-                  })
-                  groupsCount++
-                  usrGroup.push(newGroup.id)
-                }
-              }
-            }
-
-            // -> Create User
-
-            try {
-              await WIKI.models.users.createNewUser({
-                providerKey: usr.provider,
-                email: usr.email,
-                name: usr.name,
-                passwordRaw: usr.password,
-                groups: (usrGroup.length > 0) ? usrGroup : assignableGroups,
-                mustChangePassword: false,
-                sendWelcomeEmail: false
-              })
-              usersCount++
-            } catch (err) {
-              failed.push({
-                provider: usr.provider,
-                email: usr.email,
-                error: err.message
-              })
-              WIKI.logger.warn(`${usr.email}: ${err}`)
-            }
-          }
-
-          // -> Reload group permissions
-
-          if (args.groupMode !== 'NONE') {
-            await WIKI.auth.reloadGroups()
-            WIKI.events.outbound.emit('reloadGroups')
-          }
-
-          client.close()
-          return {
-            responseResult: graphHelper.generateSuccess('Import completed.'),
-            usersCount: usersCount,
-            groupsCount: groupsCount,
-            failed: failed
-          }
-        } else {
-          throw new Error('MongoDB Connection String is missing or invalid.')
         }
       } catch (err) {
         return graphHelper.generateError(err)

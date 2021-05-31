@@ -1,23 +1,12 @@
 import Vue from 'vue'
 import VueApollo from 'vue-apollo'
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core'
+import { ApolloClient, InMemoryCache } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
+import { createUploadLink } from 'apollo-upload-client'
 
 Vue.use(VueApollo)
 
 export default ({ app, store }) => {
-  // Dynamic GraphQL URI Link
-  const httpLink = createHttpLink({
-    uri () {
-      // switch (store.get('site/env@id')) {
-      //   case 'local':
-      //     return 'http://localhost:9000'
-      //   default:
-      return 'http://local.requarks.io:11511'
-      // }
-    }
-  })
-
   // Authentication Link
   const authLink = setContext(async (req, { headers }) => {
     const token = 'test' // await window.auth0Client.getTokenSilently()
@@ -26,6 +15,13 @@ export default ({ app, store }) => {
         ...headers,
         Authorization: token ? `Bearer ${token}` : ''
       }
+    }
+  })
+
+  // Upload / HTTP Link
+  const uploadLink = createUploadLink({
+    uri () {
+      return 'http://local.requarks.io:11511'
     }
   })
 
@@ -44,7 +40,7 @@ export default ({ app, store }) => {
 
   const client = new ApolloClient({
     cache,
-    link: authLink.concat(httpLink),
+    link: authLink.concat(uploadLink),
     credentials: 'omit',
     ssrForceFetchDelay: 100
   })

@@ -67,6 +67,7 @@
     "graphql-list-fields": "^2.0.2",
     "graphql-rate-limit-directive": "1.2.1",
     "graphql-tag": "2.11.0",
+    "graphql-upload": "^12.0.0",
     "he": "1.2.0",
     "highlight.js": "10.6.0",
     "i18next": "19.8.9",

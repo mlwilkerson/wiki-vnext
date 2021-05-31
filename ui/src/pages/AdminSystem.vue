@@ -39,11 +39,59 @@
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.latestVersion }}
 
         //- -----------------------
+        //- CLIENT
+        //- -----------------------
+        q-no-ssr
+          q-card.q-mt-md.q-pb-sm.shadow-1
+            q-card-section
+              .text-subtitle1 {{$t('admin.system.client')}}
+            q-item
+              blueprint-icon(icon='navigation-toolbar-top')
+              q-item-section
+                q-item-label {{$t('admin.system.browser')}}
+                q-item-label(caption) {{$t('admin.system.browserHint')}}
+              q-item-section
+                q-item-label(caption): strong.text-primary.font-robotomono {{ clientBrowser }}
+            q-separator(inset)
+            q-item
+              blueprint-icon(icon='computer')
+              q-item-section
+                q-item-label {{$t('admin.system.clientPlatform')}}
+                q-item-label(caption) {{$t('admin.system.clientPlatformHint')}}
+              q-item-section
+                q-item-label(caption): strong.text-primary.font-robotomono {{ clientPlatform }}
+            q-separator(inset)
+            q-item
+              blueprint-icon(icon='translation')
+              q-item-section
+                q-item-label {{$t('admin.system.clientLanguage')}}
+                q-item-label(caption) {{$t('admin.system.clientLanguageHint')}}
+              q-item-section
+                q-item-label(caption): strong.text-primary.font-robotomono {{ clientLanguage }}
+            q-separator(inset)
+            q-item
+              blueprint-icon(icon='cookies')
+              q-item-section
+                q-item-label {{$t('admin.system.clientCookies')}}
+                q-item-label(caption) {{$t('admin.system.clientCookiesHint')}}
+              q-item-section
+                q-item-label(caption): strong.text-primary.font-robotomono {{ clientCookies }}
+            q-separator(inset)
+            q-item
+              blueprint-icon(icon='widescreen')
+              q-item-section
+                q-item-label {{$t('admin.system.clientViewport')}}
+                q-item-label(caption) {{$t('admin.system.clientViewportHint')}}
+              q-item-section
+                q-item-label(caption): strong.text-primary.font-robotomono {{ clientViewport }}
+
+      .col-6
+        //- -----------------------
         //- ENGINES
         //- -----------------------
-        q-card.q-mt-md.q-pb-sm.shadow-1
+        q-card.q-pb-sm.shadow-1
           q-card-section
-            .text-subtitle1 Engines
+            .text-subtitle1 {{$t('admin.system.engines')}}
           q-item
             blueprint-icon(icon='nodejs')
             q-item-section
@@ -68,11 +116,10 @@
             q-item-section
               q-item-label(caption): strong.text-primary.font-robotomono {{ info.dbHost }}
 
-      .col-6
         //- -----------------------
         //- HOST INFORMATION
         //- -----------------------
-        q-card.q-pb-sm.shadow-1
+        q-card.q-mt-md.q-pb-sm.shadow-1
           q-card-section
             .text-subtitle1 {{ $t('admin.system.hostInfo') }}
           q-item
@@ -214,6 +261,21 @@ export default {
     },
     isLatestVersion () {
       return this.info.currentVersion === this.info.latestVersion
+    },
+    clientBrowser () {
+      return process.env.CLIENT ? navigator.userAgent : ''
+    },
+    clientPlatform () {
+      return process.env.CLIENT ? navigator.platform : ''
+    },
+    clientLanguage () {
+      return process.env.CLIENT ? navigator.language : ''
+    },
+    clientCookies () {
+      return process.env.CLIENT ? navigator.cookieEnabled : ''
+    },
+    clientViewport () {
+      return process.env.CLIENT ? `${document.documentElement.clientWidth}x${document.documentElement.clientHeight}` : ''
     }
   },
   methods: {

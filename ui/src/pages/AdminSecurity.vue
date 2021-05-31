@@ -7,6 +7,11 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.security.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.security.subtitle') }}
       .col-auto
+        q-spinner-tail.q-mr-md(
+          v-show='loading'
+          color='accent'
+          size='sm'
+        )
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
           flat
@@ -65,6 +70,20 @@
                 checked-icon='las la-check'
                 unchecked-icon='las la-times'
                 :aria-label='$t(`admin.security.disallowIframe`)'
+                )
+          q-separator.q-my-sm(inset)
+          q-item(tag='label', v-ripple)
+            blueprint-icon(icon='do-not-touch')
+            q-item-section
+              q-item-label {{$t(`admin.security.enforceSameOriginReferrerPolicy`)}}
+              q-item-label(caption) {{$t(`admin.security.enforceSameOriginReferrerPolicyHint`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='config.enforceSameOriginReferrerPolicy'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin.security.enforceSameOriginReferrerPolicy`)'
                 )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -155,7 +174,7 @@
             q-item-section(style='flex: 0 0 200px;')
               q-input(
                 outlined
-                v-model='config.uploadMaxFileSize'
+                v-model.number='config.uploadMaxFileSize'
                 dense
                 :suffix='$t(`admin.security.maxUploadSizeSuffix`)'
                 :aria-label='$t(`admin.security.maxUploadSize`)'
@@ -169,7 +188,7 @@
             q-item-section(style='flex: 0 0 200px;')
               q-input(
                 outlined
-                v-model='config.uploadMaxFiles'
+                v-model.number='config.uploadMaxFiles'
                 dense
                 :suffix='$t(`admin.security.maxUploadBatchSuffix`)'
                 :aria-label='$t(`admin.security.maxUploadBatch`)'
@@ -272,27 +291,12 @@
                 dense
                 :aria-label='$t(`admin.security.tokenRenewalPeriod`)'
                 )
-
-            //-       v-select.mt-5(
-            //-         outlined
-            //-         label='HSTS Max Age'
-            //-         :items='hstsDurations'
-            //-         v-model='config.securityHSTSDuration'
-            //-         prepend-icon='mdi-subdirectory-arrow-right'
-            //-         :disabled='!config.securityHSTS'
-            //-         hide-details
-            //-         style='max-width: 450px;'
-            //-         )
-            //-       .pl-11.mt-3
-            //-         .caption Defines the duration for which the server should only deliver content through HTTPS.
-            //-         .caption It's a good idea to start with small values and make sure that nothing breaks on your wiki before moving to longer values.
-
 </template>
 
 <script>
 import cloneDeep from 'lodash/cloneDeep'
-import toSafeInteger from 'lodash/toSafeInteger'
 import gql from 'graphql-tag'
+import _get from 'lodash/get'
 
 export default {
   meta () {
@@ -343,92 +347,73 @@ export default {
   },
   methods: {
     async save () {
+      this.loading = true
       try {
-        await this.$apollo.mutate({
+        const respRaw = await this.$apollo.mutate({
           mutation: gql`
             mutation (
-              $authAutoLogin: Boolean
-              $authEnforce2FA: Boolean
-              $authHideLocal: Boolean
-              $authLoginBgUrl: String
               $authJwtAudience: String
               $authJwtExpiration: String
               $authJwtRenewablePeriod: String
-              $uploadMaxFileSize: Int
+              $corsConfig: String
+              $corsMode: SystemSecurityCorsMode
+              $cspDirectives: String
+              $disallowFloc: Boolean
+              $disallowIframe: Boolean
+              $disallowOpenRedirect: Boolean
+              $enforceCsp: Boolean
+              $enforceHsts: Boolean
+              $enforceSameOriginReferrerPolicy: Boolean
+              $hstsDuration: Int
+              $trustProxy: Boolean
               $uploadMaxFiles: Int
-              $securityOpenRedirect: Boolean
-              $securityIframe: Boolean
-              $securityReferrerPolicy: Boolean
-              $securityTrustProxy: Boolean
-              $securitySRI: Boolean
-              $securityHSTS: Boolean
-              $securityHSTSDuration: Int
-              $securityCSP: Boolean
-              $securityCSPDirectives: String
+              $uploadMaxFileSize: Int
             ) {
-              site {
-                updateConfig(
-                  authAutoLogin: $authAutoLogin,
-                  authEnforce2FA: $authEnforce2FA,
-                  authHideLocal: $authHideLocal,
-                  authLoginBgUrl: $authLoginBgUrl,
-                  authJwtAudience: $authJwtAudience,
-                  authJwtExpiration: $authJwtExpiration,
-                  authJwtRenewablePeriod: $authJwtRenewablePeriod,
-                  uploadMaxFileSize: $uploadMaxFileSize,
-                  uploadMaxFiles: $uploadMaxFiles,
-                  securityOpenRedirect: $securityOpenRedirect,
-                  securityIframe: $securityIframe,
-                  securityReferrerPolicy: $securityReferrerPolicy,
-                  securityTrustProxy: $securityTrustProxy,
-                  securitySRI: $securitySRI,
-                  securityHSTS: $securityHSTS,
-                  securityHSTSDuration: $securityHSTSDuration,
-                  securityCSP: $securityCSP,
-                  securityCSPDirectives: $securityCSPDirectives
-                ) {
-                  responseResult {
-                    succeeded
-                    errorCode
-                    slug
-                    message
-                  }
+              updateSystemSecurity(
+                authJwtAudience: $authJwtAudience
+                authJwtExpiration: $authJwtExpiration
+                authJwtRenewablePeriod: $authJwtRenewablePeriod
+                corsConfig: $corsConfig
+                corsMode: $corsMode
+                cspDirectives: $cspDirectives
+                disallowFloc: $disallowFloc
+                disallowIframe: $disallowIframe
+                disallowOpenRedirect: $disallowOpenRedirect
+                enforceCsp: $enforceCsp
+                enforceHsts: $enforceHsts
+                enforceSameOriginReferrerPolicy: $enforceSameOriginReferrerPolicy
+                hstsDuration: $hstsDuration
+                trustProxy: $trustProxy
+                uploadMaxFiles: $uploadMaxFiles
+                uploadMaxFileSize: $uploadMaxFileSize
+              ) {
+                status {
+                  succeeded
+                  slug
+                  message
                 }
               }
             }
           `,
-          variables: {
-            authAutoLogin: this.config.authAutoLogin ?? false,
-            authEnforce2FA: this.config.authEnforce2FA ?? false,
-            authHideLocal: this.config.authHideLocal ?? false,
-            authLoginBgUrl: this.config.authLoginBgUrl ?? '',
-            authJwtAudience: this.config.authJwtAudience ?? '',
-            authJwtExpiration: this.config.authJwtExpiration ?? '',
-            authJwtRenewablePeriod: this.config.authJwtRenewablePeriod ?? '',
-            uploadMaxFileSize: toSafeInteger(this.config.uploadMaxFileSize) ?? 0,
-            uploadMaxFiles: toSafeInteger(this.config.uploadMaxFiles) ?? 0,
-            securityOpenRedirect: this.config.securityOpenRedirect ?? false,
-            securityIframe: this.config.securityIframe ?? false,
-            securityReferrerPolicy: this.config.securityReferrerPolicy ?? false,
-            securityTrustProxy: this.config.securityTrustProxy ?? false,
-            securitySRI: this.config.securitySRI ?? false,
-            securityHSTS: this.config.securityHSTS ?? false,
-            securityHSTSDuration: this.config.securityHSTSDuration ?? 0,
-            securityCSP: this.config.securityCSP ?? false,
-            securityCSPDirectives: this.config.securityCSPDirectives ?? ''
-          },
-          watchLoading (isLoading) {
-            this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-update')
-          }
+          variables: this.config
         })
-        this.$store.commit('showNotification', {
-          style: 'success',
-          message: 'Configuration saved successfully.',
-          icon: 'check'
-        })
+        const resp = _get(respRaw, 'data.updateSystemSecurity.status', {})
+        if (resp.succeeded) {
+          this.$q.notify({
+            type: 'positive',
+            message: this.$t('admin.security.saveSuccess')
+          })
+        } else {
+          throw new Error(resp.message)
+        }
       } catch (err) {
-        this.$store.commit('pushGraphError', err)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Failed to save security config',
+          caption: err.message
+        })
       }
+      this.loading = false
     }
   },
   apollo: {
@@ -455,10 +440,10 @@ export default {
           }
         }
       `,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
       update: (data) => cloneDeep(data.systemSecurity),
       watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-security-refresh')
+        this.loading = isLoading
       }
     }
   }

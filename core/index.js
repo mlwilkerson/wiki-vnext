@@ -9,6 +9,7 @@ const cors = require('cors')
 const express = require('express')
 const compression = require('compression')
 const mwSecurity = require('./middlewares/security')
+const { processRequest } = require('graphql-upload')
 const semver = require('semver')
 
 // ----------------------------------------
@@ -64,6 +65,35 @@ WIKI.kernel.init().then(async () => {
   if (WIKI.config.security?.securityTrustProxy) {
     WIKI.app.enable('trust proxy')
   }
+
+  // -> Handle File Uploads
+  WIKI.app.use(async (req, res, next) => {
+    if (!req.is('multipart/form-data')) {
+      return next()
+    }
+    const finished = new Promise((resolve) => req.on('end', resolve))
+    const { send } = res
+
+    res.send = (...args) => {
+      finished.then(() => {
+        res.send = send
+        res.send(...args)
+      })
+    }
+
+    try {
+      req.body = await processRequest(req, res, {
+        maxFileSize: WIKI.config.uploads.maxFileSize,
+        maxFiles: WIKI.config.uploads.maxFiles
+      })
+      next()
+    } catch (err) {
+      if (err.status && err.expose) {
+        res.status(err.status)
+      }
+      next(err)
+    }
+  })
 
   // -> GraphQL Server
   await WIKI.servers.startGraphQL()

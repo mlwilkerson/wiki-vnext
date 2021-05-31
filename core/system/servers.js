@@ -121,6 +121,7 @@ module.exports = {
     const graphqlSchema = require('../graph')
     this.servers.graph = new ApolloServer({
       ...graphqlSchema,
+      uploads: false,
       context: ({ req, res }) => ({ req, res })
     })
     this.servers.graph.applyMiddleware({ app: WIKI.app, path: '/' })

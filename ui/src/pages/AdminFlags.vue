@@ -104,7 +104,21 @@ export default {
     async save () {
       try {
         await this.$apollo.mutate({
-          mutation: gql`{}`,
+          mutation: gql`{
+            mutation (
+              $flags: [SystemFlagInput]!
+            ) {
+              updateSystemFlags(
+                flags: $flags
+              ) {
+                status {
+                  succeeded
+                  slug
+                  message
+                }
+              }
+            }
+          }`,
           variables: {
             flags: _transform(this.flags, (result, value, key) => {
               result.push({ key, value })

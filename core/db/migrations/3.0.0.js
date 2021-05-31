@@ -349,10 +349,24 @@ exports.up = async knex => {
       }
     },
     {
-      key: 'telemetry',
+      key: 'security',
       value: {
-        isEnabled: WIKI.config.allowTelemetry !== false && process.env.DISALLOW_TELEMETRY !== '0',
-        clientId: uuid()
+        corsConfig: '',
+        corsMode: 'OFF',
+        cspDirectives: '',
+        disallowFloc: true,
+        disallowIframe: true,
+        disallowOpenRedirect: true,
+        enforceCsp: false,
+        enforceHsts: false,
+        enforceSameOriginReferrerPolicy: true,
+        hstsDuration: 0,
+        trustProxy: false,
+        authJwtAudience: 'urn:wiki.js',
+        authJwtExpiration: '30m',
+        authJwtRenewablePeriod: '14d',
+        uploadMaxFileSize: 10485760,
+        uploadMaxFiles: 20
       }
     }
   ])
