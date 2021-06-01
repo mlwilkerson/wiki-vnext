@@ -7,6 +7,11 @@
         .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.mail.title') }}
         .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.mail.subtitle') }}
       .col-auto
+        q-spinner-tail.q-mr-md(
+          v-show='loading > 0'
+          color='accent'
+          size='sm'
+        )
         q-btn.q-mr-sm.acrylic-btn(
           icon='las la-question-circle'
           flat
@@ -20,7 +25,6 @@
           :label='$t(`common.actions.apply`)'
           color='secondary'
           @click='save'
-          :loading='loading'
         )
     q-separator(inset)
     .row.q-pa-md.q-col-gutter-md
@@ -272,11 +276,52 @@ export default {
       },
       testEmail: '',
       testLoading: false,
-      loading: false
+      loading: 0
     }
   },
+  mounted () {
+    this.fetchConfig()
+  },
   methods: {
+    async fetchConfig () {
+      this.loading++
+      try {
+        const resp = await this.$apollo.query({
+          query: gql`{
+            mailConfig {
+              senderName
+              senderEmail
+              host
+              port
+              secure
+              verifySSL
+              user
+              pass
+              useDKIM
+              dkimDomainName
+              dkimKeySelector
+              dkimPrivateKey
+            }
+          }`,
+          fetchPolicy: 'no-cache'
+        })
+        if (!resp?.data?.mailConfig) {
+          throw new Error('Failed to fetch mail config.')
+        }
+        this.config = cloneDeep(resp.data.mailConfig)
+      } catch (err) {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Failed to fetch mail config',
+          caption: err.message
+        })
+      }
+      this.loading--
+    },
     async save () {
+      if (this.loading > 0) { return }
+
+      this.loading++
       try {
         await this.$apollo.mutate({
           mutation: gql`
@@ -329,9 +374,6 @@ export default {
             dkimDomainName: this.config.dkimDomainName || '',
             dkimKeySelector: this.config.dkimKeySelector || '',
             dkimPrivateKey: this.config.dkimPrivateKey || ''
-          },
-          watchLoading (isLoading) {
-            this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-update')
           }
         })
         this.$q.notify({
@@ -341,8 +383,10 @@ export default {
       } catch (err) {
         this.$store.commit('pushGraphError', err)
       }
+      this.loading--
     },
     async sendTest () {
+      this.loading++
       try {
         const resp = await this.$apollo.mutate({
           mutation: gql`
@@ -362,9 +406,6 @@ export default {
           `,
           variables: {
             recipientEmail: this.testEmail
-          },
-          watchLoading (isLoading) {
-            this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-test')
           }
         })
         if (!_get(resp, 'data.sendMailTest.status.succeeded', false)) {
@@ -379,33 +420,7 @@ export default {
       } catch (err) {
         this.$store.commit('pushGraphError', err)
       }
-    }
-  },
-  apollo: {
-    config: {
-      query: gql`{
-        mailConfig {
-          senderName
-          senderEmail
-          host
-          port
-          secure
-          verifySSL
-          user
-          pass
-          useDKIM
-          dkimDomainName
-          dkimKeySelector
-          dkimPrivateKey
-        }
-      }`,
-      prefetch: false,
-      fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.mailConfig),
-      watchLoading (isLoading) {
-        this.loading = isLoading
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-mail-refresh')
-      }
+      this.loading--
     }
   }
 }

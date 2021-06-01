@@ -172,6 +172,7 @@
   "admin.general.logo": "Logo",
   "admin.general.logoUpl": "Site Logo",
   "admin.general.logoUplHint": "Logo image file, in SVG, PNG, JPG or GIF format.",
+  "admin.general.logoUploadSuccess": "Site logo uploaded successfully.",
   "admin.general.ratingsOff": "Off",
   "admin.general.ratingsStars": "Stars",
   "admin.general.ratingsThumbs": "Thumbs",

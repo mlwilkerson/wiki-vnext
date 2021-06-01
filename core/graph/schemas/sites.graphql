@@ -26,6 +26,16 @@ extend type Mutation {
     patch: SiteUpdateInput!
   ): DefaultResponse
 
+  uploadSiteLogo (
+    id: UUID!
+    image: Upload!
+  ): DefaultResponse
+
+  uploadSiteFavicon (
+    id: UUID!
+    image: Upload!
+  ): DefaultResponse
+
   deleteSite (
     id: UUID!
   ): DefaultResponse

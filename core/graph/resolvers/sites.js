@@ -132,6 +132,16 @@ module.exports = {
       } catch (err) {
         return graphHelper.generateError(err)
       }
+    },
+    /**
+     * UPLOAD LOGO
+     */
+    async uploadSiteLogo (obj, args) {
+      const { filename, mimetype, createReadStream } = await args.image
+      console.info(filename, mimetype)
+      return {
+        status: graphHelper.generateSuccess('Site logo uploaded successfully')
+      }
     }
   },
   SiteTheme: {

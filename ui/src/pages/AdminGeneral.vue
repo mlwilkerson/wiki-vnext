@@ -216,6 +216,7 @@
                 icon='las la-upload'
                 color='primary'
                 text-color='white'
+                @click='uploadLogo'
               )
           q-separator.q-my-sm(inset)
           q-item
@@ -435,6 +436,7 @@ export default {
               description: this.config.description ?? '',
               company: this.config.company ?? '',
               contentLicense: this.config.contentLicense ?? '',
+              logoText: this.config.logoText ?? false,
               robots: {
                 index: this.config.robots?.index ?? false,
                 follow: this.config.robots?.follow ?? false
@@ -474,6 +476,52 @@ export default {
         })
       }
       this.loading = false
+    },
+    async uploadLogo () {
+      const input = document.createElement('input')
+      input.type = 'file'
+
+      input.onchange = async e => {
+        this.loading = true
+        try {
+          await this.$apollo.mutate({
+            mutation: gql`
+              mutation (
+                $id: UUID!
+                $image: Upload!
+              ) {
+                uploadSiteLogo (
+                  id: $id
+                  image: $image
+                ) {
+                  status {
+                    succeeded
+                    slug
+                    message
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: this.currentSiteId,
+              image: e.target.files[0]
+            }
+          })
+          this.$q.notify({
+            type: 'positive',
+            message: this.$t('admin.general.logoUploadSuccess')
+          })
+        } catch (err) {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Failed to upload site logo.',
+            caption: err.message
+          })
+        }
+        this.loading = false
+      }
+
+      input.click()
     },
     refreshLogo () {
       this.$forceUpdate()
