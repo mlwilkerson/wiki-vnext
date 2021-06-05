@@ -20,7 +20,7 @@ module.exports = {
     },
     async systemInfo () { return {} },
     async systemExtensions () {
-      const exts = Object.values(WIKI.extensions.ext).map(ext => _.pick(ext, ['key', 'title', 'description', 'isInstalled']))
+      const exts = Object.values(WIKI.extensions.ext).map(ext => _.pick(ext, ['key', 'title', 'description', 'isInstalled', 'isInstallable']))
       for (const ext of exts) {
         ext.isCompatible = await WIKI.extensions.ext[ext.key].isCompatible()
       }
@@ -47,6 +47,17 @@ module.exports = {
       await WIKI.configSvc.saveToDb(['security'])
       return {
         status: graphHelper.generateSuccess('System Security configuration applied successfully')
+      }
+    },
+    async installExtension (obj, args, context) {
+      try {
+        await WIKI.extensions.ext[args.key].install()
+        // TODO: broadcast ext install
+        return {
+          status: graphHelper.generateSuccess('Extension installed successfully')
+        }
+      } catch (err) {
+        return graphHelper.generateError(err)
       }
     }
   },

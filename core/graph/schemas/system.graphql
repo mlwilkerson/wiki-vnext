@@ -32,6 +32,10 @@ extend type Mutation {
     uploadMaxFiles: Int
     uploadMaxFileSize: Int
   ): DefaultResponse @auth(requires: ["manage:system"])
+
+  installExtension(
+    key: String!
+  ): DefaultResponse @auth(requires: ["manage:system"])
 }
 
 # -----------------------------------------------
@@ -117,6 +121,7 @@ type SystemExtension {
   title: String
   description: String
   isInstalled: Boolean
+  isInstallable: Boolean
   isCompatible: Boolean
 }
 
