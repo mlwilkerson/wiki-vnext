@@ -1,6 +1,7 @@
 const graphHelper = require('../../helpers/graph')
 const _ = require('lodash')
 const CleanCSS = require('clean-css')
+const path = require('path')
 
 /* global WIKI */
 
@@ -17,12 +18,14 @@ module.exports = {
     },
     async siteById (obj, args) {
       const site = await WIKI.models.sites.query().findById(args.id)
-      return site ? {
-        ...site.config,
-        id: site.id,
-        hostname: site.hostname,
-        isEnabled: site.isEnabled
-      } : null
+      return site
+        ? {
+            ...site.config,
+            id: site.id,
+            hostname: site.hostname,
+            isEnabled: site.isEnabled
+          }
+        : null
     },
     async siteByHostname (obj, args) {
       let site = await WIKI.models.sites.query().where({
@@ -33,12 +36,14 @@ module.exports = {
           hostname: '*'
         }).first()
       }
-      return site ? {
-        ...site.config,
-        id: site.id,
-        hostname: site.hostname,
-        isEnabled: site.isEnabled
-      } : null
+      return site
+        ? {
+            ...site.config,
+            id: site.id,
+            hostname: site.hostname,
+            isEnabled: site.isEnabled
+          }
+        : null
     }
   },
   Mutation: {
@@ -111,6 +116,7 @@ module.exports = {
           status: graphHelper.generateSuccess('Site updated successfully')
         }
       } catch (err) {
+        WIKI.logger.warn(err)
         return graphHelper.generateError(err)
       }
     },
@@ -130,6 +136,7 @@ module.exports = {
           status: graphHelper.generateSuccess('Site deleted successfully')
         }
       } catch (err) {
+        WIKI.logger.warn(err)
         return graphHelper.generateError(err)
       }
     },
@@ -137,10 +144,41 @@ module.exports = {
      * UPLOAD LOGO
      */
     async uploadSiteLogo (obj, args) {
+      try {
+        const { filename, mimetype, createReadStream } = await args.image
+        WIKI.logger.info(`Processing site logo ${filename} of type ${mimetype}...`)
+        if (!WIKI.extensions.ext.sharp.isInstalled) {
+          throw new Error('This feature requires the Sharp extension but it is not installed.')
+        }
+        console.info(mimetype)
+        const destFormat = mimetype.startsWith('image/svg') ? 'svg' : 'png'
+        const destPath = path.resolve(
+          process.cwd(),
+          WIKI.config.dataPath,
+          `assets/logo.${destFormat}`
+        )
+        await WIKI.extensions.ext.sharp.resize({
+          format: destFormat,
+          inputStream: createReadStream(),
+          outputPath: destPath,
+          width: 100
+        })
+        WIKI.logger.info('New site logo processed successfully.')
+        return {
+          status: graphHelper.generateSuccess('Site logo uploaded successfully')
+        }
+      } catch (err) {
+        return graphHelper.generateError(err)
+      }
+    },
+    /**
+     * UPLOAD FAVICON
+     */
+    async uploadSiteFavicon (obj, args) {
       const { filename, mimetype, createReadStream } = await args.image
       console.info(filename, mimetype)
       return {
-        status: graphHelper.generateSuccess('Site logo uploaded successfully')
+        status: graphHelper.generateSuccess('Site favicon uploaded successfully')
       }
     }
   },

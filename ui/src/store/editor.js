@@ -11,7 +11,10 @@ const state = {
     currentFolderId: 0,
     currentFileId: null
   },
-  checkoutDateActive: ''
+  checkoutDateActive: '',
+  editors: {
+
+  }
 }
 
 export default {

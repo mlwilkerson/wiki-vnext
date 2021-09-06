@@ -1,5 +1,5 @@
 const chalk = require('chalk')
-const events = require('events')
+const EventEmitter = require('events')
 
 /* global WIKI */
 
@@ -12,37 +12,33 @@ const LEVELCOLORS = {
   debug: 'cyan'
 }
 
-class Logger extends events.EventEmitter {
-  constructor () {
-    super()
+class Logger extends EventEmitter {}
+const primaryLogger = new Logger()
 
-    let ignoreNextLevels = false
+let ignoreNextLevels = false
 
-    LEVELS.forEach(lvl => {
-      this[lvl] = (...args) => {
-        if (ignoreNextLevels) {
-          return
-        }
-        if (lvl === WIKI.config.logLevel) {
-          ignoreNextLevels = true
-        }
-        this.log(lvl, ...args)
-      }
-    })
-
-    LEVELSIGNORED.forEach(lvl => {
-      this[lvl] = () => {}
-    })
+LEVELS.forEach(lvl => {
+  primaryLogger[lvl] = (...args) => {
+    primaryLogger.emit(lvl, ...args)
   }
 
-  log (level, msg, ...args) {
-    console.log(chalk`${new Date().toISOString()} {dim [${WIKI.INSTANCE_ID}]} {${LEVELCOLORS[level]}.bold ${level}}: ${msg}`)
+  if (!ignoreNextLevels) {
+    primaryLogger.on(lvl, (msg) => {
+      console.log(chalk`${new Date().toISOString()} {dim [${WIKI.INSTANCE_ID}]} {${LEVELCOLORS[lvl]}.bold ${lvl}}: ${msg}`)
+    })
   }
-}
+  if (lvl === WIKI.config.logLevel) {
+    ignoreNextLevels = true
+  }
+})
+
+LEVELSIGNORED.forEach(lvl => {
+  primaryLogger[lvl] = () => {}
+})
 
 module.exports = {
   loggers: {},
   init () {
-    return new Logger()
+    return primaryLogger
   }
 }

@@ -73,23 +73,38 @@
                 ) {{props.value}}
             template(v-slot:body-cell-edit='props')
               q-td(:props='props')
-                q-btn.acrylic-btn(
+                q-btn.acrylic-btn.q-mr-sm(
                   flat
-                  padding='xs sm'
+                  :to='`/a/groups/` + props.row.id'
                   icon='las la-pen'
                   color='indigo'
-                  :to='`/a/groups/` + props.row.id'
+                  :label='$t(`common.actions.edit`)'
+                  no-caps
                   )
-            template(v-slot:body-cell-remove='props')
-              q-td(:props='props')
                 q-btn.acrylic-btn(
                   flat
-                  padding='xs sm'
                   icon='las la-trash'
                   color='accent'
                   :disabled='props.row.isSystem'
                   @click='deleteGroup(props.row)'
                   )
+            //-     q-btn.acrylic-btn(
+            //-       flat
+            //-       padding='xs sm'
+            //-       icon='las la-pen'
+            //-       color='indigo'
+            //-       :to='`/a/groups/` + props.row.id'
+            //-       )
+            //- template(v-slot:body-cell-remove='props')
+            //-   q-td(:props='props')
+            //-     q-btn.acrylic-btn(
+            //-       flat
+            //-       padding='xs sm'
+            //-       icon='las la-trash'
+            //-       color='accent'
+            //-       :disabled='props.row.isSystem'
+            //-       @click='deleteGroup(props.row)'
+            //-       )
 </template>
 
 <script>
@@ -136,20 +151,12 @@ export default {
           style: 'width: 150px'
         },
         {
-          label: this.$t('admin.groups.edit'),
-          align: 'center',
+          label: '',
+          align: 'right',
           field: 'edit',
           name: 'edit',
           sortable: false,
-          style: 'width: 150px'
-        },
-        {
-          label: this.$t('admin.groups.delete'),
-          align: 'center',
-          field: 'remove',
-          name: 'remove',
-          sortable: false,
-          style: 'width: 100px'
+          style: 'width: 250px'
         }
       ]
     }

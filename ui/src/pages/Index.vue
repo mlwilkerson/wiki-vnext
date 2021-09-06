@@ -149,7 +149,8 @@
     .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
       .col(style='order: 1;')
         q-no-ssr(v-if='editMode')
-          editor-wysiwyg
+          component(:is='editorComponent')
+          //- editor-wysiwyg
           //- editor-markdown
         q-scroll-area(
           :thumb-style='thumbStyle'
@@ -464,6 +465,9 @@ export default {
     isPublished: get('page/isPublished'),
     pageIcon: sync('page/icon'),
     render: get('page/render'),
+    editorComponent () {
+      return this.$store.get('page/editor') ? `editor-${this.$store.get('page/editor')}` : null
+    },
     relationsLeft () {
       return this.relations ? this.relations.filter(r => r.position === 'left') : []
     },

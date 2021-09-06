@@ -92,9 +92,13 @@ export default {
 
       if (['markdown', 'api'].includes(editor)) {
         commit('site/SET_SHOW_SIDE_NAV', false, { root: true })
-        commit('site/SET_SHOW_SIDEBAR', false, { root: true })
       } else {
         commit('site/SET_SHOW_SIDE_NAV', true, { root: true })
+      }
+
+      if (['markdown', 'channel', 'api'].includes(editor)) {
+        commit('site/SET_SHOW_SIDEBAR', false, { root: true })
+      } else {
         commit('site/SET_SHOW_SIDEBAR', true, { root: true })
       }
 
@@ -119,6 +123,9 @@ export default {
 
       // -> View Mode
       commit('SET_MODE', 'edit')
+    },
+    generateToc ({ commit, state }) {
+
     }
   }
 }

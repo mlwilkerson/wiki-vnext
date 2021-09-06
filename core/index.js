@@ -16,7 +16,7 @@ const semver = require('semver')
 // Ensure Node.js compatible version
 // ----------------------------------------
 
-if (!semver.gt(process.versions.node, '14.0.0')) {
+if (!semver.gt(process.versions.node, '14.17.0')) {
   console.error('Unsupported/outdated Node.js version! v14 or later required.')
   process.exit(1)
 }
@@ -100,7 +100,7 @@ WIKI.kernel.init().then(async () => {
 
   // -> Error Handling
   WIKI.app.use((req, res, next) => {
-    var err = new Error('Not Found')
+    const err = new Error('Not Found')
     err.status = 404
     next(err)
   })

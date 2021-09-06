@@ -110,6 +110,7 @@
     "qr-image": "3.2.0",
     "quasar": "1.15.14",
     "request-promise": "4.2.6",
+    "semver": "7.3.5",
     "striptags": "3.1.1",
     "twemoji": "13.0.2",
     "uslug": "1.0.4",

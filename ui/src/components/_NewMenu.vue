@@ -11,6 +11,9 @@
       q-item(clickable, @click='create(`markdown`)')
         blueprint-icon(icon='markdown')
         q-item-section.q-pr-sm New Markdown Page
+      q-item(clickable, @click='create(`channel`)')
+        blueprint-icon(icon='chat')
+        q-item-section.q-pr-sm New Discussion Space
       q-item(clickable, @click='create(`blog`)')
         blueprint-icon(icon='typewriter-with-paper')
         q-item-section.q-pr-sm New Blog Page

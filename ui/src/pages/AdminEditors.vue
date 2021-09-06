@@ -25,46 +25,16 @@
         )
     q-separator(inset)
     .q-pa-md.q-gutter-md
-      q-card.shadow-1(v-for='editor of editors', :key='editor.id')
-        .flex.items-center.q-pa-sm(:class='$q.dark.isActive ? `bg-dark-6` : `bg-dark-6 text-white`')
-          blueprint-icon(:icon='editor.icon', dark)
-          .text-body2: strong {{$t(`admin.editors.` + editor.id + `Name`)}}
-          q-space
-          q-chip.text-uppercase(
-            v-if='editor.disabled'
-            color='pink'
-            outline
-            square
-            dense
-            style='font-size: 10px; font-weight: 500;'
-          ) {{$t('admin.editors.comingSoon')}}
-        q-card-section
-          q-list(separator)
-            q-item(
-              v-for='mode of editor.modes'
-              :key='mode.id'
-              tag='label'
-              )
-              q-item-section(side)
-                q-radio(
-                  v-model='config[editor.id].mode'
-                  :val='mode.id'
-                  color='primary'
-                )
-              q-item-section
-                q-item-label: strong {{$t(`admin.editors.` + mode.id + `Name`)}}
-                q-item-label.flex.items-center(caption)
-                  span {{$t(`admin.editors.` + mode.id + `Description`)}}
-                  q-chip.q-ml-sm.text-uppercase(
-                    v-if='mode.default'
-                    color='positive'
-                    outline
-                    square
-                    dense
-                    style='font-size: 10px; font-weight: 500;'
-                  ) {{$t('admin.editors.default')}}
+      q-card.shadow-1
+        q-list(separator)
+          q-item(v-for='editor of editors', :key='editor.id')
+            blueprint-icon(:icon='editor.icon')
+            q-item-section
+              q-item-label: strong {{$t(`admin.editors.` + editor.id + `Name`)}}
+              q-item-label.flex.items-center(caption)
+                span {{$t(`admin.editors.` + editor.id + `Description`)}}
+            template(v-if='editor.config')
               q-item-section(
-                v-if='mode.config'
                 side
                 )
                 q-btn(
@@ -75,20 +45,17 @@
                   no-caps
                   padding='xs md'
                 )
-            q-item(
-              tag='label'
-              v-ripple
-              )
-              q-item-section(side)
-                q-radio(
-                  v-model='config[editor.id].mode'
-                  val='off'
-                  color='negative'
-                  :disabled='editor.disabled'
+              q-separator.q-ml-md(vertical)
+            q-item-section(side)
+              q-toggle.q-pr-sm(
+                v-model='editor.isActive'
+                :color='editor.isDisabled ? `grey` : `primary`'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :label='$t(`admin.sites.isActive`)'
+                :aria-label='$t(`admin.sites.isActive`)'
+                :disabled='editor.isDisabled'
                 )
-              q-item-section
-                q-item-label: strong {{$t('admin.editors.disabled')}}
-                q-item-label(caption) {{$t('admin.editors.disabledHint')}}
 </template>
 
 <script>
@@ -101,82 +68,39 @@ export default {
   data () {
     return {
       loading: false,
-      config: {
-        visual: {
-          mode: 'tiptap'
-        },
-        markdown: {
-          mode: 'codemirror'
-        },
-        blog: {
-          mode: 'off'
-        },
-        api: {
-          mode: 'off'
-        },
-        redirection: {
-          mode: 'redirdefault'
-        }
-      },
       editors: [
         {
-          id: 'visual',
+          id: 'wysiwyg',
           icon: 'google-presentation',
-          modes: [
-            {
-              id: 'tiptap',
-              default: true
-            }
-            // {
-            //   id: 'ckeditor',
-            //   config: [
-            //     {}
-            //   ]
-            // }
-          ]
+          isActive: true
         },
         {
           id: 'markdown',
           icon: 'markdown',
-          modes: [
-            {
-              id: 'codemirror',
-              default: true,
-              config: [
-                {}
-              ]
-            }
-            // {
-            //   id: 'monaco',
-            //   label: 'Monaco',
-            //   description: 'Code editor used in Visual Studio Code. Uses more browser resources and isn\'t compatible with non-desktop browsers.',
-            //   config: [
-            //     {}
-            //   ]
-            // }
-          ]
+          config: {},
+          isActive: true
+        },
+        {
+          id: 'channel',
+          icon: 'chat',
+          isActive: true
         },
         {
           id: 'blog',
           icon: 'typewriter-with-paper',
-          disabled: true,
-          modes: []
+          isActive: true,
+          isDisabled: true
         },
         {
           id: 'api',
           icon: 'api',
-          disabled: true,
-          modes: []
+          isActive: true,
+          isDisabled: true
         },
         {
-          id: 'redirection',
+          id: 'redirect',
           icon: 'advance',
-          modes: [
-            {
-              id: 'redirdefault',
-              default: true
-            }
-          ]
+          isActive: true
         }
       ]
     }

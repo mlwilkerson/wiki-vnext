@@ -205,7 +205,7 @@
           q-card-section
             .text-subtitle1 {{$t('admin.general.logo')}}
           q-item
-            blueprint-icon(icon='butterfly')
+            blueprint-icon(icon='butterfly', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
             q-item-section
               q-item-label {{$t(`admin.general.logoUpl`)}}
               q-item-label(caption) {{$t(`admin.general.logoUplHint`)}}
@@ -220,7 +220,7 @@
               )
           q-separator.q-my-sm(inset)
           q-item
-            blueprint-icon(icon='starfish')
+            blueprint-icon(icon='starfish', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
             q-item-section
               q-item-label {{$t(`admin.general.favicon`)}}
               q-item-label(caption) {{$t(`admin.general.faviconHint`)}}
@@ -231,6 +231,7 @@
                 icon='las la-upload'
                 color='primary'
                 text-color='white'
+                @click='uploadFavicon'
               )
           q-separator.q-my-sm(inset)
           q-item(tag='label', v-ripple)
@@ -525,6 +526,52 @@ export default {
     },
     refreshLogo () {
       this.$forceUpdate()
+    },
+    async uploadFavicon () {
+      const input = document.createElement('input')
+      input.type = 'file'
+
+      input.onchange = async e => {
+        this.loading = true
+        try {
+          await this.$apollo.mutate({
+            mutation: gql`
+              mutation (
+                $id: UUID!
+                $image: Upload!
+              ) {
+                uploadSiteFavicon (
+                  id: $id
+                  image: $image
+                ) {
+                  status {
+                    succeeded
+                    slug
+                    message
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: this.currentSiteId,
+              image: e.target.files[0]
+            }
+          })
+          this.$q.notify({
+            type: 'positive',
+            message: this.$t('admin.general.faviconUploadSuccess')
+          })
+        } catch (err) {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Failed to upload site favicon.',
+            caption: err.message
+          })
+        }
+        this.loading = false
+      }
+
+      input.click()
     }
   },
   apollo: {
