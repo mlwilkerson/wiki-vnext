@@ -1,13 +1,10 @@
-import Vue from 'vue'
 import VueApollo from 'vue-apollo'
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
 import fetch from 'node-fetch'
-import ApolloSSR from 'vue-apollo/ssr'
+import * as ApolloSSR from '@vue/apollo-ssr'
 import gql from 'graphql-tag'
 import { Cookies } from 'quasar'
-
-Vue.use(VueApollo)
 
 export default async ({ app, router, store, ssrContext }) => {
   const httpLink = createHttpLink({
@@ -87,7 +84,7 @@ export default async ({ app, router, store, ssrContext }) => {
 
   router.onReady(() => {
     ssrContext.rendered = () => {
-      ssrContext.apolloState = ApolloSSR.getStates(app.apolloProvider)
+      ssrContext.apolloState = ApolloSSR.getStates(app.apolloProvider.clients)
     }
   })
 }

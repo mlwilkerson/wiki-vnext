@@ -1,88 +1,88 @@
 <template lang="pug">
-  .wysiwyg-container
-    .wysiwyg-toolbar(v-if='editor')
-      template(v-for='menuItem of menuBar')
-        q-separator.q-mx-xs(
-          v-if='menuItem.type === `divider`'
-          vertical
-          )
-        q-btn(
-          v-else-if='menuItem.type === `dropdown`'
-          :key='menuItem.key'
-          flat
-          :icon='menuItem.icon'
-          padding='xs'
-          :class='{ "is-active": menuItem.isActive && menuItem.isActive() }'
-          :color='menuItem.isActive && menuItem.isActive() ? `primary` : `grey-10`'
-          :aria-label='menuItem.title'
-          split
-          :disabled='menuItem.disabled && menuItem.disabled()'
-          )
-          q-menu
-            q-list(
-              dense
-              padding
-              )
-              template(v-for='child of menuItem.children')
-                q-separator.q-my-sm(v-if='child.type === `divider`')
-                q-item(
-                  v-else
-                  :key='menuItem.key + `-` + child.key'
-                  clickable
-                  @click='child.action'
-                  :active='child.isActive && child.isActive()'
-                  active-class='text-primary'
-                  :disabled='child.disabled && child.disabled()'
-                  )
-                  q-item-section(side)
-                    q-icon(
-                      :name='child.icon'
-                      :color='child.color'
-                    )
-                  q-item-section
-                    q-item-label {{child.title}}
-        q-btn-group(
-          v-else-if='menuItem.type === `btngroup`'
-          :key='menuItem.key'
-          flat
-          )
-          q-btn(
-            v-for='child of menuItem.children'
-            :key='menuItem.key + `-` + child.key'
-            flat
-            :icon='child.icon'
-            padding='xs'
-            :class='{ "is-active": child.isActive && child.isActive() }'
-            :color='child.isActive && child.isActive() ? `primary` : `grey-10`'
-            @click='child.action'
-            :aria-label='child.title'
-            :disabled='menuItem.disabled && menuItem.disabled()'
-            )
-        q-btn(
-          v-else
-          flat
-          :icon='menuItem.icon'
-          padding='xs'
-          :class='{ "is-active": menuItem.isActive && menuItem.isActive() }'
-          :color='menuItem.isActive && menuItem.isActive() ? `primary` : `grey-10`'
-          @click='menuItem.action'
-          :aria-label='menuItem.title'
-          :disabled='menuItem.disabled && menuItem.disabled()'
-          )
-      q-space
+.wysiwyg-container
+  .wysiwyg-toolbar(v-if='editor')
+    template(v-for='menuItem of menuBar')
+      q-separator.q-mx-xs(
+        v-if='menuItem.type === `divider`'
+        vertical
+        )
       q-btn(
-        size='sm'
-        unelevated
-        color='red'
-        label='Test'
-        @click='snapshot'
-      )
-    q-scroll-area(
-      :thumb-style='thumbStyle'
-      :bar-style='barStyle'
-      style='height: 100%;'
-      )
-      editor-content(:editor='editor')
+        v-else-if='menuItem.type === `dropdown`'
+        :key='menuItem.key'
+        flat
+        :icon='menuItem.icon'
+        padding='xs'
+        :class='{ "is-active": menuItem.isActive && menuItem.isActive() }'
+        :color='menuItem.isActive && menuItem.isActive() ? `primary` : `grey-10`'
+        :aria-label='menuItem.title'
+        split
+        :disabled='menuItem.disabled && menuItem.disabled()'
+        )
+        q-menu
+          q-list(
+            dense
+            padding
+            )
+            template(v-for='child of menuItem.children')
+              q-separator.q-my-sm(v-if='child.type === `divider`')
+              q-item(
+                v-else
+                :key='menuItem.key + `-` + child.key'
+                clickable
+                @click='child.action'
+                :active='child.isActive && child.isActive()'
+                active-class='text-primary'
+                :disabled='child.disabled && child.disabled()'
+                )
+                q-item-section(side)
+                  q-icon(
+                    :name='child.icon'
+                    :color='child.color'
+                  )
+                q-item-section
+                  q-item-label {{child.title}}
+      q-btn-group(
+        v-else-if='menuItem.type === `btngroup`'
+        :key='menuItem.key'
+        flat
+        )
+        q-btn(
+          v-for='child of menuItem.children'
+          :key='menuItem.key + `-` + child.key'
+          flat
+          :icon='child.icon'
+          padding='xs'
+          :class='{ "is-active": child.isActive && child.isActive() }'
+          :color='child.isActive && child.isActive() ? `primary` : `grey-10`'
+          @click='child.action'
+          :aria-label='child.title'
+          :disabled='menuItem.disabled && menuItem.disabled()'
+          )
+      q-btn(
+        v-else
+        flat
+        :icon='menuItem.icon'
+        padding='xs'
+        :class='{ "is-active": menuItem.isActive && menuItem.isActive() }'
+        :color='menuItem.isActive && menuItem.isActive() ? `primary` : `grey-10`'
+        @click='menuItem.action'
+        :aria-label='menuItem.title'
+        :disabled='menuItem.disabled && menuItem.disabled()'
+        )
+    q-space
+    q-btn(
+      size='sm'
+      unelevated
+      color='red'
+      label='Test'
+      @click='snapshot'
+    )
+  q-scroll-area(
+    :thumb-style='thumbStyle'
+    :bar-style='barStyle'
+    style='height: 100%;'
+    )
+    editor-content(:editor='editor')
 </template>
 
 <script>
@@ -534,7 +534,7 @@ export default {
       this.init()
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.editor.destroy()
   },
   methods: {

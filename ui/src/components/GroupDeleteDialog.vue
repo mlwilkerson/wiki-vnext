@@ -1,32 +1,32 @@
 <template lang="pug">
-  q-dialog(ref='dialog', @hide='onDialogHide')
-    q-card(style='min-width: 350px; max-width: 450px;')
-      q-card-section.card-header
-        q-icon(name='las la-trash', left, size='sm')
-        span {{$t(`admin.groups.delete`)}}
-      q-card-section
-        .text-body2
-          i18n(path='admin.groups.deleteConfirm')
-            template(v-slot:groupName)
-              strong {{group.name}}
-        .text-body2.q-mt-md
-          strong.text-negative {{$t(`admin.groups.deleteConfirmWarn`)}}
-      q-card-actions.card-actions
-        q-space
-        q-btn.acrylic-btn(
-          flat
-          :label='$t(`common.actions.cancel`)'
-          color='grey'
-          padding='xs md'
-          @click='hide'
-          )
-        q-btn(
-          unelevated
-          :label='$t(`common.actions.delete`)'
-          color='negative'
-          padding='xs md'
-          @click='confirm'
-          )
+q-dialog(ref='dialog', @hide='onDialogHide')
+  q-card(style='min-width: 350px; max-width: 450px;')
+    q-card-section.card-header
+      q-icon(name='las la-trash', left, size='sm')
+      span {{$t(`admin.groups.delete`)}}
+    q-card-section
+      .text-body2
+        i18n(path='admin.groups.deleteConfirm')
+          template(v-slot:groupName)
+            strong {{group.name}}
+      .text-body2.q-mt-md
+        strong.text-negative {{$t(`admin.groups.deleteConfirmWarn`)}}
+    q-card-actions.card-actions
+      q-space
+      q-btn.acrylic-btn(
+        flat
+        :label='$t(`common.actions.cancel`)'
+        color='grey'
+        padding='xs md'
+        @click='hide'
+        )
+      q-btn(
+        unelevated
+        :label='$t(`common.actions.delete`)'
+        color='negative'
+        padding='xs md'
+        @click='confirm'
+        )
 </template>
 
 <script>

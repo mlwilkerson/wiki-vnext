@@ -1,30 +1,30 @@
 <template lang="pug">
-  q-dialog(ref='dialog', @hide='onDialogHide')
-    q-card(style='min-width: 350px; max-width: 450px;')
-      q-card-section.card-header
-        q-icon(name='las la-power-off', left, size='sm')
-        span {{value ? $t(`admin.sites.activate`) : $t(`admin.sites.deactivate`)}}
-      q-card-section
-        .text-body2
-          i18n(:path='value ? `admin.sites.activateConfirm` : `admin.sites.deactivateConfirm`')
-            template(v-slot:siteTitle)
-              strong {{site.title}}
-      q-card-actions.card-actions
-        q-space
-        q-btn.acrylic-btn(
-          flat
-          :label='$t(`common.actions.cancel`)'
-          color='grey'
-          padding='xs md'
-          @click='hide'
-          )
-        q-btn(
-          unelevated
-          :label='value ? $t(`common.actions.activate`) : $t(`common.actions.deactivate`)'
-          :color='value ? `positive` : `negative`'
-          padding='xs md'
-          @click='confirm'
-          )
+q-dialog(ref='dialog', @hide='onDialogHide')
+  q-card(style='min-width: 350px; max-width: 450px;')
+    q-card-section.card-header
+      q-icon(name='las la-power-off', left, size='sm')
+      span {{value ? $t(`admin.sites.activate`) : $t(`admin.sites.deactivate`)}}
+    q-card-section
+      .text-body2
+        i18n(:path='value ? `admin.sites.activateConfirm` : `admin.sites.deactivateConfirm`')
+          template(v-slot:siteTitle)
+            strong {{site.title}}
+    q-card-actions.card-actions
+      q-space
+      q-btn.acrylic-btn(
+        flat
+        :label='$t(`common.actions.cancel`)'
+        color='grey'
+        padding='xs md'
+        @click='hide'
+        )
+      q-btn(
+        unelevated
+        :label='value ? $t(`common.actions.activate`) : $t(`common.actions.deactivate`)'
+        :color='value ? `positive` : `negative`'
+        padding='xs md'
+        @click='confirm'
+        )
 </template>
 
 <script>

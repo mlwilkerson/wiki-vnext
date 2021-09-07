@@ -1,60 +1,60 @@
 <template lang="pug">
-  q-dialog(ref='dialog', @hide='onDialogHide')
-    q-card(style='min-width: 450px;')
-      q-card-section.card-header
-        q-icon(name='las la-plus', left)
-        span {{$t(`admin.sites.new`)}}
-      q-form.q-py-sm(ref='createSiteForm')
-        q-item
-          blueprint-icon(icon='home')
-          q-item-section
-            q-input(
-              outlined
-              v-model='siteName'
-              dense
-              :rules=`[
-                val => val.length > 0 || $t('admin.sites.nameMissing'),
-                val => /^[^<>"]+$/.test(val) || $t('admin.sites.nameInvalidChars')
-              ]`
-              hide-bottom-space
-              :label='$t(`common.field.name`)'
-              :aria-label='$t(`common.field.name`)'
-              lazy-rules='ondemand'
-              autofocus
-              )
-        q-item
-          blueprint-icon(icon='dns')
-          q-item-section
-            q-input(
-              outlined
-              v-model='siteHostname'
-              dense
-              :rules=`[
-                val => val.length > 0 || $t('admin.sites.hostnameMissing'),
-                val => /^(\\*)|([a-z0-9\-.:]+)$/.test(val) || $t('admin.sites.hostnameInvalidChars')
-              ]`
-              hide-bottom-space
-              :label='$t(`admin.sites.hostname`)'
-              :aria-label='$t(`admin.sites.hostname`)'
-              lazy-rules='ondemand'
-              )
-      q-card-actions.card-actions
-        q-space
-        q-btn.acrylic-btn(
-          flat
-          :label='$t(`common.actions.cancel`)'
-          color='grey'
-          padding='xs md'
-          @click='hide'
-          )
-        q-btn(
-          unelevated
-          :label='$t(`common.actions.create`)'
-          color='primary'
-          padding='xs md'
-          @click='create'
-          :loading='isLoading'
-          )
+q-dialog(ref='dialog', @hide='onDialogHide')
+  q-card(style='min-width: 450px;')
+    q-card-section.card-header
+      q-icon(name='las la-plus', left)
+      span {{$t(`admin.sites.new`)}}
+    q-form.q-py-sm(ref='createSiteForm')
+      q-item
+        blueprint-icon(icon='home')
+        q-item-section
+          q-input(
+            outlined
+            v-model='siteName'
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin.sites.nameMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin.sites.nameInvalidChars')
+            ]`
+            hide-bottom-space
+            :label='$t(`common.field.name`)'
+            :aria-label='$t(`common.field.name`)'
+            lazy-rules='ondemand'
+            autofocus
+            )
+      q-item
+        blueprint-icon(icon='dns')
+        q-item-section
+          q-input(
+            outlined
+            v-model='siteHostname'
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin.sites.hostnameMissing'),
+              val => /^(\\*)|([a-z0-9\-.:]+)$/.test(val) || $t('admin.sites.hostnameInvalidChars')
+            ]`
+            hide-bottom-space
+            :label='$t(`admin.sites.hostname`)'
+            :aria-label='$t(`admin.sites.hostname`)'
+            lazy-rules='ondemand'
+            )
+    q-card-actions.card-actions
+      q-space
+      q-btn.acrylic-btn(
+        flat
+        :label='$t(`common.actions.cancel`)'
+        color='grey'
+        padding='xs md'
+        @click='hide'
+        )
+      q-btn(
+        unelevated
+        :label='$t(`common.actions.create`)'
+        color='primary'
+        padding='xs md'
+        @click='create'
+        :loading='isLoading'
+        )
 </template>
 
 <script>

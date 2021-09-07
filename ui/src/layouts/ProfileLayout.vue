@@ -1,35 +1,35 @@
 <template lang='pug'>
-  q-layout(view='hHh Lpr lff')
-    header-nav
-    q-page-container.layout-profile
-      .layout-profile-card
-        .layout-profile-sd
-          q-list
-            q-item(
-              v-for='navItem of sidenav'
-              :key='navItem.key'
-              clickable
-              :to='`/p/` + navItem.key'
-              active-class='is-active'
-              v-ripple
-              )
-              q-item-section(side)
-                q-icon(:name='navItem.icon')
-              q-item-section
-                q-item-label {{navItem.label}}
-            q-separator.q-my-sm(inset)
-            q-item(
-              clickable
-              v-ripple
-              )
-              q-item-section(side)
-                q-icon(name='las la-sign-out-alt', color='negative')
-              q-item-section
-                q-item-label.text-negative Logout
-        router-view
-    q-footer
-      q-bar.justify-center(dense)
-        span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
+q-layout(view='hHh Lpr lff')
+  header-nav
+  q-page-container.layout-profile
+    .layout-profile-card
+      .layout-profile-sd
+        q-list
+          q-item(
+            v-for='navItem of sidenav'
+            :key='navItem.key'
+            clickable
+            :to='`/p/` + navItem.key'
+            active-class='is-active'
+            v-ripple
+            )
+            q-item-section(side)
+              q-icon(:name='navItem.icon')
+            q-item-section
+              q-item-label {{navItem.label}}
+          q-separator.q-my-sm(inset)
+          q-item(
+            clickable
+            v-ripple
+            )
+            q-item-section(side)
+              q-icon(name='las la-sign-out-alt', color='negative')
+            q-item-section
+              q-item-label.text-negative Logout
+      router-view
+  q-footer
+    q-bar.justify-center(dense)
+      span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
 </template>
 
 <script>

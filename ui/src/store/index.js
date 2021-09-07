@@ -1,7 +1,6 @@
 import union from 'lodash/union'
 import without from 'lodash/without'
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 import pathify from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 
@@ -11,8 +10,6 @@ import data from './data'
 import page from './page'
 import site from './site'
 import user from './user'
-
-Vue.use(Vuex)
 
 /*
  * If not building with SSR mode, you can
@@ -28,7 +25,7 @@ const state = {
 }
 
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
+  const Store = createStore({
     plugins: [
       pathify.plugin
     ],

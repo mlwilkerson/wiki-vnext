@@ -1,85 +1,84 @@
 <template lang='pug'>
-  q-layout(view='hHh Lpr lff')
-    header-nav
-    q-drawer(
-      v-model='showSideNav'
-      show-if-above
-      content-class='bg-sidebar'
-      :width='255'
+q-layout(view='hHh Lpr lff')
+  header-nav
+  q-drawer.bg-sidebar(
+    v-model='showSideNav'
+    show-if-above
+    :width='255'
+    )
+    .sidebar-actions.flex.items-stretch
+      q-btn.q-px-sm.col(
+        flat
+        dense
+        icon='las la-globe'
+        color='blue-7'
+        text-color='blue-2'
+        label='EN'
+        aria-label='EN'
+        size='sm'
+        )
+      q-separator(vertical)
+      q-btn.q-px-sm.col(
+        flat
+        dense
+        icon='las la-sitemap'
+        color='blue-7'
+        text-color='blue-2'
+        label='Browse'
+        aria-label='Browse'
+        size='sm'
+        )
+    q-scroll-area.sidebar-nav(
+      :thumb-style='thumbStyle'
+      :bar-style='barStyle'
       )
-      .sidebar-actions.flex.items-stretch
-        q-btn.q-px-sm.col(
-          flat
-          dense
-          icon='las la-globe'
-          color='blue-7'
-          text-color='blue-2'
-          label='EN'
-          aria-label='EN'
-          size='sm'
-          )
-        q-separator(vertical)
-        q-btn.q-px-sm.col(
-          flat
-          dense
-          icon='las la-sitemap'
-          color='blue-7'
-          text-color='blue-2'
-          label='Browse'
-          aria-label='Browse'
-          size='sm'
-          )
-      q-scroll-area.sidebar-nav(
-        :thumb-style='thumbStyle'
-        :bar-style='barStyle'
+      q-list(
+        clickable
+        dense
+        dark
         )
-        q-list(
-          clickable
-          dense
-          dark
-          )
-          q-item-label.text-blue-2.text-caption(header) Getting Started
-          q-item(to='/install')
-            q-item-section(side)
-              q-icon(name='las la-dog', color='white')
-            q-item-section Requirements
-          q-item(to='/install')
-            q-item-section(side)
-              q-icon(name='las la-cat', color='white')
-            q-item-section Installation
-          q-separator.q-my-sm(dark)
-          q-item(to='/install')
-            q-item-section(side)
-              q-icon(name='las la-cat', color='white')
-            q-item-section Installation
-      q-bar.bg-blue-9.text-white(dense)
-        q-btn.col(
-          icon='las la-dharmachakra'
-          label='History'
-          flat
-        )
-        q-separator(vertical)
-        q-btn.col(
-          icon='las la-bookmark'
-          label='Bookmarks'
-          flat
-        )
-    q-page-container
-      router-view
-      q-page-scroller(
-        position='bottom-right'
-        :scroll-offset='150'
-        :offset='[15, 15]'
-        )
-        q-btn(
-          icon='las la-arrow-up'
-          color='primary'
-          round
-          size='md'
-        )
-    q-footer
-      q-bar.justify-center(dense)
-        span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
+        q-item-label.text-blue-2.text-caption(header) Getting Started
+        q-item(to='/install')
+          q-item-section(side)
+            q-icon(name='las la-dog', color='white')
+          q-item-section Requirements
+        q-item(to='/install')
+          q-item-section(side)
+            q-icon(name='las la-cat', color='white')
+          q-item-section Installation
+        q-separator.q-my-sm(dark)
+        q-item(to='/install')
+          q-item-section(side)
+            q-icon(name='las la-cat', color='white')
+          q-item-section Installation
+    q-bar.bg-blue-9.text-white(dense)
+      q-btn.col(
+        icon='las la-dharmachakra'
+        label='History'
+        flat
+      )
+      q-separator(vertical)
+      q-btn.col(
+        icon='las la-bookmark'
+        label='Bookmarks'
+        flat
+      )
+  q-page-container
+    router-view
+    q-page-scroller(
+      position='bottom-right'
+      :scroll-offset='150'
+      :offset='[15, 15]'
+      )
+      q-btn(
+        icon='las la-arrow-up'
+        color='primary'
+        round
+        size='md'
+      )
+  q-footer
+    q-bar.justify-center(dense)
+      span(style='font-size: 11px;') &copy; Cyberdyne Systems Corp. 2020 | Powered by #[strong Wiki.js]
 </template>
 
 <script>

@@ -1,44 +1,44 @@
 <template lang="pug">
-  q-dialog(ref='dialog', @hide='onDialogHide')
-    q-card(style='min-width: 450px;')
-      q-card-section.card-header
-        q-icon(name='las la-plus', left)
-        span {{$t(`admin.groups.create`)}}
-      q-form.q-py-sm(ref='createGroupForm', @submit='create')
-        q-item
-          blueprint-icon(icon='team')
-          q-item-section
-            q-input(
-              outlined
-              v-model='groupName'
-              dense
-              :rules=`[
-                val => val.length > 0 || $t('admin.groups.nameMissing'),
-                val => /^[^<>"]+$/.test(val) || $t('admin.groups.nameInvalidChars')
-              ]`
-              hide-bottom-space
-              :label='$t(`common.field.name`)'
-              :aria-label='$t(`common.field.name`)'
-              lazy-rules='ondemand'
-              autofocus
-              )
-      q-card-actions.card-actions
-        q-space
-        q-btn.acrylic-btn(
-          flat
-          :label='$t(`common.actions.cancel`)'
-          color='grey'
-          padding='xs md'
-          @click='hide'
-          )
-        q-btn(
-          unelevated
-          :label='$t(`common.actions.create`)'
-          color='primary'
-          padding='xs md'
-          @click='create'
-          :loading='isLoading'
-          )
+q-dialog(ref='dialog', @hide='onDialogHide')
+  q-card(style='min-width: 450px;')
+    q-card-section.card-header
+      q-icon(name='las la-plus', left)
+      span {{$t(`admin.groups.create`)}}
+    q-form.q-py-sm(ref='createGroupForm', @submit='create')
+      q-item
+        blueprint-icon(icon='team')
+        q-item-section
+          q-input(
+            outlined
+            v-model='groupName'
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin.groups.nameMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin.groups.nameInvalidChars')
+            ]`
+            hide-bottom-space
+            :label='$t(`common.field.name`)'
+            :aria-label='$t(`common.field.name`)'
+            lazy-rules='ondemand'
+            autofocus
+            )
+    q-card-actions.card-actions
+      q-space
+      q-btn.acrylic-btn(
+        flat
+        :label='$t(`common.actions.cancel`)'
+        color='grey'
+        padding='xs md'
+        @click='hide'
+        )
+      q-btn(
+        unelevated
+        :label='$t(`common.actions.create`)'
+        color='primary'
+        padding='xs md'
+        @click='create'
+        :loading='isLoading'
+        )
 </template>
 
 <script>

@@ -1,42 +1,42 @@
 <template lang="pug">
-  q-card.page-scripts-dialog(style='width: 860px; max-width: 90vw;')
-    q-toolbar.bg-primary.text-white
-      .text-subtitle2 {{$t('editor.pageScripts.title')}} - {{$t('editor.props.' + mode)}}
-      q-space
-      q-chip(
-        square
-        style='background-color: rgba(0,0,0,.1)'
-        text-color='white'
-        )
-        .text-caption {{this.languageLabel}}
-    div(style='min-height: 450px;')
-      q-no-ssr(:placeholder='$t(`common.loading`)')
-        codemirror(
-          v-if='showEditor'
-          ref='editor'
-          v-model='content'
-          :options='{ mode: language }'
-          @ready='onCmReady'
-        )
-    q-card-actions.card-actions
-      q-space
-      q-btn.acrylic-btn(
-        icon='las la-times'
-        :label='$t(`common.actions.discard`)'
-        color='grey-7'
-        padding='xs md'
-        v-close-popup
-        flat
+q-card.page-scripts-dialog(style='width: 860px; max-width: 90vw;')
+  q-toolbar.bg-primary.text-white
+    .text-subtitle2 {{$t('editor.pageScripts.title')}} - {{$t('editor.props.' + mode)}}
+    q-space
+    q-chip(
+      square
+      style='background-color: rgba(0,0,0,.1)'
+      text-color='white'
       )
-      q-btn(
-        icon='las la-check'
-        :label='$t(`common.actions.save`)'
-        unelevated
-        color='primary'
-        padding='xs md'
-        @click='persist'
-        v-close-popup
+      .text-caption {{this.languageLabel}}
+  div(style='min-height: 450px;')
+    q-no-ssr(:placeholder='$t(`common.loading`)')
+      codemirror(
+        v-if='showEditor'
+        ref='editor'
+        v-model='content'
+        :options='{ mode: language }'
+        @ready='onCmReady'
       )
+  q-card-actions.card-actions
+    q-space
+    q-btn.acrylic-btn(
+      icon='las la-times'
+      :label='$t(`common.actions.discard`)'
+      color='grey-7'
+      padding='xs md'
+      v-close-popup
+      flat
+    )
+    q-btn(
+      icon='las la-check'
+      :label='$t(`common.actions.save`)'
+      unelevated
+      color='primary'
+      padding='xs md'
+      @click='persist'
+      v-close-popup
+    )
 </template>
 
 <script>

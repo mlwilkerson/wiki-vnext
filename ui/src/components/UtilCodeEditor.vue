@@ -1,7 +1,7 @@
 <template lang="pug">
-  .util-code-editor(
-    ref='editor'
-    )
+.util-code-editor(
+  ref='editor'
+  )
 </template>
 
 <script>
@@ -51,7 +51,7 @@ export default {
     })
     this.editor.focus()
   },
-  beforeDestroy () {
+  beforeUnmount () {
     if (this.editor) {
       this.editor.dispose()
     }

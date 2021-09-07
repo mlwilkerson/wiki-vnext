@@ -1,121 +1,121 @@
 <template lang="pug">
-  q-card.icon-picker(flat, style='width: 400px;')
-    q-tabs.text-primary(
-      v-model='currentTab'
-      no-caps
-      inline-label
+q-card.icon-picker(flat, style='width: 400px;')
+  q-tabs.text-primary(
+    v-model='currentTab'
+    no-caps
+    inline-label
+    )
+    q-tab(
+      name='icon'
+      icon='las la-icons'
+      label='Icon'
       )
-      q-tab(
-        name='icon'
-        icon='las la-icons'
-        label='Icon'
-        )
-      q-tab(
-        name='img'
-        icon='las la-image'
-        label='Image'
-        )
-    q-separator
-    q-tab-panels(
-      v-model='currentTab'
+    q-tab(
+      name='img'
+      icon='las la-image'
+      label='Image'
       )
-      q-tab-panel(name='icon')
-        q-select(
-          :options='iconPacks'
-          v-model='selPack'
-          emit-value
-          map-options
-          outlined
-          dense
-          transition-show='jump-down'
-          transition-hide='jump-up'
-          )
-          template(v-slot:option='scope')
-            q-item(
-              v-bind='scope.itemProps'
-              v-on='scope.itemEvents'
-              :class='scope.selected ? `bg-primary text-white` : ``'
-              )
-              q-item-section(side)
-                q-icon(
-                  name='las la-box'
-                  :color='scope.selected ? `white` : `grey`'
-                )
-              q-item-section
-                q-item-label {{scope.opt.name}}
-                q-item-label(caption): strong(:class='scope.selected ? `text-white` : `text-primary`') {{scope.opt.subset}}
-              q-item-section(side, v-if='scope.opt.subset')
-                q-chip(
-                  color='primary'
-                  text-color='white'
-                  rounded
-                  size='sm'
-                ) {{scope.opt.subset.toUpperCase()}}
-        q-input.q-mt-md(
-          v-model='selIcon'
-          outlined
-          label='Icon Name'
-          dense
+  q-separator
+  q-tab-panels(
+    v-model='currentTab'
+    )
+    q-tab-panel(name='icon')
+      q-select(
+        :options='iconPacks'
+        v-model='selPack'
+        emit-value
+        map-options
+        outlined
+        dense
+        transition-show='jump-down'
+        transition-hide='jump-up'
         )
-        .row.q-gutter-md.q-mt-none
-          .col-auto
-            q-avatar(
-              size='64px'
-              color='primary'
-              rounded
-              )
+        template(v-slot:option='scope')
+          q-item(
+            v-bind='scope.itemProps'
+            v-on='scope.itemEvents'
+            :class='scope.selected ? `bg-primary text-white` : ``'
+            )
+            q-item-section(side)
               q-icon(
-                :name='iconName'
-                color='white'
-                size='64px'
+                name='las la-box'
+                :color='scope.selected ? `white` : `grey`'
               )
-          .col
-            .text-caption Learn how to #[a(href='https://docs.requarks.io') use icons].
-            .text-caption.q-mt-sm View #[a(:href='iconPackRefWebsite', target='_blank') Icon Pack reference] for all possible options.
-      q-tab-panel(name='img')
-        .row.q-gutter-sm
-          q-btn.col(
-            label='Browse...'
-            color='secondary'
-            icon='las la-file-image'
-            unelevated
-            no-caps
-          )
-          q-btn.col(
-            label='Upload...'
-            color='secondary'
-            icon='las la-upload'
-            unelevated
-            no-caps
-          )
-        .q-mt-md.text-center
+            q-item-section
+              q-item-label {{scope.opt.name}}
+              q-item-label(caption): strong(:class='scope.selected ? `text-white` : `text-primary`') {{scope.opt.subset}}
+            q-item-section(side, v-if='scope.opt.subset')
+              q-chip(
+                color='primary'
+                text-color='white'
+                rounded
+                size='sm'
+              ) {{scope.opt.subset.toUpperCase()}}
+      q-input.q-mt-md(
+        v-model='selIcon'
+        outlined
+        label='Icon Name'
+        dense
+      )
+      .row.q-gutter-md.q-mt-none
+        .col-auto
           q-avatar(
             size='64px'
+            color='primary'
             rounded
             )
-            q-img(
-              transition='jump-down'
-              :ratio='1'
-              :src='imgPath'
+            q-icon(
+              :name='iconName'
+              color='white'
+              size='64px'
             )
-    q-separator
-    q-card-actions
-      q-space
-      q-btn(
-        icon='las la-times'
-        label='Discard'
-        outline
-        color='grey-7'
-        v-close-popup
-      )
-      q-btn(
-        icon='las la-check'
-        label='Apply'
-        unelevated
-        color='secondary'
-        @click='apply'
-        v-close-popup
-      )
+        .col
+          .text-caption Learn how to #[a(href='https://docs.requarks.io') use icons].
+          .text-caption.q-mt-sm View #[a(:href='iconPackRefWebsite', target='_blank') Icon Pack reference] for all possible options.
+    q-tab-panel(name='img')
+      .row.q-gutter-sm
+        q-btn.col(
+          label='Browse...'
+          color='secondary'
+          icon='las la-file-image'
+          unelevated
+          no-caps
+        )
+        q-btn.col(
+          label='Upload...'
+          color='secondary'
+          icon='las la-upload'
+          unelevated
+          no-caps
+        )
+      .q-mt-md.text-center
+        q-avatar(
+          size='64px'
+          rounded
+          )
+          q-img(
+            transition='jump-down'
+            :ratio='1'
+            :src='imgPath'
+          )
+  q-separator
+  q-card-actions
+    q-space
+    q-btn(
+      icon='las la-times'
+      label='Discard'
+      outline
+      color='grey-7'
+      v-close-popup
+    )
+    q-btn(
+      icon='las la-check'
+      label='Apply'
+      unelevated
+      color='secondary'
+      @click='apply'
+      v-close-popup
+    )
 </template>
 
 <script>

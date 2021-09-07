@@ -1,166 +1,166 @@
 <template lang="pug">
-  q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
-    q-toolbar.bg-primary.text-white
-      .text-subtitle2 {{$t('editor.pageData.manageTemplates')}}
-      q-space
-      q-btn(
-        icon='las la-times'
+q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
+  q-toolbar.bg-primary.text-white
+    .text-subtitle2 {{$t('editor.pageData.manageTemplates')}}
+    q-space
+    q-btn(
+      icon='las la-times'
+      dense
+      flat
+      v-close-popup
+    )
+  q-card-section.page-datatmpl-selector
+    .flex.q-gutter-md
+      q-select.col(
+        v-model='selectedTemplateId'
+        :options='templates'
+        standout
+        :label='$t(`editor.pageData.template`)'
         dense
-        flat
-        v-close-popup
+        dark
+        option-value='id'
+        map-options
+        emit-value
       )
-    q-card-section.page-datatmpl-selector
-      .flex.q-gutter-md
-        q-select.col(
-          v-model='selectedTemplateId'
-          :options='templates'
-          standout
-          :label='$t(`editor.pageData.template`)'
-          dense
-          dark
-          option-value='id'
-          map-options
-          emit-value
-        )
-        q-btn(
-          icon='las la-plus'
-          :label='$t(`common.actions.new`)'
-          unelevated
-          color='primary'
+      q-btn(
+        icon='las la-plus'
+        :label='$t(`common.actions.new`)'
+        unelevated
+        color='primary'
+        no-caps
+        @click='create'
+      )
+  .row(v-if='tmpl')
+    .col-auto.page-datatmpl-sd
+      .q-pa-md
+        q-btn.acrylic-btn.full-width(
+          :label='$t(`common.actions.howItWorks`)'
+          icon='las la-question-circle'
+          flat
+          color='pink'
           no-caps
-          @click='create'
         )
-    .row(v-if='tmpl')
-      .col-auto.page-datatmpl-sd
-        .q-pa-md
-          q-btn.acrylic-btn.full-width(
-            :label='$t(`common.actions.howItWorks`)'
-            icon='las la-question-circle'
-            flat
-            color='pink'
-            no-caps
+      q-item-label(header, style='margin-top: 2px;') {{$t('editor.pageData.templateFullRowTypes')}}
+      .q-px-md
+        draggable(
+          class='q-list rounded-borders'
+          :list='inventoryMisc'
+          :group='{name: `shared`, pull: `clone`, put: false}'
+          :clone='cloneFieldType'
+          :sort='false'
+          :animation='150'
+          @start='dragStarted = true'
+          @end='dragStarted = false'
           )
-        q-item-label(header, style='margin-top: 2px;') {{$t('editor.pageData.templateFullRowTypes')}}
-        .q-px-md
-          draggable(
-            class='q-list rounded-borders'
-            :list='inventoryMisc'
-            :group='{name: `shared`, pull: `clone`, put: false}'
-            :clone='cloneFieldType'
-            :sort='false'
-            :animation='150'
-            @start='dragStarted = true'
-            @end='dragStarted = false'
+          q-item(
+            v-for='item of inventoryMisc'
+            :key='item.key'
+            clickable
             )
-            q-item(
-              v-for='item of inventoryMisc'
-              :key='item.key'
-              clickable
-              )
-              q-item-section(side)
-                q-icon(:name='item.icon', color='primary')
-              q-item-section
-                q-item-label {{item.label}}
-        q-item-label(header) {{$t('editor.pageData.templateKeyValueTypes')}}
-        .q-px-md.q-pb-md
-          draggable(
-            class='q-list rounded-borders'
-            :list='inventoryKV'
-            :group='{name: `shared`, pull: `clone`, put: false}'
-            :clone='cloneFieldType'
-            :sort='false'
-            :animation='150'
-            @start='dragStarted = true'
-            @end='dragStarted = false'
-            )
-            q-item(
-              v-for='item of inventoryKV'
-              :key='item.key'
-              clickable
-              )
-              q-item-section(side)
-                q-icon(:name='item.icon', color='primary')
-              q-item-section
-                q-item-label {{item.label}}
-      .col.page-datatmpl-content
-        q-scroll-area(
-          ref='scrollArea'
-          :thumb-style='thumbStyle'
-          :bar-style='barStyle'
-          style='height: 100%;'
+            q-item-section(side)
+              q-icon(:name='item.icon', color='primary')
+            q-item-section
+              q-item-label {{item.label}}
+      q-item-label(header) {{$t('editor.pageData.templateKeyValueTypes')}}
+      .q-px-md.q-pb-md
+        draggable(
+          class='q-list rounded-borders'
+          :list='inventoryKV'
+          :group='{name: `shared`, pull: `clone`, put: false}'
+          :clone='cloneFieldType'
+          :sort='false'
+          :animation='150'
+          @start='dragStarted = true'
+          @end='dragStarted = false'
           )
-            .col.page-datatmpl-meta.q-px-md.q-py-md.flex.q-gutter-md
-              q-input.col(
-                ref='tmplTitleIpt'
-                :label='$t(`editor.pageData.templateTitle`)'
-                outlined
-                dense
-                v-model='tmpl.label'
-              )
-              q-btn.acrylic-btn(
-                icon='las la-check'
-                :label='$t(`common.actions.commit`)'
-                no-caps
-                flat
-                color='positive'
-                @click='commit'
-              )
-              q-btn.acrylic-btn(
-                icon='las la-trash'
-                :aria-label='$t(`common.actions.delete`)'
-                flat
-                color='negative'
-                @click='remove'
-              )
-            q-item-label(header) {{$t('editor.pageData.templateStructure')}}
-            .q-px-md.q-pb-md
-              div(:class='(dragStarted || tmpl.data.length < 1 ? `page-datatmpl-box` : ``)')
-                .text-caption.text-primary.q-pa-md(v-if='tmpl.data.length < 1 && !dragStarted'): em {{$t('editor.pageData.dragDropHint')}}
-                draggable(
-                  class='q-list rounded-borders'
-                  :list='tmpl.data'
-                  group='shared'
-                  :animation='150'
-                  handle='.handle'
-                  @end='dragStarted = false'
+          q-item(
+            v-for='item of inventoryKV'
+            :key='item.key'
+            clickable
+            )
+            q-item-section(side)
+              q-icon(:name='item.icon', color='primary')
+            q-item-section
+              q-item-label {{item.label}}
+    .col.page-datatmpl-content
+      q-scroll-area(
+        ref='scrollArea'
+        :thumb-style='thumbStyle'
+        :bar-style='barStyle'
+        style='height: 100%;'
+        )
+          .col.page-datatmpl-meta.q-px-md.q-py-md.flex.q-gutter-md
+            q-input.col(
+              ref='tmplTitleIpt'
+              :label='$t(`editor.pageData.templateTitle`)'
+              outlined
+              dense
+              v-model='tmpl.label'
+            )
+            q-btn.acrylic-btn(
+              icon='las la-check'
+              :label='$t(`common.actions.commit`)'
+              no-caps
+              flat
+              color='positive'
+              @click='commit'
+            )
+            q-btn.acrylic-btn(
+              icon='las la-trash'
+              :aria-label='$t(`common.actions.delete`)'
+              flat
+              color='negative'
+              @click='remove'
+            )
+          q-item-label(header) {{$t('editor.pageData.templateStructure')}}
+          .q-px-md.q-pb-md
+            div(:class='(dragStarted || tmpl.data.length < 1 ? `page-datatmpl-box` : ``)')
+              .text-caption.text-primary.q-pa-md(v-if='tmpl.data.length < 1 && !dragStarted'): em {{$t('editor.pageData.dragDropHint')}}
+              draggable(
+                class='q-list rounded-borders'
+                :list='tmpl.data'
+                group='shared'
+                :animation='150'
+                handle='.handle'
+                @end='dragStarted = false'
+                )
+                q-item(
+                  v-for='item of tmpl.data'
+                  :key='item.id'
                   )
-                  q-item(
-                    v-for='item of tmpl.data'
-                    :key='item.id'
+                  q-item-section(side)
+                    q-icon.handle(name='las la-bars')
+                  q-item-section(side)
+                    q-icon(:name='item.icon', color='primary')
+                  q-item-section
+                    q-input(
+                      :label='$t(`editor.pageData.label`)'
+                      v-model='item.label'
+                      outlined
+                      dense
                     )
-                    q-item-section(side)
-                      q-icon.handle(name='las la-bars')
-                    q-item-section(side)
-                      q-icon(:name='item.icon', color='primary')
-                    q-item-section
-                      q-input(
-                        :label='$t(`editor.pageData.label`)'
-                        v-model='item.label'
-                        outlined
-                        dense
-                      )
-                    q-item-section(v-if='item.type !== `header`')
-                      q-input(
-                        :label='$t(`editor.pageData.uniqueKey`)'
-                        v-model='item.key'
-                        outlined
-                        dense
-                      )
-                    q-item-section(side)
-                      q-btn.acrylic-btn(
-                        color='negative'
-                        :aria-label='$t(`common.actions.delete`)'
-                        padding='xs'
-                        icon='las la-times'
-                        flat
-                        @click='removeItem(item)'
-                      )
-            .page-datatmpl-scrollend(ref='scrollAreaEnd')
+                  q-item-section(v-if='item.type !== `header`')
+                    q-input(
+                      :label='$t(`editor.pageData.uniqueKey`)'
+                      v-model='item.key'
+                      outlined
+                      dense
+                    )
+                  q-item-section(side)
+                    q-btn.acrylic-btn(
+                      color='negative'
+                      :aria-label='$t(`common.actions.delete`)'
+                      padding='xs'
+                      icon='las la-times'
+                      flat
+                      @click='removeItem(item)'
+                    )
+          .page-datatmpl-scrollend(ref='scrollAreaEnd')
 
-    .q-pa-md.text-center(v-else-if='templates.length > 0')
-      em.text-grey-6 {{$t('editor.pageData.selectTemplateAbove')}}
-    .q-pa-md.text-center(v-else)
-      em.text-grey-6 {{$t('editor.pageData.noTemplate')}}
+  .q-pa-md.text-center(v-else-if='templates.length > 0')
+    em.text-grey-6 {{$t('editor.pageData.selectTemplateAbove')}}
+  .q-pa-md.text-center(v-else)
+    em.text-grey-6 {{$t('editor.pageData.noTemplate')}}
 </template>
 
 <script>

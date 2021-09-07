@@ -1,209 +1,209 @@
 <template lang='pug'>
-  q-page.admin-theme
-    .row.q-pa-md.items-center
-      .col-auto
-        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-paint-roller.svg')
-      .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.theme.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.theme.subtitle') }}
-      .col-auto
-        q-spinner-tail.q-mr-md(
-          v-show='loading'
-          color='accent'
-          size='sm'
+q-page.admin-theme
+  .row.q-pa-md.items-center
+    .col-auto
+      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-paint-roller.svg')
+    .col.q-pl-md
+      .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.theme.title') }}
+      .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.theme.subtitle') }}
+    .col-auto
+      q-spinner-tail.q-mr-md(
+        v-show='loading'
+        color='accent'
+        size='sm'
+      )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-question-circle'
+        flat
+        color='grey'
+        href='https://docs.js.wiki/theming'
+        target='_blank'
         )
-        q-btn.q-mr-sm.acrylic-btn(
-          icon='las la-question-circle'
-          flat
-          color='grey'
-          href='https://docs.js.wiki/theming'
-          target='_blank'
+      q-btn(
+        unelevated
+        icon='mdi-check'
+        :label='$t(`common.actions.apply`)'
+        color='secondary'
+        @click='save'
+        :loading='loading'
+      )
+  q-separator(inset)
+  .row.q-pa-md.q-col-gutter-md
+    .col-6
+      //- -----------------------
+      //- Theme Options
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm
+        q-card-section.flex.items-center
+          .text-subtitle1 {{$t('admin.theme.options')}}
+          q-space
+          q-btn.acrylic-btn(
+            icon='las la-redo-alt'
+            :label='$t(`admin.theme.resetDefaults`)'
+            flat
+            size='sm'
+            color='pink'
+            @click='resetColors'
           )
-        q-btn(
-          unelevated
-          icon='mdi-check'
-          :label='$t(`common.actions.apply`)'
-          color='secondary'
-          @click='save'
-          :loading='loading'
-        )
-    q-separator(inset)
-    .row.q-pa-md.q-col-gutter-md
-      .col-6
-        //- -----------------------
-        //- Theme Options
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm
-          q-card-section.flex.items-center
-            .text-subtitle1 {{$t('admin.theme.options')}}
-            q-space
-            q-btn.acrylic-btn(
-              icon='las la-redo-alt'
-              :label='$t(`admin.theme.resetDefaults`)'
-              flat
-              size='sm'
-              color='pink'
-              @click='resetColors'
-            )
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='light-on')
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='light-on')
+          q-item-section
+            q-item-label {{$t(`admin.theme.darkMode`)}}
+            q-item-label(caption) {{$t(`admin.theme.darkModeHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.dark'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.theme.darkMode`)'
+              )
+        template(v-for='(cl, idx) of colorKeys', :key='cl')
+          q-separator.q-my-sm(inset)
+          q-item
+            blueprint-icon(icon='fill-color')
             q-item-section
-              q-item-label {{$t(`admin.theme.darkMode`)}}
-              q-item-label(caption) {{$t(`admin.theme.darkModeHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.dark'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.theme.darkMode`)'
+              q-item-label {{$t(`admin.theme.` + cl + `Color`)}}
+              q-item-label(caption) {{$t(`admin.theme.` + cl + `ColorHint`)}}
+            q-item-section(side)
+              .text-caption.text-grey-6 {{config[`color` + startCase(cl)]}}
+            q-item-section(side)
+              q-btn.q-mr-sm(
+                :key='`btnpick-` + cl'
+                glossy
+                padding='xs md'
+                no-caps
+                size='sm'
+                :color='cl'
                 )
-          template(v-for='(cl, idx) of colorKeys')
-            q-separator.q-my-sm(inset)
-            q-item(:key='cl')
-              blueprint-icon(icon='fill-color')
-              q-item-section
-                q-item-label {{$t(`admin.theme.` + cl + `Color`)}}
-                q-item-label(caption) {{$t(`admin.theme.` + cl + `ColorHint`)}}
-              q-item-section(side)
-                .text-caption.text-grey-6 {{config[`color` + startCase(cl)]}}
-              q-item-section(side)
-                q-btn.q-mr-sm(
-                  :key='`btnpick-` + cl'
-                  glossy
-                  padding='xs md'
-                  no-caps
-                  size='sm'
-                  :color='cl'
+                q-icon(name='las la-fill', size='xs', left)
+                span Pick...
+                q-menu
+                  q-color(
+                    v-model='config[`color` + startCase(cl)]'
                   )
-                  q-icon(name='las la-fill', size='xs', left)
-                  span Pick...
-                  q-menu
-                    q-color(
-                      v-model='config[`color` + startCase(cl)]'
-                    )
 
-        //- -----------------------
-        //- Theme Layout
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm.q-mt-md
-          q-card-section
-            .text-subtitle1 {{$t('admin.theme.layout')}}
-          q-item
-            blueprint-icon(icon='right-navigation-toolbar')
-            q-item-section
-              q-item-label {{$t(`admin.theme.sidebarPosition`)}}
-              q-item-label(caption) {{$t(`admin.theme.sidebarPositionHint`)}}
-            q-item-section.col-auto
-              q-btn-toggle(
-                v-model='config.sidebarPosition'
-                push
-                glossy
-                no-caps
-                toggle-color='primary'
-                :options=`[
-                  { label: 'Left', value: 'left' },
-                  { label: 'Right', value: 'right' }
-                ]`
+      //- -----------------------
+      //- Theme Layout
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm.q-mt-md
+        q-card-section
+          .text-subtitle1 {{$t('admin.theme.layout')}}
+        q-item
+          blueprint-icon(icon='right-navigation-toolbar')
+          q-item-section
+            q-item-label {{$t(`admin.theme.sidebarPosition`)}}
+            q-item-label(caption) {{$t(`admin.theme.sidebarPositionHint`)}}
+          q-item-section.col-auto
+            q-btn-toggle(
+              v-model='config.sidebarPosition'
+              push
+              glossy
+              no-caps
+              toggle-color='primary'
+              :options=`[
+                { label: 'Left', value: 'left' },
+                { label: 'Right', value: 'right' }
+              ]`
+            )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='index')
+          q-item-section
+            q-item-label {{$t(`admin.theme.tocPosition`)}}
+            q-item-label(caption) {{$t(`admin.theme.tocPositionHint`)}}
+          q-item-section.col-auto
+            q-btn-toggle(
+              v-model='config.tocPosition'
+              push
+              glossy
+              no-caps
+              toggle-color='primary'
+              :options=`[
+                { label: 'Left', value: 'left' },
+                { label: 'Right', value: 'right' }
+              ]`
+            )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='share')
+          q-item-section
+            q-item-label {{$t(`admin.theme.showSharingMenu`)}}
+            q-item-label(caption) {{$t(`admin.theme.showSharingMenuHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.showSharingMenu'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.theme.showSharingMenu`)'
               )
-          q-separator.q-my-sm(inset)
-          q-item
-            blueprint-icon(icon='index')
-            q-item-section
-              q-item-label {{$t(`admin.theme.tocPosition`)}}
-              q-item-label(caption) {{$t(`admin.theme.tocPositionHint`)}}
-            q-item-section.col-auto
-              q-btn-toggle(
-                v-model='config.tocPosition'
-                push
-                glossy
-                no-caps
-                toggle-color='primary'
-                :options=`[
-                  { label: 'Left', value: 'left' },
-                  { label: 'Right', value: 'right' }
-                ]`
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='print')
+          q-item-section
+            q-item-label {{$t(`admin.theme.showPrintBtn`)}}
+            q-item-label(caption) {{$t(`admin.theme.showPrintBtnHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.showPrintBtn'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.theme.showPrintBtn`)'
               )
-          q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='share')
-            q-item-section
-              q-item-label {{$t(`admin.theme.showSharingMenu`)}}
-              q-item-label(caption) {{$t(`admin.theme.showSharingMenuHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.showSharingMenu'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.theme.showSharingMenu`)'
-                )
-          q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='print')
-            q-item-section
-              q-item-label {{$t(`admin.theme.showPrintBtn`)}}
-              q-item-label(caption) {{$t(`admin.theme.showPrintBtnHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.showPrintBtn'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.theme.showPrintBtn`)'
-                )
 
-      .col-6
-        //- -----------------------
-        //- Code Injection
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm
-          q-card-section
-            .text-subtitle1 {{$t('admin.theme.codeInjection')}}
-          q-item
-            blueprint-icon(icon='css')
-            q-item-section
-              q-item-label {{$t(`admin.theme.cssOverride`)}}
-              q-item-label(caption) {{$t(`admin.theme.cssOverrideHint`)}}
-          q-item
-            q-item-section
-              q-no-ssr(:placeholder='$t(`common.loading`)')
-                codemirror.admin-theme-cm(
-                  ref='cmCSS'
-                  v-model='config.injectCSS'
-                  :options='{ mode: `text/css` }'
-                  @ready='onCmReady'
-                )
-          q-separator.q-my-sm(inset)
-          q-item
-            blueprint-icon(icon='html')
-            q-item-section
-              q-item-label {{$t(`admin.theme.headHtmlInjection`)}}
-              q-item-label(caption) {{$t(`admin.theme.headHtmlInjectionHint`)}}
-          q-item
-            q-item-section
-              q-no-ssr(:placeholder='$t(`common.loading`)')
-                codemirror.admin-theme-cm(
-                  ref='cmHead'
-                  v-model='config.injectHead'
-                  :options='{ mode: `text/html` }'
-                  @ready='onCmReady'
-                )
-          q-separator.q-my-sm(inset)
-          q-item
-            blueprint-icon(icon='html')
-            q-item-section
-              q-item-label {{$t(`admin.theme.bodyHtmlInjection`)}}
-              q-item-label(caption) {{$t(`admin.theme.bodyHtmlInjectionHint`)}}
-          q-item
-            q-item-section
-              q-no-ssr(:placeholder='$t(`common.loading`)')
-                codemirror.admin-theme-cm(
-                  ref='cmBody'
-                  v-model='config.injectBody'
-                  :options='{ mode: `text/html` }'
-                  @ready='onCmReady'
-                )
+    .col-6
+      //- -----------------------
+      //- Code Injection
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm
+        q-card-section
+          .text-subtitle1 {{$t('admin.theme.codeInjection')}}
+        q-item
+          blueprint-icon(icon='css')
+          q-item-section
+            q-item-label {{$t(`admin.theme.cssOverride`)}}
+            q-item-label(caption) {{$t(`admin.theme.cssOverrideHint`)}}
+        q-item
+          q-item-section
+            q-no-ssr(:placeholder='$t(`common.loading`)')
+              codemirror.admin-theme-cm(
+                ref='cmCSS'
+                v-model='config.injectCSS'
+                :options='{ mode: `text/css` }'
+                @ready='onCmReady'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='html')
+          q-item-section
+            q-item-label {{$t(`admin.theme.headHtmlInjection`)}}
+            q-item-label(caption) {{$t(`admin.theme.headHtmlInjectionHint`)}}
+        q-item
+          q-item-section
+            q-no-ssr(:placeholder='$t(`common.loading`)')
+              codemirror.admin-theme-cm(
+                ref='cmHead'
+                v-model='config.injectHead'
+                :options='{ mode: `text/html` }'
+                @ready='onCmReady'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='html')
+          q-item-section
+            q-item-label {{$t(`admin.theme.bodyHtmlInjection`)}}
+            q-item-label(caption) {{$t(`admin.theme.bodyHtmlInjectionHint`)}}
+        q-item
+          q-item-section
+            q-no-ssr(:placeholder='$t(`common.loading`)')
+              codemirror.admin-theme-cm(
+                ref='cmBody'
+                v-model='config.injectBody'
+                :options='{ mode: `text/html` }'
+                @ready='onCmReady'
+              )
 </template>
 
 <script>
@@ -280,7 +280,7 @@ export default {
   mounted () {
     this.fetchConfig()
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.$q.dark.set(this.darkModeInitial)
   },
   methods: {

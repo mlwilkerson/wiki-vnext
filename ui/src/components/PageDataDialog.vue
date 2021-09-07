@@ -1,92 +1,92 @@
 <template lang="pug">
-  q-card.page-data-dialog(style='width: 750px;')
-    q-toolbar.bg-primary.text-white.flex
-      .text-subtitle2 {{$t('editor.pageData.title')}}
-      q-space
-      q-btn(
-        icon='las la-times'
+q-card.page-data-dialog(style='width: 750px;')
+  q-toolbar.bg-primary.text-white.flex
+    .text-subtitle2 {{$t('editor.pageData.title')}}
+    q-space
+    q-btn(
+      icon='las la-times'
+      dense
+      flat
+      v-close-popup
+    )
+  q-card-section.page-data-dialog-selector
+    //- .text-overline.text-white {{$t('editor.pageData.template')}}
+    .flex.q-gutter-sm
+      q-select(
+        dark
+        v-model='templateId'
+        :label='$t(`editor.pageData.template`)'
+        :aria-label='$t(`editor.pageData.template`)'
+        :options='templates'
+        option-value='id'
+        map-options
+        emit-value
+        standout
         dense
-        flat
-        v-close-popup
+        style='flex: 1 0 auto;'
       )
-    q-card-section.page-data-dialog-selector
-      //- .text-overline.text-white {{$t('editor.pageData.template')}}
-      .flex.q-gutter-sm
-        q-select(
-          dark
-          v-model='templateId'
-          :label='$t(`editor.pageData.template`)'
-          :aria-label='$t(`editor.pageData.template`)'
-          :options='templates'
-          option-value='id'
-          map-options
-          emit-value
-          standout
+      q-btn.acrylic-btn(
+        dark
+        icon='las la-pen'
+        :label='$t(`common.actions.manage`)'
+        unelevated
+        no-caps
+        color='deep-orange-9'
+        @click='editTemplates'
+      )
+  q-tabs.alt-card(
+    v-model='mode'
+    inline-label
+    no-caps
+    )
+    q-tab(
+      name='visual'
+      label='Visual'
+      )
+    q-tab(
+      name='code'
+      label='YAML'
+      )
+  q-scroll-area(
+    :thumb-style='thumbStyle'
+    :bar-style='barStyle'
+    style='height: calc(100% - 50px - 75px - 48px);'
+    )
+    q-card-section(v-if='mode === `visual`')
+      .q-gutter-sm
+        q-input(
+          label='Attribute Text'
           dense
-          style='flex: 1 0 auto;'
-        )
-        q-btn.acrylic-btn(
-          dark
-          icon='las la-pen'
-          :label='$t(`common.actions.manage`)'
-          unelevated
-          no-caps
-          color='deep-orange-9'
-          @click='editTemplates'
-        )
-    q-tabs.alt-card(
-      v-model='mode'
-      inline-label
-      no-caps
-      )
-      q-tab(
-        name='visual'
-        label='Visual'
-        )
-      q-tab(
-        name='code'
-        label='YAML'
-        )
-    q-scroll-area(
-      :thumb-style='thumbStyle'
-      :bar-style='barStyle'
-      style='height: calc(100% - 50px - 75px - 48px);'
-      )
-      q-card-section(v-if='mode === `visual`')
-        .q-gutter-sm
-          q-input(
-            label='Attribute Text'
+          outlined
+          )
+          template(v-slot:before)
+            q-icon(name='las la-font', color='primary')
+        q-input(
+          label='Attribute Number'
+          dense
+          outlined
+          type='number'
+          )
+          template(v-slot:before)
+            q-icon(name='las la-infinity', color='primary')
+        .q-py-xs
+          q-checkbox(
+            label='Attribute Boolean'
+            color='primary'
             dense
-            outlined
+            size='lg'
             )
-            template(v-slot:before)
-              q-icon(name='las la-font', color='primary')
-          q-input(
-            label='Attribute Number'
-            dense
-            outlined
-            type='number'
-            )
-            template(v-slot:before)
-              q-icon(name='las la-infinity', color='primary')
-          .q-py-xs
-            q-checkbox(
-              label='Attribute Boolean'
-              color='primary'
-              dense
-              size='lg'
-              )
-      q-no-ssr(v-else, :placeholder='$t(`common.loading`)')
-        codemirror.admin-theme-cm(
-          ref='cmData'
-          v-model='content'
-          :options='{ mode: `text/yaml` }'
-        )
+    q-no-ssr(v-else, :placeholder='$t(`common.loading`)')
+      codemirror.admin-theme-cm(
+        ref='cmData'
+        v-model='content'
+        :options='{ mode: `text/yaml` }'
+      )
 
-    q-dialog(
-      v-model='showDataTemplateDialog'
-      )
-      page-data-template-dialog
+  q-dialog(
+    v-model='showDataTemplateDialog'
+    )
+    page-data-template-dialog
 </template>
 
 <script>

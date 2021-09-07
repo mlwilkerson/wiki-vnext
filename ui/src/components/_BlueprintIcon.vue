@@ -1,21 +1,21 @@
 <template lang='pug'>
-  q-item-section(avatar)
-    q-avatar(
-      :color='avatarBgColor'
+q-item-section(avatar)
+  q-avatar(
+    :color='avatarBgColor'
+    rounded
+    )
+    q-badge(
+      v-if='indicatorDot'
       rounded
+      :color='indicatorDot'
+      floating
       )
-      q-badge(
-        v-if='indicatorDot'
-        rounded
-        :color='indicatorDot'
-        floating
-        )
-        q-tooltip(v-if='indicatorText') {{indicatorText}}
-      q-icon(
-        v-if='imgPath'
-        :name='`img:` + imgPath'
-        size='sm'
-      )
+      q-tooltip(v-if='indicatorText') {{indicatorText}}
+    q-icon(
+      v-if='imgPath'
+      :name='`img:` + imgPath'
+      size='sm'
+    )
 </template>
 
 <script>

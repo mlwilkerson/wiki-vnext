@@ -1,115 +1,115 @@
 <template lang='pug'>
-  q-page.admin-groups
-    .row.q-pa-md.items-center
-      .col-auto
-        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-people.svg')
-      .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.groups.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.groups.subtitle') }}
-      .col-auto
-        q-btn.acrylic-btn.q-mr-sm(
-          icon='las la-question-circle'
+q-page.admin-groups
+  .row.q-pa-md.items-center
+    .col-auto
+      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-people.svg')
+    .col.q-pl-md
+      .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.groups.title') }}
+      .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.groups.subtitle') }}
+    .col-auto
+      q-btn.acrylic-btn.q-mr-sm(
+        icon='las la-question-circle'
+        flat
+        color='grey'
+        type='a'
+        href='https://docs.js.wiki/admin/groups'
+        target='_blank'
+        )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        @click='refresh'
+        )
+      q-btn(
+        unelevated
+        icon='las la-plus'
+        :label='$t(`admin.groups.create`)'
+        color='primary'
+        @click='createGroup'
+        )
+  q-separator(inset)
+  .row.q-pa-md.q-col-gutter-md
+    .col-12
+      q-card.shadow-1
+        q-table(
+          :data='groups'
+          :columns='headers'
+          row-key='id'
           flat
-          color='grey'
-          type='a'
-          href='https://docs.js.wiki/admin/groups'
-          target='_blank'
+          hide-bottom
+          :rows-per-page-options='[0]'
+          :loading='loading'
           )
-        q-btn.q-mr-sm.acrylic-btn(
-          icon='las la-redo-alt'
-          flat
-          color='secondary'
-          @click='refresh'
-          )
-        q-btn(
-          unelevated
-          icon='las la-plus'
-          :label='$t(`admin.groups.create`)'
-          color='primary'
-          @click='createGroup'
-          )
-    q-separator(inset)
-    .row.q-pa-md.q-col-gutter-md
-      .col-12
-        q-card.shadow-1
-          q-table(
-            :data='groups'
-            :columns='headers'
-            row-key='id'
-            flat
-            hide-bottom
-            :rows-per-page-options='[0]'
-            :loading='loading'
-            )
-            template(v-slot:body-cell-id='props')
-              q-td(:props='props')
-                q-btn.acrylic-btn(
-                  size='sm'
-                  padding='xs'
-                  icon='las la-clipboard'
-                  flat
-                  color='brown'
-                  @click='copyID(props.value)'
-                  )
-                  q-tooltip(
-                    anchor='center left'
-                    self='center right'
-                  ) {{$t('common.clipboard.uuid')}}
-            template(v-slot:body-cell-name='props')
-              q-td.flex.items-center(:props='props')
-                strong {{props.value}}
-                q-icon.q-ml-sm(
-                  v-if='props.row.isSystem'
-                  name='las la-lock'
-                  color='pink'
-                  )
-            template(v-slot:body-cell-usercount='props')
-              q-td(:props='props')
-                q-chip.text-caption(
-                  square
-                  :color='$q.dark.isActive ? `dark-6` : `grey-2`'
-                  :text-color='$q.dark.isActive ? `white` : `grey-8`'
-                  dense
-                ) {{props.value}}
-            template(v-slot:body-cell-edit='props')
-              q-td(:props='props')
-                q-btn.acrylic-btn.q-mr-sm(
-                  flat
-                  :to='`/a/groups/` + props.row.id'
-                  icon='las la-pen'
-                  color='indigo'
-                  :label='$t(`common.actions.edit`)'
-                  no-caps
-                  )
-                q-btn.acrylic-btn(
-                  flat
-                  icon='las la-trash'
-                  color='accent'
-                  :disabled='props.row.isSystem'
-                  @click='deleteGroup(props.row)'
-                  )
-            //-     q-btn.acrylic-btn(
-            //-       flat
-            //-       padding='xs sm'
-            //-       icon='las la-pen'
-            //-       color='indigo'
-            //-       :to='`/a/groups/` + props.row.id'
-            //-       )
-            //- template(v-slot:body-cell-remove='props')
-            //-   q-td(:props='props')
-            //-     q-btn.acrylic-btn(
-            //-       flat
-            //-       padding='xs sm'
-            //-       icon='las la-trash'
-            //-       color='accent'
-            //-       :disabled='props.row.isSystem'
-            //-       @click='deleteGroup(props.row)'
-            //-       )
+          template(v-slot:body-cell-id='props')
+            q-td(:props='props')
+              q-btn.acrylic-btn(
+                size='sm'
+                padding='xs'
+                icon='las la-clipboard'
+                flat
+                color='brown'
+                @click='copyID(props.value)'
+                )
+                q-tooltip(
+                  anchor='center left'
+                  self='center right'
+                ) {{$t('common.clipboard.uuid')}}
+          template(v-slot:body-cell-name='props')
+            q-td.flex.items-center(:props='props')
+              strong {{props.value}}
+              q-icon.q-ml-sm(
+                v-if='props.row.isSystem'
+                name='las la-lock'
+                color='pink'
+                )
+          template(v-slot:body-cell-usercount='props')
+            q-td(:props='props')
+              q-chip.text-caption(
+                square
+                :color='$q.dark.isActive ? `dark-6` : `grey-2`'
+                :text-color='$q.dark.isActive ? `white` : `grey-8`'
+                dense
+              ) {{props.value}}
+          template(v-slot:body-cell-edit='props')
+            q-td(:props='props')
+              q-btn.acrylic-btn.q-mr-sm(
+                flat
+                :to='`/a/groups/` + props.row.id'
+                icon='las la-pen'
+                color='indigo'
+                :label='$t(`common.actions.edit`)'
+                no-caps
+                )
+              q-btn.acrylic-btn(
+                flat
+                icon='las la-trash'
+                color='accent'
+                :disabled='props.row.isSystem'
+                @click='deleteGroup(props.row)'
+                )
+          //-     q-btn.acrylic-btn(
+          //-       flat
+          //-       padding='xs sm'
+          //-       icon='las la-pen'
+          //-       color='indigo'
+          //-       :to='`/a/groups/` + props.row.id'
+          //-       )
+          //- template(v-slot:body-cell-remove='props')
+          //-   q-td(:props='props')
+          //-     q-btn.acrylic-btn(
+          //-       flat
+          //-       padding='xs sm'
+          //-       icon='las la-trash'
+          //-       color='accent'
+          //-       :disabled='props.row.isSystem'
+          //-       @click='deleteGroup(props.row)'
+          //-       )
 </template>
 
 <script>
 import gql from 'graphql-tag'
-import Vue from 'vue'
+// import Vue from 'vue'
 import { copyToClipboard } from 'quasar'
 
 export default {
@@ -171,7 +171,7 @@ export default {
     },
     createGroup () {
       this.$q.dialog({
-        component: Vue.options.components.GroupCreateDialog,
+        component: null /* Vue.options.components.GroupCreateDialog */,
         parent: this
       }).onOk(() => {
         this.$apollo.queries.groups.refetch()
@@ -182,7 +182,7 @@ export default {
     },
     deleteGroup (gr) {
       this.$q.dialog({
-        component: Vue.options.components.GroupDeleteDialog,
+        component: null /* Vue.options.components.GroupDeleteDialog */,
         parent: this,
         group: gr
       }).onOk(() => {

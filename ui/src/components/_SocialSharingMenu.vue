@@ -1,52 +1,52 @@
 <template lang="pug">
-  q-menu(
-    auto-close
-    anchor='bottom middle'
-    self='top middle'
-    @show='menuShown'
-    @before-hide='menuHidden'
-    )
-    q-list(dense, padding)
-      q-item(clickable, @click='', ref='copyUrlButton')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='las la-clipboard', size='sm')
-        q-item-section.q-pr-md Copy URL
-      q-item(clickable, tag='a', :href='`mailto:?subject=` + encodeURIComponent(title) + `&body=` + encodeURIComponent(urlFormatted) + `%0D%0A%0D%0A` + encodeURIComponent(description)', target='_blank')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='las la-envelope', size='sm')
-        q-item-section.q-pr-md Email
-      q-item(clickable, @click='openSocialPop(`https://www.facebook.com/sharer/sharer.php?u=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title) + `&description=` + encodeURIComponent(description))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-facebook', size='sm')
-        q-item-section.q-pr-md Facebook
-      q-item(clickable, @click='openSocialPop(`https://www.linkedin.com/shareArticle?mini=true&url=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title) + `&summary=` + encodeURIComponent(description))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-linkedin', size='sm')
-        q-item-section.q-pr-md LinkedIn
-      q-item(clickable, @click='openSocialPop(`https://www.reddit.com/submit?url=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-reddit', size='sm')
-        q-item-section.q-pr-md Reddit
-      q-item(clickable, @click='openSocialPop(`https://t.me/share/url?url=` + encodeURIComponent(urlFormatted) + `&text=` + encodeURIComponent(title))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-telegram', size='sm')
-        q-item-section.q-pr-md Telegram
-      q-item(clickable, @click='openSocialPop(`https://twitter.com/intent/tweet?url=` + encodeURIComponent(urlFormatted) + `&text=` + encodeURIComponent(title))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-twitter', size='sm')
-        q-item-section.q-pr-md Twitter
-      q-item(clickable, :href='`viber://forward?text=` + encodeURIComponent(urlFormatted) + ` ` + encodeURIComponent(description)')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-viber', size='sm')
-        q-item-section.q-pr-md Viber
-      q-item(clickable, @click='openSocialPop(`http://service.weibo.com/share/share.php?url=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-weibo', size='sm')
-        q-item-section.q-pr-md Weibo
-      q-item(clickable, @click='openSocialPop(`https://api.whatsapp.com/send?text=` + encodeURIComponent(title) + `%0D%0A` + encodeURIComponent(urlFormatted))')
-        q-item-section.items-center(avatar)
-          q-icon(color='grey', name='lab la-whatsapp', size='sm')
-        q-item-section.q-pr-md Whatsapp
+q-menu(
+  auto-close
+  anchor='bottom middle'
+  self='top middle'
+  @show='menuShown'
+  @before-hide='menuHidden'
+  )
+  q-list(dense, padding)
+    q-item(clickable, @click='', ref='copyUrlButton')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='las la-clipboard', size='sm')
+      q-item-section.q-pr-md Copy URL
+    q-item(clickable, tag='a', :href='`mailto:?subject=` + encodeURIComponent(title) + `&body=` + encodeURIComponent(urlFormatted) + `%0D%0A%0D%0A` + encodeURIComponent(description)', target='_blank')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='las la-envelope', size='sm')
+      q-item-section.q-pr-md Email
+    q-item(clickable, @click='openSocialPop(`https://www.facebook.com/sharer/sharer.php?u=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title) + `&description=` + encodeURIComponent(description))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-facebook', size='sm')
+      q-item-section.q-pr-md Facebook
+    q-item(clickable, @click='openSocialPop(`https://www.linkedin.com/shareArticle?mini=true&url=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title) + `&summary=` + encodeURIComponent(description))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-linkedin', size='sm')
+      q-item-section.q-pr-md LinkedIn
+    q-item(clickable, @click='openSocialPop(`https://www.reddit.com/submit?url=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-reddit', size='sm')
+      q-item-section.q-pr-md Reddit
+    q-item(clickable, @click='openSocialPop(`https://t.me/share/url?url=` + encodeURIComponent(urlFormatted) + `&text=` + encodeURIComponent(title))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-telegram', size='sm')
+      q-item-section.q-pr-md Telegram
+    q-item(clickable, @click='openSocialPop(`https://twitter.com/intent/tweet?url=` + encodeURIComponent(urlFormatted) + `&text=` + encodeURIComponent(title))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-twitter', size='sm')
+      q-item-section.q-pr-md Twitter
+    q-item(clickable, :href='`viber://forward?text=` + encodeURIComponent(urlFormatted) + ` ` + encodeURIComponent(description)')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-viber', size='sm')
+      q-item-section.q-pr-md Viber
+    q-item(clickable, @click='openSocialPop(`http://service.weibo.com/share/share.php?url=` + encodeURIComponent(urlFormatted) + `&title=` + encodeURIComponent(title))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-weibo', size='sm')
+      q-item-section.q-pr-md Weibo
+    q-item(clickable, @click='openSocialPop(`https://api.whatsapp.com/send?text=` + encodeURIComponent(title) + `%0D%0A` + encodeURIComponent(urlFormatted))')
+      q-item-section.items-center(avatar)
+        q-icon(color='grey', name='lab la-whatsapp', size='sm')
+      q-item-section.q-pr-md Whatsapp
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .quill-container
+.quill-container
 </template>
 
 <script>

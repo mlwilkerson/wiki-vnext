@@ -1,370 +1,370 @@
 <template lang='pug'>
-  q-page.column
-    .page-breadcrumbs.q-py-sm.q-px-md.row
-      .col
-        q-breadcrumbs(
-          active-color='grey-7'
-          separator-color='grey'
+q-page.column
+  .page-breadcrumbs.q-py-sm.q-px-md.row
+    .col
+      q-breadcrumbs(
+        active-color='grey-7'
+        separator-color='grey'
+        )
+        template(v-slot:separator)
+          q-icon(
+            name='las la-angle-right'
           )
-          template(v-slot:separator)
-            q-icon(
-              name='las la-angle-right'
-            )
-          q-breadcrumbs-el(icon='las la-home', to='/', aria-label='Home')
-            q-tooltip Home
-          q-breadcrumbs-el(
-            v-for='brd of breadcrumbs'
-            :key='brd.id'
-            :icon='brd.icon'
-            :label='brd.title'
-            :aria-label='brd.title'
-            :to='$pageHelpers.getFullPath(brd)'
-            )
-          q-breadcrumbs-el(
-            v-if='editCreateMode'
-            :icon='pageIcon'
-            :label='title || `Untitled Page`'
-            :aria-label='title || `Untitled Page`'
-            )
-      .col-auto.flex.items-center.justify-end
-        template(v-if='!isPublished')
-          .text-caption.text-accent: strong Unpublished
-          q-separator.q-mx-sm(vertical)
-        .text-caption.text-grey-6(v-if='editCreateMode') New Page
-        .text-caption.text-grey-6(v-else) Last modified on #[strong September 5th, 2020]
-    .page-header.row
-      //- PAGE ICON
-      .col-auto.q-pl-md.flex.items-center(v-if='editMode')
-        q-btn.rounded-borders(
-          padding='none'
-          size='37px'
+        q-breadcrumbs-el(icon='las la-home', to='/', aria-label='Home')
+          q-tooltip Home
+        q-breadcrumbs-el(
+          v-for='brd of breadcrumbs'
+          :key='brd.id'
+          :icon='brd.icon'
+          :label='brd.title'
+          :aria-label='brd.title'
+          :to='$pageHelpers.getFullPath(brd)'
+          )
+        q-breadcrumbs-el(
+          v-if='editCreateMode'
           :icon='pageIcon'
-          color='primary'
-          flat
+          :label='title || `Untitled Page`'
+          :aria-label='title || `Untitled Page`'
           )
-          q-menu(content-class='shadow-7')
-            icon-picker-dialog(v-model='pageIcon')
-      .col-auto.q-pl-md.flex.items-center(v-else)
-        q-icon.rounded-borders(
-          :name='pageIcon'
-          size='64px'
-          color='primary'
+    .col-auto.flex.items-center.justify-end
+      template(v-if='!isPublished')
+        .text-caption.text-accent: strong Unpublished
+        q-separator.q-mx-sm(vertical)
+      .text-caption.text-grey-6(v-if='editCreateMode') New Page
+      .text-caption.text-grey-6(v-else) Last modified on #[strong September 5th, 2020]
+  .page-header.row
+    //- PAGE ICON
+    .col-auto.q-pl-md.flex.items-center(v-if='editMode')
+      q-btn.rounded-borders(
+        padding='none'
+        size='37px'
+        :icon='pageIcon'
+        color='primary'
+        flat
         )
-      //- PAGE HEADER
-      .col.q-pa-md(v-if='editMode')
-        q-input.no-height(
-          borderless
-          v-model='title'
-          input-class='font-poppins text-h4 text-grey-9'
-          input-style='padding: 0;'
-          placeholder='Untitled Page'
-          hide-hint
-          )
-        q-input.no-height(
-          borderless
-          v-model='description'
-          input-class='font-poppins text-subtitle2 text-grey-7'
-          input-style='padding: 0;'
-          placeholder='Enter a short description'
-          hide-hint
-          )
-      .col.q-pa-md.font-poppins(v-else)
-        .text-h4.page-header-title {{title}}
-        .text-subtitle2.page-header-subtitle {{description}}
+        q-menu(content-class='shadow-7')
+          icon-picker-dialog(v-model='pageIcon')
+    .col-auto.q-pl-md.flex.items-center(v-else)
+      q-icon.rounded-borders(
+        :name='pageIcon'
+        size='64px'
+        color='primary'
+      )
+    //- PAGE HEADER
+    .col.q-pa-md(v-if='editMode')
+      q-input.no-height(
+        borderless
+        v-model='title'
+        input-class='font-poppins text-h4 text-grey-9'
+        input-style='padding: 0;'
+        placeholder='Untitled Page'
+        hide-hint
+        )
+      q-input.no-height(
+        borderless
+        v-model='description'
+        input-class='font-poppins text-subtitle2 text-grey-7'
+        input-style='padding: 0;'
+        placeholder='Enter a short description'
+        hide-hint
+        )
+    .col.q-pa-md.font-poppins(v-else)
+      .text-h4.page-header-title {{title}}
+      .text-subtitle2.page-header-subtitle {{description}}
 
-      //- PAGE ACTIONS
-      .col-auto.q-pa-md.flex.items-center.justify-end(v-if='editMode')
-        q-btn.q-mr-sm.acrylic-btn(
-          flat
-          icon='las la-times'
-          color='grey-7'
-          label='Discard'
-          aria-label='Discard'
-          no-caps
-          @click='mode = `view`'
+    //- PAGE ACTIONS
+    .col-auto.q-pa-md.flex.items-center.justify-end(v-if='editMode')
+      q-btn.q-mr-sm.acrylic-btn(
+        flat
+        icon='las la-times'
+        color='grey-7'
+        label='Discard'
+        aria-label='Discard'
+        no-caps
+        @click='mode = `view`'
+      )
+      q-btn(
+        v-if='editorMode === `edit`'
+        unelevated
+        icon='las la-check'
+        color='secondary'
+        label='Save'
+        aria-label='Save'
+        no-caps
+        @click='mode = `view`'
+      )
+      q-btn(
+        v-else
+        unelevated
+        icon='las la-check'
+        color='secondary'
+        label='Create'
+        aria-label='Create'
+        no-caps
+        @click='mode = `view`'
+      )
+    .col-auto.q-pa-md.flex.items-center.justify-end(v-else)
+      q-btn.q-mr-md(
+        flat
+        dense
+        icon='las la-bell'
+        color='grey'
+        aria-label='Watch Page'
         )
-        q-btn(
-          v-if='editorMode === `edit`'
-          unelevated
-          icon='las la-check'
-          color='secondary'
-          label='Save'
-          aria-label='Save'
-          no-caps
-          @click='mode = `view`'
+        q-tooltip Watch Page
+      q-btn.q-mr-md(
+        flat
+        dense
+        icon='las la-bookmark'
+        color='grey'
+        aria-label='Bookmark Page'
         )
-        q-btn(
-          v-else
-          unelevated
-          icon='las la-check'
-          color='secondary'
-          label='Create'
-          aria-label='Create'
-          no-caps
-          @click='mode = `view`'
+        q-tooltip Bookmark Page
+      q-btn.q-mr-md(
+        flat
+        dense
+        icon='las la-share-alt'
+        color='grey'
+        aria-label='Share'
         )
-      .col-auto.q-pa-md.flex.items-center.justify-end(v-else)
-        q-btn.q-mr-md(
-          flat
-          dense
-          icon='las la-bell'
-          color='grey'
-          aria-label='Watch Page'
-          )
-          q-tooltip Watch Page
-        q-btn.q-mr-md(
-          flat
-          dense
-          icon='las la-bookmark'
-          color='grey'
-          aria-label='Bookmark Page'
-          )
-          q-tooltip Bookmark Page
-        q-btn.q-mr-md(
-          flat
-          dense
-          icon='las la-share-alt'
-          color='grey'
-          aria-label='Share'
-          )
-          q-tooltip Share
-          social-sharing-menu
-        q-btn.q-mr-md(
-          flat
-          dense
-          icon='las la-print'
-          color='grey'
-          aria-label='Print'
-          )
-          q-tooltip Print
-        q-btn.acrylic-btn(
-          flat
-          icon='las la-edit'
-          color='deep-orange-9'
-          label='Edit'
-          aria-label='Edit'
-          no-caps
-          @click='mode = `edit`'
+        q-tooltip Share
+        social-sharing-menu
+      q-btn.q-mr-md(
+        flat
+        dense
+        icon='las la-print'
+        color='grey'
+        aria-label='Print'
         )
-    .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
-      .col(style='order: 1;')
-        q-no-ssr(v-if='editMode')
-          component(:is='editorComponent')
-          //- editor-wysiwyg
-          //- editor-markdown
-        q-scroll-area(
-          :thumb-style='thumbStyle'
-          :bar-style='barStyle'
-          style='height: 100%;'
-          v-else
-          )
-          .q-pa-md
-            div(v-html='render')
-            template(v-if='relations && relations.length > 0')
-              q-separator.q-my-lg
-              .row.align-center
-                .col.text-left(v-if='relationsLeft.length > 0')
-                  q-btn.q-mr-sm.q-mb-sm(
-                    padding='sm md'
-                    outline
-                    :icon='rel.icon'
-                    no-caps
-                    color='primary'
-                    v-for='rel of relationsLeft'
-                    :key='`rel-id-` + rel.id'
-                    )
-                    .column.text-left.q-pl-md
-                      .text-body2: strong {{rel.label}}
-                      .text-caption {{rel.caption}}
-                .col.text-center(v-if='relationsCenter.length > 0')
-                  .column
-                    q-btn(
-                      :label='rel.label'
-                      color='primary'
-                      flat
-                      no-caps
-                      :icon='rel.icon'
-                      v-for='rel of relationsCenter'
-                      :key='`rel-id-` + rel.id'
-                    )
-                .col.text-right(v-if='relationsRight.length > 0')
-                  q-btn.q-ml-sm.q-mb-sm(
-                    padding='sm md'
-                    outline
-                    :icon-right='rel.icon'
-                    no-caps
-                    color='primary'
-                    v-for='rel of relationsRight'
-                    :key='`rel-id-` + rel.id'
-                    )
-                    .column.text-left.q-pr-md
-                      .text-body2: strong {{rel.label}}
-                      .text-caption {{rel.caption}}
-      .page-sidebar(
-        v-if='showSidebar'
-        style='order: 2;'
+        q-tooltip Print
+      q-btn.acrylic-btn(
+        flat
+        icon='las la-edit'
+        color='deep-orange-9'
+        label='Edit'
+        aria-label='Edit'
+        no-caps
+        @click='mode = `edit`'
+      )
+  .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
+    .col(style='order: 1;')
+      q-no-ssr(v-if='editMode')
+        component(:is='editorComponent')
+        //- editor-wysiwyg
+        //- editor-markdown
+      q-scroll-area(
+        :thumb-style='thumbStyle'
+        :bar-style='barStyle'
+        style='height: 100%;'
+        v-else
         )
-        template(v-if='showToc')
-          //- TOC
-          .q-pa-md.flex.items-center
-            q-icon.q-mr-sm(name='las la-stream', color='grey')
-            .text-caption.text-grey-7 Contents
-          .q-px-md.q-pb-sm
-            q-tree(
-              :nodes='toc'
-              node-key='key'
-              default-expand-all
-              :selected.sync='tocSelected'
-            )
-        //- Tags
-        template(v-if='showTags')
-          q-separator(v-if='showToc')
-          .q-pa-md(
-            @mouseover='showTagsEditBtn = true'
-            @mouseleave='showTagsEditBtn = false'
-            )
-            .flex.items-center
-              q-icon.q-mr-sm(name='las la-tags', color='grey')
-              .text-caption.text-grey-7 Tags
-              q-space
-              transition(name='fade')
-                q-btn(
-                  v-show='showTagsEditBtn'
-                  size='sm'
-                  padding='none xs'
-                  icon='las la-pen'
-                  color='deep-orange-9'
-                  flat
-                  label='Edit'
+        .q-pa-md
+          div(v-html='render')
+          template(v-if='relations && relations.length > 0')
+            q-separator.q-my-lg
+            .row.align-center
+              .col.text-left(v-if='relationsLeft.length > 0')
+                q-btn.q-mr-sm.q-mb-sm(
+                  padding='sm md'
+                  outline
+                  :icon='rel.icon'
                   no-caps
-                  @click='tagEditMode = !tagEditMode'
-                )
-            page-tags.q-mt-sm(:edit='tagEditMode')
-        template(v-if='allowRatings && ratingsMode !== `off`')
-          q-separator(v-if='showToc || showTags')
-          //- Rating
-          .q-pa-md.flex.items-center
-            q-icon.q-mr-sm(name='las la-star-half-alt', color='grey')
-            .text-caption.text-grey-7 Rate this page
-          .q-px-md
-            q-rating(
-              v-if='ratingsMode === `stars`'
-              v-model='currentRating'
-              icon='las la-star'
+                  color='primary'
+                  v-for='rel of relationsLeft'
+                  :key='`rel-id-` + rel.id'
+                  )
+                  .column.text-left.q-pl-md
+                    .text-body2: strong {{rel.label}}
+                    .text-caption {{rel.caption}}
+              .col.text-center(v-if='relationsCenter.length > 0')
+                .column
+                  q-btn(
+                    :label='rel.label'
+                    color='primary'
+                    flat
+                    no-caps
+                    :icon='rel.icon'
+                    v-for='rel of relationsCenter'
+                    :key='`rel-id-` + rel.id'
+                  )
+              .col.text-right(v-if='relationsRight.length > 0')
+                q-btn.q-ml-sm.q-mb-sm(
+                  padding='sm md'
+                  outline
+                  :icon-right='rel.icon'
+                  no-caps
+                  color='primary'
+                  v-for='rel of relationsRight'
+                  :key='`rel-id-` + rel.id'
+                  )
+                  .column.text-left.q-pr-md
+                    .text-body2: strong {{rel.label}}
+                    .text-caption {{rel.caption}}
+    .page-sidebar(
+      v-if='showSidebar'
+      style='order: 2;'
+      )
+      template(v-if='showToc')
+        //- TOC
+        .q-pa-md.flex.items-center
+          q-icon.q-mr-sm(name='las la-stream', color='grey')
+          .text-caption.text-grey-7 Contents
+        .q-px-md.q-pb-sm
+          q-tree(
+            :nodes='toc'
+            node-key='key'
+            default-expand-all
+            :selected.sync='tocSelected'
+          )
+      //- Tags
+      template(v-if='showTags')
+        q-separator(v-if='showToc')
+        .q-pa-md(
+          @mouseover='showTagsEditBtn = true'
+          @mouseleave='showTagsEditBtn = false'
+          )
+          .flex.items-center
+            q-icon.q-mr-sm(name='las la-tags', color='grey')
+            .text-caption.text-grey-7 Tags
+            q-space
+            transition(name='fade')
+              q-btn(
+                v-show='showTagsEditBtn'
+                size='sm'
+                padding='none xs'
+                icon='las la-pen'
+                color='deep-orange-9'
+                flat
+                label='Edit'
+                no-caps
+                @click='tagEditMode = !tagEditMode'
+              )
+          page-tags.q-mt-sm(:edit='tagEditMode')
+      template(v-if='allowRatings && ratingsMode !== `off`')
+        q-separator(v-if='showToc || showTags')
+        //- Rating
+        .q-pa-md.flex.items-center
+          q-icon.q-mr-sm(name='las la-star-half-alt', color='grey')
+          .text-caption.text-grey-7 Rate this page
+        .q-px-md
+          q-rating(
+            v-if='ratingsMode === `stars`'
+            v-model='currentRating'
+            icon='las la-star'
+            color='secondary'
+            size='sm'
+          )
+          .flex.items-center(v-else-if='ratingsMode === `thumbs`')
+            q-btn.acrylic-btn(
+              flat
+              icon='las la-thumbs-down'
               color='secondary'
-              size='sm'
             )
-            .flex.items-center(v-else-if='ratingsMode === `thumbs`')
-              q-btn.acrylic-btn(
-                flat
-                icon='las la-thumbs-down'
-                color='secondary'
-              )
-              q-btn.acrylic-btn.q-ml-sm(
-                flat
-                icon='las la-thumbs-up'
-                color='secondary'
-              )
-      .page-actions.column.items-stretch.order-last
-        q-btn.q-py-sm(
-          flat
-          icon='las la-pen-nib'
-          color='deep-orange-9'
-          aria-label='Page Properties'
-          @click='togglePageProperties'
-          )
-          q-tooltip(anchor='center left' self='center right') Page Properties
-        q-btn.q-py-sm(
-          flat
-          icon='las la-project-diagram'
-          color='deep-orange-9'
-          aria-label='Page Data'
-          @click='togglePageData'
-          )
-          q-tooltip(anchor='center left' self='center right') Page Data
-        q-separator(inset)
-        q-btn.q-py-sm(
-          flat
-          icon='las la-history'
-          color='grey'
-          aria-label='Page History'
-          )
-          q-tooltip(anchor='center left' self='center right') Page History
-        q-btn.q-py-sm(
-          flat
-          icon='las la-code'
-          color='grey'
-          aria-label='Page Source'
-          )
-          q-tooltip(anchor='center left' self='center right') Page Source
-        q-btn.q-py-sm(
-          flat
-          icon='las la-ellipsis-h'
-          color='grey'
-          aria-label='Page Actions'
-          )
-          q-menu(
-            anchor='top left'
-            self='top right'
-            auto-close
-            transition-show='jump-left'
+            q-btn.acrylic-btn.q-ml-sm(
+              flat
+              icon='las la-thumbs-up'
+              color='secondary'
             )
-            q-list(padding, style='min-width: 225px;')
-              q-item(clickable)
-                q-item-section.items-center(avatar)
-                  q-icon(color='deep-orange-9', name='las la-atom', size='sm')
-                q-item-section
-                  q-item-label Convert Page
-              q-item(clickable)
-                q-item-section.items-center(avatar)
-                  q-icon(color='deep-orange-9', name='las la-magic', size='sm')
-                q-item-section
-                  q-item-label Re-render Page
-              q-item(clickable)
-                q-item-section.items-center(avatar)
-                  q-icon(color='deep-orange-9', name='las la-sun', size='sm')
-                q-item-section
-                  q-item-label View Backlinks
-        q-space
-        q-btn.q-py-sm(
-          flat
-          icon='las la-copy'
-          color='grey'
-          aria-label='Duplicate Page'
+    .page-actions.column.items-stretch.order-last
+      q-btn.q-py-sm(
+        flat
+        icon='las la-pen-nib'
+        color='deep-orange-9'
+        aria-label='Page Properties'
+        @click='togglePageProperties'
+        )
+        q-tooltip(anchor='center left' self='center right') Page Properties
+      q-btn.q-py-sm(
+        flat
+        icon='las la-project-diagram'
+        color='deep-orange-9'
+        aria-label='Page Data'
+        @click='togglePageData'
+        )
+        q-tooltip(anchor='center left' self='center right') Page Data
+      q-separator(inset)
+      q-btn.q-py-sm(
+        flat
+        icon='las la-history'
+        color='grey'
+        aria-label='Page History'
+        )
+        q-tooltip(anchor='center left' self='center right') Page History
+      q-btn.q-py-sm(
+        flat
+        icon='las la-code'
+        color='grey'
+        aria-label='Page Source'
+        )
+        q-tooltip(anchor='center left' self='center right') Page Source
+      q-btn.q-py-sm(
+        flat
+        icon='las la-ellipsis-h'
+        color='grey'
+        aria-label='Page Actions'
+        )
+        q-menu(
+          anchor='top left'
+          self='top right'
+          auto-close
+          transition-show='jump-left'
           )
-          q-tooltip(anchor='center left' self='center right') Duplicate Page
-        q-btn.q-py-sm(
-          flat
-          icon='las la-share'
-          color='grey'
-          aria-label='Rename / Move Page'
-          )
-          q-tooltip(anchor='center left' self='center right') Rename / Move Page
-        q-btn.q-py-sm(
-          flat
-          icon='las la-trash'
-          color='grey'
-          aria-label='Delete Page'
-          @click='savePage'
-          )
-          q-tooltip(anchor='center left' self='center right') Delete Page
+          q-list(padding, style='min-width: 225px;')
+            q-item(clickable)
+              q-item-section.items-center(avatar)
+                q-icon(color='deep-orange-9', name='las la-atom', size='sm')
+              q-item-section
+                q-item-label Convert Page
+            q-item(clickable)
+              q-item-section.items-center(avatar)
+                q-icon(color='deep-orange-9', name='las la-magic', size='sm')
+              q-item-section
+                q-item-label Re-render Page
+            q-item(clickable)
+              q-item-section.items-center(avatar)
+                q-icon(color='deep-orange-9', name='las la-sun', size='sm')
+              q-item-section
+                q-item-label View Backlinks
+      q-space
+      q-btn.q-py-sm(
+        flat
+        icon='las la-copy'
+        color='grey'
+        aria-label='Duplicate Page'
+        )
+        q-tooltip(anchor='center left' self='center right') Duplicate Page
+      q-btn.q-py-sm(
+        flat
+        icon='las la-share'
+        color='grey'
+        aria-label='Rename / Move Page'
+        )
+        q-tooltip(anchor='center left' self='center right') Rename / Move Page
+      q-btn.q-py-sm(
+        flat
+        icon='las la-trash'
+        color='grey'
+        aria-label='Delete Page'
+        @click='savePage'
+        )
+        q-tooltip(anchor='center left' self='center right') Delete Page
 
-    q-dialog(
-      v-model='showSideDialog'
-      position='right'
-      full-height
-      transition-show='jump-left'
-      transition-hide='jump-right'
-      content-class='floating-sidepanel'
-      )
-      component(:is='sideDialogComponent')
+  q-dialog(
+    v-model='showSideDialog'
+    position='right'
+    full-height
+    transition-show='jump-left'
+    transition-hide='jump-right'
+    content-class='floating-sidepanel'
+    )
+    component(:is='sideDialogComponent')
 
-    q-dialog(
-      v-model='showGlobalDialog'
-      transition-show='jump-up'
-      transition-hide='jump-down'
-      )
-      component(:is='globalDialogComponent')
+  q-dialog(
+    v-model='showGlobalDialog'
+    transition-show='jump-up'
+    transition-hide='jump-down'
+    )
+    component(:is='globalDialogComponent')
 </template>
 
 <script>

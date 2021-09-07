@@ -19,7 +19,7 @@ const routes = [
     path: '/p',
     component: () => import('layouts/ProfileLayout.vue'),
     children: [
-      { path: '', redirect: 'profile' },
+      { path: '', redirect: '/p/profile' },
       { path: 'profile', component: () => import('pages/Profile.vue') }
     ]
   },
@@ -27,7 +27,7 @@ const routes = [
     path: '/a',
     component: () => import('layouts/AdminLayout.vue'),
     children: [
-      { path: '', redirect: 'dashboard' },
+      { path: '', redirect: '/a/dashboard' },
       { path: 'dashboard', component: () => import('pages/AdminDashboard.vue') },
       { path: 'sites', component: () => import('pages/AdminSites.vue') },
       { path: 'general', component: () => import('pages/AdminGeneral.vue') },
@@ -68,7 +68,7 @@ const routes = [
   // Always leave this as last one,
   // but you can also remove it
   {
-    path: '*',
+    path: '/:catchAll(.*)*',
     component: () => import('pages/Error404.vue')
   }
 ]

@@ -1,296 +1,296 @@
 <template lang='pug'>
-  q-page.admin-mail
-    .row.q-pa-md.items-center
-      .col-auto
-        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-protect.svg')
-      .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.security.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.security.subtitle') }}
-      .col-auto
-        q-spinner-tail.q-mr-md(
-          v-show='loading'
-          color='accent'
-          size='sm'
+q-page.admin-mail
+  .row.q-pa-md.items-center
+    .col-auto
+      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-protect.svg')
+    .col.q-pl-md
+      .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.security.title') }}
+      .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.security.subtitle') }}
+    .col-auto
+      q-spinner-tail.q-mr-md(
+        v-show='loading'
+        color='accent'
+        size='sm'
+      )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-question-circle'
+        flat
+        color='grey'
+        href='https://docs.js.wiki/admin/security'
+        target='_blank'
+        type='a'
         )
-        q-btn.q-mr-sm.acrylic-btn(
-          icon='las la-question-circle'
-          flat
-          color='grey'
-          href='https://docs.js.wiki/admin/security'
-          target='_blank'
-          type='a'
-          )
-        q-btn(
-          unelevated
-          icon='mdi-check'
-          :label='$t(`common.actions.apply`)'
-          color='secondary'
-          @click='save'
-          :loading='loading'
-        )
-    q-separator(inset)
-    .row.q-pa-md.q-col-gutter-md
-      .col-12.col-lg-6
-        //- -----------------------
-        //- Security
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm
-          q-card-section
-            .text-subtitle1 {{$t('admin.security.title')}}
-          q-item.q-pt-none
-            q-item-section
-              q-card.bg-negative.text-white.rounded-borders(flat)
-                q-card-section.items-center(horizontal)
-                  q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-exclamation-triangle', size='sm')
-                  q-card-section.text-caption {{ $t('admin.security.warn') }}
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='rfid-signal')
-            q-item-section
-              q-item-label {{$t(`admin.security.disallowFloc`)}}
-              q-item-label(caption) {{$t(`admin.security.disallowFlocHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.disallowFloc'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.security.disallowFloc`)'
-                )
+      q-btn(
+        unelevated
+        icon='mdi-check'
+        :label='$t(`common.actions.apply`)'
+        color='secondary'
+        @click='save'
+        :loading='loading'
+      )
+  q-separator(inset)
+  .row.q-pa-md.q-col-gutter-md
+    .col-12.col-lg-6
+      //- -----------------------
+      //- Security
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm
+        q-card-section
+          .text-subtitle1 {{$t('admin.security.title')}}
+        q-item.q-pt-none
+          q-item-section
+            q-card.bg-negative.text-white.rounded-borders(flat)
+              q-card-section.items-center(horizontal)
+                q-card-section.col-auto.q-pr-none
+                  q-icon(name='las la-exclamation-triangle', size='sm')
+                q-card-section.text-caption {{ $t('admin.security.warn') }}
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='rfid-signal')
+          q-item-section
+            q-item-label {{$t(`admin.security.disallowFloc`)}}
+            q-item-label(caption) {{$t(`admin.security.disallowFlocHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.disallowFloc'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.disallowFloc`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='maximize-window')
+          q-item-section
+            q-item-label {{$t(`admin.security.disallowIframe`)}}
+            q-item-label(caption) {{$t(`admin.security.disallowIframeHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.disallowIframe'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.disallowIframe`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='do-not-touch')
+          q-item-section
+            q-item-label {{$t(`admin.security.enforceSameOriginReferrerPolicy`)}}
+            q-item-label(caption) {{$t(`admin.security.enforceSameOriginReferrerPolicyHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.enforceSameOriginReferrerPolicy'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.enforceSameOriginReferrerPolicy`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='curly-arrow')
+          q-item-section
+            q-item-label {{$t(`admin.security.disallowOpenRedirect`)}}
+            q-item-label(caption) {{$t(`admin.security.disallowOpenRedirectHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.disallowOpenRedirect'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.disallowOpenRedirect`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='door-sensor-alarmed')
+          q-item-section
+            q-item-label {{$t(`admin.security.trustProxy`)}}
+            q-item-label(caption) {{$t(`admin.security.trustProxyHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.trustProxy'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.trustProxy`)'
+              )
+      //- -----------------------
+      //- HSTS
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm.q-mt-md
+        q-card-section
+          .text-subtitle1 {{$t('admin.security.hsts')}}
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='hips')
+          q-item-section
+            q-item-label {{$t(`admin.security.enforceHsts`)}}
+            q-item-label(caption) {{$t(`admin.security.enforceHstsHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.enforceHsts'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.enforceHsts`)'
+              )
+        template(v-if='config.enforceHsts')
           q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='maximize-window')
-            q-item-section
-              q-item-label {{$t(`admin.security.disallowIframe`)}}
-              q-item-label(caption) {{$t(`admin.security.disallowIframeHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.disallowIframe'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.security.disallowIframe`)'
-                )
-          q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='do-not-touch')
-            q-item-section
-              q-item-label {{$t(`admin.security.enforceSameOriginReferrerPolicy`)}}
-              q-item-label(caption) {{$t(`admin.security.enforceSameOriginReferrerPolicyHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.enforceSameOriginReferrerPolicy'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.security.enforceSameOriginReferrerPolicy`)'
-                )
-          q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='curly-arrow')
-            q-item-section
-              q-item-label {{$t(`admin.security.disallowOpenRedirect`)}}
-              q-item-label(caption) {{$t(`admin.security.disallowOpenRedirectHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.disallowOpenRedirect'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.security.disallowOpenRedirect`)'
-                )
-          q-separator.q-my-sm(inset)
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='door-sensor-alarmed')
-            q-item-section
-              q-item-label {{$t(`admin.security.trustProxy`)}}
-              q-item-label(caption) {{$t(`admin.security.trustProxyHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.trustProxy'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.security.trustProxy`)'
-                )
-        //- -----------------------
-        //- HSTS
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm.q-mt-md
-          q-card-section
-            .text-subtitle1 {{$t('admin.security.hsts')}}
-          q-item(tag='label', v-ripple)
-            blueprint-icon(icon='hips')
-            q-item-section
-              q-item-label {{$t(`admin.security.enforceHsts`)}}
-              q-item-label(caption) {{$t(`admin.security.enforceHstsHint`)}}
-            q-item-section(avatar)
-              q-toggle(
-                v-model='config.enforceHsts'
-                color='primary'
-                checked-icon='las la-check'
-                unchecked-icon='las la-times'
-                :aria-label='$t(`admin.security.enforceHsts`)'
-                )
-          template(v-if='config.enforceHsts')
-            q-separator.q-my-sm(inset)
-            q-item
-              blueprint-icon(icon='timer')
-              q-item-section
-                q-item-label {{$t(`admin.security.hstsDuration`)}}
-                q-item-label(caption) {{$t(`admin.security.hstsDurationHint`)}}
-              q-item-section(style='flex: 0 0 200px;')
-                q-select(
-                  outlined
-                  v-model='config.hstsDuration'
-                  :options='hstsDurations'
-                  option-value='value'
-                  option-label='text'
-                  emit-value
-                  map-options
-                  dense
-                  :aria-label='$t(`admin.security.hstsDuration`)'
-                  )
-
-      .col-12.col-lg-6
-        //- -----------------------
-        //- Uploads
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm
-          q-card-section
-            .text-subtitle1 {{$t('admin.security.uploads')}}
-          q-item.q-pt-none
-            q-item-section
-              q-card.bg-info.text-white.rounded-borders(flat)
-                q-card-section.items-center(horizontal)
-                  q-card-section.col-auto.q-pr-none
-                    q-icon(name='las la-info-circle', size='sm')
-                  q-card-section.text-caption {{ $t('admin.security.uploadsInfo') }}
           q-item
-            blueprint-icon(icon='upload-to-the-cloud')
+            blueprint-icon(icon='timer')
             q-item-section
-              q-item-label {{$t(`admin.security.maxUploadSize`)}}
-              q-item-label(caption) {{$t(`admin.security.maxUploadSizeHint`)}}
+              q-item-label {{$t(`admin.security.hstsDuration`)}}
+              q-item-label(caption) {{$t(`admin.security.hstsDurationHint`)}}
             q-item-section(style='flex: 0 0 200px;')
-              q-input(
-                outlined
-                v-model.number='config.uploadMaxFileSize'
-                dense
-                :suffix='$t(`admin.security.maxUploadSizeSuffix`)'
-                :aria-label='$t(`admin.security.maxUploadSize`)'
-                )
-          q-separator.q-my-sm(inset)
-          q-item
-            blueprint-icon(icon='upload-to-ftp')
-            q-item-section
-              q-item-label {{$t(`admin.security.maxUploadBatch`)}}
-              q-item-label(caption) {{$t(`admin.security.maxUploadBatchHint`)}}
-            q-item-section(style='flex: 0 0 200px;')
-              q-input(
-                outlined
-                v-model.number='config.uploadMaxFiles'
-                dense
-                :suffix='$t(`admin.security.maxUploadBatchSuffix`)'
-                :aria-label='$t(`admin.security.maxUploadBatch`)'
-                )
-
-        //- -----------------------
-        //- CORS
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm.q-mt-md
-          q-card-section
-            .text-subtitle1 {{$t('admin.security.cors')}}
-          q-item
-            blueprint-icon(icon='firewall')
-            q-item-section
-              q-item-label {{$t(`admin.security.corsMode`)}}
-              q-item-label(caption) {{$t(`admin.security.corsModeHint`)}}
-            q-item-section
               q-select(
                 outlined
-                v-model='config.corsMode'
-                :options='corsModes'
+                v-model='config.hstsDuration'
+                :options='hstsDurations'
                 option-value='value'
                 option-label='text'
                 emit-value
                 map-options
                 dense
-                :aria-label='$t(`admin.security.corsMode`)'
+                :aria-label='$t(`admin.security.hstsDuration`)'
                 )
-          template(v-if='config.corsMode === `HOSTNAMES`')
-            q-separator.q-my-sm(inset)
-            q-item
-              blueprint-icon(icon='todo-list', key='corsHostnames')
-              q-item-section
-                q-item-label {{$t(`admin.security.corsHostnames`)}}
-                q-item-label(caption) {{$t(`admin.security.corsHostnamesHint`)}}
-              q-item-section
-                q-input(
-                  outlined
-                  v-model='config.corsConfig'
-                  dense
-                  type='textarea'
-                  :aria-label='$t(`admin.security.corsHostnames`)'
-                  )
-          template(v-else-if='config.corsMode === `REGEX`')
-            q-separator.q-my-sm(inset)
-            q-item
-              blueprint-icon(icon='validation', key='corsRegex')
-              q-item-section
-                q-item-label {{$t(`admin.security.corsRegex`)}}
-                q-item-label(caption) {{$t(`admin.security.corsRegexHint`)}}
-              q-item-section
-                q-input(
-                  outlined
-                  v-model='config.corsConfig'
-                  dense
-                  :aria-label='$t(`admin.security.corsRegex`)'
-                  )
 
-        //- -----------------------
-        //- JWT
-        //- -----------------------
-        q-card.shadow-1.q-pb-sm.q-mt-md
-          q-card-section
-            .text-subtitle1 {{$t('admin.security.jwt')}}
-          q-item
-            blueprint-icon(icon='ticket')
-            q-item-section
-              q-item-label {{$t(`admin.security.jwtAudience`)}}
-              q-item-label(caption) {{$t(`admin.security.jwtAudienceHint`)}}
-            q-item-section(style='flex: 0 0 250px;')
-              q-input(
-                outlined
-                v-model='config.authJwtAudience'
-                dense
-                :aria-label='$t(`admin.security.jwtAudience`)'
-                )
+    .col-12.col-lg-6
+      //- -----------------------
+      //- Uploads
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm
+        q-card-section
+          .text-subtitle1 {{$t('admin.security.uploads')}}
+        q-item.q-pt-none
+          q-item-section
+            q-card.bg-info.text-white.rounded-borders(flat)
+              q-card-section.items-center(horizontal)
+                q-card-section.col-auto.q-pr-none
+                  q-icon(name='las la-info-circle', size='sm')
+                q-card-section.text-caption {{ $t('admin.security.uploadsInfo') }}
+        q-item
+          blueprint-icon(icon='upload-to-the-cloud')
+          q-item-section
+            q-item-label {{$t(`admin.security.maxUploadSize`)}}
+            q-item-label(caption) {{$t(`admin.security.maxUploadSizeHint`)}}
+          q-item-section(style='flex: 0 0 200px;')
+            q-input(
+              outlined
+              v-model.number='config.uploadMaxFileSize'
+              dense
+              :suffix='$t(`admin.security.maxUploadSizeSuffix`)'
+              :aria-label='$t(`admin.security.maxUploadSize`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='upload-to-ftp')
+          q-item-section
+            q-item-label {{$t(`admin.security.maxUploadBatch`)}}
+            q-item-label(caption) {{$t(`admin.security.maxUploadBatchHint`)}}
+          q-item-section(style='flex: 0 0 200px;')
+            q-input(
+              outlined
+              v-model.number='config.uploadMaxFiles'
+              dense
+              :suffix='$t(`admin.security.maxUploadBatchSuffix`)'
+              :aria-label='$t(`admin.security.maxUploadBatch`)'
+              )
+
+      //- -----------------------
+      //- CORS
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm.q-mt-md
+        q-card-section
+          .text-subtitle1 {{$t('admin.security.cors')}}
+        q-item
+          blueprint-icon(icon='firewall')
+          q-item-section
+            q-item-label {{$t(`admin.security.corsMode`)}}
+            q-item-label(caption) {{$t(`admin.security.corsModeHint`)}}
+          q-item-section
+            q-select(
+              outlined
+              v-model='config.corsMode'
+              :options='corsModes'
+              option-value='value'
+              option-label='text'
+              emit-value
+              map-options
+              dense
+              :aria-label='$t(`admin.security.corsMode`)'
+              )
+        template(v-if='config.corsMode === `HOSTNAMES`')
           q-separator.q-my-sm(inset)
           q-item
-            blueprint-icon(icon='expired')
+            blueprint-icon(icon='todo-list', key='corsHostnames')
             q-item-section
-              q-item-label {{$t(`admin.security.tokenExpiration`)}}
-              q-item-label(caption) {{$t(`admin.security.tokenExpirationHint`)}}
-            q-item-section(style='flex: 0 0 140px;')
+              q-item-label {{$t(`admin.security.corsHostnames`)}}
+              q-item-label(caption) {{$t(`admin.security.corsHostnamesHint`)}}
+            q-item-section
               q-input(
                 outlined
-                v-model='config.authJwtExpiration'
+                v-model='config.corsConfig'
                 dense
-                :aria-label='$t(`admin.security.tokenExpiration`)'
+                type='textarea'
+                :aria-label='$t(`admin.security.corsHostnames`)'
                 )
+        template(v-else-if='config.corsMode === `REGEX`')
           q-separator.q-my-sm(inset)
           q-item
-            blueprint-icon(icon='future')
+            blueprint-icon(icon='validation', key='corsRegex')
             q-item-section
-              q-item-label {{$t(`admin.security.tokenRenewalPeriod`)}}
-              q-item-label(caption) {{$t(`admin.security.tokenRenewalPeriodHint`)}}
-            q-item-section(style='flex: 0 0 140px;')
+              q-item-label {{$t(`admin.security.corsRegex`)}}
+              q-item-label(caption) {{$t(`admin.security.corsRegexHint`)}}
+            q-item-section
               q-input(
                 outlined
-                v-model='config.authJwtRenewablePeriod'
+                v-model='config.corsConfig'
                 dense
-                :aria-label='$t(`admin.security.tokenRenewalPeriod`)'
+                :aria-label='$t(`admin.security.corsRegex`)'
                 )
+
+      //- -----------------------
+      //- JWT
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm.q-mt-md
+        q-card-section
+          .text-subtitle1 {{$t('admin.security.jwt')}}
+        q-item
+          blueprint-icon(icon='ticket')
+          q-item-section
+            q-item-label {{$t(`admin.security.jwtAudience`)}}
+            q-item-label(caption) {{$t(`admin.security.jwtAudienceHint`)}}
+          q-item-section(style='flex: 0 0 250px;')
+            q-input(
+              outlined
+              v-model='config.authJwtAudience'
+              dense
+              :aria-label='$t(`admin.security.jwtAudience`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='expired')
+          q-item-section
+            q-item-label {{$t(`admin.security.tokenExpiration`)}}
+            q-item-label(caption) {{$t(`admin.security.tokenExpirationHint`)}}
+          q-item-section(style='flex: 0 0 140px;')
+            q-input(
+              outlined
+              v-model='config.authJwtExpiration'
+              dense
+              :aria-label='$t(`admin.security.tokenExpiration`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='future')
+          q-item-section
+            q-item-label {{$t(`admin.security.tokenRenewalPeriod`)}}
+            q-item-label(caption) {{$t(`admin.security.tokenRenewalPeriodHint`)}}
+          q-item-section(style='flex: 0 0 140px;')
+            q-input(
+              outlined
+              v-model='config.authJwtRenewablePeriod'
+              dense
+              :aria-label='$t(`admin.security.tokenRenewalPeriod`)'
+              )
 </template>
 
 <script>

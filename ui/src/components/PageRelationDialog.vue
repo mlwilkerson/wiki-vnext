@@ -1,115 +1,115 @@
 <template lang="pug">
-  q-card.page-relation-dialog(style='width: 500px;')
-    q-toolbar.bg-primary.text-white
-      .text-subtitle2(v-if='isEditMode') {{$t('editor.pageRel.titleEdit')}}
-      .text-subtitle2(v-else) {{$t('editor.pageRel.title')}}
-    q-card-section
-      .text-overline {{$t('editor.pageRel.position')}}
-      q-form.q-gutter-md.q-pt-md
-        div
-          q-btn-toggle(
-            v-model='pos'
-            push
-            glossy
-            no-caps
-            toggle-color='primary'
-            :options=`[
-              { label: $t('editor.pageRel.left'), value: 'left' },
-              { label: $t('editor.pageRel.center'), value: 'center' },
-              { label: $t('editor.pageRel.right'), value: 'right' }
-            ]`
-          )
-        .text-overline {{$t('editor.pageRel.button')}}
+q-card.page-relation-dialog(style='width: 500px;')
+  q-toolbar.bg-primary.text-white
+    .text-subtitle2(v-if='isEditMode') {{$t('editor.pageRel.titleEdit')}}
+    .text-subtitle2(v-else) {{$t('editor.pageRel.title')}}
+  q-card-section
+    .text-overline {{$t('editor.pageRel.position')}}
+    q-form.q-gutter-md.q-pt-md
+      div
+        q-btn-toggle(
+          v-model='pos'
+          push
+          glossy
+          no-caps
+          toggle-color='primary'
+          :options=`[
+            { label: $t('editor.pageRel.left'), value: 'left' },
+            { label: $t('editor.pageRel.center'), value: 'center' },
+            { label: $t('editor.pageRel.right'), value: 'right' }
+          ]`
+        )
+      .text-overline {{$t('editor.pageRel.button')}}
+      q-input(
+        ref='iptRelLabel'
+        outlined
+        dense
+        :label='$t(`editor.pageRel.label`)'
+        v-model='label'
+        )
+      template(v-if='pos !== `center`')
         q-input(
-          ref='iptRelLabel'
           outlined
           dense
-          :label='$t(`editor.pageRel.label`)'
-          v-model='label'
+          :label='$t(`editor.pageRel.caption`)'
+          v-model='caption'
           )
-        template(v-if='pos !== `center`')
-          q-input(
-            outlined
-            dense
-            :label='$t(`editor.pageRel.caption`)'
-            v-model='caption'
-            )
-        q-btn.rounded-borders(
-          :label='$t(`editor.pageRel.selectIcon`)'
-          color='primary'
-          outline
-          )
-          q-menu(content-class='shadow-7')
-            icon-picker-dialog(v-model='icon')
-        .text-overline {{$t('editor.pageRel.target')}}
-        q-btn.rounded-borders(
-          :label='$t(`editor.pageRel.selectPage`)'
-          color='primary'
-          outline
-          )
-        .text-overline {{$t('editor.pageRel.preview')}}
-        q-btn(
-          v-if='pos === `left`'
-          padding='sm md'
-          outline
-          :icon='icon'
-          no-caps
-          color='primary'
-          )
-          .column.text-left.q-pl-md
-            .text-body2: strong {{label}}
-            .text-caption {{caption}}
-        q-btn.full-width(
-          v-else-if='pos === `center`'
-          :label='label'
-          color='primary'
-          flat
-          no-caps
-          :icon='icon'
+      q-btn.rounded-borders(
+        :label='$t(`editor.pageRel.selectIcon`)'
+        color='primary'
+        outline
         )
-        q-btn(
-          v-else-if='pos === `right`'
-          padding='sm md'
-          outline
-          :icon-right='icon'
-          no-caps
-          color='primary'
-          )
-          .column.text-left.q-pr-md
-            .text-body2: strong {{label}}
-            .text-caption {{caption}}
-    q-card-actions.card-actions
-      q-space
-      q-btn.acrylic-btn(
-        icon='las la-times'
-        :label='$t(`common.actions.discard`)'
-        color='grey-7'
-        padding='xs md'
-        v-close-popup
+        q-menu(content-class='shadow-7')
+          icon-picker-dialog(v-model='icon')
+      .text-overline {{$t('editor.pageRel.target')}}
+      q-btn.rounded-borders(
+        :label='$t(`editor.pageRel.selectPage`)'
+        color='primary'
+        outline
+        )
+      .text-overline {{$t('editor.pageRel.preview')}}
+      q-btn(
+        v-if='pos === `left`'
+        padding='sm md'
+        outline
+        :icon='icon'
+        no-caps
+        color='primary'
+        )
+        .column.text-left.q-pl-md
+          .text-body2: strong {{label}}
+          .text-caption {{caption}}
+      q-btn.full-width(
+        v-else-if='pos === `center`'
+        :label='label'
+        color='primary'
         flat
+        no-caps
+        :icon='icon'
       )
       q-btn(
-        v-if='isEditMode'
-        :disabled='!canSubmit'
-        icon='las la-check'
-        :label='$t(`common.actions.save`)'
-        unelevated
+        v-else-if='pos === `right`'
+        padding='sm md'
+        outline
+        :icon-right='icon'
+        no-caps
         color='primary'
-        padding='xs md'
-        @click='persist'
-        v-close-popup
-      )
-      q-btn(
-        v-else
-        :disabled='!canSubmit'
-        icon='las la-plus'
-        :label='$t(`common.actions.create`)'
-        unelevated
-        color='primary'
-        padding='xs md'
-        @click='create'
-        v-close-popup
-      )
+        )
+        .column.text-left.q-pr-md
+          .text-body2: strong {{label}}
+          .text-caption {{caption}}
+  q-card-actions.card-actions
+    q-space
+    q-btn.acrylic-btn(
+      icon='las la-times'
+      :label='$t(`common.actions.discard`)'
+      color='grey-7'
+      padding='xs md'
+      v-close-popup
+      flat
+    )
+    q-btn(
+      v-if='isEditMode'
+      :disabled='!canSubmit'
+      icon='las la-check'
+      :label='$t(`common.actions.save`)'
+      unelevated
+      color='primary'
+      padding='xs md'
+      @click='persist'
+      v-close-popup
+    )
+    q-btn(
+      v-else
+      :disabled='!canSubmit'
+      icon='las la-plus'
+      :label='$t(`common.actions.create`)'
+      unelevated
+      color='primary'
+      padding='xs md'
+      @click='create'
+      v-close-popup
+    )
 </template>
 
 <script>

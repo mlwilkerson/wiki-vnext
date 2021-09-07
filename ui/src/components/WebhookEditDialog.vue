@@ -1,199 +1,199 @@
 <template lang="pug">
-  q-dialog(ref='dialog', @hide='onDialogHide')
-    q-card(style='min-width: 850px;')
-      q-card-section.card-header
-        q-icon(name='las la-plus', left)
-        span {{hookId ? $t(`admin.webhooks.edit`) : $t(`admin.webhooks.new`)}}
-      //- STATE INFO BAR
-      q-card-section.flex.items-center.bg-indigo.text-white(v-if='hookId && hook.state === `pending`')
-        q-spinner-clock.q-mr-sm(
+q-dialog(ref='dialog', @hide='onDialogHide')
+  q-card(style='min-width: 850px;')
+    q-card-section.card-header
+      q-icon(name='las la-plus', left)
+      span {{hookId ? $t(`admin.webhooks.edit`) : $t(`admin.webhooks.new`)}}
+    //- STATE INFO BAR
+    q-card-section.flex.items-center.bg-indigo.text-white(v-if='hookId && hook.state === `pending`')
+      q-spinner-clock.q-mr-sm(
+        color='white'
+        size='xs'
+      )
+      .text-caption {{$t('admin.webhooks.statePendingHint')}}
+    q-card-section.flex.items-center.bg-positive.text-white(v-if='hookId && hook.state === `success`')
+      q-spinner-infinity.q-mr-sm(
+        color='white'
+        size='xs'
+      )
+      .text-caption {{$t('admin.webhooks.stateSuccessHint')}}
+    q-card-section.bg-negative.text-white(v-if='hookId && hook.state === `error`')
+      .flex.items-center
+        q-icon.q-mr-sm(
           color='white'
           size='xs'
+          name='las la-exclamation-triangle'
         )
-        .text-caption {{$t('admin.webhooks.statePendingHint')}}
-      q-card-section.flex.items-center.bg-positive.text-white(v-if='hookId && hook.state === `success`')
-        q-spinner-infinity.q-mr-sm(
-          color='white'
-          size='xs'
+        .text-caption {{$t('admin.webhooks.stateErrorExplain')}}
+      .text-caption.q-pl-lg.q-ml-xs.text-red-2 {{hook.lastErrorMessage}}
+    //- FORM
+    q-form.q-py-sm(ref='editWebhookForm')
+      q-item
+        blueprint-icon(icon='info-popup')
+        q-item-section
+          q-input(
+            outlined
+            v-model='hook.name'
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin.webhooks.nameMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin.webhooks.nameInvalidChars')
+            ]`
+            hide-bottom-space
+            :label='$t(`common.field.name`)'
+            :aria-label='$t(`common.field.name`)'
+            lazy-rules='ondemand'
+            autofocus
+            )
+      q-item
+        blueprint-icon(icon='lightning-bolt')
+        q-item-section
+          q-select(
+            outlined
+            :options='events'
+            v-model='hook.events'
+            multiple
+            map-options
+            emit-value
+            option-value='key'
+            option-label='name'
+            options-dense
+            dense
+            :rules=`[
+              val => val.length > 0 || $t('admin.webhooks.eventsMissing')
+            ]`
+            hide-bottom-space
+            :label='$t(`admin.webhooks.events`)'
+            :aria-label='$t(`admin.webhooks.events`)'
+            lazy-rules='ondemand'
+            )
+            template(v-slot:selected)
+              .text-caption(v-if='hook.events.length > 0') {{$tc(`admin.webhooks.eventsSelected`, hook.events.length, { count: hook.events.length })}}
+              span(v-else)
+            template(v-slot:option='{ itemProps, itemEvents, opt, selected, toggleOption }')
+              q-item(
+                v-bind='itemProps'
+                v-on='itemEvents'
+                )
+                q-item-section(side)
+                  q-checkbox(
+                    :value='selected'
+                    @input='toggleOption(opt)'
+                    )
+                q-item-section(side)
+                  q-chip.q-mx-none(
+                    size='sm'
+                    color='positive'
+                    text-color='white'
+                    square
+                    ) {{opt.type}}
+                q-item-section
+                  q-item-label {{opt.name}}
+      q-item
+        blueprint-icon.self-start(icon='unknown-status')
+        q-item-section
+          q-item-label {{$t(`admin.webhooks.url`)}}
+          q-item-label(caption) {{$t(`admin.webhooks.urlHint`)}}
+          q-input.q-mt-sm(
+            outlined
+            v-model='hook.url'
+            dense
+            :rules=`[
+              val => (val.length > 0 && val.startsWith('http')) || $t('admin.webhooks.urlMissing'),
+              val => /^[^<>"]+$/.test(val) || $t('admin.webhooks.urlInvalidChars')
+            ]`
+            hide-bottom-space
+            placeholder='https://'
+            :aria-label='$t(`admin.webhooks.url`)'
+            lazy-rules='ondemand'
+            )
+            template(v-slot:prepend)
+              q-chip.q-mx-none(
+                color='positive'
+                text-color='white'
+                square
+                size='sm'
+              ) POST
+      q-item(tag='label', v-ripple)
+        blueprint-icon(icon='rescan-document')
+        q-item-section
+          q-item-label {{$t(`admin.webhooks.includeMetadata`)}}
+          q-item-label(caption) {{$t(`admin.webhooks.includeMetadataHint`)}}
+        q-item-section(avatar)
+          q-toggle(
+            v-model='hook.includeMetadata'
+            color='primary'
+            checked-icon='las la-check'
+            unchecked-icon='las la-times'
+            :aria-label='$t(`admin.webhooks.includeMetadata`)'
+            )
+      q-item(tag='label', v-ripple)
+        blueprint-icon(icon='select-all')
+        q-item-section
+          q-item-label {{$t(`admin.webhooks.includeContent`)}}
+          q-item-label(caption) {{$t(`admin.webhooks.includeContentHint`)}}
+        q-item-section(avatar)
+          q-toggle(
+            v-model='hook.includeContent'
+            color='primary'
+            checked-icon='las la-check'
+            unchecked-icon='las la-times'
+            :aria-label='$t(`admin.webhooks.includeContent`)'
+            )
+      q-item(tag='label', v-ripple)
+        blueprint-icon(icon='security-ssl')
+        q-item-section
+          q-item-label {{$t(`admin.webhooks.acceptUntrusted`)}}
+          q-item-label(caption) {{$t(`admin.webhooks.acceptUntrustedHint`)}}
+        q-item-section(avatar)
+          q-toggle(
+            v-model='hook.acceptUntrusted'
+            color='primary'
+            checked-icon='las la-check'
+            unchecked-icon='las la-times'
+            :aria-label='$t(`admin.webhooks.acceptUntrusted`)'
+            )
+      q-item
+        blueprint-icon.self-start(icon='fingerprint-scan')
+        q-item-section
+          q-item-label {{$t(`admin.webhooks.authHeader`)}}
+          q-item-label(caption) {{$t(`admin.webhooks.authHeaderHint`)}}
+          q-input.q-mt-sm(
+            outlined
+            v-model='hook.authHeader'
+            dense
+            :aria-label='$t(`admin.webhooks.authHeader`)'
+            )
+    q-card-actions.card-actions
+      q-space
+      q-btn.acrylic-btn(
+        flat
+        :label='$t(`common.actions.cancel`)'
+        color='grey'
+        padding='xs md'
+        @click='hide'
         )
-        .text-caption {{$t('admin.webhooks.stateSuccessHint')}}
-      q-card-section.bg-negative.text-white(v-if='hookId && hook.state === `error`')
-        .flex.items-center
-          q-icon.q-mr-sm(
-            color='white'
-            size='xs'
-            name='las la-exclamation-triangle'
-          )
-          .text-caption {{$t('admin.webhooks.stateErrorExplain')}}
-        .text-caption.q-pl-lg.q-ml-xs.text-red-2 {{hook.lastErrorMessage}}
-      //- FORM
-      q-form.q-py-sm(ref='editWebhookForm')
-        q-item
-          blueprint-icon(icon='info-popup')
-          q-item-section
-            q-input(
-              outlined
-              v-model='hook.name'
-              dense
-              :rules=`[
-                val => val.length > 0 || $t('admin.webhooks.nameMissing'),
-                val => /^[^<>"]+$/.test(val) || $t('admin.webhooks.nameInvalidChars')
-              ]`
-              hide-bottom-space
-              :label='$t(`common.field.name`)'
-              :aria-label='$t(`common.field.name`)'
-              lazy-rules='ondemand'
-              autofocus
-              )
-        q-item
-          blueprint-icon(icon='lightning-bolt')
-          q-item-section
-            q-select(
-              outlined
-              :options='events'
-              v-model='hook.events'
-              multiple
-              map-options
-              emit-value
-              option-value='key'
-              option-label='name'
-              options-dense
-              dense
-              :rules=`[
-                val => val.length > 0 || $t('admin.webhooks.eventsMissing')
-              ]`
-              hide-bottom-space
-              :label='$t(`admin.webhooks.events`)'
-              :aria-label='$t(`admin.webhooks.events`)'
-              lazy-rules='ondemand'
-              )
-              template(v-slot:selected)
-                .text-caption(v-if='hook.events.length > 0') {{$tc(`admin.webhooks.eventsSelected`, hook.events.length, { count: hook.events.length })}}
-                span(v-else)
-              template(v-slot:option='{ itemProps, itemEvents, opt, selected, toggleOption }')
-                q-item(
-                  v-bind='itemProps'
-                  v-on='itemEvents'
-                  )
-                  q-item-section(side)
-                    q-checkbox(
-                      :value='selected'
-                      @input='toggleOption(opt)'
-                      )
-                  q-item-section(side)
-                    q-chip.q-mx-none(
-                      size='sm'
-                      color='positive'
-                      text-color='white'
-                      square
-                      ) {{opt.type}}
-                  q-item-section
-                    q-item-label {{opt.name}}
-        q-item
-          blueprint-icon.self-start(icon='unknown-status')
-          q-item-section
-            q-item-label {{$t(`admin.webhooks.url`)}}
-            q-item-label(caption) {{$t(`admin.webhooks.urlHint`)}}
-            q-input.q-mt-sm(
-              outlined
-              v-model='hook.url'
-              dense
-              :rules=`[
-                val => (val.length > 0 && val.startsWith('http')) || $t('admin.webhooks.urlMissing'),
-                val => /^[^<>"]+$/.test(val) || $t('admin.webhooks.urlInvalidChars')
-              ]`
-              hide-bottom-space
-              placeholder='https://'
-              :aria-label='$t(`admin.webhooks.url`)'
-              lazy-rules='ondemand'
-              )
-              template(v-slot:prepend)
-                q-chip.q-mx-none(
-                  color='positive'
-                  text-color='white'
-                  square
-                  size='sm'
-                ) POST
-        q-item(tag='label', v-ripple)
-          blueprint-icon(icon='rescan-document')
-          q-item-section
-            q-item-label {{$t(`admin.webhooks.includeMetadata`)}}
-            q-item-label(caption) {{$t(`admin.webhooks.includeMetadataHint`)}}
-          q-item-section(avatar)
-            q-toggle(
-              v-model='hook.includeMetadata'
-              color='primary'
-              checked-icon='las la-check'
-              unchecked-icon='las la-times'
-              :aria-label='$t(`admin.webhooks.includeMetadata`)'
-              )
-        q-item(tag='label', v-ripple)
-          blueprint-icon(icon='select-all')
-          q-item-section
-            q-item-label {{$t(`admin.webhooks.includeContent`)}}
-            q-item-label(caption) {{$t(`admin.webhooks.includeContentHint`)}}
-          q-item-section(avatar)
-            q-toggle(
-              v-model='hook.includeContent'
-              color='primary'
-              checked-icon='las la-check'
-              unchecked-icon='las la-times'
-              :aria-label='$t(`admin.webhooks.includeContent`)'
-              )
-        q-item(tag='label', v-ripple)
-          blueprint-icon(icon='security-ssl')
-          q-item-section
-            q-item-label {{$t(`admin.webhooks.acceptUntrusted`)}}
-            q-item-label(caption) {{$t(`admin.webhooks.acceptUntrustedHint`)}}
-          q-item-section(avatar)
-            q-toggle(
-              v-model='hook.acceptUntrusted'
-              color='primary'
-              checked-icon='las la-check'
-              unchecked-icon='las la-times'
-              :aria-label='$t(`admin.webhooks.acceptUntrusted`)'
-              )
-        q-item
-          blueprint-icon.self-start(icon='fingerprint-scan')
-          q-item-section
-            q-item-label {{$t(`admin.webhooks.authHeader`)}}
-            q-item-label(caption) {{$t(`admin.webhooks.authHeaderHint`)}}
-            q-input.q-mt-sm(
-              outlined
-              v-model='hook.authHeader'
-              dense
-              :aria-label='$t(`admin.webhooks.authHeader`)'
-              )
-      q-card-actions.card-actions
-        q-space
-        q-btn.acrylic-btn(
-          flat
-          :label='$t(`common.actions.cancel`)'
-          color='grey'
-          padding='xs md'
-          @click='hide'
-          )
-        q-btn(
-          v-if='hookId'
-          unelevated
-          :label='$t(`common.actions.save`)'
-          color='primary'
-          padding='xs md'
-          @click='save'
-          :loading='loading'
-          )
-        q-btn(
-          v-else
-          unelevated
-          :label='$t(`common.actions.create`)'
-          color='primary'
-          padding='xs md'
-          @click='create'
-          :loading='loading'
-          )
+      q-btn(
+        v-if='hookId'
+        unelevated
+        :label='$t(`common.actions.save`)'
+        color='primary'
+        padding='xs md'
+        @click='save'
+        :loading='loading'
+        )
+      q-btn(
+        v-else
+        unelevated
+        :label='$t(`common.actions.create`)'
+        color='primary'
+        padding='xs md'
+        @click='create'
+        :loading='loading'
+        )
 
-      q-inner-loading(:showing='loading')
-        q-spinner(color='accent', size='lg')
+    q-inner-loading(:showing='loading')
+      q-spinner(color='accent', size='lg')
 </template>
 
 <script>

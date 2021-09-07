@@ -1,110 +1,110 @@
 <template lang='pug'>
-  q-page.admin-api
-    .row.q-pa-md.items-center
-      .col-auto
-        img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-rest-api.svg')
-      .col.q-pl-md
-        .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.api.title') }}
-        .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.api.subtitle') }}
-      .col
-        .flex.items-center
-          template(v-if='enabled')
-            q-spinner-rings.q-mr-sm(color='green')
-            .text-caption.text-green {{$t('admin.api.enabled')}}
-          template(v-else)
-            q-spinner-rings.q-mr-sm(color='red', size='md')
-            .text-caption.text-red {{$t('admin.api.disabled')}}
-      .col-auto
-        q-btn.q-mr-sm.q-ml-md.acrylic-btn(
-          icon='las la-question-circle'
-          flat
-          color='grey'
-          href='https://docs.js.wiki/admin/api'
-          target='_blank'
-          type='a'
-          )
-        q-btn.q-mr-sm(
-          unelevated
-          icon='las la-power-off'
-          :label='!enabled ? $t(`admin.api.enableButton`) : $t(`admin.api.disableButton`)'
-          :color='!enabled ? `positive` : `negative`'
-          @click='globalSwitch'
-          :loading='loading'
+q-page.admin-api
+  .row.q-pa-md.items-center
+    .col-auto
+      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-rest-api.svg')
+    .col.q-pl-md
+      .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.api.title') }}
+      .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.api.subtitle') }}
+    .col
+      .flex.items-center
+        template(v-if='enabled')
+          q-spinner-rings.q-mr-sm(color='green')
+          .text-caption.text-green {{$t('admin.api.enabled')}}
+        template(v-else)
+          q-spinner-rings.q-mr-sm(color='red', size='md')
+          .text-caption.text-red {{$t('admin.api.disabled')}}
+    .col-auto
+      q-btn.q-mr-sm.q-ml-md.acrylic-btn(
+        icon='las la-question-circle'
+        flat
+        color='grey'
+        href='https://docs.js.wiki/admin/api'
+        target='_blank'
+        type='a'
         )
-        q-btn(
-          unelevated
-          icon='las la-plus'
-          :label='$t(`admin.api.newKeyButton`)'
-          color='primary'
-          @click='newKey'
-          :loading='loading'
-        )
-    q-separator(inset)
-    .row.q-pa-md.q-col-gutter-md
-      .col-12.col-lg-7
-        q-card.shadow-1
+      q-btn.q-mr-sm(
+        unelevated
+        icon='las la-power-off'
+        :label='!enabled ? $t(`admin.api.enableButton`) : $t(`admin.api.disableButton`)'
+        :color='!enabled ? `positive` : `negative`'
+        @click='globalSwitch'
+        :loading='loading'
+      )
+      q-btn(
+        unelevated
+        icon='las la-plus'
+        :label='$t(`admin.api.newKeyButton`)'
+        color='primary'
+        @click='newKey'
+        :loading='loading'
+      )
+  q-separator(inset)
+  .row.q-pa-md.q-col-gutter-md
+    .col-12.col-lg-7
+      q-card.shadow-1
 
-  //- v-container(fluid, grid-list-lg)
-  //-   v-layout(row, wrap)
-  //-     v-flex(xs12)
-  //-       .admin-header
-  //-         img.animated.fadeInUp(src='/_assets/svg/icon-rest-api.svg', alt='API', style='width: 80px;')
-  //-         .admin-header-title
-  //-           .headline.primary--text.animated.fadeInLeft {{$t('admin.api.title')}}
-  //-           .subtitle-1.grey--text.animated.fadeInLeft {{$t('admin.api.subtitle')}}
-  //-         v-spacer
-  //-         template(v-if='enabled')
-  //-           status-indicator.mr-3(positive, pulse)
-  //-           .caption.green--text.animated.fadeInLeft {{$t('admin.api.enabled')}}
-  //-         template(v-else)
-  //-           status-indicator.mr-3(negative, pulse)
-  //-           .caption.red--text.animated.fadeInLeft {{$t('admin.api.disabled')}}
-  //-         v-spacer
-  //-         v-btn.mr-3.animated.fadeInDown.wait-p2s(outlined, color='grey', icon, @click='refresh')
-  //-           v-icon mdi-refresh
-  //-         v-btn.mr-3.animated.fadeInDown.wait-p1s(:color='enabled ? `red` : `green`', depressed, @click='globalSwitch', dark, :loading='isToggleLoading')
-  //-           v-icon(left) mdi-power
-  //-           span(v-if='!enabled') {{$t('admin.api.enableButton')}}
-  //-           span(v-else) {{$t('admin.api.disableButton')}}
-  //-         v-btn.animated.fadeInDown(color='primary', depressed, large, @click='newKey', dark)
-  //-           v-icon(left) mdi-plus
-  //-           span {{$t('admin.api.newKeyButton')}}
-  //-       v-card.mt-3.animated.fadeInUp
-  //-         v-simple-table(v-if='keys && keys.length > 0')
-  //-           template(v-slot:default)
-  //-             thead
-  //-               tr.grey(:class='$vuetify.theme.dark ? `darken-4-d5` : `lighten-5`')
-  //-                 th {{$t('admin.api.headerName')}}
-  //-                 th {{$t('admin.api.headerKeyEnding')}}
-  //-                 th {{$t('admin.api.headerExpiration')}}
-  //-                 th {{$t('admin.api.headerCreated')}}
-  //-                 th {{$t('admin.api.headerLastUpdated')}}
-  //-                 th(width='100') {{$t('admin.api.headerRevoke')}}
-  //-             tbody
-  //-               tr(v-for='key of keys', :key='`key-` + key.id')
-  //-                 td
-  //-                   strong(:class='key.isRevoked ? `red--text` : ``') {{ key.name }}
-  //-                   em.caption.ml-1.red--text(v-if='key.isRevoked') (revoked)
-  //-                 td.caption {{ key.keyShort }}
-  //-                 td(:style='key.isRevoked ? `text-decoration: line-through;` : ``') {{ key.expiration | moment('LL') }}
-  //-                 td {{ key.createdAt | moment('calendar') }}
-  //-                 td {{ key.updatedAt | moment('calendar') }}
-  //-                 td: v-btn(icon, @click='revoke(key)', :disabled='key.isRevoked'): v-icon(color='error') mdi-cancel
-  //-         v-card-text(v-else)
-  //-           v-alert.mb-0(icon='mdi-information', :value='true', outlined, color='info') {{$t('admin.api.noKeyInfo')}}
+//- v-container(fluid, grid-list-lg)
+//-   v-layout(row, wrap)
+//-     v-flex(xs12)
+//-       .admin-header
+//-         img.animated.fadeInUp(src='/_assets/svg/icon-rest-api.svg', alt='API', style='width: 80px;')
+//-         .admin-header-title
+//-           .headline.primary--text.animated.fadeInLeft {{$t('admin.api.title')}}
+//-           .subtitle-1.grey--text.animated.fadeInLeft {{$t('admin.api.subtitle')}}
+//-         v-spacer
+//-         template(v-if='enabled')
+//-           status-indicator.mr-3(positive, pulse)
+//-           .caption.green--text.animated.fadeInLeft {{$t('admin.api.enabled')}}
+//-         template(v-else)
+//-           status-indicator.mr-3(negative, pulse)
+//-           .caption.red--text.animated.fadeInLeft {{$t('admin.api.disabled')}}
+//-         v-spacer
+//-         v-btn.mr-3.animated.fadeInDown.wait-p2s(outlined, color='grey', icon, @click='refresh')
+//-           v-icon mdi-refresh
+//-         v-btn.mr-3.animated.fadeInDown.wait-p1s(:color='enabled ? `red` : `green`', depressed, @click='globalSwitch', dark, :loading='isToggleLoading')
+//-           v-icon(left) mdi-power
+//-           span(v-if='!enabled') {{$t('admin.api.enableButton')}}
+//-           span(v-else) {{$t('admin.api.disableButton')}}
+//-         v-btn.animated.fadeInDown(color='primary', depressed, large, @click='newKey', dark)
+//-           v-icon(left) mdi-plus
+//-           span {{$t('admin.api.newKeyButton')}}
+//-       v-card.mt-3.animated.fadeInUp
+//-         v-simple-table(v-if='keys && keys.length > 0')
+//-           template(v-slot:default)
+//-             thead
+//-               tr.grey(:class='$vuetify.theme.dark ? `darken-4-d5` : `lighten-5`')
+//-                 th {{$t('admin.api.headerName')}}
+//-                 th {{$t('admin.api.headerKeyEnding')}}
+//-                 th {{$t('admin.api.headerExpiration')}}
+//-                 th {{$t('admin.api.headerCreated')}}
+//-                 th {{$t('admin.api.headerLastUpdated')}}
+//-                 th(width='100') {{$t('admin.api.headerRevoke')}}
+//-             tbody
+//-               tr(v-for='key of keys', :key='`key-` + key.id')
+//-                 td
+//-                   strong(:class='key.isRevoked ? `red--text` : ``') {{ key.name }}
+//-                   em.caption.ml-1.red--text(v-if='key.isRevoked') (revoked)
+//-                 td.caption {{ key.keyShort }}
+//-                 td(:style='key.isRevoked ? `text-decoration: line-through;` : ``') {{ key.expiration | moment('LL') }}
+//-                 td {{ key.createdAt | moment('calendar') }}
+//-                 td {{ key.updatedAt | moment('calendar') }}
+//-                 td: v-btn(icon, @click='revoke(key)', :disabled='key.isRevoked'): v-icon(color='error') mdi-cancel
+//-         v-card-text(v-else)
+//-           v-alert.mb-0(icon='mdi-information', :value='true', outlined, color='info') {{$t('admin.api.noKeyInfo')}}
 
-  //-   create-api-key(v-model='isCreateDialogShown', @refresh='refresh(false)')
+//-   create-api-key(v-model='isCreateDialogShown', @refresh='refresh(false)')
 
-  //-   v-dialog(v-model='isRevokeConfirmDialogShown', max-width='500', persistent)
-  //-     v-card
-  //-       .dialog-header.is-red {{$t('admin.api.revokeConfirm')}}
-  //-       v-card-text.pa-4
-  //-         i18next(tag='span', path='admin.api.revokeConfirmText')
-  //-           strong(place='name') {{ current.name }}
-  //-       v-card-actions
-  //-         v-spacer
-  //-         v-btn(text, @click='isRevokeConfirmDialogShown = false', :disabled='revokeLoading') {{$t('common.actions.cancel')}}
-  //-         v-btn(color='red', dark, @click='revokeConfirm', :loading='revokeLoading') {{$t('admin.api.revoke')}}
+//-   v-dialog(v-model='isRevokeConfirmDialogShown', max-width='500', persistent)
+//-     v-card
+//-       .dialog-header.is-red {{$t('admin.api.revokeConfirm')}}
+//-       v-card-text.pa-4
+//-         i18next(tag='span', path='admin.api.revokeConfirmText')
+//-           strong(place='name') {{ current.name }}
+//-       v-card-actions
+//-         v-spacer
+//-         v-btn(text, @click='isRevokeConfirmDialogShown = false', :disabled='revokeLoading') {{$t('common.actions.cancel')}}
+//-         v-btn(color='red', dark, @click='revokeConfirm', :loading='revokeLoading') {{$t('admin.api.revoke')}}
 </template>
 
 <script>

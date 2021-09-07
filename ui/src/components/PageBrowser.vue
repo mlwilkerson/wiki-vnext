@@ -1,13 +1,13 @@
 <template lang="pug">
-  .row
-    .col-auto.bg-grey-1(style='width: 250px;')
-      q-tree(
-        :nodes='tree'
-        default-expand-all
-        node-key='label'
-        @lazy-load='onLazyLoad'
-      )
-    .col Doude
+.row
+  .col-auto.bg-grey-1(style='width: 250px;')
+    q-tree(
+      :nodes='tree'
+      default-expand-all
+      node-key='label'
+      @lazy-load='onLazyLoad'
+    )
+  .col Doude
 </template>
 
 <script>

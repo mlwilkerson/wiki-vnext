@@ -24,7 +24,7 @@ module.exports = function (ctx) {
       { path: 'apollo-browser', server: false },
       { path: 'apollo-server', client: false },
       'i18n',
-      { path: 'codemirror-browser', server: false },
+      // { path: 'codemirror-browser', server: false },
       'components',
       'helpers'
     ],
@@ -90,6 +90,10 @@ module.exports = function (ctx) {
         cfg.plugins.push(
           new MonacoWebpackPlugin()
         )
+      },
+      chainWebpack (chain) {
+        const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+        chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
       }
     },
 
@@ -103,7 +107,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'mdi-v5', // Quasar icon set
-      lang: 'en-us', // Quasar language pack
+      lang: 'en-US', // Quasar language pack
       config: {
         loadingBar: {
           color: 'primary',

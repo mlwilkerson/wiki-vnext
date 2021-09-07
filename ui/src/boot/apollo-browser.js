@@ -1,10 +1,7 @@
-import Vue from 'vue'
-import VueApollo from 'vue-apollo'
+import { createApolloProvider } from '@vue/apollo-option'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
 import { createUploadLink } from 'apollo-upload-client'
-
-Vue.use(VueApollo)
 
 export default ({ app, store }) => {
   // Authentication Link
@@ -29,12 +26,12 @@ export default ({ app, store }) => {
 
   const cache = new InMemoryCache()
 
-  if (typeof window !== 'undefined') {
-    const state = window.__APOLLO_STATE__
-    if (state) {
-      cache.restore(state.defaultClient)
-    }
-  }
+  // if (typeof window !== 'undefined') {
+  //   const state = window.__APOLLO_STATE__
+  //   if (state) {
+  //     cache.restore(state.defaultClient)
+  //   }
+  // }
 
   // Client
 
@@ -46,7 +43,7 @@ export default ({ app, store }) => {
   })
 
   // Init Vue Apollo
-  app.apolloProvider = new VueApollo({
+  app.apolloProvider = createApolloProvider({
     defaultClient: client
   })
 

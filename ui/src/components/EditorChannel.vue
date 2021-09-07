@@ -1,35 +1,35 @@
 <template lang="pug">
-  .channel-container
-    .channel-sidebar
-      q-card.rounded-borders.bg-dark
-        q-list(
-          padding
-          dark
-          )
-          q-item(
-            v-for='ch of channels'
-            :key='ch.id'
-            active-class='bg-primary text-white'
-            :active='selectedChannel === ch.id'
-            @click='selectedChannel = ch.id'
-            clickable
-            )
-            q-item-section(side)
-              q-icon(name='las la-grip-lines')
-            q-item-section
-              q-item-label
-                span #&nbsp;
-                strong {{ch.name}}
-              q-item-label(caption) {{ch.description}}
-            //- q-item-section(side)
-            //-   q-badge(color='accent', label='0')
-      q-btn.q-mt-sm.full-width(
-        color='primary'
-        icon='las la-plus'
-        :label='$t(`Add Channel`)'
-        no-caps
+.channel-container
+  .channel-sidebar
+    q-card.rounded-borders.bg-dark
+      q-list(
+        padding
+        dark
         )
-    .channel-main
+        q-item(
+          v-for='ch of channels'
+          :key='ch.id'
+          active-class='bg-primary text-white'
+          :active='selectedChannel === ch.id'
+          @click='selectedChannel = ch.id'
+          clickable
+          )
+          q-item-section(side)
+            q-icon(name='las la-grip-lines')
+          q-item-section
+            q-item-label
+              span #&nbsp;
+              strong {{ch.name}}
+            q-item-label(caption) {{ch.description}}
+          //- q-item-section(side)
+          //-   q-badge(color='accent', label='0')
+    q-btn.q-mt-sm.full-width(
+      color='primary'
+      icon='las la-plus'
+      :label='$t(`Add Channel`)'
+      no-caps
+      )
+  .channel-main
 </template>
 
 <script>
