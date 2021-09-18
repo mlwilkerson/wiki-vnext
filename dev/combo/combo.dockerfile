@@ -1,10 +1,11 @@
-FROM requarks/wiki-vnext-core:build AS core
-FROM requarks/wiki-vnext-ui:build AS ui
+FROM ghcr.io/requarks/wiki-core:__BUILD_VERSION__ AS core
+FROM ghcr.io/requarks/wiki-ui:__BUILD_VERSION__ AS ui
 
-FROM node:16-alpine
+FROM node:16
 LABEL maintainer="requarks.io"
 
-RUN apk add bash curl git openssh gnupg pandoc supervisor --no-cache && \
+RUN apt-get update && apt-get install -y bash curl git gnupg openssh pandoc supervisor && \
+    rm -rf /var/lib/apt/lists/* && \
     mkdir -p /wiki-core && \
     mkdir -p /wiki-ui && \
     mkdir -p /logs && \

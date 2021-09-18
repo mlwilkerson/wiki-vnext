@@ -1,7 +1,8 @@
-FROM node:16-alpine
+FROM node:16
 LABEL maintainer="requarks.io"
 
-RUN apk add bash curl git openssh gnupg pandoc --no-cache && \
+RUN apt-get update && apt-get install -y bash curl git gnupg openssh pandoc && \
+    rm -rf /var/lib/apt/lists/* && \
     mkdir -p /wiki-core && \
     mkdir -p /logs && \
     mkdir -p /wiki-core/data/content && \
