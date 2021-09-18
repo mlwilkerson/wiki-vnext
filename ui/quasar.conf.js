@@ -3,13 +3,15 @@
  * the ES6 features that are supported by your Node version. https://node.green/
  */
 
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
+const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+const { configure } = require('quasar/wrappers')
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 
-module.exports = function (ctx) {
+module.exports = configure(function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -21,6 +23,7 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
+      { path: 'store-browser', server: false },
       { path: 'apollo-browser', server: false },
       { path: 'apollo-server', client: false },
       'i18n',
@@ -77,22 +80,22 @@ module.exports = function (ctx) {
             loader: 'mark-loader'
           })
         }
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /node_modules/
-        })
+        // cfg.module.rules.push({
+        //   enforce: 'pre',
+        //   test: /\.(js|vue)$/,
+        //   loader: 'eslint-loader',
+        //   exclude: /node_modules/
+        // })
         cfg.module.rules.push({
           test: /\.pug$/,
           loader: 'pug-plain-loader'
         })
-        cfg.plugins.push(
-          new MonacoWebpackPlugin()
-        )
+        // cfg.plugins.push(
+        //   new MonacoWebpackPlugin()
+        // )
       },
       chainWebpack (chain) {
-        const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+        chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js'] }])
         chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
       }
     },
@@ -160,7 +163,15 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
       pwa: false,
-      manualHydration: false
+      manualHydration: false,
+      chainWebpackWebserver (chain) {
+        chain.plugin('eslint-webpack-plugin')
+          .use(ESLintPlugin, [{ extensions: ['js'] }])
+      },
+      middlewares: [
+        ctx.prod ? 'compression' : '',
+        'render' // keep this as last one
+      ]
     },
 
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
@@ -247,4 +258,4 @@ module.exports = function (ctx) {
       }
     }
   }
-}
+})

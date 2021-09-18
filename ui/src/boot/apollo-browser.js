@@ -26,12 +26,12 @@ export default ({ app, store }) => {
 
   const cache = new InMemoryCache()
 
-  // if (typeof window !== 'undefined') {
-  //   const state = window.__APOLLO_STATE__
-  //   if (state) {
-  //     cache.restore(state.defaultClient)
-  //   }
-  // }
+  if (typeof window !== 'undefined') {
+    const state = window.__APOLLO_STATE__
+    if (state) {
+      cache.restore(state.defaultClient)
+    }
+  }
 
   // Client
 

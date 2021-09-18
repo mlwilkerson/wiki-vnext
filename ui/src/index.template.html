@@ -72,7 +72,7 @@
   </head>
   <body>
     <% if (ctx.mode.ssr) { %>
-      {{ renderState({ contextKey: 'apolloState', windowKey: '__APOLLO_STATE__' }) }}
+      <script>window.__APOLLO_STATE__ = {{JSON.stringify(apolloState)}}</script>
     <% } %>
     <div class="init-loading"></div>
     <div id="q-app"></div>

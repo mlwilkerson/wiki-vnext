@@ -82,7 +82,7 @@ export default async ({ app, router, store, ssrContext }) => {
     console.warn(err.networkError.result)
   }
 
-  router.onReady(() => {
+  router.isReady().then(() => {
     ssrContext.rendered = () => {
       ssrContext.apolloState = ApolloSSR.getStates(app.apolloProvider.clients)
     }

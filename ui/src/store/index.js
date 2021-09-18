@@ -1,5 +1,6 @@
 import union from 'lodash/union'
 import without from 'lodash/without'
+import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 import pathify from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
@@ -24,7 +25,7 @@ const state = {
   loadingStack: []
 }
 
-export default function (/* { ssrContext } */) {
+export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     plugins: [
       pathify.plugin
@@ -58,4 +59,4 @@ export default function (/* { ssrContext } */) {
   })
 
   return Store
-}
+})

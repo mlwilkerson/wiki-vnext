@@ -5,6 +5,9 @@
     },
     {
       "path": "ui"
+    },
+    {
+      "path": "dev"
     }
   ],
   "settings": {

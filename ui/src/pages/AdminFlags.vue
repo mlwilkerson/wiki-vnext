@@ -104,7 +104,7 @@ export default {
     async save () {
       try {
         await this.$apollo.mutate({
-          mutation: gql`{
+          mutation: gql`
             mutation (
               $flags: [SystemFlagInput]!
             ) {
@@ -118,7 +118,7 @@ export default {
                 }
               }
             }
-          }`,
+          `,
           variables: {
             flags: _transform(this.flags, (result, value, key) => {
               result.push({ key, value })

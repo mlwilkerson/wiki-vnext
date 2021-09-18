@@ -11,7 +11,7 @@ div(style='max-width: 760px;')
 
 <script>
 import '@vime/core/themes/default.css'
-import { Player, Video, DefaultUi, DefaultControls, Youtube } from '@vime/vue'
+import { Player, Video, DefaultUi, DefaultControls, Youtube } from '@vime/vue-next'
 
 export default {
   components: {
