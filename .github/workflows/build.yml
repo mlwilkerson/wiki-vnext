@@ -1,0 +1,56 @@
+name: Build Docker Images
+
+on:
+  push:
+    branches: [ main ]
+    
+env:
+  BUILD_VERSION: 3.0.${{github.run_number}}
+
+jobs:
+  build-core:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v5.6
+      with:
+        image: requarks/wiki-core
+        tags: dev-${{env.BUILD_VERSION}}
+        registry: ghcr.io
+        dockerfile: dev/docker/core.dockerfile
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+  build-ui:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v5.6
+      with:
+        image: requarks/wiki-ui
+        tags: dev-${{env.BUILD_VERSION}}
+        registry: ghcr.io
+        dockerfile: dev/docker/ui.dockerfile
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+  build-combo:
+    needs: [build-core, build-ui]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Find and Replace
+      uses: jacobtomlinson/gha-find-replace@0.1.4
+      with:
+        include: dev/combo/combo.dockerfile
+        find: __BUILD_VERSION__
+        replace: ${{env.BUILD_VERSION}}
+    - uses: mr-smithers-excellent/docker-build-push@v5.6
+      with:
+        image: requarks/wiki-combo
+        tags: dev-${{env.BUILD_VERSION}}
+        registry: ghcr.io
+        dockerfile: dev/combo/combo.dockerfile
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
