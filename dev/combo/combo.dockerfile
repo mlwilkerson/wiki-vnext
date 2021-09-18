@@ -1,5 +1,5 @@
-FROM ghcr.io/requarks/wiki-core:__BUILD_VERSION__ AS core
-FROM ghcr.io/requarks/wiki-ui:__BUILD_VERSION__ AS ui
+FROM ghcr.io/requarks/wiki-core:dev-__BUILD_VERSION__ AS core
+FROM ghcr.io/requarks/wiki-ui:dev-__BUILD_VERSION__ AS ui
 
 FROM node:16
 LABEL maintainer="requarks.io"
