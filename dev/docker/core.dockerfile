@@ -1,7 +1,7 @@
 FROM node:16
 LABEL maintainer="requarks.io"
 
-RUN apt-get update && apt-get install -y bash curl git gnupg openssh pandoc && \
+RUN apt-get update && apt-get install -y bash curl git gnupg openssh-client pandoc && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /wiki-core && \
     mkdir -p /logs && \

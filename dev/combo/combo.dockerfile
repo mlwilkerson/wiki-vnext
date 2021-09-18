@@ -4,7 +4,7 @@ FROM ghcr.io/requarks/wiki-ui:__BUILD_VERSION__ AS ui
 FROM node:16
 LABEL maintainer="requarks.io"
 
-RUN apt-get update && apt-get install -y bash curl git gnupg openssh pandoc supervisor && \
+RUN apt-get update && apt-get install -y bash curl git gnupg openssh-client pandoc supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /wiki-core && \
     mkdir -p /wiki-ui && \
