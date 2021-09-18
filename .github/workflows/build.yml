@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
-        image: requarks/wiki-core
+        image: wiki-core
         tags: dev-${{env.BUILD_VERSION}}
         registry: ghcr.io
         dockerfile: dev/docker/core.dockerfile
@@ -29,7 +29,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
-        image: requarks/wiki-ui
+        image: wiki-ui
         tags: dev-${{env.BUILD_VERSION}}
         registry: ghcr.io
         dockerfile: dev/docker/ui.dockerfile
@@ -48,7 +48,7 @@ jobs:
         replace: ${{env.BUILD_VERSION}}
     - uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
-        image: requarks/wiki-combo
+        image: wiki-combo
         tags: dev-${{env.BUILD_VERSION}}
         registry: ghcr.io
         dockerfile: dev/combo/combo.dockerfile
