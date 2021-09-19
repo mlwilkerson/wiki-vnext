@@ -1,8 +1,8 @@
 name: Publish Prerelease Artifacts
 
 on:
-  release:
-    types: [prereleased]
+  push:
+    branches: [ latest ]
 
 jobs:
   publish-beta:
