@@ -60,7 +60,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
   publish-beta:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/latest' }}
     needs: [build-combo]
     runs-on: ubuntu-latest
     environment: beta
@@ -109,7 +109,7 @@ jobs:
         tag: ${{env.BUILD_VERSION}}
         token: ${{ secrets.GITHUB_TOKEN }}
   publish-release:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/latest' }}
     needs: [publish-beta]
     runs-on: ubuntu-latest
     environment: release
