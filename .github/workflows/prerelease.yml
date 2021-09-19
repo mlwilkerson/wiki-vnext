@@ -1,13 +1,13 @@
 name: Publish Prerelease Artifacts
 
 on:
-  push:
-    tags:
-      - "[0-9].*"
+  release:
+    types: [prereleased]
 
 jobs:
   publish-beta:
     runs-on: ubuntu-latest
+    environment: beta
     permissions:
       contents: read
       packages: write
@@ -22,24 +22,21 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Get Tag
-      id: tag
-      uses: dawidd6/action-get-tag@v1
     - name: Pull Dev Images
       run: |
-        docker pull ghcr.io/requarks/wiki-core:dev-${{steps.tag.outputs.tag}}
-        docker pull ghcr.io/requarks/wiki-ui:dev-${{steps.tag.outputs.tag}}
-        docker pull ghcr.io/requarks/wiki-combo:dev-${{steps.tag.outputs.tag}}
+        docker pull ghcr.io/requarks/wiki-core:dev-${{github.event.release.tag_name}}
+        docker pull ghcr.io/requarks/wiki-ui:dev-${{github.event.release.tag_name}}
+        docker pull ghcr.io/requarks/wiki-combo:dev-${{github.event.release.tag_name}}
     - name: Tag Beta Images
       run: |
-        docker tag ghcr.io/requarks/wiki-core:dev-${{steps.tag.outputs.tag}} ghcr.io/requarks/wiki-core:beta-${{steps.tag.outputs.tag}}
-        docker tag ghcr.io/requarks/wiki-ui:dev-${{steps.tag.outputs.tag}} ghcr.io/requarks/wiki-ui:beta-${{steps.tag.outputs.tag}}
-        docker tag ghcr.io/requarks/wiki-combo:dev-${{steps.tag.outputs.tag}} ghcr.io/requarks/wiki-combo:beta-${{steps.tag.outputs.tag}}
+        docker tag ghcr.io/requarks/wiki-core:dev-${{github.event.release.tag_name}} ghcr.io/requarks/wiki-core:beta-${{github.event.release.tag_name}}
+        docker tag ghcr.io/requarks/wiki-ui:dev-${{github.event.release.tag_name}} ghcr.io/requarks/wiki-ui:beta-${{github.event.release.tag_name}}
+        docker tag ghcr.io/requarks/wiki-combo:dev-${{github.event.release.tag_name}} ghcr.io/requarks/wiki-combo:beta-${{github.event.release.tag_name}}
     - name: Push Beta Images
       run: |
-        docker push ghcr.io/requarks/wiki-core:beta-${{steps.tag.outputs.tag}}
-        docker push ghcr.io/requarks/wiki-ui:beta-${{steps.tag.outputs.tag}}
-        docker push ghcr.io/requarks/wiki-combo:beta-${{steps.tag.outputs.tag}}
+        docker push ghcr.io/requarks/wiki-core:beta-${{github.event.release.tag_name}}
+        docker push ghcr.io/requarks/wiki-ui:beta-${{github.event.release.tag_name}}
+        docker push ghcr.io/requarks/wiki-combo:beta-${{github.event.release.tag_name}}
     - name: Generate Changelog
       uses: Bullrich/generate-release-changelog@master
       id: changelog
@@ -48,6 +45,7 @@ jobs:
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
+        allowUpdates: true
         body: |
           ${{ steps.changelog.outputs.changelog }}
         draft: false
