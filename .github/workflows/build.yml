@@ -25,6 +25,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
   build-ui:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
     - uses: actions/checkout@v2
     - uses: mr-smithers-excellent/docker-build-push@v5.6
@@ -55,12 +58,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
   publish-beta:
-    if: ${{ github.ref == 'refs/heads/latest' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: [build-combo]
     runs-on: ubuntu-latest
     environment: beta
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
     - name: Checkout code
