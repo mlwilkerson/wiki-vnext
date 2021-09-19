@@ -2,8 +2,7 @@ name: Build Docker Images
 
 on:
   push:
-    branches: [ main ]
-    tags-ignore: [ "*" ]
+    branches: [ main, latest ]
 
 env:
   BUILD_VERSION: 3.0.${{github.run_number}}
@@ -55,3 +54,52 @@ jobs:
         dockerfile: dev/combo/combo.dockerfile
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+  publish-beta:
+    if: ${{ github.ref == 'refs/heads/latest' }}
+    needs: [build-combo]
+    runs-on: ubuntu-latest
+    environment: beta
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Docker Login
+      uses: docker/login-action@v1.10.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pull Dev Images
+      run: |
+        docker pull ghcr.io/requarks/wiki-core:dev-${{env.BUILD_VERSION}}
+        docker pull ghcr.io/requarks/wiki-ui:dev-${{env.BUILD_VERSION}}
+        docker pull ghcr.io/requarks/wiki-combo:dev-${{env.BUILD_VERSION}}
+    - name: Tag Beta Images
+      run: |
+        docker tag ghcr.io/requarks/wiki-core:dev-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}}
+        docker tag ghcr.io/requarks/wiki-ui:dev-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}}
+        docker tag ghcr.io/requarks/wiki-combo:dev-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}}
+    - name: Push Beta Images
+      run: |
+        docker push ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}}
+        docker push ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}}
+        docker push ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}}
+    - name: Generate Changelog
+      uses: Bullrich/generate-release-changelog@master
+      id: changelog
+      env:
+        REPO: ${{ github.repository }}
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        body: |
+          ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: true
+        tag: ${{env.BUILD_VERSION}}
+        token: ${{ secrets.GITHUB_TOKEN }}
