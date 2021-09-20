@@ -107,7 +107,7 @@ jobs:
           tar xfz wiki-core.tar.gz
           rm wiki-core.tar.gz
           npm rebuild
-        working-directory: artifacts/core
+        working-directory: ${{steps.download.outputs.download-path}}/artifacts/core
       - name: Rebuild UI Dependencies
         run: |
           tar xfz wiki-ui.tar.gz
