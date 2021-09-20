@@ -5,8 +5,6 @@ on:
     branches: [ main, latest ]
 
 env:
-  BUILD_MAJOR: 3
-  BUILD_MINOR: 0
   BUILD_VERSION: 3.0.${{github.run_number}}
 
 jobs:
@@ -32,11 +30,13 @@ jobs:
       with:
         image: ghcr.io/requarks/wiki-core:dev-${{env.BUILD_VERSION}}
         path: /wiki-core/.
+    - name: Create Archive
+      run: tar -czf wiki-core.tar.gz ${{ steps.extract.outputs.destination }}
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
         name: core
-        path: ${{ steps.extract.outputs.destination }}
+        path: wiki-core.tar.gz
   build-ui:
     runs-on: ubuntu-latest
     permissions:
@@ -58,12 +58,14 @@ jobs:
       id: extract
       with:
         image: ghcr.io/requarks/wiki-ui:dev-${{env.BUILD_VERSION}}
-        path: /wiki-core/.
+        path: /wiki-ui/.
+    - name: Create Archive
+      run: tar -czf wiki-ui.tar.gz ${{ steps.extract.outputs.destination }}
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
         name: ui
-        path: ${{ steps.extract.outputs.destination }}
+        path: wiki-ui.tar.gz
   build-combo:
     needs: [build-core, build-ui]
     runs-on: ubuntu-latest
@@ -162,7 +164,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: "artifacts/*.tar.gz"
+        artifacts: "core/wiki-core.tar.gz,ui/wiki-ui.tar.gz,windows/windows.tar.gz"
         body: |
           ${{ steps.changelog.outputs.changelog }}
         draft: false
