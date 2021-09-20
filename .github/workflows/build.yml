@@ -14,7 +14,8 @@ jobs:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
     - name: Build and Push Image
       uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
@@ -43,7 +44,8 @@ jobs:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
     - name: Build and Push Image
       uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
@@ -70,7 +72,8 @@ jobs:
     needs: [build-core, build-ui]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
     - name: Find and Replace
       uses: jacobtomlinson/gha-find-replace@0.1.4
       with:
@@ -91,6 +94,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download Build Artifacts
+        id: download
         uses: actions/download-artifact@v2.0.10
         with:
           path: ${{env.GITHUB_WORKSPACE}}/artifacts
@@ -99,13 +103,19 @@ jobs:
         with:
           node-version: '16'
       - name: Rebuild Core Dependencies
-        run: npm rebuild
+        run: |
+          tar xfz wiki-core.tar.gz
+          rm wiki-core.tar.gz
+          npm rebuild
         working-directory: artifacts/core
       - name: Rebuild UI Dependencies
-        run: npm rebuild
-        working-directory: artifacts/ui
+        run: |
+          tar xfz wiki-ui.tar.gz
+          rm wiki-ui.tar.gz
+          npm rebuild
+        working-directory: ${{steps.download.outputs.download-path}}/artifacts/ui
       - name: Create Archive
-        run: tar -czvf windows.tar.gz artifacts/
+        run: tar -czvf windows.tar.gz ${{steps.download.outputs.download-path}}/artifacts/
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
