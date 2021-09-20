@@ -17,7 +17,8 @@ jobs:
       packages: write
     steps:
     - uses: actions/checkout@v2
-    - uses: mr-smithers-excellent/docker-build-push@v5.6
+    - name: Build and Push Image
+      uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
         image: wiki-core
         tags: dev-${{env.BUILD_VERSION}}
@@ -25,6 +26,17 @@ jobs:
         dockerfile: dev/docker/core.dockerfile
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Extract build
+      uses: shrink/actions-docker-extract@v1
+      id: extract
+      with:
+        image: ghcr.io/requarks/wiki-core:dev-${{env.BUILD_VERSION}}
+        path: /wiki-core/.
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: core
+        path: ${{ steps.extract.outputs.destination }}
   build-ui:
     runs-on: ubuntu-latest
     permissions:
@@ -32,7 +44,8 @@ jobs:
       packages: write
     steps:
     - uses: actions/checkout@v2
-    - uses: mr-smithers-excellent/docker-build-push@v5.6
+    - name: Build and Push Image
+      uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
         image: wiki-ui
         tags: dev-${{env.BUILD_VERSION}}
@@ -40,6 +53,17 @@ jobs:
         dockerfile: dev/docker/ui.dockerfile
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Extract build
+      uses: shrink/actions-docker-extract@v1
+      id: extract
+      with:
+        image: ghcr.io/requarks/wiki-ui:dev-${{env.BUILD_VERSION}}
+        path: /wiki-core/.
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: ui
+        path: ${{ steps.extract.outputs.destination }}
   build-combo:
     needs: [build-core, build-ui]
     runs-on: ubuntu-latest
@@ -51,7 +75,8 @@ jobs:
         include: dev/combo/combo.dockerfile
         find: __BUILD_VERSION__
         replace: ${{env.BUILD_VERSION}}
-    - uses: mr-smithers-excellent/docker-build-push@v5.6
+    - name: Build and Push Image
+      uses: mr-smithers-excellent/docker-build-push@v5.6
       with:
         image: wiki-combo
         tags: dev-${{env.BUILD_VERSION}}
@@ -59,9 +84,34 @@ jobs:
         dockerfile: dev/combo/combo.dockerfile
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+  build-windows:
+    needs: [build-core, build-ui]
+    runs-on: windows-latest
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2.0.10
+        with:
+          path: ${{env.GITHUB_WORKSPACE}}/artifacts
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Rebuild Core Dependencies
+        run: npm rebuild
+        working-directory: artifacts/core
+      - name: Rebuild UI Dependencies
+        run: npm rebuild
+        working-directory: artifacts/ui
+      - name: Create Archive
+        run: tar -czvf windows.tar.gz artifacts/
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: windows
+          path: windows.tar.gz
   publish-beta:
     if: ${{ github.ref == 'refs/heads/latest' }}
-    needs: [build-combo]
+    needs: [build-combo, build-windows]
     runs-on: ubuntu-latest
     environment: beta
     permissions:
@@ -93,6 +143,16 @@ jobs:
         docker push ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}}
         docker push ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}}
         docker push ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}}
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v2.0.10
+      with:
+        path: ${{env.GITHUB_WORKSPACE}}/artifacts
+    - name: Create Archives
+      run: |
+        mv ./windows/windows.tar.gz ./windows.tar.gz
+        tar -czf core.tar.gz core/
+        tar -czf ui.tar.gz ui/
+      working-directory: artifacts
     - name: Generate Changelog
       uses: Bullrich/generate-release-changelog@master
       id: changelog
@@ -102,6 +162,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
+        artifacts: "artifacts/*.tar.gz"
         body: |
           ${{ steps.changelog.outputs.changelog }}
         draft: false
@@ -121,6 +182,11 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Parse semver
+      id: semver
+      uses: booxmedialtd/ws-action-parse-semver@v1
+      with:
+        input_string: ${{env.BUILD_VERSION}}
     - name: Docker Login
       uses: docker/login-action@v1.10.0
       with:
@@ -135,25 +201,25 @@ jobs:
     - name: Tag Release Images
       run: |
         docker tag ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-core:${{env.BUILD_VERSION}}
-        docker tag ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-core:${{env.BUILD_MAJOR}}
-        docker tag ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-core:${{env.BUILD_MAJOR}}.${{env.BUILD_MINOR}}
+        docker tag ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-core:${{ steps.semver.outputs.major }}
+        docker tag ghcr.io/requarks/wiki-core:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-core:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
         docker tag ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-ui:${{env.BUILD_VERSION}}
-        docker tag ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-ui:${{env.BUILD_MAJOR}}
-        docker tag ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-ui:${{env.BUILD_MAJOR}}.${{env.BUILD_MINOR}}
+        docker tag ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-ui:${{ steps.semver.outputs.major }}
+        docker tag ghcr.io/requarks/wiki-ui:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-ui:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
         docker tag ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-combo:${{env.BUILD_VERSION}}
-        docker tag ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-combo:${{env.BUILD_MAJOR}}
-        docker tag ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-combo:${{env.BUILD_MAJOR}}.${{env.BUILD_MINOR}}
+        docker tag ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-combo:${{ steps.semver.outputs.major }}
+        docker tag ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}} ghcr.io/requarks/wiki-combo:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
     - name: Push Release Images
       run: |
         docker push ghcr.io/requarks/wiki-core:${{env.BUILD_VERSION}}
-        docker push ghcr.io/requarks/wiki-core:${{env.BUILD_MAJOR}}
-        docker push ghcr.io/requarks/wiki-core:${{env.BUILD_MAJOR}}.${{env.BUILD_MINOR}}
+        docker push ghcr.io/requarks/wiki-core:${{ steps.semver.outputs.major }}
+        docker push ghcr.io/requarks/wiki-core:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
         docker push ghcr.io/requarks/wiki-ui:${{env.BUILD_VERSION}}
-        docker push ghcr.io/requarks/wiki-ui:${{env.BUILD_MAJOR}}
-        docker push ghcr.io/requarks/wiki-ui:${{env.BUILD_MAJOR}}.${{env.BUILD_MINOR}}
+        docker push ghcr.io/requarks/wiki-ui:${{ steps.semver.outputs.major }}
+        docker push ghcr.io/requarks/wiki-ui:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
         docker push ghcr.io/requarks/wiki-combo:${{env.BUILD_VERSION}}
-        docker push ghcr.io/requarks/wiki-combo:${{env.BUILD_MAJOR}}
-        docker push ghcr.io/requarks/wiki-combo:${{env.BUILD_MAJOR}}.${{env.BUILD_MINOR}}
+        docker push ghcr.io/requarks/wiki-combo:${{ steps.semver.outputs.major }}
+        docker push ghcr.io/requarks/wiki-combo:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
     - name: Update Release
       uses: ncipollo/release-action@v1
       with:
