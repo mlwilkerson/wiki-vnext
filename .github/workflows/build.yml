@@ -98,7 +98,6 @@ jobs:
         uses: actions/download-artifact@v2.0.10
         with:
           path: ${{env.GITHUB_WORKSPACE}}/artifacts
-      - run: echo "${{steps.download.outputs.download-path}}"
       - name: Setup Node.js Environment
         uses: actions/setup-node@v2
         with:
@@ -108,15 +107,15 @@ jobs:
           tar xfz wiki-core.tar.gz
           rm wiki-core.tar.gz
           npm rebuild
-        working-directory: ${{steps.download.outputs.download-path}}\artifacts\core
+        working-directory: ${{steps.download.outputs.download-path}}\core
       - name: Rebuild UI Dependencies
         run: |
           tar xfz wiki-ui.tar.gz
           rm wiki-ui.tar.gz
           npm rebuild
-        working-directory: ${{steps.download.outputs.download-path}}\artifacts\ui
+        working-directory: ${{steps.download.outputs.download-path}}\ui
       - name: Create Archive
-        run: tar -czvf windows.tar.gz ${{steps.download.outputs.download-path}}/artifacts/
+        run: tar -czvf windows.tar.gz ${{steps.download.outputs.download-path}}/
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
