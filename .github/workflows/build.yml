@@ -115,7 +115,7 @@ jobs:
           npm rebuild
         working-directory: ${{steps.download.outputs.download-path}}\ui
       - name: Create Archive
-        run: tar -czvf windows.tar.gz ${{steps.download.outputs.download-path}}/
+        run: tar -czvf windows.tar.gz ${{steps.download.outputs.download-path}}\
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
