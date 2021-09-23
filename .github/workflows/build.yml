@@ -89,50 +89,50 @@ jobs:
         dockerfile: dev/combo/combo.dockerfile
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-  build-windows:
-    needs: [build-core, build-ui]
-    runs-on: windows-latest
-    steps:
-      - name: Download Build Artifacts
-        id: download
-        uses: actions/download-artifact@v2.0.10
-        with:
-          path: ${{env.GITHUB_WORKSPACE}}/artifacts
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - name: Create Directories
-        run: |
-          mkdir extract\core
-          mkdir extract\ui
-        working-directory: '${{env.GITHUB_WORKSPACE}}'
-      - name: Extract Core Artifact
-        uses: ihiroky/extract-action@v1
-        with:
-          file_path: '${{steps.download.outputs.download-path}}\core\wiki-core.tar.gz'
-          extract_dir: '${{env.GITHUB_WORKSPACE}}\extract\core'
-      - name: Extract UI Artifact
-        uses: ihiroky/extract-action@v1
-        with:
-          file_path: '${{steps.download.outputs.download-path}}\ui\wiki-ui.tar.gz'
-          extract_dir: '${{env.GITHUB_WORKSPACE}}\extract\ui'
-      - name: Rebuild Core Dependencies
-        run: npm rebuild
-        working-directory: '${{env.GITHUB_WORKSPACE}}\extract\core'
-      - name: Rebuild UI Dependencies
-        run: npm rebuild
-        working-directory: '${{env.GITHUB_WORKSPACE}}\extract\ui'
-      - name: Create Archive
-        run: 'tar -czvf windows.tar.gz ${{env.GITHUB_WORKSPACE}}\extract\'
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: windows
-          path: windows.tar.gz
+#   build-windows:
+#     needs: [build-core, build-ui]
+#     runs-on: windows-latest
+#     steps:
+#       - name: Download Build Artifacts
+#         id: download
+#         uses: actions/download-artifact@v2.0.10
+#         with:
+#           path: ${{env.GITHUB_WORKSPACE}}/artifacts
+#       - name: Setup Node.js Environment
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '16'
+#       - name: Create Directories
+#         run: |
+#           mkdir extract\core
+#           mkdir extract\ui
+#         working-directory: '${{env.GITHUB_WORKSPACE}}'
+#       - name: Extract Core Artifact
+#         uses: ihiroky/extract-action@v1
+#         with:
+#           file_path: '${{steps.download.outputs.download-path}}\core\wiki-core.tar.gz'
+#           extract_dir: '${{env.GITHUB_WORKSPACE}}\extract\core'
+#       - name: Extract UI Artifact
+#         uses: ihiroky/extract-action@v1
+#         with:
+#           file_path: '${{steps.download.outputs.download-path}}\ui\wiki-ui.tar.gz'
+#           extract_dir: '${{env.GITHUB_WORKSPACE}}\extract\ui'
+#       - name: Rebuild Core Dependencies
+#         run: npm rebuild
+#         working-directory: '${{env.GITHUB_WORKSPACE}}\extract\core'
+#       - name: Rebuild UI Dependencies
+#         run: npm rebuild
+#         working-directory: '${{env.GITHUB_WORKSPACE}}\extract\ui'
+#       - name: Create Archive
+#         run: 'tar -czvf windows.tar.gz ${{env.GITHUB_WORKSPACE}}\extract\'
+#       - name: Upload Build Artifact
+#         uses: actions/upload-artifact@v2.2.4
+#         with:
+#           name: windows
+#           path: windows.tar.gz
   publish-beta:
-    if: ${{ github.ref == 'refs/heads/latest' }}
-    needs: [build-combo, build-windows]
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [build-combo]
     runs-on: ubuntu-latest
     environment: beta
     permissions:
@@ -168,12 +168,6 @@ jobs:
       uses: actions/download-artifact@v2.0.10
       with:
         path: ${{env.GITHUB_WORKSPACE}}/artifacts
-    - name: Create Archives
-      run: |
-        mv ./windows/windows.tar.gz ./windows.tar.gz
-        tar -czf core.tar.gz core/
-        tar -czf ui.tar.gz ui/
-      working-directory: artifacts
     - name: Generate Changelog
       uses: Bullrich/generate-release-changelog@master
       id: changelog
@@ -183,7 +177,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: "core/wiki-core.tar.gz,ui/wiki-ui.tar.gz,windows/windows.tar.gz"
+        artifacts: ${{steps.download.outputs.download-path}}/core/wiki-core.tar.gz,${{steps.download.outputs.download-path}}/ui/wiki-ui.tar.gz
         body: |
           ${{ steps.changelog.outputs.changelog }}
         draft: false
@@ -191,7 +185,7 @@ jobs:
         tag: ${{env.BUILD_VERSION}}
         token: ${{ secrets.GITHUB_TOKEN }}
   publish-release:
-    if: ${{ github.ref == 'refs/heads/latest' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     needs: [publish-beta]
     runs-on: ubuntu-latest
     environment: release
