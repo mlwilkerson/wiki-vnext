@@ -102,15 +102,19 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+      - run: |
+          ls ${{steps.download.outputs.download-path}}
+          ls ${{steps.download.outputs.download-path}}\core
+          ls ${{steps.download.outputs.download-path}}\ui
       - name: Rebuild Core Dependencies
         run: |
-          tar xfz wiki-core.tar.gz
+          tar -xfz wiki-core.tar.gz
           rm wiki-core.tar.gz
           npm rebuild
         working-directory: ${{steps.download.outputs.download-path}}\core
       - name: Rebuild UI Dependencies
         run: |
-          tar xfz wiki-ui.tar.gz
+          tar -xfz wiki-ui.tar.gz
           rm wiki-ui.tar.gz
           npm rebuild
         working-directory: ${{steps.download.outputs.download-path}}\ui
