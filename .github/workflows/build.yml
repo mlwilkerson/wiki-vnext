@@ -102,24 +102,29 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: |
-          ls ${{steps.download.outputs.download-path}}
-          ls ${{steps.download.outputs.download-path}}\core
-          ls ${{steps.download.outputs.download-path}}\ui
+      - name: Create Directories
+        run: |
+          mkdir extract\core
+          mkdir extract\ui
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+      - name: Extract Core Artifact
+        uses: ihiroky/extract-action@v1
+        with:
+          file_path: ${{steps.download.outputs.download-path}}\core\wiki-core.tar.gz
+          extract_dir: ${{env.GITHUB_WORKSPACE}}\extract\core
+      - name: Extract UI Artifact
+        uses: ihiroky/extract-action@v1
+        with:
+          file_path: ${{steps.download.outputs.download-path}}\ui\wiki-ui.tar.gz
+          extract_dir: ${{env.GITHUB_WORKSPACE}}\extract\ui
       - name: Rebuild Core Dependencies
-        run: |
-          tar -xfz wiki-core.tar.gz
-          rm wiki-core.tar.gz
-          npm rebuild
-        working-directory: ${{steps.download.outputs.download-path}}\core
+        run: npm rebuild
+        working-directory: ${{env.GITHUB_WORKSPACE}}\extract\core
       - name: Rebuild UI Dependencies
-        run: |
-          tar -xfz wiki-ui.tar.gz
-          rm wiki-ui.tar.gz
-          npm rebuild
-        working-directory: ${{steps.download.outputs.download-path}}\ui
+        run: npm rebuild
+        working-directory: ${{env.GITHUB_WORKSPACE}}\extract\ui
       - name: Create Archive
-        run: tar -czvf windows.tar.gz ${{steps.download.outputs.download-path}}\
+        run: tar -czvf windows.tar.gz ${{env.GITHUB_WORKSPACE}}\extract\
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
