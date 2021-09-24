@@ -131,7 +131,7 @@ jobs:
 #           name: windows
 #           path: windows.tar.gz
   publish-beta:
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: [build-combo]
     runs-on: ubuntu-latest
     environment: beta
@@ -185,7 +185,7 @@ jobs:
         tag: ${{env.BUILD_VERSION}}
         token: ${{ secrets.GITHUB_TOKEN }}
   publish-release:
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: [publish-beta]
     runs-on: ubuntu-latest
     environment: release
