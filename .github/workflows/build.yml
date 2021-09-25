@@ -166,8 +166,7 @@ jobs:
         docker push ghcr.io/requarks/wiki-combo:beta-${{env.BUILD_VERSION}}
     - name: Download Build Artifacts
       uses: actions/download-artifact@v2.0.10
-      with:
-        path: ${{env.GITHUB_WORKSPACE}}/artifacts
+      id: download
     - name: Generate Changelog
       uses: Bullrich/generate-release-changelog@master
       id: changelog
