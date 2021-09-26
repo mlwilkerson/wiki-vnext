@@ -164,7 +164,7 @@ q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
 </template>
 
 <script>
-import { get, sync } from 'vuex-pathify'
+import { get, sync } from '@requarks/vuex-pathify'
 import { v4 as uuid } from 'uuid'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'

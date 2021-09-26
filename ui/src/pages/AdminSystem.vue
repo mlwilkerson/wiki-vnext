@@ -295,7 +295,7 @@ export default {
       try {
         const respRaw = await this.$apollo.mutate({
           mutation: gql`
-            mutation {
+            mutation performUpdate {
               system {
                 performUpgrade {
                   responseResult {
@@ -332,7 +332,7 @@ export default {
   apollo: {
     info: {
       query: gql`
-        query {
+        query getSystemInfo {
           systemInfo {
             configFile
             cpuCores

@@ -268,7 +268,7 @@ q-card.page-properties-dialog(style='max-width: 450px;')
 </template>
 
 <script>
-import { get, sync } from 'vuex-pathify'
+import { get, sync } from '@requarks/vuex-pathify'
 
 export default {
   data () {

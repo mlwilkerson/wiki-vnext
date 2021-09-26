@@ -108,27 +108,30 @@ export default {
   methods: {
     createHook () {
       this.$q.dialog({
-        component: null /* Vue.options.components.WebhookEditDialog */,
-        parent: this,
-        hookId: null
+        component: this.$.appContext.components.WebhookEditDialog,
+        componentProps: {
+          hookId: null
+        }
       }).onOk(() => {
         this.$apollo.queries.hooks.refetch()
       })
     },
     editHook (id) {
       this.$q.dialog({
-        component: null /* Vue.options.components.WebhookEditDialog */,
-        parent: this,
-        hookId: id
+        component: this.$.appContext.components.WebhookEditDialog,
+        componentProps: {
+          hookId: id
+        }
       }).onOk(() => {
         this.$apollo.queries.hooks.refetch()
       })
     },
     deleteHook (hook) {
       this.$q.dialog({
-        component: null /* Vue.options.components.WebhookDeleteDialog */,
-        parent: this,
-        hook
+        component: this.$.appContext.components.WebhookDeleteDialog,
+        componentProps: {
+          hook
+        }
       }).onOk(() => {
         this.$apollo.queries.hooks.refetch()
       })
@@ -137,7 +140,7 @@ export default {
   apollo: {
     hooks: {
       query: gql`
-        {
+        query getHooks {
           hooks {
             id
             name

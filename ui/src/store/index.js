@@ -2,8 +2,8 @@ import union from 'lodash/union'
 import without from 'lodash/without'
 import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
-import pathify from 'vuex-pathify' // eslint-disable-line import/no-duplicates
-import { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
+import pathify from '@requarks/vuex-pathify' // eslint-disable-line import/no-duplicates
+import { make } from '@requarks/vuex-pathify' // eslint-disable-line import/no-duplicates
 
 import admin from './admin'
 import colors from './colors'

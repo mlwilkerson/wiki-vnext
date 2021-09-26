@@ -140,7 +140,7 @@ q-page.q-py-md(:style-fn='pageStyle')
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 
 export default {
   data () {

@@ -115,15 +115,16 @@ export default {
   methods: {
     async install (ext) {
       this.$q.loading.show({
-        message: this.$t('admin.extensions.installing') + '<br>' + this.$t('admin.extensions.installingHint')
+        message: this.$t('admin.extensions.installing') + '<br>' + this.$t('admin.extensions.installingHint'),
+        html: true
       })
       try {
         const respRaw = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation installExtension (
               $key: String!
             ) {
-              installExtension(
+              installExtension (
                 key: $key
               ) {
                 status {
@@ -160,7 +161,7 @@ export default {
   apollo: {
     extensions: {
       query: gql`
-        {
+        query fetchExtensions {
           systemExtensions {
             key
             title

@@ -1,4 +1,4 @@
-import { make } from 'vuex-pathify'
+import { make } from '@requarks/vuex-pathify'
 
 const state = {
   timezones: [

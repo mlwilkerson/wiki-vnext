@@ -351,7 +351,7 @@ q-page.admin-general
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -413,7 +413,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation saveSite (
               $id: UUID!
               $patch: SiteUpdateInput!
             ) {
@@ -487,7 +487,7 @@ export default {
         try {
           await this.$apollo.mutate({
             mutation: gql`
-              mutation (
+              mutation uploadLogo (
                 $id: UUID!
                 $image: Upload!
               ) {
@@ -536,7 +536,7 @@ export default {
         try {
           await this.$apollo.mutate({
             mutation: gql`
-              mutation (
+              mutation uploadFavicon (
                 $id: UUID!
                 $image: Upload!
               ) {
@@ -580,7 +580,7 @@ export default {
   apollo: {
     config: {
       query: gql`
-        query (
+        query getSite (
           $id: UUID!
         ) {
           siteById(

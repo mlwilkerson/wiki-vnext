@@ -82,7 +82,7 @@ q-layout(view='hHh Lpr lff')
 </template>
 
 <script>
-import { get, sync } from 'vuex-pathify'
+import { get, sync } from '@requarks/vuex-pathify'
 
 export default {
   name: 'MainLayout',

@@ -6,7 +6,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
       span {{$t(`admin.groups.delete`)}}
     q-card-section
       .text-body2
-        i18n(path='admin.groups.deleteConfirm')
+        i18n-t(keypath='admin.groups.deleteConfirm')
           template(v-slot:groupName)
             strong {{group.name}}
       .text-body2.q-mt-md
@@ -55,7 +55,7 @@ export default {
       try {
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation ($id: UUID!) {
+            mutation deleteGroup ($id: UUID!) {
               deleteGroup(id: $id) {
                 status {
                   succeeded

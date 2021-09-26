@@ -351,7 +351,7 @@ export default {
       try {
         const respRaw = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation saveSecurityConfig (
               $authJwtAudience: String
               $authJwtExpiration: String
               $authJwtRenewablePeriod: String
@@ -419,7 +419,7 @@ export default {
   apollo: {
     config: {
       query: gql`
-        {
+        query getSecurityConfig {
           systemSecurity {
             authJwtAudience
             authJwtExpiration

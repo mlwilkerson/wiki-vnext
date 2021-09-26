@@ -117,7 +117,7 @@ import isArray from 'lodash/isArray'
 import some from 'lodash/some'
 import includes from 'lodash/includes'
 import AnimatedNumber from 'animated-number-vue'
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import semverLte from 'semver/functions/lte'
 
@@ -199,7 +199,7 @@ export default {
     // },
     lastLogins: {
       query: gql`
-        query {
+        query getLastLogins {
           users {
             lastLogins {
               id

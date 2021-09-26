@@ -208,11 +208,11 @@ q-page.admin-theme
 
 <script>
 import gql from 'graphql-tag'
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import startCase from 'lodash/startCase'
-import { colors } from 'quasar'
+import { useQuasar, setCssVar } from 'quasar'
 
 export default {
   meta () {
@@ -222,6 +222,7 @@ export default {
   },
   data () {
     return {
+      qsr: useQuasar(),
       loading: false,
       colorKeys: [
         'primary',
@@ -253,25 +254,25 @@ export default {
   },
   watch: {
     'config.dark' (newValue) {
-      this.$q.dark.set(newValue)
-      this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-      this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-      this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+      this.qsr.dark.set(newValue)
+      // this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+      // this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+      // this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
     },
     'config.colorPrimary' (newValue) {
-      colors.setBrand('primary', newValue)
+      setCssVar('primary', newValue)
     },
     'config.colorSecondary' (newValue) {
-      colors.setBrand('secondary', newValue)
+      setCssVar('secondary', newValue)
     },
     'config.colorAccent' (newValue) {
-      colors.setBrand('accent', newValue)
+      setCssVar('accent', newValue)
     },
     'config.colorHeader' (newValue) {
-      colors.setBrand('header', newValue)
+      setCssVar('header', newValue)
     },
     'config.colorSidebar' (newValue) {
-      colors.setBrand('sidebar', newValue)
+      setCssVar('sidebar', newValue)
     },
     currentSiteId () {
       this.fetchConfig()
@@ -281,12 +282,12 @@ export default {
     this.fetchConfig()
   },
   beforeUnmount () {
-    this.$q.dark.set(this.darkModeInitial)
+    this.qsr.dark.set(this.darkModeInitial)
   },
   methods: {
     startCase,
     onCmReady (cm) {
-      cm.setOption('theme', this.$q.dark.isActive ? 'material-ocean' : 'elegant')
+      cm.setOption('theme', this.qsr.dark.isActive ? 'material-ocean' : 'elegant')
       cm.setSize(null, 200)
     },
     resetColors () {
@@ -304,7 +305,7 @@ export default {
       try {
         const resp = await this.$apollo.query({
           query: gql`
-            query (
+            query fetchThemeConfig (
               $id: UUID!
             ) {
               siteById(
@@ -352,7 +353,7 @@ export default {
       try {
         const respRaw = await this.$apollo.mutate({
           mutation: gql`
-            mutation(
+            mutation saveTheme (
               $id: UUID!
               $patch: SiteUpdateInput!
               ) {

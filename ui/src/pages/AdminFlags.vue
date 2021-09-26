@@ -105,7 +105,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation updateFlags (
               $flags: [SystemFlagInput]!
             ) {
               updateSystemFlags(

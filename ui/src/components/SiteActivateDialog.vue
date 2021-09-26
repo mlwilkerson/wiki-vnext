@@ -59,7 +59,7 @@ export default {
         const siteId = this.site.id
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation updateSite (
               $id: UUID!
               $newState: Boolean
               ) {

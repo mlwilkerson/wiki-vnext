@@ -287,22 +287,24 @@ export default {
       this.loading++
       try {
         const resp = await this.$apollo.query({
-          query: gql`{
-            mailConfig {
-              senderName
-              senderEmail
-              host
-              port
-              secure
-              verifySSL
-              user
-              pass
-              useDKIM
-              dkimDomainName
-              dkimKeySelector
-              dkimPrivateKey
+          query: gql`
+            query getMailConfig {
+              mailConfig {
+                senderName
+                senderEmail
+                host
+                port
+                secure
+                verifySSL
+                user
+                pass
+                useDKIM
+                dkimDomainName
+                dkimKeySelector
+                dkimPrivateKey
+              }
             }
-          }`,
+          `,
           fetchPolicy: 'no-cache'
         })
         if (!resp?.data?.mailConfig) {
@@ -325,7 +327,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation saveMailConfig (
               $senderName: String!
               $senderEmail: String!
               $host: String!
@@ -390,7 +392,7 @@ export default {
       try {
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation sentMailTest (
               $recipientEmail: String!
               ) {
               sendMailTest(

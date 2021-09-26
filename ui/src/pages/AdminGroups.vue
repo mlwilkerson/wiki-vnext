@@ -33,7 +33,7 @@ q-page.admin-groups
     .col-12
       q-card.shadow-1
         q-table(
-          :data='groups'
+          :rows='groups'
           :columns='headers'
           row-key='id'
           flat
@@ -206,7 +206,7 @@ export default {
   apollo: {
     groups: {
       query: gql`
-        query {
+        query getGroups {
           groups {
             id
             name

@@ -77,8 +77,8 @@ q-dialog(ref='dialog', @hide='onDialogHide')
                 )
                 q-item-section(side)
                   q-checkbox(
-                    :value='selected'
-                    @input='toggleOption(opt)'
+                    :model-value='selected'
+                    @update:model-value='toggleOption(opt)'
                     )
                 q-item-section(side)
                   q-chip.q-mx-none(
@@ -261,7 +261,7 @@ export default {
       try {
         const resp = await this.$apollo.query({
           query: gql`
-            query (
+            query getHook (
               $id: UUID!
               ) {
               hookById (
@@ -305,7 +305,7 @@ export default {
         }
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation createHook (
               $name: String!
               $events: [String]!
               $url: String!
@@ -359,7 +359,7 @@ export default {
         }
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation saveHook (
               $id: UUID!
               $patch: HookUpdateInput!
               ) {

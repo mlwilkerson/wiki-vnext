@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { sync } from 'vuex-pathify'
+import { sync } from '@requarks/vuex-pathify'
 
 export default {
   props: {

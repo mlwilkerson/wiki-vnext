@@ -6,7 +6,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
       span {{$t(`admin.webhooks.delete`)}}
     q-card-section
       .text-body2
-        i18n(path='admin.webhooks.deleteConfirm')
+        i18n-t(keypath='admin.webhooks.deleteConfirm')
           template(v-slot:name)
             strong {{hook.name}}
       .text-body2.q-mt-md
@@ -55,7 +55,7 @@ export default {
       try {
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation ($id: UUID!) {
+            mutation deleteHook ($id: UUID!) {
               deleteHook(id: $id) {
                 status {
                   succeeded

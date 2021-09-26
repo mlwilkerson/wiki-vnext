@@ -1,4 +1,4 @@
-import { make } from 'vuex-pathify'
+import { make } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -25,7 +25,7 @@ export default {
     async fetchSites ({ commit }) {
       const resp = await APOLLO_CLIENT.query({
         query: gql`
-          {
+          query getSites {
             sites {
               id
               hostname

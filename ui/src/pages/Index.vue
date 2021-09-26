@@ -368,7 +368,7 @@ q-page.column
 </template>
 
 <script>
-import { get, sync } from 'vuex-pathify'
+import { get, sync } from '@requarks/vuex-pathify'
 
 export default {
   name: 'PageIndex',

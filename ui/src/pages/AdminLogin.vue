@@ -178,7 +178,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation saveLoginSettings (
               $authAutoLogin: Boolean
               $authEnforce2FA: Boolean
             ) {

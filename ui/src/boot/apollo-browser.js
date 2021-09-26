@@ -43,9 +43,11 @@ export default ({ app, store }) => {
   })
 
   // Init Vue Apollo
-  app.apolloProvider = createApolloProvider({
+  const apolloProvider = createApolloProvider({
     defaultClient: client
   })
+
+  app.use(apolloProvider)
 
   window.APOLLO_CLIENT = client
 }

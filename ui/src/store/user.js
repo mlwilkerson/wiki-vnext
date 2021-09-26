@@ -1,4 +1,4 @@
-import { make } from 'vuex-pathify'
+import { make } from '@requarks/vuex-pathify'
 import jwt from 'jsonwebtoken'
 import Cookies from 'js-cookie'
 

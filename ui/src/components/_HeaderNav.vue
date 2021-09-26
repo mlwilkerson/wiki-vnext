@@ -84,7 +84,7 @@ q-header.bg-header.text-white.site-header(
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 
 export default {
   data () {

@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import find from 'lodash/find'
 import _get from 'lodash/get'

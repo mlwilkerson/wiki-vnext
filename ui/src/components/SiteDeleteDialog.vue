@@ -56,7 +56,7 @@ export default {
         const siteId = this.site.id
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation ($id: UUID!) {
+            mutation deleteSite ($id: UUID!) {
               deleteSite(id: $id) {
                 status {
                   succeeded

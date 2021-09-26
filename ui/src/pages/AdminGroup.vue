@@ -297,7 +297,7 @@ q-page.admin-groups
 
 <script>
 import gql from 'graphql-tag'
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import cloneDeep from 'lodash/cloneDeep'
 import { v4 as uuid } from 'uuid'
 
@@ -536,7 +536,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation updateGroup (
               $id: UUID!
               $name: String!
               $redirectOnLogin: String!
@@ -588,7 +588,7 @@ export default {
   apollo: {
     group: {
       query: gql`
-        query ($id: UUID!) {
+        query getGroup ($id: UUID!) {
           groupById(id: $id) {
             id
             name

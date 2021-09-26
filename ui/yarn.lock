@@ -1566,6 +1566,13 @@
   dependencies:
     serialize-javascript "^5.0.1"
 
+"@requarks/vuex-pathify@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@requarks/vuex-pathify/-/vuex-pathify-2.0.1.tgz#72605548b67eeeda739eb428ad7894b15e522ef6"
+  integrity sha512-cQzbAkXHr1imthvEUTa0Sw/oxutt0POHt06O8tVqJUXyUc/cCW8bzrTeE+LG1JSbslRHhkO/KoQOsH1S9lbS3A==
+  dependencies:
+    lodash.clonedeep "^4.5.0"
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-babel/-/plugin-babel-5.3.0.tgz#9cb1c5146ddd6a4968ad96f209c50c62f92f9879"
@@ -10595,11 +10602,6 @@ vue-apollo@3.0.7:
     serialize-javascript "^4.0.0"
     throttle-debounce "^2.1.0"
 
-vue-class-component@^7.2.6:
-  version "7.2.6"
-  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.6.tgz#8471e037b8e4762f5a464686e19e5afc708502e4"
-  integrity sha512-+eaQXVrAm/LldalI272PpDe3+i4mPis0ORiMYxF6Ae4hyuCh15W8Idet7wPUEs4N4YptgFHGys4UrgNQOMyO6w==
-
 vue-codemirror@4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/vue-codemirror/-/vue-codemirror-4.0.6.tgz#b786bb80d8d762a93aab8e46f79a81006f0437c4"
@@ -10684,13 +10686,6 @@ vuedraggable@2.24.3:
   integrity sha512-6/HDXi92GzB+Hcs9fC6PAAozK1RLt1ewPTLjK0anTYguXLAeySDmcnqE8IC0xa7shvSzRjQXq3/+dsZ7ETGF3g==
   dependencies:
     sortablejs "1.10.2"
-
-vuex-pathify@1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/vuex-pathify/-/vuex-pathify-1.5.1.tgz#e0b4dba699edf64c5d945c9a1048febda3fbebd8"
-  integrity sha512-+0cCPVIeleV8WJyUIQ9ZHqLyz9F5iRm9LzWl6dnCrGbjHFTLfS5H2uS1CtJ0t0BCzAReUrbEsRweAyooe4OqZQ==
-  dependencies:
-    vue-class-component "^7.2.6"
 
 vuex@4:
   version "4.0.2"

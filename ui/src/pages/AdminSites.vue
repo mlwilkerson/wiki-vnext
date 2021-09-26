@@ -98,7 +98,7 @@ q-page.admin-locale
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import { copyToClipboard } from 'quasar'
 // import Vue from 'vue'
 

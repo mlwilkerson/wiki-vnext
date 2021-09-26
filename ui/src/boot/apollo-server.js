@@ -47,7 +47,7 @@ export default async ({ app, router, store, ssrContext }) => {
   try {
     const resp = await apolloClient.query({
       query: gql`
-        query ($hostname: String!) {
+        query getSiteInfo ($hostname: String!) {
           siteByHostname (
             hostname: $hostname
             exact: false

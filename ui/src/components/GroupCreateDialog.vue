@@ -70,7 +70,7 @@ export default {
         }
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation (
+            mutation createGroup (
               $name: String!
               ) {
               createGroup(

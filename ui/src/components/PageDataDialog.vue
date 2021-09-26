@@ -90,7 +90,7 @@ q-card.page-data-dialog(style='width: 750px;')
 </template>
 
 <script>
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 
 export default {
   data () {

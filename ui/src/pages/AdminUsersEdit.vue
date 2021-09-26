@@ -370,7 +370,7 @@
 </template>
 <script>
 import _ from 'lodash'
-import { get } from 'vuex-pathify'
+import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import { StatusIndicator } from 'vue-status-indicator'
 

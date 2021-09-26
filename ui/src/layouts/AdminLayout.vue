@@ -33,11 +33,11 @@ q-layout.admin(view='hHh Lpr lff')
             )
         q-item(to='/a/dashboard', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-tachometer-alt')
+            q-icon(:name='`img:` + icons.dashboard')
           q-item-section {{ $t('admin.dashboard.title') }}
         q-item(to='/a/sites', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-sitemap')
+            q-icon(:name='`img:` + icons.sites')
           q-item-section {{ $t('admin.sites.title') }}
         q-item-label.q-mt-sm(header).text-caption.text-blue-grey-4 {{ $t('admin.nav.site') }}
         q-item.q-mb-md
@@ -55,97 +55,97 @@ q-layout.admin(view='hHh Lpr lff')
             )
         q-item(to='/a/general', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-stream')
+            q-icon(:name='`img:` + icons.general')
           q-item-section {{ $t('admin.general.title') }}
         q-item(to='/a/analytics', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-chart-line')
+            q-icon(:name='`img:` + icons.analytics')
           q-item-section {{ $t('admin.analytics.title') }}
         q-item(to='/a/comments', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-comment')
+            q-icon(:name='`img:` + icons.comments')
           q-item-section {{ $t('admin.comments.title') }}
         q-item(to='/a/editors', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-pen-square')
+            q-icon(:name='`img:` + icons.editors')
           q-item-section {{ $t('admin.editors.title') }}
         q-item(to='/a/locale', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-language')
+            q-icon(:name='`img:` + icons.locale')
           q-item-section {{ $t('admin.locale.title') }}
         q-item(to='/a/login', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-sign-in-alt')
+            q-icon(:name='`img:` + icons.login')
           q-item-section {{ $t('admin.login.title') }}
         q-item(to='/a/navigation', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-th-list')
+            q-icon(:name='`img:` + icons.navigation')
           q-item-section {{ $t('admin.navigation.title') }}
         q-item(to='/a/rendering', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-cogs')
+            q-icon(:name='`img:` + icons.rendering')
           q-item-section {{ $t('admin.rendering.title') }}
         q-item(to='/a/storage', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-hdd')
+            q-icon(:name='`img:` + icons.storage')
           q-item-section {{ $t('admin.storage.title') }}
         q-item(to='/a/theme', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-palette')
+            q-icon(:name='`img:` + icons.theme')
           q-item-section {{ $t('admin.theme.title') }}
         q-item-label.q-mt-sm(header).text-caption.text-blue-grey-4 {{ $t('admin.nav.users') }}
         q-item(to='/a/auth', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-lock')
+            q-icon(:name='`img:` + icons.auth')
           q-item-section {{ $t('admin.auth.title') }}
         q-item(to='/a/groups', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-users')
+            q-icon(:name='`img:` + icons.groups')
           q-item-section {{ $t('admin.groups.title') }}
           q-item-section(side)
             q-badge(color='dark-3', :label='info.groupsTotal')
         q-item(to='/a/users', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-user-friends')
+            q-icon(:name='`img:` + icons.users')
           q-item-section {{ $t('admin.users.title') }}
           q-item-section(side)
             q-badge(color='dark-3', :label='info.usersTotal')
         q-item-label.q-mt-sm(header).text-caption.text-blue-grey-4 {{ $t('admin.nav.system') }}
         q-item(to='/a/api', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-dharmachakra')
+            q-icon(:name='`img:` + icons.api')
           q-item-section {{ $t('admin.api.title') }}
         q-item(to='/a/extensions', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-puzzle-piece')
+            q-icon(:name='`img:` + icons.extensions')
           q-item-section {{ $t('admin.extensions.title') }}
         q-item(to='/a/mail', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-mail-bulk')
+            q-icon(:name='`img:` + icons.mail')
           q-item-section {{ $t('admin.mail.title') }}
         q-item(to='/a/security', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-shield-alt')
+            q-icon(:name='`img:` + icons.security')
           q-item-section {{ $t('admin.security.title') }}
         q-item(to='/a/ssl', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-key')
+            q-icon(:name='`img:` + icons.ssl')
           q-item-section {{ $t('admin.ssl.title') }}
         q-item(to='/a/system', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-sliders-h')
+            q-icon(:name='`img:` + icons.system')
           q-item-section {{ $t('admin.system.title') }}
         q-item(to='/a/utilities', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-screwdriver')
+            q-icon(:name='`img:` + icons.utilities')
           q-item-section {{ $t('admin.utilities.title') }}
         q-item(to='/a/webhooks', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-bolt')
+            q-icon(:name='`img:` + icons.webhooks')
           q-item-section {{ $t('admin.webhooks.title') }}
         q-item(to='/a/flags', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
-            q-icon(name='las la-flag-checkered')
+            q-icon(:name='`img:` + icons.flags')
           q-item-section {{ $t('admin.dev.flags.title') }}
   q-page-container.admin-container
     router-view(v-slot='{ Component }')
@@ -157,7 +157,7 @@ q-layout.admin(view='hHh Lpr lff')
 </template>
 
 <script>
-import { get, sync } from 'vuex-pathify'
+import { get, sync } from '@requarks/vuex-pathify'
 
 export default {
   name: 'AdminLayout',
@@ -188,6 +188,32 @@ export default {
       },
       barStyle: {
         width: '7px'
+      },
+      icons: {
+        dashboard: require('../assets/icons/fluent-apps-tab.svg'),
+        sites: require('../assets/icons/fluent-change-theme.svg'),
+        general: require('../assets/icons/fluent-web.svg'),
+        analytics: require('../assets/icons/fluent-bar-chart.svg'),
+        comments: require('../assets/icons/fluent-comments.svg'),
+        editors: require('../assets/icons/fluent-cashbook.svg'),
+        locale: require('../assets/icons/fluent-language.svg'),
+        login: require('../assets/icons/fluent-bunch-of-keys.svg'),
+        navigation: require('../assets/icons/fluent-tree-structure.svg'),
+        rendering: require('../assets/icons/fluent-rich-text-converter.svg'),
+        storage: require('../assets/icons/fluent-ssd.svg'),
+        theme: require('../assets/icons/fluent-paint-roller.svg'),
+        auth: require('../assets/icons/fluent-security-lock.svg'),
+        groups: require('../assets/icons/fluent-people.svg'),
+        users: require('../assets/icons/fluent-account.svg'),
+        api: require('../assets/icons/fluent-rest-api.svg'),
+        extensions: require('../assets/icons/fluent-module.svg'),
+        mail: require('../assets/icons/fluent-message-settings.svg'),
+        security: require('../assets/icons/fluent-protect.svg'),
+        ssl: require('../assets/icons/fluent-security-ssl.svg'),
+        system: require('../assets/icons/fluent-processor.svg'),
+        utilities: require('../assets/icons/fluent-swiss-army-knife.svg'),
+        webhooks: require('../assets/icons/fluent-lightning-bolt.svg'),
+        flags: require('../assets/icons/fluent-windsock.svg')
       }
     }
   },

@@ -210,7 +210,7 @@ import filter from 'lodash/filter'
 import _get from 'lodash/get'
 
 const fetchLocaleGql = gql`
-  {
+  query getLocales {
     localization {
       locales {
         availability
@@ -309,9 +309,9 @@ export default {
       lc.isDownloading = true
       const respRaw = await this.$apollo.mutate({
         mutation: gql`
-          mutation($locale: String!) {
+          mutation downloadLocale ($locale: String!) {
             localization {
-              downloadLocale(locale: $locale) {
+              downloadLocale (locale: $locale) {
                 responseResult {
                   succeeded
                   errorCode
@@ -349,7 +349,7 @@ export default {
       this.loading = true
       const respRaw = await this.$apollo.mutate({
         mutation: gql`
-          mutation (
+          mutation saveLocaleSettings (
             $locale: String!
             $autoUpdate: Boolean!
             $namespacing: Boolean!
