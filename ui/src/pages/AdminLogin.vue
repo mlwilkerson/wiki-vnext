@@ -105,26 +105,25 @@ q-page.admin-login
             :animation='150'
             handle='.handle'
             @end='dragStarted = false'
+            item-key='id'
             )
-            q-item(
-              v-for='item of providers'
-              :key='item.id'
-              )
-              q-item-section(side)
-                q-icon.handle(name='las la-bars')
-              blueprint-icon(:icon='item.icon')
-              q-item-section
-                q-item-label {{item.label}}
-                q-item-label(caption) {{item.provider}}
-              q-item-section(side)
-                q-toggle(
-                  v-model='item.isActive'
-                  color='primary'
-                  checked-icon='las la-check'
-                  unchecked-icon='las la-times'
-                  label='Visible'
-                  :aria-label='item.label'
-                )
+            template(#item='{element}')
+              q-item
+                q-item-section(side)
+                  q-icon.handle(name='las la-bars')
+                blueprint-icon(:icon='element.icon')
+                q-item-section
+                  q-item-label {{element.label}}
+                  q-item-label(caption) {{element.provider}}
+                q-item-section(side)
+                  q-toggle(
+                    v-model='element.isActive'
+                    color='primary'
+                    checked-icon='las la-check'
+                    unchecked-icon='las la-times'
+                    label='Visible'
+                    :aria-label='element.label'
+                  )
         q-item.q-pt-none
           q-item-section
             q-card.bg-info.text-white.rounded-borders(flat)

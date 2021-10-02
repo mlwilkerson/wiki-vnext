@@ -11,12 +11,12 @@ q-card.page-scripts-dialog(style='width: 860px; max-width: 90vw;')
       .text-caption {{this.languageLabel}}
   div(style='min-height: 450px;')
     q-no-ssr(:placeholder='$t(`common.loading`)')
-      codemirror(
+      util-code-editor(
         v-if='showEditor'
         ref='editor'
         v-model='content'
-        :options='{ mode: language }'
-        @ready='onCmReady'
+        :language='language'
+        :min-height='450'
       )
   q-card-actions.card-actions
     q-space
@@ -58,18 +58,18 @@ export default {
       switch (this.mode) {
         case 'jsLoad':
         case 'jsUnload':
-          return 'text/javascript'
+          return 'javascript'
         case 'styles':
-          return 'text/css'
+          return 'css'
         default:
-          return 'text/plain'
+          return 'plaintext'
       }
     },
     languageLabel () {
       switch (this.language) {
-        case 'text/javascript':
+        case 'javascript':
           return 'Javascript'
-        case 'text/css':
+        case 'css':
           return 'CSS'
         default:
           return 'Plain Text'
@@ -90,13 +90,6 @@ export default {
   methods: {
     persist () {
       this.$store.set(`page/${this.contentStoreKey}`, this.content)
-    },
-    onCmReady (cm) {
-      cm.setOption('theme', this.$q.dark.isActive ? 'material-ocean' : 'elegant')
-      cm.setSize(null, 450)
-      setTimeout(() => {
-        cm.focus()
-      })
     }
   }
 }

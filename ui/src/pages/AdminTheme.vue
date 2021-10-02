@@ -171,8 +171,7 @@ q-page.admin-theme
               util-code-editor.admin-theme-cm(
                 ref='cmCSS'
                 v-model='config.injectCSS'
-                :options='{ mode: `text/css` }'
-                @ready='onCmReady'
+                language='css'
               )
         q-separator.q-my-sm(inset)
         q-item
@@ -186,8 +185,7 @@ q-page.admin-theme
               util-code-editor.admin-theme-cm(
                 ref='cmHead'
                 v-model='config.injectHead'
-                :options='{ mode: `text/html` }'
-                @ready='onCmReady'
+                language='html'
               )
         q-separator.q-my-sm(inset)
         q-item
@@ -201,8 +199,7 @@ q-page.admin-theme
               util-code-editor.admin-theme-cm(
                 ref='cmBody'
                 v-model='config.injectBody'
-                :options='{ mode: `text/html` }'
-                @ready='onCmReady'
+                language='html'
               )
 </template>
 
@@ -286,10 +283,6 @@ export default {
   },
   methods: {
     startCase,
-    onCmReady (cm) {
-      cm.setOption('theme', this.qsr.dark.isActive ? 'material-ocean' : 'elegant')
-      cm.setSize(null, 200)
-    },
     resetColors () {
       this.config.dark = false
       this.config.colorPrimary = '#1976D2'
