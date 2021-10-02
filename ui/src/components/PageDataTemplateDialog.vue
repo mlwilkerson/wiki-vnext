@@ -51,16 +51,14 @@ q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
           :animation='150'
           @start='dragStarted = true'
           @end='dragStarted = false'
+          item-key='id'
           )
-          q-item(
-            v-for='item of inventoryMisc'
-            :key='item.key'
-            clickable
-            )
-            q-item-section(side)
-              q-icon(:name='item.icon', color='primary')
-            q-item-section
-              q-item-label {{item.label}}
+          template(#item='{element}')
+            q-item(clickable)
+              q-item-section(side)
+                q-icon(:name='element.icon', color='primary')
+              q-item-section
+                q-item-label {{element.label}}
       q-item-label(header) {{$t('editor.pageData.templateKeyValueTypes')}}
       .q-px-md.q-pb-md
         draggable(
@@ -72,16 +70,14 @@ q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
           :animation='150'
           @start='dragStarted = true'
           @end='dragStarted = false'
+          item-key='id'
           )
-          q-item(
-            v-for='item of inventoryKV'
-            :key='item.key'
-            clickable
-            )
-            q-item-section(side)
-              q-icon(:name='item.icon', color='primary')
-            q-item-section
-              q-item-label {{item.label}}
+          template(#item='{element}')
+            q-item(clickable)
+              q-item-section(side)
+                q-icon(:name='element.icon', color='primary')
+              q-item-section
+                q-item-label {{element.label}}
     .col.page-datatmpl-content
       q-scroll-area(
         ref='scrollArea'
@@ -123,38 +119,37 @@ q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
                 :animation='150'
                 handle='.handle'
                 @end='dragStarted = false'
+                item-key='id'
                 )
-                q-item(
-                  v-for='item of tmpl.data'
-                  :key='item.id'
-                  )
-                  q-item-section(side)
-                    q-icon.handle(name='las la-bars')
-                  q-item-section(side)
-                    q-icon(:name='item.icon', color='primary')
-                  q-item-section
-                    q-input(
-                      :label='$t(`editor.pageData.label`)'
-                      v-model='item.label'
-                      outlined
-                      dense
-                    )
-                  q-item-section(v-if='item.type !== `header`')
-                    q-input(
-                      :label='$t(`editor.pageData.uniqueKey`)'
-                      v-model='item.key'
-                      outlined
-                      dense
-                    )
-                  q-item-section(side)
-                    q-btn.acrylic-btn(
-                      color='negative'
-                      :aria-label='$t(`common.actions.delete`)'
-                      padding='xs'
-                      icon='las la-times'
-                      flat
-                      @click='removeItem(item)'
-                    )
+                template(#item='{element}')
+                  q-item
+                    q-item-section(side)
+                      q-icon.handle(name='las la-bars')
+                    q-item-section(side)
+                      q-icon(:name='element.icon', color='primary')
+                    q-item-section
+                      q-input(
+                        :label='$t(`editor.pageData.label`)'
+                        v-model='element.label'
+                        outlined
+                        dense
+                      )
+                    q-item-section(v-if='element.type !== `header`')
+                      q-input(
+                        :label='$t(`editor.pageData.uniqueKey`)'
+                        v-model='element.key'
+                        outlined
+                        dense
+                      )
+                    q-item-section(side)
+                      q-btn.acrylic-btn(
+                        color='negative'
+                        :aria-label='$t(`common.actions.delete`)'
+                        padding='xs'
+                        icon='las la-times'
+                        flat
+                        @click='removeItem(item)'
+                      )
           .page-datatmpl-scrollend(ref='scrollAreaEnd')
 
   .q-pa-md.text-center(v-else-if='templates.length > 0')

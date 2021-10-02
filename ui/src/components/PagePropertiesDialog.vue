@@ -1,5 +1,5 @@
 <template lang="pug">
-q-card.page-properties-dialog(style='max-width: 450px;')
+q-card.page-properties-dialog
   .floating-sidepanel-quickaccess.animated.fadeIn(v-if='showQuickAccess', style='right: 486px;')
     template(v-for='(qa, idx) of quickaccess', :key='`qa-` + qa.key')
       q-btn(

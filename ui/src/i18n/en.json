@@ -249,7 +249,7 @@
   "admin.locale.namespaces.label": "Multilingual Namespaces",
   "admin.locale.namespacing": "Multilingual Namespacing",
   "admin.locale.namespacingPrefixWarning.subtitle": "Paths without a locale code will be automatically redirected to the base locale defined above.",
-  "admin.locale.namespacingPrefixWarning.title": "The locale code will be prefixed to all paths. (e.g. /{{langCode}}/page-name)",
+  "admin.locale.namespacingPrefixWarning.title": "The locale code will be prefixed to all paths. (e.g. /{langCode}/page-name)",
   "admin.locale.nativeName": "Native Name",
   "admin.locale.rtl": "RTL",
   "admin.locale.settings": "Locale Settings",

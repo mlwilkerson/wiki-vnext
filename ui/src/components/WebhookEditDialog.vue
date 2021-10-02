@@ -207,6 +207,7 @@ export default {
       default: null
     }
   },
+  emits: ['ok', 'hide'],
   data () {
     return {
       hook: {

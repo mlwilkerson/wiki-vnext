@@ -2,11 +2,11 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 350px; max-width: 450px;')
     q-card-section.card-header
-      q-icon(name='las la-power-off', left, size='sm')
+      q-icon(:name='`img:` + icons.shutdown', left, size='sm')
       span {{value ? $t(`admin.sites.activate`) : $t(`admin.sites.deactivate`)}}
     q-card-section
       .text-body2
-        i18n(:path='value ? `admin.sites.activateConfirm` : `admin.sites.deactivateConfirm`')
+        i18n-t(:keypath='value ? `admin.sites.activateConfirm` : `admin.sites.deactivateConfirm`')
           template(v-slot:siteTitle)
             strong {{site.title}}
     q-card-actions.card-actions
@@ -41,8 +41,13 @@ export default {
       default: false
     }
   },
+  emits: ['ok', 'hide'],
   data () {
-    return { }
+    return {
+      icons: {
+        shutdown: require('../assets/icons/fluent-shutdown.svg')
+      }
+    }
   },
   methods: {
     show () {

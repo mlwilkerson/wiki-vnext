@@ -2,11 +2,11 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 350px; max-width: 450px;')
     q-card-section.card-header
-      q-icon(name='las la-trash', left, size='sm')
+      q-icon(:name='`img:` + icons.delete', left, size='sm')
       span {{$t(`admin.sites.delete`)}}
     q-card-section
       .text-body2
-        i18n(path='admin.sites.deleteConfirm')
+        i18n-t(keypath='admin.sites.deleteConfirm')
           template(v-slot:siteTitle)
             strong {{site.title}}
       .text-body2.q-mt-md
@@ -38,8 +38,13 @@ export default {
       type: Object
     }
   },
+  emits: ['ok', 'hide'],
   data () {
-    return { }
+    return {
+      icons: {
+        delete: require('../assets/icons/fluent-delete-bin.svg')
+      }
+    }
   },
   methods: {
     show () {

@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 350px; max-width: 450px;')
     q-card-section.card-header
-      q-icon(name='las la-trash', left, size='sm')
+      q-icon(:name='`img:` + icons.delete', left, size='sm')
       span {{$t(`admin.webhooks.delete`)}}
     q-card-section
       .text-body2
@@ -38,8 +38,13 @@ export default {
       type: Object
     }
   },
+  emits: ['ok', 'hide'],
   data () {
-    return { }
+    return {
+      icons: {
+        delete: require('../assets/icons/fluent-delete-bin.svg')
+      }
+    }
   },
   methods: {
     show () {

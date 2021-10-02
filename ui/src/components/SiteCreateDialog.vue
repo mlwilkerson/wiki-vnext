@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 450px;')
     q-card-section.card-header
-      q-icon(name='las la-plus', left)
+      q-icon(:name='`img:` + icons.plus', left, size='sm')
       span {{$t(`admin.sites.new`)}}
     q-form.q-py-sm(ref='createSiteForm')
       q-item
@@ -61,11 +61,15 @@ q-dialog(ref='dialog', @hide='onDialogHide')
 import gql from 'graphql-tag'
 
 export default {
+  emits: ['ok', 'hide'],
   data () {
     return {
       siteName: '',
       siteHostname: 'wiki.example.com',
-      isLoading: false
+      isLoading: false,
+      icons: {
+        plus: require('../assets/icons/fluent-plus-plus.svg')
+      }
     }
   },
   methods: {

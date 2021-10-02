@@ -5,7 +5,11 @@
 </template>
 
 <script>
-import * as monaco from 'monaco-editor'
+import { keymap, EditorView } from '@codemirror/view'
+import { EditorState } from '@codemirror/state'
+import { history, historyKeymap } from '@codemirror/history'
+import { defaultKeymap } from '@codemirror/commands'
+import { lineNumbers } from '@codemirror/gutter'
 
 export default {
   props: {
@@ -24,36 +28,20 @@ export default {
     }
   },
   mounted () {
-    monaco.editor.defineTheme('wiki', {
-      base: this.$q.dark.isActive ? 'vs-dark' : 'vs',
-      inherit: true,
-      rules: [],
-      colors: {
-        'editor.background': this.$q.dark.isActive ? this.$store.get('colors/dark6') : '#FFF',
-        'editorGutter.background': this.$q.dark.isActive ? this.$store.get('colors/dark3') : '#EEE'
-      }
+    this.editor = new EditorView({
+      state: EditorState.create({
+        extensions: [
+          history(),
+          keymap.of([...defaultKeymap, ...historyKeymap]),
+          lineNumbers()
+        ]
+      }),
+      parent: this.$refs.editor
     })
-
-    this.editor = monaco.editor.create(this.$refs.editor, {
-      value: this.value,
-      language: this.language,
-      cursorBlinking: 'smooth',
-      theme: 'wiki',
-      tabSize: 2,
-      links: false,
-      minimap: {
-        enabled: false
-      },
-      padding: {
-        top: 10,
-        bottom: 10
-      }
-    })
-    this.editor.focus()
   },
   beforeUnmount () {
     if (this.editor) {
-      this.editor.dispose()
+      this.editor.destroy()
     }
   }
 }

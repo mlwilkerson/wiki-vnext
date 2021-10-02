@@ -95,8 +95,8 @@ module.exports = configure(function (ctx) {
         // )
       },
       chainWebpack (chain) {
-        chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js'] }])
-        chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
+        chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js'], threads: true }])
+        chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin, [{ excludeAliases: ['console'] }])
       }
     },
 

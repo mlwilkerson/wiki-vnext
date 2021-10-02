@@ -355,7 +355,7 @@ q-page.column
     full-height
     transition-show='jump-left'
     transition-hide='jump-right'
-    content-class='floating-sidepanel'
+    class='floating-sidepanel'
     )
     component(:is='sideDialogComponent')
 
@@ -614,7 +614,7 @@ export default {
     right: 24px;
 
     .q-card {
-      border-radius: 4px;
+      border-radius: 4px !important;
       min-width: 450px;
 
       .q-card__section {

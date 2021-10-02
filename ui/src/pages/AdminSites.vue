@@ -77,7 +77,7 @@ q-page.admin-locale
                 unchecked-icon='las la-times'
                 :label='$t(`admin.sites.isActive`)'
                 :aria-label='$t(`admin.sites.isActive`)'
-                @input='(val) => { toggleSiteState(site, val) }'
+                @update:model-value ='(val) => { toggleSiteState(site, val) }'
                 )
             q-separator.q-ml-md(vertical)
             q-item-section(side, style='flex-direction: row; align-items: center;')
@@ -158,7 +158,9 @@ export default {
     deleteSite (st) {
       this.$q.dialog({
         component: this.$.appContext.components.SiteDeleteDialog,
-        site: st
+        componentProps: {
+          site: st
+        }
       })
     }
   },

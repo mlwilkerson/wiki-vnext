@@ -168,7 +168,7 @@ q-page.admin-theme
         q-item
           q-item-section
             q-no-ssr(:placeholder='$t(`common.loading`)')
-              codemirror.admin-theme-cm(
+              util-code-editor.admin-theme-cm(
                 ref='cmCSS'
                 v-model='config.injectCSS'
                 :options='{ mode: `text/css` }'
@@ -183,7 +183,7 @@ q-page.admin-theme
         q-item
           q-item-section
             q-no-ssr(:placeholder='$t(`common.loading`)')
-              codemirror.admin-theme-cm(
+              util-code-editor.admin-theme-cm(
                 ref='cmHead'
                 v-model='config.injectHead'
                 :options='{ mode: `text/html` }'
@@ -198,7 +198,7 @@ q-page.admin-theme
         q-item
           q-item-section
             q-no-ssr(:placeholder='$t(`common.loading`)')
-              codemirror.admin-theme-cm(
+              util-code-editor.admin-theme-cm(
                 ref='cmBody'
                 v-model='config.injectBody'
                 :options='{ mode: `text/html` }'
