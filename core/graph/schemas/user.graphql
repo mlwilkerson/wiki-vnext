@@ -3,28 +3,15 @@
 # ===============================================
 
 extend type Query {
-  users: UserQuery
-}
-
-extend type Mutation {
-  users: UserMutation
-}
-
-# -----------------------------------------------
-# QUERIES
-# -----------------------------------------------
-
-type UserQuery {
-  list(
+  users (
+    page: Int
+    pageSize: Int
+    orderBy: UserOrderBy
+    orderByDirection: OrderByDirection
     filter: String
-    orderBy: String
   ): [UserMinimal] @auth(requires: ["write:users", "manage:users", "manage:system"])
 
-  search(
-    query: String!
-  ): [UserMinimal] @auth(requires: ["write:groups", "manage:groups", "write:users", "manage:users", "manage:system"])
-
-  single(
+  user(
     id: Int!
   ): User @auth(requires: ["manage:users", "manage:system"])
 
@@ -33,12 +20,8 @@ type UserQuery {
   lastLogins: [UserLastLogin] @auth(requires: ["write:groups", "manage:groups", "write:users", "manage:users", "manage:system"])
 }
 
-# -----------------------------------------------
-# MUTATIONS
-# -----------------------------------------------
-
-type UserMutation {
-  create(
+extend type Mutation {
+  createUser(
     email: String!
     name: String!
     passwordRaw: String
@@ -48,7 +31,7 @@ type UserMutation {
     sendWelcomeEmail: Boolean
   ): UserResponse @auth(requires: ["write:users", "manage:users", "manage:system"])
 
-  update(
+  updateUser(
     id: Int!
     email: String
     name: String
@@ -61,32 +44,32 @@ type UserMutation {
     appearance: String
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  delete(
+  deleteUser(
     id: Int!
     replaceId: Int!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  verify(
+  verifyUser(
     id: Int!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  activate(
+  activateUser(
     id: Int!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  deactivate(
+  deactivateUser(
     id: Int!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  enableTFA(
+  enableUserTFA(
     id: Int!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  disableTFA(
+  disableUserTFA(
     id: Int!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
-  resetPassword(
+  resetUserPassword(
     id: Int!
   ): DefaultResponse
 
@@ -124,7 +107,7 @@ type UserMinimal {
   id: UUID
   name: String
   email: String
-  providerKey: String
+  providerId: String
   isSystem: Boolean
   isActive: Boolean
   createdAt: Date
@@ -177,4 +160,13 @@ type UserProfile {
 type UserTokenResponse {
   responseResult: ResponseStatus
   jwt: String
+}
+
+enum UserOrderBy {
+  id
+  email
+  name
+  createdAt
+  updatedAt
+  lastLoginAt
 }

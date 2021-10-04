@@ -33,7 +33,7 @@ q-page.admin-login
         q-card-section
           .text-subtitle1 {{$t('admin.login.experience')}}
         q-item(tag='label', v-ripple)
-          blueprint-icon(icon='full-image')
+          blueprint-icon(icon='full-image', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
           q-item-section
             q-item-label {{$t(`admin.login.background`)}}
             q-item-label(caption) {{$t(`admin.login.backgroundHint`)}}
@@ -75,6 +75,23 @@ q-page.admin-login
               )
         q-separator.q-my-sm(inset)
         q-item
+          blueprint-icon(icon='double-right')
+          q-item-section
+            q-item-label {{$t(`admin.login.loginRedirect`)}}
+            q-item-label(caption) {{$t(`admin.login.loginRedirectHint`)}}
+          q-item-section
+            q-input(
+              outlined
+              v-model='config.loginRedirect'
+              dense
+              :rules=`[
+                val => /^[^<>"]+$/.test(val) || $t('admin.login.loginRedirectInvalidChars')
+              ]`
+              hide-bottom-space
+              :aria-label='$t(`admin.login.loginRedirect`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
           blueprint-icon(icon='chevron-right')
           q-item-section
             q-item-label {{$t(`admin.login.welcomeRedirect`)}}
@@ -89,6 +106,23 @@ q-page.admin-login
               ]`
               hide-bottom-space
               :aria-label='$t(`admin.login.welcomeRedirect`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='exit')
+          q-item-section
+            q-item-label {{$t(`admin.login.logoutRedirect`)}}
+            q-item-label(caption) {{$t(`admin.login.logoutRedirectHint`)}}
+          q-item-section
+            q-input(
+              outlined
+              v-model='config.logoutRedirect'
+              dense
+              :rules=`[
+                val => /^[^<>"]+$/.test(val) || $t('admin.login.logoutRedirectInvalidChars')
+              ]`
+              hide-bottom-space
+              :aria-label='$t(`admin.login.logoutRedirect`)'
               )
 
     .col-12.col-lg-6
@@ -155,7 +189,9 @@ export default {
         authAutoLogin: false,
         authHideLocal: false,
         authBypassUnauthorized: false,
-        welcomeRedirect: '/'
+        loginRedirect: '/',
+        welcomeRedirect: '/',
+        logoutRedirect: '/'
       },
       providers: [
         { id: 'local', label: 'Local Authentication', provider: 'Username-Password', icon: 'database', isActive: true },
@@ -217,7 +253,7 @@ export default {
   apollo: {
     config: {
       query: gql`
-        {
+        query getSystemSecurity {
           systemSecurity {
             authJwtAudience
             authJwtExpiration

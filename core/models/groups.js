@@ -16,6 +16,8 @@ module.exports = class Group extends Model {
         name: { type: 'string' },
         isSystem: { type: 'boolean' },
         redirectOnLogin: { type: 'string' },
+        redirectOnFirstLogin: { type: 'string' },
+        redirectOnLogout: { type: 'string' },
         createdAt: { type: 'string' },
         updatedAt: { type: 'string' }
       }

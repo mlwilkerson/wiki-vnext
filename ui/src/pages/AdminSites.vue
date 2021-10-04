@@ -100,7 +100,6 @@ q-page.admin-locale
 <script>
 import { get } from '@requarks/vuex-pathify'
 import { copyToClipboard } from 'quasar'
-// import Vue from 'vue'
 
 export default {
   meta () {

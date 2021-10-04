@@ -6,7 +6,14 @@ q-page.admin-groups
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.groups.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.groups.subtitle') }}
-    .col-auto
+    .col-auto.flex.items-center
+      q-input.q-mr-sm(
+        outlined
+        v-model='search'
+        dense
+        )
+        template(#prepend)
+          q-icon(name='las la-search')
       q-btn.acrylic-btn.q-mr-sm(
         icon='las la-question-circle'
         flat
@@ -37,32 +44,24 @@ q-page.admin-groups
           :columns='headers'
           row-key='id'
           flat
+          hide-header
           hide-bottom
           :rows-per-page-options='[0]'
           :loading='loading'
+          :filter='search'
           )
           template(v-slot:body-cell-id='props')
             q-td(:props='props')
-              q-btn.acrylic-btn(
-                size='sm'
-                padding='xs'
-                icon='las la-clipboard'
-                flat
-                color='brown'
-                @click='copyID(props.value)'
-                )
-                q-tooltip(
-                  anchor='center left'
-                  self='center right'
-                ) {{$t('common.clipboard.uuid')}}
+              q-icon(name='las la-users', color='primary', size='sm')
           template(v-slot:body-cell-name='props')
-            q-td.flex.items-center(:props='props')
-              strong {{props.value}}
-              q-icon.q-ml-sm(
-                v-if='props.row.isSystem'
-                name='las la-lock'
-                color='pink'
-                )
+            q-td(:props='props')
+              .flex.items-center
+                strong {{props.value}}
+                q-icon.q-ml-sm(
+                  v-if='props.row.isSystem'
+                  name='las la-lock'
+                  color='pink'
+                  )
           template(v-slot:body-cell-usercount='props')
             q-td(:props='props')
               q-chip.text-caption(
@@ -70,7 +69,7 @@ q-page.admin-groups
                 :color='$q.dark.isActive ? `dark-6` : `grey-2`'
                 :text-color='$q.dark.isActive ? `white` : `grey-8`'
                 dense
-              ) {{props.value}}
+              ) {{$t('admin.groups.users', { count: props.value })}}
           template(v-slot:body-cell-edit='props')
             q-td(:props='props')
               q-btn.acrylic-btn.q-mr-sm(
@@ -88,29 +87,10 @@ q-page.admin-groups
                 :disabled='props.row.isSystem'
                 @click='deleteGroup(props.row)'
                 )
-          //-     q-btn.acrylic-btn(
-          //-       flat
-          //-       padding='xs sm'
-          //-       icon='las la-pen'
-          //-       color='indigo'
-          //-       :to='`/a/groups/` + props.row.id'
-          //-       )
-          //- template(v-slot:body-cell-remove='props')
-          //-   q-td(:props='props')
-          //-     q-btn.acrylic-btn(
-          //-       flat
-          //-       padding='xs sm'
-          //-       icon='las la-trash'
-          //-       color='accent'
-          //-       :disabled='props.row.isSystem'
-          //-       @click='deleteGroup(props.row)'
-          //-       )
 </template>
 
 <script>
 import gql from 'graphql-tag'
-// import Vue from 'vue'
-import { copyToClipboard } from 'quasar'
 
 export default {
   meta () {
@@ -121,19 +101,19 @@ export default {
   data () {
     return {
       groups: [],
-      loading: true
+      loading: true,
+      search: ''
     }
   },
   computed: {
     headers () {
       return [
         {
-          label: this.$t('common.field.id'),
           align: 'center',
           field: 'id',
           name: 'id',
           sortable: false,
-          style: 'width: 50px'
+          style: 'width: 20px'
         },
         {
           label: this.$t('common.field.name'),
@@ -171,8 +151,7 @@ export default {
     },
     createGroup () {
       this.$q.dialog({
-        component: null /* Vue.options.components.GroupCreateDialog */,
-        parent: this
+        component: this.$.appContext.components.GroupCreateDialog
       }).onOk(() => {
         this.$apollo.queries.groups.refetch()
       })
@@ -182,24 +161,12 @@ export default {
     },
     deleteGroup (gr) {
       this.$q.dialog({
-        component: null /* Vue.options.components.GroupDeleteDialog */,
-        parent: this,
-        group: gr
+        component: this.$.appContext.components.GroupDeleteDialog,
+        componentProps: {
+          group: gr
+        }
       }).onOk(() => {
         this.$apollo.queries.groups.refetch()
-      })
-    },
-    copyID (uid) {
-      copyToClipboard(uid).then(() => {
-        this.$q.notify({
-          type: 'positive',
-          message: this.$t('common.clipboard.uuidSuccess')
-        })
-      }).catch(() => {
-        this.$q.notify({
-          type: 'negative',
-          message: this.$t('common.clipboard.uuidFailure')
-        })
       })
     }
   },

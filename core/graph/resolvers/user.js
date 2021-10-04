@@ -5,25 +5,40 @@ const _ = require('lodash')
 
 module.exports = {
   Query: {
-    async users() { return {} }
-  },
-  Mutation: {
-    async users() { return {} }
-  },
-  UserQuery: {
-    async list(obj, args, context, info) {
+    /**
+     * FETCH ALL USERS
+     */
+    async users (obj, args, context, info) {
+      // -> Sanitize limit
+      let limit = args.pageSize ?? 20
+      if (limit < 1 || limit > 1000) {
+        limit = 1000
+      }
+
+      // -> Sanitize offset
+      let offset = args.page ?? 1
+      if (offset < 1) {
+        offset = 1
+      }
+
+      // -> Fetch Users
       return WIKI.models.users.query()
-        .select('id', 'email', 'name', 'providerKey', 'isSystem', 'isActive', 'createdAt', 'lastLoginAt')
+        .select('id', 'email', 'name', 'providerId', 'isSystem', 'isActive', 'createdAt', 'lastLoginAt')
+        .where(builder => {
+          if (args.filter) {
+            builder.where('email', 'like', `%${args.filter}%`)
+              .orWhere('name', 'like', `%${args.filter}%`)
+          }
+        })
+        .orderBy(args.orderBy ?? 'name', args.orderByDirection ?? 'asc')
+        .offset((offset - 1) * limit)
+        .limit(limit)
     },
-    async search(obj, args, context, info) {
-      return WIKI.models.users.query()
-        .where('email', 'like', `%${args.query}%`)
-        .orWhere('name', 'like', `%${args.query}%`)
-        .limit(10)
-        .select('id', 'email', 'name', 'providerKey', 'createdAt')
-    },
-    async single(obj, args, context, info) {
-      let usr = await WIKI.models.users.query().findById(args.id)
+    /**
+     * FETCH A SINGLE USER
+     */
+    async user (obj, args, context, info) {
+      const usr = await WIKI.models.users.query().findById(args.id)
       usr.password = ''
       usr.tfaSecret = ''
 
@@ -61,8 +76,8 @@ module.exports = {
         .limit(10)
     }
   },
-  UserMutation: {
-    async create (obj, args) {
+  Mutation: {
+    async createUser (obj, args) {
       try {
         await WIKI.models.users.createNewUser(args)
 
@@ -73,7 +88,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async delete (obj, args) {
+    async deleteUser (obj, args) {
       try {
         if (args.id <= 2) {
           throw new WIKI.Error.UserDeleteProtected()
@@ -94,7 +109,7 @@ module.exports = {
         }
       }
     },
-    async update (obj, args) {
+    async updateUser (obj, args) {
       try {
         await WIKI.models.users.updateUser(args)
 
@@ -105,7 +120,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async verify (obj, args) {
+    async verifyUser (obj, args) {
       try {
         await WIKI.models.users.query().patch({ isVerified: true }).findById(args.id)
 
@@ -116,7 +131,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async activate (obj, args) {
+    async activateUser (obj, args) {
       try {
         await WIKI.models.users.query().patch({ isActive: true }).findById(args.id)
 
@@ -127,7 +142,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async deactivate (obj, args) {
+    async deactivateUser (obj, args) {
       try {
         if (args.id <= 2) {
           throw new Error('Cannot deactivate system accounts.')
@@ -144,7 +159,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async enableTFA (obj, args) {
+    async enableUserTFA (obj, args) {
       try {
         await WIKI.models.users.query().patch({ tfaIsActive: true, tfaSecret: null }).findById(args.id)
 
@@ -155,7 +170,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async disableTFA (obj, args) {
+    async disableUserTFA (obj, args) {
       try {
         await WIKI.models.users.query().patch({ tfaIsActive: false, tfaSecret: null }).findById(args.id)
 
@@ -166,7 +181,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    resetPassword (obj, args) {
+    resetUserPassword (obj, args) {
       return false
     },
     async updateProfile (obj, args, context) {

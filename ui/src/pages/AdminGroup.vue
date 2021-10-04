@@ -100,6 +100,20 @@ q-page.admin-groups
               dense
               :aria-label='$t(`admin.groups.redirectOnLogin`)'
               )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon(icon='exit')
+          q-item-section
+            q-item-label {{$t(`admin.groups.redirectOnLogout`)}}
+            q-item-label(caption) {{$t(`admin.groups.redirectOnLogoutHint`)}}
+          q-item-section
+            q-input(
+              outlined
+              v-model='group.redirectOnLogout'
+              dense
+              :aria-label='$t(`admin.groups.redirectOnLogout`)'
+              )
+
       //-----------------------------
       //- RULES
       //-----------------------------
@@ -317,7 +331,9 @@ export default {
         permissions: [],
         rules: [],
         users: [],
-        redirectOnLogin: '/'
+        redirectOnLogin: '/',
+        redirectOnFirstLogin: '',
+        redirectOnLogout: ''
       },
       tab: 'rules',
       tabs: [
@@ -593,6 +609,8 @@ export default {
             id
             name
             redirectOnLogin
+            redirectOnFirstLogin
+            redirectOnLogout
             isSystem
             permissions
             rules {

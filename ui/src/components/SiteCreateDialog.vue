@@ -33,6 +33,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
               val => val.length > 0 || $t('admin.sites.hostnameMissing'),
               val => /^(\\*)|([a-z0-9\-.:]+)$/.test(val) || $t('admin.sites.hostnameInvalidChars')
             ]`
+            :hint='$t(`admin.sites.hostnameHint`)'
             hide-bottom-space
             :label='$t(`admin.sites.hostname`)'
             :aria-label='$t(`admin.sites.hostname`)'

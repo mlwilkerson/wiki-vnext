@@ -16,7 +16,7 @@ module.exports = {
       return WIKI.models.groups.query().select([
         ...cols.fields.map(f => `groups.${f}`),
         ...(cols.flags.userCount ? [WIKI.models.groups.relatedQuery('users').count().as('userCount')] : [])
-      ])
+      ]).orderBy('name')
     },
     /**
      * FETCH A SINGLE GROUP

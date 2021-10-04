@@ -1,186 +1,212 @@
 <template lang='pug'>
-  v-container(fluid, grid-list-lg)
-    v-layout(row, wrap)
-      v-flex(xs12)
-        .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-customer.svg', alt='Users', style='width: 80px;')
-          .admin-header-title
-            .headline.blue--text.text--darken-2.animated.fadeInLeft Users
-            .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s Manage users
-          v-spacer
-          v-btn.animated.fadeInDown.wait-p2s.mr-3(outlined, color='grey', icon, @click='refresh')
-            v-icon mdi-refresh
-          v-btn.animated.fadeInDown(color='primary', large, depressed, @click='createUser')
-            v-icon(left) mdi-plus
-            span New User
-        v-card.mt-3.animated.fadeInUp
-          .pa-2.d-flex.align-center(:class='$vuetify.theme.dark ? `grey darken-3-d5` : `grey lighten-3`')
-            v-text-field(
-              solo
-              flat
-              v-model='search'
-              prepend-inner-icon='mdi-account-search-outline'
-              label='Search Users...'
-              hide-details
-              style='max-width: 400px;'
-              dense
-              )
-            v-spacer
-            v-select(
-              solo
-              flat
-              hide-details
-              label='Identity Provider'
-              :items='strategies'
-              v-model='filterStrategy'
-              item-text='displayName'
-              item-value='key'
-              style='max-width: 300px;'
-              dense
-            )
-          v-divider
-          v-data-table(
-            v-model='selected'
-            :items='usersFiltered',
-            :headers='headers',
-            :search='search',
-            :page.sync='pagination'
-            :items-per-page='15'
-            :loading='loading'
-            @page-count='pageCount = $event'
-            hide-default-footer
-            )
-            template(slot='item', slot-scope='props')
-              tr.is-clickable(:active='props.selected', @click='$router.push("/users/" + props.item.id)')
-                //- td
-                  v-checkbox(hide-details, :input-value='props.selected', color='blue darken-2', @click='props.selected = !props.selected')
-                td {{ props.item.id }}
-                td: strong {{ props.item.name }}
-                td {{ props.item.email }}
-                td {{ getStrategyName(props.item.providerKey) }}
-                td {{ props.item.createdAt | moment('from') }}
-                td
-                  span(v-if='props.item.lastLoginAt') {{ props.item.lastLoginAt | moment('from') }}
-                  em.grey--text(v-else) Never
-                td.text-right
-                  v-icon.mr-3(v-if='props.item.isSystem') mdi-lock-outline
-                  status-indicator(positive, pulse, v-if='props.item.isActive')
-                  status-indicator(negative, pulse, v-else)
-            template(slot='no-data')
-              .pa-3
-                v-alert.text-left(icon='mdi-alert', outlined, color='grey')
-                  em.body-2 No users to display!
-          v-card-chin(v-if='pageCount > 1')
-            v-spacer
-            v-pagination(v-model='pagination', :length='pageCount')
-            v-spacer
-
-    user-create(v-model='isCreateDialogShown', @refresh='refresh(false)')
+q-page.admin-groups
+  .row.q-pa-md.items-center
+    .col-auto
+      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-account.svg')
+    .col.q-pl-md
+      .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.users.title') }}
+      .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.users.subtitle') }}
+    .col-auto.flex.items-center
+      q-input.q-mr-sm(
+        outlined
+        v-model='search'
+        dense
+        )
+        template(#prepend)
+          q-icon(name='las la-search')
+      q-btn.acrylic-btn.q-mr-sm(
+        icon='las la-question-circle'
+        flat
+        color='grey'
+        type='a'
+        href='https://docs.js.wiki/admin/groups'
+        target='_blank'
+        )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        @click='refresh'
+        )
+      q-btn(
+        unelevated
+        icon='las la-plus'
+        :label='$t(`admin.users.create`)'
+        color='primary'
+        @click='createUser'
+        )
+  q-separator(inset)
+  .row.q-pa-md.q-col-gutter-md
+    .col-12
+      q-card.shadow-1
+        q-table(
+          :rows='users'
+          :columns='headers'
+          row-key='id'
+          flat
+          hide-header
+          hide-bottom
+          :rows-per-page-options='[0]'
+          :loading='loading'
+          )
+          template(v-slot:body-cell-id='props')
+            q-td(:props='props')
+              q-icon(name='las la-user', color='primary', size='sm')
+          template(v-slot:body-cell-name='props')
+            q-td(:props='props')
+              .flex.items-center
+                strong {{props.value}}
+                q-icon.q-ml-sm(
+                  v-if='props.row.isSystem'
+                  name='las la-lock'
+                  color='pink'
+                  )
+          template(v-slot:body-cell-email='props')
+            q-td(:props='props')
+              em {{ props.value }}
+          template(v-slot:body-cell-date='props')
+            q-td(:props='props')
+              i18n-t.text-caption(keypath='admin.users.createdAt', tag='div')
+                template(#date)
+                  strong {{ humanizeDate(props.value) }}
+              i18n-t.text-caption(
+                v-if='props.row.lastLoginAt'
+                keypath='admin.users.lastLoginAt'
+                tag='div'
+                )
+                template(#date)
+                  strong {{ humanizeDate(props.row.lastLoginAt) }}
+          template(v-slot:body-cell-edit='props')
+            q-td(:props='props')
+              q-btn.acrylic-btn.q-mr-sm(
+                flat
+                :to='`/a/users/` + props.row.id'
+                icon='las la-pen'
+                color='indigo'
+                :label='$t(`common.actions.edit`)'
+                no-caps
+                )
+              q-btn.acrylic-btn(
+                flat
+                icon='las la-trash'
+                color='accent'
+                :disabled='props.row.isSystem'
+                @click='deleteGroup(props.row)'
+                )
 </template>
 
 <script>
-import _ from 'lodash'
 import gql from 'graphql-tag'
-
-import { StatusIndicator } from 'vue-status-indicator'
-import UserCreate from './admin-users-create.vue'
+import { DateTime } from 'luxon'
 
 export default {
-  components: {
-    StatusIndicator,
-    UserCreate
-  },
-  data() {
+  meta () {
     return {
-      selected: [],
-      pagination: 1,
-      pageCount: 0,
-      users: [],
-      headers: [
-        { text: 'ID', value: 'id', width: 80, sortable: true },
-        { text: 'Name', value: 'name', sortable: true },
-        { text: 'Email', value: 'email', sortable: true },
-        { text: 'Provider', value: 'provider', sortable: true },
-        { text: 'Created', value: 'createdAt', sortable: true },
-        { text: 'Last Login', value: 'lastLoginAt', sortable: true },
-        { text: '', value: 'actions', sortable: false, width: 80 }
-      ],
-      strategies: [],
-      filterStrategy: 'all',
-      search: '',
-      loading: false,
-      isCreateDialogShown: false
+      title: this.$t('admin.groups.title')
+    }
+  },
+  data () {
+    return {
+      groups: [],
+      loading: true,
+      search: ''
     }
   },
   computed: {
-    usersFiltered () {
-      const all = this.filterStrategy === 'all' || this.filterStrategy === ''
-      return _.filter(this.users, u => all || u.providerKey === this.filterStrategy)
+    headers () {
+      return [
+        {
+          align: 'center',
+          field: 'id',
+          name: 'id',
+          sortable: false,
+          style: 'width: 20px'
+        },
+        {
+          label: this.$t('common.field.name'),
+          align: 'left',
+          field: 'name',
+          name: 'name',
+          sortable: true
+        },
+        {
+          label: this.$t('admin.users.email'),
+          align: 'left',
+          field: 'email',
+          name: 'email',
+          sortable: false
+        },
+        {
+          align: 'left',
+          field: 'createdAt',
+          name: 'date',
+          sortable: false
+        },
+        {
+          label: '',
+          align: 'right',
+          field: 'edit',
+          name: 'edit',
+          sortable: false,
+          style: 'width: 250px'
+        }
+      ]
     }
   },
   methods: {
-    createUser() {
-      this.isCreateDialogShown = true
+    humanizeDate (val) {
+      return DateTime.fromISO(val).toRelative()
     },
-    async refresh(notify = true) {
+    async refresh () {
       await this.$apollo.queries.users.refetch()
-      if (notify) {
-        this.$store.commit('showNotification', {
-          message: 'Users list has been refreshed.',
-          style: 'success',
-          icon: 'cached'
-        })
-      }
+      this.$q.notify({
+        type: 'positive',
+        message: this.$t('admin.users.refreshSuccess')
+      })
     },
-    getStrategyName(key) {
-      return (_.find(this.strategies, ['key', key]) || {}).displayName || key
+    createUser () {
+      this.$q.dialog({
+        component: this.$.appContext.components.UserCreateDialog
+      }).onOk(() => {
+        this.$apollo.queries.users.refetch()
+      })
+    },
+    editUser (gr) {
+      this.$router.push(`/a/users/${gr.id}`)
+    },
+    deleteUser (gr) {
+      this.$q.dialog({
+        component: this.$.appContext.components.UserDeleteDialog,
+        componentProps: {
+          group: gr
+        }
+      }).onOk(() => {
+        this.$apollo.queries.users.refetch()
+      })
     }
   },
   apollo: {
     users: {
       query: gql`
-        query {
+        query getUsers {
           users {
-            list {
-              id
-              name
-              email
-              providerKey
-              isSystem
-              isActive
-              createdAt
-              lastLoginAt
-            }
+            id
+            name
+            email
+            providerId
+            isSystem
+            isActive
+            createdAt
+            lastLoginAt
           }
         }
       `,
+      prefetch: false,
       fetchPolicy: 'network-only',
-      update: (data) => data.users.list,
+      update: (data) => data.users,
       watchLoading (isLoading) {
         this.loading = isLoading
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-users-refresh')
-      }
-    },
-    strategies: {
-      query: gql`
-        query {
-          authentication {
-            activeStrategies {
-              key
-              displayName
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => {
-        return _.concat({
-          key: 'all',
-          displayName: 'All Providers'
-        }, data.authentication.activeStrategies)
-      },
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-users-strategies-refresh')
+        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-groups-refresh')
       }
     }
   }

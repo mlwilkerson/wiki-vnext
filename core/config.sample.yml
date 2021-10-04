@@ -21,6 +21,7 @@ db:
   user: wikijs
   pass: wikijsrocks
   db: wiki
+  schema: public
   ssl: false
 
   # Optional

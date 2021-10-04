@@ -26,13 +26,15 @@ module.exports = {
 
     // Fetch DB Config
 
-    const dbConfig = (!_.isEmpty(process.env.DATABASE_URL)) ? process.env.DATABASE_URL : {
-      host: WIKI.config.db.host.toString(),
-      user: WIKI.config.db.user.toString(),
-      password: WIKI.config.db.pass.toString(),
-      database: WIKI.config.db.db.toString(),
-      port: WIKI.config.db.port
-    }
+    const dbConfig = (!_.isEmpty(process.env.DATABASE_URL))
+      ? process.env.DATABASE_URL
+      : {
+          host: WIKI.config.db.host.toString(),
+          user: WIKI.config.db.user.toString(),
+          password: WIKI.config.db.pass.toString(),
+          database: WIKI.config.db.db.toString(),
+          port: WIKI.config.db.port
+        }
 
     // Handle SSL Options
 
@@ -82,6 +84,7 @@ module.exports = {
       useNullAsDefault: true,
       asyncStackTraces: WIKI.IS_DEBUG,
       connection: dbConfig,
+      searchPath: WIKI.config.db.schema ? WIKI.config.db.schema : 'public',
       pool: {
         ...WIKI.config.pool,
         async afterCreate (conn, done) {
@@ -127,7 +130,8 @@ module.exports = {
       async syncSchemas () {
         return self.knex.migrate.latest({
           tableName: 'migrations',
-          migrationSource
+          migrationSource,
+          schemaName: WIKI.config.db.schema ? WIKI.config.db.schema : 'public'
         })
       }
     }
