@@ -464,7 +464,7 @@ exports.up = async knex => {
   // -> DEFAULT GROUPS
 
   const groupAdminId = uuid()
-  const groupGuestId = uuid()
+  const groupGuestId = '10000000-0000-4000-0000-000000000001'
   await knex('groups').insert([
     {
       id: groupAdminId,

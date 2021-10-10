@@ -79,6 +79,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
                   q-checkbox(
                     :model-value='selected'
                     @update:model-value='toggleOption(opt)'
+                    size='sm'
                     )
                 q-item-section(side)
                   q-chip.q-mx-none(

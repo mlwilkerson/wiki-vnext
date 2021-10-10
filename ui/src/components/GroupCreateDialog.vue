@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 450px;')
     q-card-section.card-header
-      q-icon(name='las la-plus', left)
+      q-icon(:name='`img:` + icons.plus', left, size='sm')
       span {{$t(`admin.groups.create`)}}
     q-form.q-py-sm(ref='createGroupForm', @submit='create')
       q-item
@@ -48,7 +48,10 @@ export default {
   data () {
     return {
       groupName: '',
-      isLoading: false
+      isLoading: false,
+      icons: {
+        plus: require('../assets/icons/fluent-plus-plus.svg')
+      }
     }
   },
   methods: {

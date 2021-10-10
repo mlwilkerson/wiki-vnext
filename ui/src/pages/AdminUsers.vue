@@ -7,10 +7,11 @@ q-page.admin-groups
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.users.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.users.subtitle') }}
     .col-auto.flex.items-center
-      q-input.q-mr-sm(
+      q-input.denser.q-mr-sm(
         outlined
         v-model='search'
         dense
+        :class='$q.dark.isActive ? `bg-dark` : `bg-white`'
         )
         template(#prepend)
           q-icon(name='las la-search')

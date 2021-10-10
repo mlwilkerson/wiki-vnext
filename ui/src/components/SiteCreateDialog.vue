@@ -23,7 +23,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
             autofocus
             )
       q-item
-        blueprint-icon(icon='dns')
+        blueprint-icon.self-start(icon='dns')
         q-item-section
           q-input(
             outlined

@@ -78,6 +78,14 @@ body::-webkit-scrollbar-thumb {
   line-height: 1.4;
 }
 
+.q-field.denser .q-field__control {
+  height: 36px;
+
+  .q-field__prepend {
+    height: 36px;
+  }
+}
+
 // ------------------------------------------------------------------
 // BUTTONS
 // ------------------------------------------------------------------

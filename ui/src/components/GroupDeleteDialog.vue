@@ -2,12 +2,12 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 350px; max-width: 450px;')
     q-card-section.card-header
-      q-icon(name='las la-trash', left, size='sm')
+      q-icon(:name='`img:` + icons.delete', left, size='sm')
       span {{$t(`admin.groups.delete`)}}
     q-card-section
       .text-body2
         i18n-t(keypath='admin.groups.deleteConfirm')
-          template(v-slot:groupName)
+          template(#groupName)
             strong {{group.name}}
       .text-body2.q-mt-md
         strong.text-negative {{$t(`admin.groups.deleteConfirmWarn`)}}
@@ -39,7 +39,11 @@ export default {
     }
   },
   data () {
-    return { }
+    return {
+      icons: {
+        delete: require('../assets/icons/fluent-delete-bin.svg')
+      }
+    }
   },
   methods: {
     show () {

@@ -24,19 +24,18 @@ extend type Mutation {
   createUser(
     email: String!
     name: String!
-    passwordRaw: String
-    providerKey: String!
-    groups: [Int]!
-    mustChangePassword: Boolean
-    sendWelcomeEmail: Boolean
+    password: String!
+    groups: [UUID]!
+    mustChangePassword: Boolean!
+    sendWelcomeEmail: Boolean!
   ): UserResponse @auth(requires: ["write:users", "manage:users", "manage:system"])
 
   updateUser(
-    id: Int!
+    id: UUID!
     email: String
     name: String
     newPassword: String
-    groups: [Int]
+    groups: [UUID]
     location: String
     jobTitle: String
     timezone: String
@@ -45,28 +44,28 @@ extend type Mutation {
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   deleteUser(
-    id: Int!
-    replaceId: Int!
+    id: UUID!
+    replaceId: UUID!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   verifyUser(
-    id: Int!
+    id: UUID!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   activateUser(
-    id: Int!
+    id: UUID!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   deactivateUser(
-    id: Int!
+    id: UUID!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   enableUserTFA(
-    id: Int!
+    id: UUID!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   disableUserTFA(
-    id: Int!
+    id: UUID!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   resetUserPassword(
@@ -93,12 +92,12 @@ extend type Mutation {
 # -----------------------------------------------
 
 type UserResponse {
-  responseResult: ResponseStatus!
+  status: ResponseStatus!
   user: User
 }
 
 type UserLastLogin {
-  id: Int
+  id: UUID
   name: String
   lastLoginAt: Date
 }
