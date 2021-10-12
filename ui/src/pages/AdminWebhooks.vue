@@ -92,13 +92,16 @@ q-page.admin-webhooks
 <script>
 // import Vue from 'vue'
 import gql from 'graphql-tag'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.webhooks.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.webhooks.title')
+      }
+    })
+  ],
   data () {
     return {
       hooks: [],

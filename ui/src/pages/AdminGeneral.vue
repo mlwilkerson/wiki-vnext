@@ -354,13 +354,16 @@ q-page.admin-general
 import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.general.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.general.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false,

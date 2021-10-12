@@ -209,14 +209,16 @@ import { get } from '@requarks/vuex-pathify'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import startCase from 'lodash/startCase'
-import { useQuasar, setCssVar } from 'quasar'
+import { createMetaMixin, useQuasar, setCssVar } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.theme.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.theme.title')
+      }
+    })
+  ],
   data () {
     return {
       qsr: useQuasar(),

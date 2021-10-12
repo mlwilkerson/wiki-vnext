@@ -212,17 +212,20 @@ q-page.admin-system
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
+import { createMetaMixin } from 'quasar'
 
 // import { SelfBuildingSquareSpinner } from 'epic-spinners'
 
 export default {
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.system.title')
+      }
+    })
+  ],
   components: {
     // SelfBuildingSquareSpinner
-  },
-  meta () {
-    return {
-      title: this.$t('admin.system.title')
-    }
   },
   data () {
     return {

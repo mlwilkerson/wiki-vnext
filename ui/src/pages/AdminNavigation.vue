@@ -303,6 +303,7 @@ q-page.admin-navigation
 import _ from 'lodash'
 import gql from 'graphql-tag'
 import { v4 as uuid } from 'uuid'
+import { createMetaMixin } from 'quasar'
 
 import draggable from 'vuedraggable'
 
@@ -310,6 +311,13 @@ const siteConfig = { lang: 'en' }
 const siteLangs = [{ code: 'en' }]
 
 export default {
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.navigation.title')
+      }
+    })
+  ],
   components: {
     draggable
   },

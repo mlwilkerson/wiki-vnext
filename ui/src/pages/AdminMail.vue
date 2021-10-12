@@ -251,13 +251,16 @@ import toSafeInteger from 'lodash/toSafeInteger'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.mail.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.mail.title')
+      }
+    })
+  ],
   data () {
     return {
       config: {

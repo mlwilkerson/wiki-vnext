@@ -172,13 +172,16 @@ q-page.admin-login
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import draggable from 'vuedraggable'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.login.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.login.title')
+      }
+    })
+  ],
   components: {
     draggable
   },

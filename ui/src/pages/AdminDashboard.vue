@@ -120,15 +120,18 @@ import AnimatedNumber from 'animated-number-vue'
 import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import semverLte from 'semver/functions/lte'
+import { createMetaMixin } from 'quasar'
 
 export default {
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.dashboard.title')
+      }
+    })
+  ],
   components: {
     AnimatedNumber
-  },
-  meta () {
-    return {
-      title: this.$t('admin.dashboard.title')
-    }
   },
   data () {
     return {

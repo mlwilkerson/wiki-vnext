@@ -92,13 +92,16 @@ q-page.admin-groups
 
 <script>
 import gql from 'graphql-tag'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.groups.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.groups.title')
+      }
+    })
+  ],
   data () {
     return {
       groups: [],

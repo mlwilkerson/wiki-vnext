@@ -110,6 +110,7 @@ q-page.admin-api
 <script>
 import _get from 'lodash/get'
 import gql from 'graphql-tag'
+import { createMetaMixin } from 'quasar'
 // import { StatusIndicator } from 'vue-status-indicator'
 
 // import CreateApiKey from './admin-api-create.vue'
@@ -119,11 +120,13 @@ export default {
     // StatusIndicator,
     // CreateApiKey
   },
-  meta () {
-    return {
-      title: this.$t('admin.api.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.api.title')
+      }
+    })
+  ],
   data () {
     return {
       enabled: false,

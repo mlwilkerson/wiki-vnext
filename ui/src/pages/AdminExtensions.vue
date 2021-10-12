@@ -99,13 +99,16 @@ q-page.admin-extensions
 <script>
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.extensions.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.extensions.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false,

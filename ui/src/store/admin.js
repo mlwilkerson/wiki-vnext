@@ -11,6 +11,8 @@ const state = {
     pagesTotal: 0,
     usersTotal: 0
   },
+  overlay: null,
+  overlayOpts: {},
   sites: [],
   locales: [
     { code: '', name: 'English' }

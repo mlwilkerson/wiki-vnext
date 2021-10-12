@@ -208,6 +208,7 @@ q-page.admin-locale
 import gql from 'graphql-tag'
 import filter from 'lodash/filter'
 import _get from 'lodash/get'
+import { createMetaMixin } from 'quasar'
 
 const fetchLocaleGql = gql`
   query getLocales {
@@ -234,11 +235,13 @@ const fetchLocaleGql = gql`
 `
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.locale.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.locale.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false,

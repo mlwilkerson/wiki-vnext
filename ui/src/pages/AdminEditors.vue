@@ -59,12 +59,16 @@ q-page.admin-flags
 </template>
 
 <script>
+import { createMetaMixin } from 'quasar'
+
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.editors.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.editors.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false,

@@ -297,13 +297,16 @@ q-page.admin-mail
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import _get from 'lodash/get'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.security.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.security.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false,

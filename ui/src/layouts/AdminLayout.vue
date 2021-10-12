@@ -151,6 +151,16 @@ q-layout.admin(view='hHh Lpr lff')
     router-view(v-slot='{ Component }')
       transition(name='fade')
         component(:is='Component')
+  q-dialog.admin-overlay(
+    v-model='overlayIsShown'
+    persistent
+    full-width
+    full-height
+    no-shake
+    transition-show='jump-up'
+    transition-hide='jump-down'
+    )
+    component(:is='overlay')
   q-footer.admin-footer
     q-bar.justify-center(dense)
       span(style='font-size: 11px;') Powered by #[a(href='https://js.wiki', target='_blank'): strong Wiki.js], an open source project.
@@ -158,17 +168,21 @@ q-layout.admin(view='hHh Lpr lff')
 
 <script>
 import { get, sync } from '@requarks/vuex-pathify'
+import { createMetaMixin } from 'quasar'
 
 export default {
   name: 'AdminLayout',
-  meta () {
-    return {
-      titleTemplate: title => `${title} - ${this.$t('admin.adminArea')} - Wiki.js`
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        titleTemplate: title => `${title} - ${this.$t('admin.adminArea')} - Wiki.js`
+      }
+    })
+  ],
   data () {
     return {
       leftDrawerOpen: true,
+      overlayIsShown: false,
       search: '',
       user: {
         name: 'John Doe',
@@ -219,6 +233,7 @@ export default {
   },
   computed: {
     currentSiteId: sync('admin/currentSiteId'),
+    overlay: get('admin/overlay'),
     sites: get('admin/sites')
   },
   watch: {
@@ -226,6 +241,9 @@ export default {
       if (this.currentSiteId === null && newValue.length > 0) {
         this.currentSiteId = newValue[0].id
       }
+    },
+    overlay (newValue) {
+      this.overlayIsShown = !!newValue
     }
   },
   async mounted () {
@@ -270,6 +288,29 @@ export default {
     }
     @at-root .body--dark & {
       background-color: $dark-3;
+    }
+  }
+}
+
+.admin-overlay {
+  > .q-dialog__backdrop {
+    background-color: rgba(0,0,0,.75);
+  }
+  > .q-dialog__inner {
+    padding: 24px 64px;
+
+    @media (max-width: $breakpoint-sm-max) {
+      padding: 0;
+    }
+
+    > .q-layout-container {
+      @at-root .body--light & {
+        background-image: linear-gradient(to bottom, $dark-5 10px, $grey-2 11px, $grey-4);
+      }
+      @at-root .body--dark & {
+        background-image: linear-gradient(to bottom, $dark-5 10px, $dark-5 11px, $dark-4);
+      }
+      border-radius: 6px;
     }
   }
 }

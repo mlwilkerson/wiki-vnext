@@ -99,21 +99,26 @@ q-page.admin-groups
 <script>
 import gql from 'graphql-tag'
 import { DateTime } from 'luxon'
+import { sync } from '@requarks/vuex-pathify'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.groups.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.users.title')
+      }
+    })
+  ],
   data () {
     return {
-      groups: [],
+      users: [],
       loading: true,
       search: ''
     }
   },
   computed: {
+    overlay: sync('admin/overlay'),
     headers () {
       return [
         {
@@ -154,6 +159,20 @@ export default {
       ]
     }
   },
+  watch: {
+    overlay (newValue, oldValue) {
+      if (newValue === '' && oldValue === 'UserEditOverlay') {
+        this.$router.push('/a/users')
+      }
+    },
+    $route: 'checkOverlay'
+  },
+  mounted () {
+    this.checkOverlay()
+  },
+  beforeUnmount () {
+    this.overlay = ''
+  },
   methods: {
     humanizeDate (val) {
       return DateTime.fromISO(val).toRelative()
@@ -165,15 +184,20 @@ export default {
         message: this.$t('admin.users.refreshSuccess')
       })
     },
+    checkOverlay () {
+      if (this.$route.params && this.$route.params.id) {
+        this.$store.set('admin/overlayOpts', { id: this.$route.params.id })
+        this.$store.set('admin/overlay', 'UserEditOverlay')
+      } else {
+        this.$store.set('admin/overlay', '')
+      }
+    },
     createUser () {
       this.$q.dialog({
         component: this.$.appContext.components.UserCreateDialog
       }).onOk(() => {
         this.$apollo.queries.users.refetch()
       })
-    },
-    editUser (gr) {
-      this.$router.push(`/a/users/${gr.id}`)
     },
     deleteUser (gr) {
       this.$q.dialog({

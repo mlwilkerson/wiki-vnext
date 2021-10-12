@@ -99,14 +99,16 @@ q-page.admin-locale
 
 <script>
 import { get } from '@requarks/vuex-pathify'
-import { copyToClipboard } from 'quasar'
+import { copyToClipboard, createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.sites.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.sites.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false

@@ -83,13 +83,16 @@ q-page.admin-flags
 import gql from 'graphql-tag'
 // import _set from 'lodash/set'
 import _transform from 'lodash/transform'
+import { createMetaMixin } from 'quasar'
 
 export default {
-  meta () {
-    return {
-      title: this.$t('admin.flags.title')
-    }
-  },
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        title: this.$t('admin.flags.title')
+      }
+    })
+  ],
   data () {
     return {
       loading: false,
