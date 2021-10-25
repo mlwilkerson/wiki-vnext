@@ -93,6 +93,7 @@ q-page.admin-groups
 <script>
 import gql from 'graphql-tag'
 import { createMetaMixin } from 'quasar'
+import { sync } from '@requarks/vuex-pathify'
 
 export default {
   mixins: [
@@ -110,6 +111,7 @@ export default {
     }
   },
   computed: {
+    overlay: sync('admin/overlay'),
     headers () {
       return [
         {
@@ -145,6 +147,20 @@ export default {
       ]
     }
   },
+  watch: {
+    overlay (newValue, oldValue) {
+      if (newValue === '' && oldValue === 'GroupEditOverlay') {
+        this.$router.push('/a/groups')
+      }
+    },
+    $route: 'checkOverlay'
+  },
+  mounted () {
+    this.checkOverlay()
+  },
+  beforeUnmount () {
+    this.overlay = ''
+  },
   methods: {
     async refresh () {
       await this.$apollo.queries.groups.refetch()
@@ -152,6 +168,14 @@ export default {
         type: 'positive',
         message: this.$t('admin.groups.refreshSuccess')
       })
+    },
+    checkOverlay () {
+      if (this.$route.params && this.$route.params.id) {
+        this.$store.set('admin/overlayOpts', { id: this.$route.params.id })
+        this.$store.set('admin/overlay', 'GroupEditOverlay')
+      } else {
+        this.$store.set('admin/overlay', '')
+      }
     },
     createGroup () {
       this.$q.dialog({

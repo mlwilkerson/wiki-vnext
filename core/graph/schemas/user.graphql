@@ -11,8 +11,8 @@ extend type Query {
     filter: String
   ): [UserMinimal] @auth(requires: ["write:users", "manage:users", "manage:system"])
 
-  user(
-    id: Int!
+  userById(
+    id: UUID!
   ): User @auth(requires: ["manage:users", "manage:system"])
 
   profile: UserProfile
@@ -117,22 +117,15 @@ type User {
   id: UUID
   name: String
   email: String
-  providerKey: String
-  providerName: String
-  providerId: String
-  providerIs2FACapable: Boolean
+  auth: JSON
   isSystem: Boolean
   isActive: Boolean
   isVerified: Boolean
-  location: String
-  jobTitle: String
-  timezone: String
-  dateFormat: String
-  appearance: String
+  meta: JSON
+  prefs: JSON
   createdAt: Date
   updatedAt: Date
   lastLoginAt: Date
-  tfaIsActive: Boolean
   groups: [Group]
 }
 

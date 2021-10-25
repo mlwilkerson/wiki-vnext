@@ -294,7 +294,7 @@ export default {
 
 .admin-overlay {
   > .q-dialog__backdrop {
-    background-color: rgba(0,0,0,.75);
+    background-color: rgba(0,0,0,.6);
   }
   > .q-dialog__inner {
     padding: 24px 64px;
@@ -305,12 +305,13 @@ export default {
 
     > .q-layout-container {
       @at-root .body--light & {
-        background-image: linear-gradient(to bottom, $dark-5 10px, $grey-2 11px, $grey-4);
+        background-image: linear-gradient(to bottom, $dark-5 10px, $grey-3 11px, $grey-4);
       }
       @at-root .body--dark & {
-        background-image: linear-gradient(to bottom, $dark-5 10px, $dark-5 11px, $dark-4);
+        background-image: linear-gradient(to bottom, $dark-4 10px, $dark-4 11px, $dark-3);
       }
       border-radius: 6px;
+      box-shadow: 0 0 0 2px rgba(0,0,0,.5);
     }
   }
 }

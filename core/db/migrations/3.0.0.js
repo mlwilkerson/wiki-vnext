@@ -234,8 +234,7 @@ exports.up = async knex => {
       table.uuid('id').notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'))
       table.string('email').notNullable()
       table.string('name').notNullable()
-      table.string('providerUserId')
-      table.string('password')
+      table.jsonb('auth')
       table.jsonb('tfa')
       table.jsonb('meta')
       table.jsonb('prefs')
@@ -243,7 +242,6 @@ exports.up = async knex => {
       table.boolean('isSystem').notNullable().defaultTo(false)
       table.boolean('isActive').notNullable().defaultTo(false)
       table.boolean('isVerified').notNullable().defaultTo(false)
-      table.boolean('mustChangePwd').notNullable().defaultTo(false)
       table.timestamp('lastLoginAt').index()
       table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now())
       table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now())
@@ -315,9 +313,7 @@ exports.up = async knex => {
       table.uuid('userId').notNullable().references('id').inTable('users')
     })
     .table('users', table => {
-      table.uuid('providerId').references('id').inTable('authentication').notNullable()
       table.string('localeCode', 5).references('code').inTable('locales').notNullable().defaultTo('en')
-      table.unique(['providerId', 'email'])
     })
 
   // =====================================
@@ -510,20 +506,32 @@ exports.up = async knex => {
   await knex('users').insert([
     {
       id: userAdminId,
-      providerId: authModuleId,
       email: process.env.ADMIN_EMAIL ?? 'admin@example.com',
-      password: await bcrypt.hash(process.env.ADMIN_PASS || '12345678', 12),
+      auth: {
+        [authModuleId]: {
+          password: await bcrypt.hash(process.env.ADMIN_PASS || '12345678', 12),
+          mustChangePwd: !process.env.ADMIN_PASS
+        }
+      },
       name: 'Administrator',
       isSystem: false,
       isActive: true,
       isVerified: true,
+      meta: {
+        location: '',
+        jobTitle: ''
+      },
+      prefs: {
+        timezone: 'America/New_York',
+        dateFormat: 'YYYY-MM-DD',
+        timeFormat: '12h',
+        darkMode: false
+      },
       localeCode: 'en'
     },
     {
       id: userGuestId,
-      providerId: authModuleId,
       email: 'guest@example.com',
-      password: '',
       name: 'Guest',
       isSystem: true,
       isActive: true,

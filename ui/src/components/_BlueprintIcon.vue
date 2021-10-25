@@ -1,8 +1,9 @@
 <template lang='pug'>
 q-item-section(avatar)
-  q-avatar(
+  q-avatar.blueprint-icon(
     :color='avatarBgColor'
     rounded
+    :style='hueRotate !== 0 ? `filter: hue-rotate(` + hueRotate + `deg)` : ``'
     )
     q-badge(
       v-if='indicatorDot'
@@ -39,6 +40,10 @@ export default {
     indicatorText: {
       type: String,
       default: null
+    },
+    hueRotate: {
+      type: Number,
+      default: 0
     }
   },
   data () {

@@ -23,7 +23,7 @@ module.exports = {
 
       // -> Fetch Users
       return WIKI.models.users.query()
-        .select('id', 'email', 'name', 'providerId', 'isSystem', 'isActive', 'createdAt', 'lastLoginAt')
+        .select('id', 'email', 'name', 'isSystem', 'isActive', 'createdAt', 'lastLoginAt')
         .where(builder => {
           if (args.filter) {
             builder.where('email', 'like', `%${args.filter}%`)
@@ -37,15 +37,15 @@ module.exports = {
     /**
      * FETCH A SINGLE USER
      */
-    async user (obj, args, context, info) {
+    async userById (obj, args, context, info) {
       const usr = await WIKI.models.users.query().findById(args.id)
       usr.password = ''
       usr.tfaSecret = ''
 
-      const str = _.get(WIKI.auth.strategies, usr.providerKey)
-      str.strategy = _.find(WIKI.data.authentication, ['key', str.strategyKey])
-      usr.providerName = str.displayName
-      usr.providerIs2FACapable = _.get(str, 'strategy.useForm', false)
+      // const str = _.get(WIKI.auth.strategies, usr.providerKey)
+      // str.strategy = _.find(WIKI.data.authentication, ['key', str.strategyKey])
+      // usr.providerName = str.displayName
+      // usr.providerIs2FACapable = _.get(str, 'strategy.useForm', false)
 
       return usr
     },

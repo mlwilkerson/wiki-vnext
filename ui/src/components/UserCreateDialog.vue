@@ -177,6 +177,7 @@ import sampleSize from 'lodash/sampleSize'
 import zxcvbn from 'zxcvbn'
 
 export default {
+  emits: ['ok', 'hide'],
   data () {
     return {
       userName: '',

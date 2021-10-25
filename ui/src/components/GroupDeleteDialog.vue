@@ -38,6 +38,7 @@ export default {
       type: Object
     }
   },
+  emits: ['ok', 'hide'],
   data () {
     return {
       icons: {

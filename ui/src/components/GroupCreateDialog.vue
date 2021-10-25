@@ -45,6 +45,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
 import gql from 'graphql-tag'
 
 export default {
+  emits: ['ok', 'hide'],
   data () {
     return {
       groupName: '',

@@ -80,6 +80,7 @@ q-page.admin-groups
           template(v-slot:body-cell-edit='props')
             q-td(:props='props')
               q-btn.acrylic-btn.q-mr-sm(
+                v-if='!props.row.isSystem'
                 flat
                 :to='`/a/users/` + props.row.id'
                 icon='las la-pen'
@@ -88,10 +89,10 @@ q-page.admin-groups
                 no-caps
                 )
               q-btn.acrylic-btn(
+                v-if='!props.row.isSystem'
                 flat
                 icon='las la-trash'
                 color='accent'
-                :disabled='props.row.isSystem'
                 @click='deleteGroup(props.row)'
                 )
 </template>
