@@ -18,7 +18,7 @@ export default ({ app, store }) => {
   // Upload / HTTP Link
   const uploadLink = createUploadLink({
     uri () {
-      return 'http://local.requarks.io:11511'
+      return '/_graphql'
     }
   })
 

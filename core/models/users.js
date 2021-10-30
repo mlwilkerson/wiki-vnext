@@ -1,5 +1,6 @@
 /* global WIKI */
 
+const { v4: uuid } = require('uuid')
 const bcrypt = require('bcryptjs-then')
 const _ = require('lodash')
 const tfa = require('node-2fa')
@@ -22,15 +23,10 @@ module.exports = class User extends Model {
       required: ['email'],
 
       properties: {
-        id: { type: 'integer' },
+        id: { type: 'string' },
         email: { type: 'string', format: 'email' },
         name: { type: 'string', minLength: 1, maxLength: 255 },
-        providerId: { type: 'string' },
         password: { type: 'string' },
-        tfaIsActive: { type: 'boolean', default: false },
-        tfaSecret: { type: ['string', null] },
-        jobTitle: { type: 'string' },
-        location: { type: 'string' },
         pictureUrl: { type: 'string' },
         isSystem: { type: 'boolean' },
         isActive: { type: 'boolean' },
@@ -547,89 +543,76 @@ module.exports = class User extends Model {
    *
    * @param {Object} param0 User Fields
    */
-  static async createNewUser ({ providerKey, email, passwordRaw, name, groups, mustChangePassword, sendWelcomeEmail }) {
+  static async createNewUser ({ email, passwordRaw, name, groups, mustChangePassword, isVerified, sendWelcomeEmail }) {
     // Input sanitization
     email = _.toLower(email)
 
     // Input validation
-    let validation = null
-    if (providerKey === 'local') {
-      validation = validate({
-        email,
-        passwordRaw,
-        name
-      }, {
-        email: {
-          email: true,
-          length: {
-            maximum: 255
-          }
-        },
-        passwordRaw: {
-          presence: {
-            allowEmpty: false
-          },
-          length: {
-            minimum: 6
-          }
-        },
-        name: {
-          presence: {
-            allowEmpty: false
-          },
-          length: {
-            minimum: 2,
-            maximum: 255
-          }
+    const validation = validate({
+      email,
+      passwordRaw,
+      name
+    }, {
+      email: {
+        email: true,
+        length: {
+          maximum: 255
         }
-      }, { format: 'flat' })
-    } else {
-      validation = validate({
-        email,
-        name
-      }, {
-        email: {
-          email: true,
-          length: {
-            maximum: 255
-          }
+      },
+      passwordRaw: {
+        presence: {
+          allowEmpty: false
         },
-        name: {
-          presence: {
-            allowEmpty: false
-          },
-          length: {
-            minimum: 2,
-            maximum: 255
-          }
+        length: {
+          minimum: 6
         }
-      }, { format: 'flat' })
-    }
+      },
+      name: {
+        presence: {
+          allowEmpty: false
+        },
+        length: {
+          minimum: 2,
+          maximum: 255
+        }
+      }
+    }, { format: 'flat' })
 
     if (validation && validation.length > 0) {
       throw new WIKI.Error.InputInvalid(validation[0])
     }
 
     // Check if email already exists
-    const usr = await WIKI.models.users.query().findOne({ email, providerKey })
+    const usr = await WIKI.models.users.query().findOne({ email })
     if (!usr) {
+      const localAuthModule = await WIKI.models.authentication.query().select('id').findOne({ module: 'local' })
+
       // Create the account
       const newUsrData = {
-        providerKey,
+        id: uuid(),
         email,
+        auth: {
+          [localAuthModule.id]: {
+            password: await bcrypt.hash(passwordRaw, 12),
+            mustChangePwd: mustChangePassword === true
+          }
+        },
         name,
-        locale: 'en',
-        defaultEditor: 'markdown',
-        tfaIsActive: false,
         isSystem: false,
         isActive: true,
-        isVerified: true,
-        mustChangePwd: false
-      }
-
-      if (providerKey === 'local') {
-        newUsrData.password = passwordRaw
-        newUsrData.mustChangePwd = (mustChangePassword === true)
+        isVerified,
+        meta: {
+          location: '',
+          jobTitle: ''
+        },
+        prefs: {
+          // TODO: Use detaults from site where user originated
+          timezone: 'America/New_York',
+          dateFormat: 'YYYY-MM-DD',
+          timeFormat: '12h',
+          darkMode: false
+        },
+        localeCode: 'en'
       }
 
       const newUsr = await WIKI.models.users.query().insert(newUsrData)
@@ -663,30 +646,34 @@ module.exports = class User extends Model {
   /**
    * Update an existing user
    *
-   * @param {Object} param0 User ID and fields to update
+   * @param {Number} id Update an existing user
+   * @param {*} param1 Patch object
    */
-  static async updateUser ({ id, email, name, newPassword, groups, location, jobTitle, timezone, dateFormat, appearance }) {
+  static async updateUser (id, { email, name, newPassword, isActive, isVerified, groups, location, jobTitle, timezone, dateFormat, timeFormat, darkMode }) {
     const usr = await WIKI.models.users.query().findById(id)
     if (usr) {
       const usrData = {}
       if (!_.isEmpty(email) && email !== usr.email) {
-        const dupUsr = await WIKI.models.users.query().select('id').where({
-          email,
-          providerKey: usr.providerKey
-        }).first()
+        const dupUsr = await WIKI.models.users.query().select('id').where({ email }).first()
         if (dupUsr) {
           throw new WIKI.Error.AuthAccountAlreadyExists()
         }
-        usrData.email = _.toLower(email)
+        usrData.email = email.toLowerCase()
       }
       if (!_.isEmpty(name) && name !== usr.name) {
         usrData.name = _.trim(name)
       }
       if (!_.isEmpty(newPassword)) {
-        if (newPassword.length < 6) {
-          throw new WIKI.Error.InputInvalid('Password must be at least 6 characters!')
+        if (newPassword.length < 8) {
+          throw new WIKI.Error.InputInvalid('Password must be at least 8 characters!')
         }
         usrData.password = newPassword
+      }
+      if (!_.isNil(isActive)) {
+        usrData.isActive = isActive
+      }
+      if (!_.isNil(isVerified)) {
+        usrData.isVerified = isVerified
       }
       if (_.isArray(groups)) {
         const usrGroupsRaw = await usr.$relatedQuery('groups')
@@ -703,19 +690,22 @@ module.exports = class User extends Model {
         }
       }
       if (!_.isEmpty(location) && location !== usr.location) {
-        usrData.location = _.trim(location)
+        _.set(usrData, 'meta.location', _.trim(location))
       }
       if (!_.isEmpty(jobTitle) && jobTitle !== usr.jobTitle) {
-        usrData.jobTitle = _.trim(jobTitle)
+        _.set(usrData, 'meta.jobTitle', _.trim(jobTitle))
       }
       if (!_.isEmpty(timezone) && timezone !== usr.timezone) {
-        usrData.timezone = timezone
+        _.set(usrData, 'prefs.timezone', timezone)
       }
-      if (!_.isNil(dateFormat) && dateFormat !== usr.dateFormat) {
-        usrData.dateFormat = dateFormat
+      if (!_.isEmpty(dateFormat) && dateFormat !== usr.dateFormat) {
+        _.set(usrData, 'prefs.dateFormat', dateFormat)
       }
-      if (!_.isNil(appearance) && appearance !== usr.appearance) {
-        usrData.appearance = appearance
+      if (!_.isEmpty(timeFormat) && timeFormat !== usr.timeFormat) {
+        _.set(usrData, 'prefs.timeFormat', timeFormat)
+      }
+      if (!_.isNil(darkMode)) {
+        _.set(usrData, 'prefs.darkMode', darkMode)
       }
       await WIKI.models.users.query().patch(usrData).findById(id)
     } else {

@@ -29,6 +29,7 @@ module.exports = configure(function (ctx) {
       'i18n',
       // { path: 'codemirror-browser', server: false },
       'components',
+      'plugins',
       'helpers'
     ],
 
@@ -169,6 +170,8 @@ module.exports = configure(function (ctx) {
           .use(ESLintPlugin, [{ extensions: ['js'] }])
       },
       middlewares: [
+        'security',
+        'core-proxy',
         ctx.prod ? 'compression' : '',
         'render' // keep this as last one
       ]

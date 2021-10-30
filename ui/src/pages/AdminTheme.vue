@@ -16,7 +16,8 @@ q-page.admin-theme
         icon='las la-question-circle'
         flat
         color='grey'
-        href='https://docs.js.wiki/theming'
+        type='a'
+        href='https://docs.js.wiki/admin/theme'
         target='_blank'
         )
       q-btn(

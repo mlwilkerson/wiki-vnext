@@ -24,9 +24,11 @@ q-layout(view='hHh lpR fFf', container)
       :label='$t(`common.actions.save`)'
       :aria-label='$t(`common.actions.save`)'
       icon='las la-check'
+      @click='save'
+      :disabled='isLoading'
     )
-  q-drawer.bg-dark-6(:model-value='true', :width='250', dark, v-show='!isLoading')
-    q-list(padding)
+  q-drawer.bg-dark-6(:model-value='true', :width='250', dark)
+    q-list(padding, v-if='!isLoading')
       q-item(
         v-for='sc of sections'
         :key='`section-` + sc.key'
@@ -40,6 +42,9 @@ q-layout(view='hHh lpR fFf', container)
         q-item-section {{sc.text}}
   q-page-container
     q-page(v-if='isLoading')
+      .flex.q-pa-lg.items-center
+        q-spinner-tail(color='primary', size='32px', :thickness='2')
+        .text-caption.text-primary.q-pl-md: strong {{$t('admin.users.loading')}}
     q-page(v-else-if='$route.params.section === `overview`')
       .q-pa-md
         .row.q-col-gutter-md
@@ -186,25 +191,25 @@ q-layout(view='hHh lpR fFf', container)
               q-card-section
                 .text-subtitle1 {{$t('admin.users.info')}}
               q-item
-                blueprint-icon(icon='person', :hue-rotate='45')
+                blueprint-icon(icon='person', :hue-rotate='-45')
                 q-item-section
                   q-item-label {{$t(`admin.users.id`)}}
                   q-item-label: strong {{userId}}
               q-separator.q-my-sm(inset)
               q-item
-                blueprint-icon(icon='calendar-plus', :hue-rotate='45')
+                blueprint-icon(icon='calendar-plus', :hue-rotate='-45')
                 q-item-section
                   q-item-label {{$t(`admin.users.joined`)}}
                   q-item-label: strong {{humanizeDate(user.createdAt)}}
               q-separator.q-my-sm(inset)
               q-item
-                blueprint-icon(icon='summertime', :hue-rotate='45')
+                blueprint-icon(icon='summertime', :hue-rotate='-45')
                 q-item-section
                   q-item-label {{$t(`admin.users.lastUpdated`)}}
                   q-item-label: strong {{humanizeDate(user.updatedAt)}}
               q-separator.q-my-sm(inset)
               q-item
-                blueprint-icon(icon='enter', :hue-rotate='45')
+                blueprint-icon(icon='enter', :hue-rotate='-45')
                 q-item-section
                   q-item-label {{$t(`admin.users.lastLoginAt`)}}
                   q-item-label: strong {{humanizeDate(user.lastLoginAt)}}
@@ -223,7 +228,26 @@ q-layout(view='hHh lpR fFf', container)
       .q-pa-md
         .row.q-col-gutter-md
           .col-12.col-lg-8
-            q-card.shadow-1.q-py-sm
+            q-card.shadow-1.q-pb-sm
+              q-card-section
+                .text-subtitle1 {{$t('admin.users.groups')}}
+              template(
+                v-for='(grp, idx) of user.groups'
+                :key='grp.id'
+                )
+                q-separator.q-my-sm(inset, v-if='idx > 0')
+                q-item
+                  blueprint-icon(icon='team', :hue-rotate='-45')
+                  q-item-section
+                    q-item-label {{grp.name}}
+                  q-item-section(side)
+                    q-btn.acrylic-btn(
+                      flat
+                      icon='las la-trash'
+                      color='accent'
+                      @click='unassignGroup(grp.id)'
+                    )
+            q-card.shadow-1.q-py-sm.q-mt-md
               q-item
                 blueprint-icon(icon='join')
                 q-item-section
@@ -248,25 +272,8 @@ q-layout(view='hHh lpR fFf', container)
                     icon='las la-plus'
                     :label='$t(`admin.users.assignGroup`)'
                     color='primary'
+                    @click='assignGroup'
                   )
-            q-card.shadow-1.q-pb-sm.q-mt-md
-              q-card-section
-                .text-subtitle1 {{$t('admin.users.groups')}}
-              template(
-                v-for='(grp, idx) of user.groups'
-                :key='grp.id'
-                )
-                q-separator.q-my-sm(inset, v-if='idx > 0')
-                q-item
-                  blueprint-icon(icon='team', :hue-rotate='-45')
-                  q-item-section
-                    q-item-label {{grp.name}}
-                  q-item-section(side)
-                    q-btn.acrylic-btn(
-                      flat
-                      icon='las la-trash'
-                      color='accent'
-                    )
     q-page(v-else-if='$route.params.section === `operations`')
       .q-pa-md
         .row.q-col-gutter-md
@@ -275,12 +282,72 @@ q-layout(view='hHh lpR fFf', container)
               q-card-section
                 .text-subtitle1 {{$t('admin.users.operations')}}
               q-item
+                blueprint-icon(icon='email-open', :hue-rotate='45')
+                q-item-section
+                  q-item-label {{$t(`admin.users.sendWelcomeEmail`)}}
+                  q-item-label(caption) {{$t(`admin.users.sendWelcomeEmailAltHint`)}}
+                q-item-section(side)
+                  q-btn.acrylic-btn(
+                    flat
+                    icon='las la-arrow-circle-right'
+                    color='primary'
+                    @click='sendWelcomeEmail'
+                    :label='$t(`common.actions.proceed`)'
+                    disabled
+                  )
+              q-separator.q-my-sm(inset)
+              q-item
+                blueprint-icon(icon='apply', :hue-rotate='45')
+                q-item-section
+                  q-item-label {{user.isVerified ? $t(`admin.users.unverify`) : $t(`admin.users.verify`)}}
+                  q-item-label(caption) {{user.isVerified ? $t(`admin.users.unverifyHint`) : $t(`admin.users.verifyHint`)}}
+                  q-item-label(caption): strong(:class='user.isVerified ? `text-positive` : `text-negative`') {{user.isVerified ? $t(`admin.users.verified`) : $t(`admin.users.unverified`)}}
+                q-item-section(side)
+                  q-btn.acrylic-btn(
+                    flat
+                    icon='las la-arrow-circle-right'
+                    color='primary'
+                    @click='toggleVerified'
+                    :label='$t(`common.actions.proceed`)'
+                  )
+              q-separator.q-my-sm(inset)
+              q-item
+                blueprint-icon(icon='unfriend', :hue-rotate='45')
+                q-item-section
+                  q-item-label {{user.isActive ? $t(`admin.users.ban`) : $t(`admin.users.unban`)}}
+                  q-item-label(caption) {{user.isActive ? $t(`admin.users.banHint`) : $t(`admin.users.unbanHint`)}}
+                  q-item-label(caption): strong(:class='user.isActive ? `text-positive` : `text-negative`') {{user.isActive ? $t(`admin.users.active`) : $t(`admin.users.banned`)}}
+                q-item-section(side)
+                  q-btn.acrylic-btn(
+                    flat
+                    icon='las la-arrow-circle-right'
+                    color='primary'
+                    @click='toggleBan'
+                    :label='$t(`common.actions.proceed`)'
+                  )
+            q-card.shadow-1.q-py-sm.q-mt-md
+              q-item
+                blueprint-icon(icon='denied', :hue-rotate='140')
+                q-item-section
+                  q-item-label {{$t(`admin.users.delete`)}}
+                  q-item-label(caption) {{$t(`admin.users.deleteHint`)}}
+                q-item-section(side)
+                  q-btn.acrylic-btn(
+                    flat
+                    icon='las la-arrow-circle-right'
+                    color='negative'
+                    @click='deleteUser'
+                    :label='$t(`common.actions.proceed`)'
+                    disabled
+                  )
 </template>
 
 <script>
 import gql from 'graphql-tag'
 import sampleSize from 'lodash/sampleSize'
 import cloneDeep from 'lodash/cloneDeep'
+import some from 'lodash/some'
+import find from 'lodash/find'
 import { get } from '@requarks/vuex-pathify'
 import zxcvbn from 'zxcvbn'
 import { DateTime } from 'luxon'
@@ -347,9 +414,6 @@ export default {
             }
         }
       }
-    },
-    selectedGroupName () {
-      return this.groups.filter(g => g.id === this.userGroups[0])[0]?.name
     }
   },
   watch: {
@@ -372,6 +436,32 @@ export default {
       if (!val) { return '---' }
       return DateTime.fromISO(val).toLocaleString(DateTime.DATETIME_FULL)
     },
+    assignGroup () {
+      if (!this.groupToAdd) {
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('admin.users.noGroupSelected')
+        })
+      } else if (some(this.user.groups, gr => gr.id === this.groupToAdd)) {
+        this.$q.notify({
+          type: 'warning',
+          message: this.$t('admin.users.groupAlreadyAssigned')
+        })
+      } else {
+        const newGroup = find(this.groups, ['id', this.groupToAdd])
+        this.user.groups = [...this.user.groups, newGroup]
+      }
+    },
+    unassignGroup (id) {
+      if (this.user.groups.length <= 1) {
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('admin.users.minimumGroupRequired')
+        })
+      } else {
+        this.user.groups = this.user.groups.filter(gr => gr.id === id)
+      }
+    },
     async fetchUser () {
       this.isLoading = true
       try {
@@ -386,6 +476,9 @@ export default {
                 id
                 email
                 name
+                isSystem
+                isVerified
+                isActive
                 meta
                 prefs
                 lastLoginAt
@@ -420,30 +513,18 @@ export default {
       const pwdChars = 'abcdefghkmnpqrstuvwxyzABCDEFHJKLMNPQRSTUVWXYZ23456789_*=?#!()+'
       this.userPassword = sampleSize(pwdChars, 16).join('')
     },
-    async create () {
-      this.isLoading = true
+    async save () {
+      this.$q.loading.show()
       try {
-        const isFormValid = await this.$refs.createUserForm.validate(true)
-        if (!isFormValid) {
-          throw new Error(this.$t('admin.users.createInvalidData'))
-        }
         const resp = await this.$apollo.mutate({
           mutation: gql`
-            mutation createsdfsdfsdUser (
-              $name: String!
-              $email: String!
-              $password: String!
-              $groups: [UUID]!
-              $mustChangePassword: Boolean!
-              $sendWelcomeEmail: Boolean!
+            mutation adminSaveUser (
+              $id: UUID!
+              $patch: UserUpdateInput!
               ) {
-              createUser (
-                name: $name
-                email: $email
-                password: $password
-                groups: $groups
-                mustChangePassword: $mustChangePassword
-                sendWelcomeEmail: $sendWelcomeEmail
+              updateUser (
+                id: $id
+                patch: $patch
                 ) {
                 status {
                   succeeded
@@ -453,28 +534,28 @@ export default {
             }
           `,
           variables: {
-            name: this.userName,
-            email: this.userEmail,
-            password: this.userPassword,
-            groups: this.userGroups,
-            mustChangePassword: this.userMustChangePassword,
-            sendWelcomeEmail: this.userSendWelcomeEmail
+            id: this.userId,
+            patch: {
+              name: this.user.name,
+              email: this.user.email,
+              isVerified: this.user.isVerified,
+              isActive: this.user.isActive,
+              location: this.user.meta.location,
+              jobTitle: this.user.meta.jobTitle,
+              timezone: this.user.prefs.timezone,
+              dateFormat: this.user.prefs.dateFormat,
+              timeFormat: this.user.prefs.timeFormat,
+              darkMode: this.user.prefs.darkMode,
+              groups: this.user.groups.map(gr => gr.id)
+            }
           }
         })
-        if (resp?.data?.createUser?.status?.succeeded) {
+        if (resp?.data?.updateUser?.status?.succeeded) {
           this.$q.notify({
             type: 'positive',
-            message: this.$t('admin.users.createSuccess')
+            message: this.$t('admin.users.saveSuccess')
           })
-          if (this.keepOpened) {
-            this.userName = ''
-            this.userEmail = ''
-            this.userPassword = ''
-            this.$refs.iptName.focus()
-          } else {
-            this.$emit('ok')
-            this.hide()
-          }
+          this.close()
         } else {
           throw new Error(resp?.data?.createUser?.status?.message || 'An unexpected error occured.')
         }
@@ -484,7 +565,19 @@ export default {
           message: err.message
         })
       }
-      this.isLoading = false
+      this.$q.loading.hide()
+    },
+    async sendWelcomeEmail () {
+
+    },
+    toggleVerified () {
+      this.user.isVerified = !this.user.isVerified
+    },
+    toggleBan () {
+      this.user.isActive = !this.user.isActive
+    },
+    async deleteUser () {
+
     }
   },
   apollo: {

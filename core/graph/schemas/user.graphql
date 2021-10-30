@@ -32,15 +32,7 @@ extend type Mutation {
 
   updateUser(
     id: UUID!
-    email: String
-    name: String
-    newPassword: String
-    groups: [UUID]
-    location: String
-    jobTitle: String
-    timezone: String
-    dateFormat: String
-    appearance: String
+    patch: UserUpdateInput!
   ): DefaultResponse @auth(requires: ["manage:users", "manage:system"])
 
   deleteUser(
@@ -161,4 +153,19 @@ enum UserOrderBy {
   createdAt
   updatedAt
   lastLoginAt
+}
+
+input UserUpdateInput {
+  email: String
+  name: String
+  newPassword: String
+  groups: [UUID!]
+  isActive: Boolean
+  isVerified: Boolean
+  location: String
+  jobTitle: String
+  timezone: String
+  dateFormat: String
+  timeFormat: String
+  darkMode: Boolean
 }

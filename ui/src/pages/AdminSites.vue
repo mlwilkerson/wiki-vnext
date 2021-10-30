@@ -12,7 +12,7 @@ q-page.admin-locale
         flat
         color='grey'
         type='a'
-        href='https://docs.js.wiki/sites'
+        href='https://docs.js.wiki/admin/sites'
         target='_blank'
         )
       q-btn.q-mr-sm.acrylic-btn(

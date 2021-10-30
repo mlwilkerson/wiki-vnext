@@ -62,6 +62,11 @@ q-page.admin-groups
                   name='las la-lock'
                   color='pink'
                   )
+                q-icon.q-ml-sm(
+                  v-if='!props.row.isActive'
+                  name='las la-ban'
+                  color='pink'
+                  )
           template(v-slot:body-cell-email='props')
             q-td(:props='props')
               em {{ props.value }}
@@ -164,6 +169,7 @@ export default {
     overlay (newValue, oldValue) {
       if (newValue === '' && oldValue === 'UserEditOverlay') {
         this.$router.push('/a/users')
+        this.$apollo.queries.users.refetch()
       }
     },
     $route: 'checkOverlay'
