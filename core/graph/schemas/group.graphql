@@ -65,7 +65,7 @@ type Group {
 type GroupRule {
   id: UUID
   name: String
-  deny: Boolean
+  mode: GroupRuleMode
   match: GroupRuleMatch
   roles: [String]
   path: String
@@ -76,12 +76,18 @@ type GroupRule {
 input GroupRuleInput {
   id: UUID!
   name: String!
-  deny: Boolean!
+  mode: GroupRuleMode!
   match: GroupRuleMatch!
   roles: [String]!
   path: String!
   locales: [String]!
   sites: [UUID]
+}
+
+enum GroupRuleMode {
+  ALLOW
+  DENY
+  FORCEALLOW
 }
 
 enum GroupRuleMatch {

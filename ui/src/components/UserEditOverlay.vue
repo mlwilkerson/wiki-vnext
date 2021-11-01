@@ -6,27 +6,26 @@ q-layout(view='hHh lpR fFf', container)
       span {{$t(`admin.users.edit`)}}
       .text-caption {{user.name}}
     q-space
-    q-btn.q-mr-sm(
-      push
-      glossy
-      color='white'
-      text-color='grey-7'
-      :label='$t(`common.actions.close`)'
-      :aria-label='$t(`common.actions.close`)'
-      icon='las la-times'
-      @click='close'
-    )
-    q-btn(
-      push
-      glossy
-      color='positive'
-      text-color='white'
-      :label='$t(`common.actions.save`)'
-      :aria-label='$t(`common.actions.save`)'
-      icon='las la-check'
-      @click='save'
-      :disabled='isLoading'
-    )
+    q-btn-group(push)
+      q-btn(
+        push
+        color='white'
+        text-color='grey-7'
+        :label='$t(`common.actions.close`)'
+        :aria-label='$t(`common.actions.close`)'
+        icon='las la-times'
+        @click='close'
+      )
+      q-btn(
+        push
+        color='positive'
+        text-color='white'
+        :label='$t(`common.actions.save`)'
+        :aria-label='$t(`common.actions.save`)'
+        icon='las la-check'
+        @click='save'
+        :disabled='isLoading'
+      )
   q-drawer.bg-dark-6(:model-value='true', :width='250', dark)
     q-list(padding, v-if='!isLoading')
       q-item(
@@ -193,19 +192,19 @@ q-layout(view='hHh lpR fFf', container)
               q-item
                 blueprint-icon(icon='person', :hue-rotate='-45')
                 q-item-section
-                  q-item-label {{$t(`admin.users.id`)}}
+                  q-item-label {{$t(`common.field.id`)}}
                   q-item-label: strong {{userId}}
               q-separator.q-my-sm(inset)
               q-item
                 blueprint-icon(icon='calendar-plus', :hue-rotate='-45')
                 q-item-section
-                  q-item-label {{$t(`admin.users.joined`)}}
+                  q-item-label {{$t(`common.field.createdOn`)}}
                   q-item-label: strong {{humanizeDate(user.createdAt)}}
               q-separator.q-my-sm(inset)
               q-item
                 blueprint-icon(icon='summertime', :hue-rotate='-45')
                 q-item-section
-                  q-item-label {{$t(`admin.users.lastUpdated`)}}
+                  q-item-label {{$t(`common.field.lastUpdated`)}}
                   q-item-label: strong {{humanizeDate(user.updatedAt)}}
               q-separator.q-my-sm(inset)
               q-item
@@ -370,7 +369,7 @@ export default {
       groups: [],
       groupToAdd: null,
       isLoadingGroups: false,
-      isLoading: false,
+      isLoading: true,
       icons: {
         user: require('../assets/icons/fluent-account.svg')
       }

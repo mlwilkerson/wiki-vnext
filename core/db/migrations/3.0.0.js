@@ -479,7 +479,7 @@ exports.up = async knex => {
           name: 'Default Rule',
           roles: ['read:pages', 'read:assets', 'read:comments'],
           match: 'START',
-          deny: true,
+          mode: 'DENY',
           path: '',
           locales: [],
           sites: []

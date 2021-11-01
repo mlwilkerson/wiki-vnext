@@ -75,6 +75,7 @@
     "@vue/apollo-ssr": "4.0.0-alpha.13",
     "animated-number-vue": "1.0.0",
     "apollo-upload-client": "16.0.0",
+    "browser-fs-access": "0.21.0",
     "clipboard": "2.0.8",
     "emoji-regex": "9.2.2",
     "epic-spinners": "1.1.0",

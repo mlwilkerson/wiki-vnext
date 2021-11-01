@@ -70,7 +70,7 @@ q-page.admin-groups
                 :color='$q.dark.isActive ? `dark-6` : `grey-2`'
                 :text-color='$q.dark.isActive ? `white` : `grey-8`'
                 dense
-              ) {{$t('admin.groups.users', { count: props.value })}}
+              ) {{$t('admin.groups.usersCount', { count: props.value })}}
           template(v-slot:body-cell-edit='props')
             q-td(:props='props')
               q-btn.acrylic-btn.q-mr-sm(
@@ -84,7 +84,7 @@ q-page.admin-groups
               q-btn.acrylic-btn(
                 flat
                 icon='las la-trash'
-                color='accent'
+                :color='props.row.isSystem ? `grey` : `accent`'
                 :disabled='props.row.isSystem'
                 @click='deleteGroup(props.row)'
                 )

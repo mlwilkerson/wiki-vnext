@@ -86,6 +86,17 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
+.q-field.fill-outline .q-field__control {
+  background-color: #FFF;
+
+  @at-root .body--light & {
+    background-color: #FFF;
+  }
+  @at-root .body--dark & {
+    background-color: $dark;
+  }
+}
+
 // ------------------------------------------------------------------
 // BUTTONS
 // ------------------------------------------------------------------

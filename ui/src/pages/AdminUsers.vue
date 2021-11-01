@@ -20,7 +20,7 @@ q-page.admin-groups
         flat
         color='grey'
         type='a'
-        href='https://docs.js.wiki/admin/groups'
+        href='https://docs.js.wiki/admin/users'
         target='_blank'
         )
       q-btn.q-mr-sm.acrylic-btn(

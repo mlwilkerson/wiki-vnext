@@ -15,7 +15,7 @@ const state = {
   overlayOpts: {},
   sites: [],
   locales: [
-    { code: '', name: 'English' }
+    { code: 'en', name: 'English' }
   ]
 }
 
