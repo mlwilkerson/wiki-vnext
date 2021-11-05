@@ -1,8 +1,6 @@
 #!/bin/bash
 
-WORKSPACEDIR=/workspace
-
-
+WORKSPACEDIR=$PWD
 
 echo "Installing Core NPM modules..."
 cd $WORKSPACEDIR/core && yarn
