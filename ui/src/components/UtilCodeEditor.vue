@@ -14,7 +14,7 @@ import { defaultHighlightStyle } from '@codemirror/highlight'
 
 export default {
   props: {
-    value: {
+    modelValue: {
       type: String,
       default: ''
     },
@@ -27,9 +27,20 @@ export default {
       default: 150
     }
   },
+  emits: ['update:modelValue'],
   data () {
     return {
       editor: null
+    }
+  },
+  watch: {
+    modelValue (newVal) {
+      // Ignore loopback changes while editing
+      if (!this.editor.hasFocus) {
+        this.editor.dispatch({
+          changes: { from: 0, to: this.editor.state.length, insert: newVal }
+        })
+      }
     }
   },
   async mounted () {
@@ -58,6 +69,7 @@ export default {
     }
     this.editor = new EditorView({
       state: EditorState.create({
+        doc: this.modelValue,
         extensions: [
           history(),
           keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
@@ -66,7 +78,12 @@ export default {
             '.cm-content, .cm-gutter': { minHeight: `${this.minHeight}px` }
           }),
           ...langModule && [langModule()],
-          defaultHighlightStyle
+          defaultHighlightStyle,
+          EditorView.updateListener.of(v => {
+            if (v.docChanged) {
+              this.$emit('update:modelValue', v.state.doc.toString())
+            }
+          })
         ]
       }),
       parent: this.$refs.editor
@@ -83,5 +100,12 @@ export default {
 <style lang="scss">
 .util-code-editor {
   min-height: 100px;
+  border: 1px solid #CCC;
+  border-radius: 5px;
+  overflow: hidden;
+
+  > .CodeMirror {
+    height: 150px;
+  }
 }
 </style>

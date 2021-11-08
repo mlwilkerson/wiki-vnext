@@ -2,7 +2,7 @@
 q-page.admin-webhooks
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-lightning-bolt.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-lightning-bolt.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.webhooks.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.webhooks.subtitle') }}

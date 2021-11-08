@@ -5,14 +5,25 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Run UI Server",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ui",
+      "runtimeArgs": [
+        "dev"
+      ],
+      "runtimeExecutable": "yarn",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
+    },
+    {
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
       "name": "Run Core Server",
-      "program": "index.js",
+      "program": "${workspaceFolder}/core/index.js",
       "request": "launch",
       "cwd": "${workspaceFolder}/core",
       "restart": true,
-      "runtimeExecutable": "nodemon",
       "skipFiles": [
         "<node_internals>/**"
       ],

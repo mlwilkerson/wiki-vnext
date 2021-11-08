@@ -56,7 +56,14 @@ type Group {
   redirectOnLogout: String
   permissions: [String]
   rules: [GroupRule]
-  users: [UserMinimal]
+  users(
+    page: Int
+    pageSize: Int
+    orderBy: UserOrderBy
+    orderByDirection: OrderByDirection
+    # Filter by name / email
+    filter: String
+    ): [UserMinimal]
   userCount: Int
   createdAt: Date
   updatedAt: Date

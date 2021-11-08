@@ -2,7 +2,7 @@
 q-page.admin-dashboard
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-apps-tab.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-apps-tab.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.dashboard.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.dashboard.subtitle') }}

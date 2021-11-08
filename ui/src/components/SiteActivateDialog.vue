@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 350px; max-width: 450px;')
     q-card-section.card-header
-      q-icon(:name='`img:` + icons.shutdown', left, size='sm')
+      q-icon(name='img:/_assets/icons/fluent-shutdown.svg', left, size='sm')
       span {{value ? $t(`admin.sites.activate`) : $t(`admin.sites.deactivate`)}}
     q-card-section
       .text-body2
@@ -44,9 +44,6 @@ export default {
   emits: ['ok', 'hide'],
   data () {
     return {
-      icons: {
-        shutdown: require('../assets/icons/fluent-shutdown.svg')
-      }
     }
   },
   methods: {

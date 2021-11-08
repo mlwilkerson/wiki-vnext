@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 650px;')
     q-card-section.card-header
-      q-icon(:name='`img:` + icons.plus', left, size='sm')
+      q-icon(name='img:/_assets/icons/fluent-plus-plus.svg', left, size='sm')
       span {{$t(`admin.users.create`)}}
     q-form.q-py-sm(ref='createUserForm', @submit='create')
       q-item
@@ -189,10 +189,7 @@ export default {
       keepOpened: false,
       groups: [],
       isLoadingGroups: false,
-      isLoading: false,
-      icons: {
-        plus: require('../assets/icons/fluent-plus-plus.svg')
-      }
+      isLoading: false
     }
   },
   computed: {

@@ -19,8 +19,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
       zsh \
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /root/.gnupg /tmp/library-scripts
 
-# Colorize the bash shell
-RUN sed -i 's/#force_color_prompt=/force_color_prompt=/' /root/.bashrc
+# Set ZSH default theme
+COPY .devcontainer/wiki.zsh-theme /root/.oh-my-zsh/custom/themes/wiki.zsh-theme
+RUN sed -i 's/"codespaces"/"wiki"/' /root/.zshrc
 
 # Copy the startup init script
 COPY .devcontainer/init.sh /docker-init.sh

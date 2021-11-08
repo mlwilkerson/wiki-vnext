@@ -2,7 +2,7 @@
 q-page.admin-login
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-bunch-of-keys.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-bunch-of-keys.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.login.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.login.subtitle') }}
@@ -200,12 +200,7 @@ export default {
         { id: 'local', label: 'Local Authentication', provider: 'Username-Password', icon: 'database', isActive: true },
         { id: 'google', label: 'Google', provider: 'Google', icon: 'google', isActive: true },
         { id: 'slack', label: 'Slack', provider: 'Slack', icon: 'slack', isActive: false }
-      ],
-      icons: {
-        bg: require('assets/icons/ultraviolet-full-image.svg'),
-        bypass: require('assets/icons/ultraviolet-close-pane.svg'),
-        redirect: require('assets/icons/ultraviolet-chevron-right.svg')
-      }
+      ]
     }
   },
   computed: {

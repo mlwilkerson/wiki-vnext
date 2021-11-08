@@ -1,12 +1,21 @@
 <template lang="pug">
 q-layout(view='hHh lpR fFf', container)
   q-header.card-header.q-px-md.q-py-sm
-    q-icon(:name='`img:` + icons.group', left, size='md')
+    q-icon(name='img:/_assets/icons/fluent-people.svg', left, size='md')
     div
       span {{$t(`admin.groups.edit`)}}
       .text-caption {{group.name}}
     q-space
     q-btn-group(push)
+      q-btn(
+        push
+        color='grey-6'
+        text-color='white'
+        :aria-label='$t(`common.actions.refresh`)'
+        icon='las la-redo-alt'
+        @click='refresh'
+        )
+        q-tooltip(anchor='center left', self='center right') {{$t(`common.actions.refresh`)}}
       q-btn(
         push
         color='white'
@@ -131,47 +140,49 @@ q-layout(view='hHh lpR fFf', container)
     //- RULES
     //- -----------------------------------------------------------------------
     q-page(v-else-if='$route.params.section === `rules`')
+      q-toolbar.q-pl-md(
+        :class='$q.dark.isActive ? `bg-dark-3` : `bg-white`'
+        )
+        .text-subtitle1 {{$t('admin.groups.rules')}}
+        q-space
+        q-btn.acrylic-btn.q-mr-sm(
+          icon='las la-question-circle'
+          flat
+          color='grey'
+          type='a'
+          href='https://docs.js.wiki/admin/groups#rules'
+          target='_blank'
+          )
+        q-btn.acrylic-btn.q-mr-sm(
+          flat
+          color='indigo'
+          icon='las la-file-export'
+          @click='exportRules'
+          )
+          q-tooltip {{$t('admin.groups.exportRules')}}
+        q-btn.acrylic-btn.q-mr-sm(
+          flat
+          color='indigo'
+          icon='las la-file-import'
+          @click='importRules'
+          )
+          q-tooltip {{$t('admin.groups.importRules')}}
+        q-btn(
+          unelevated
+          color='primary'
+          icon='las la-plus'
+          label='New Rule'
+          @click='newRule'
+        )
+      q-separator
       .q-pa-md
-        q-card.shadow-1.q-pb-sm
-          .flex.justify-between
-            q-card-section
-              .text-subtitle1 {{$t(`admin.groups.rules`)}}
-            q-card-section
-              q-btn.acrylic-btn.q-mr-sm(
-                icon='las la-question-circle'
-                flat
-                color='grey'
-                type='a'
-                href='https://docs.js.wiki/admin/groups#rules'
-                target='_blank'
-                )
-              q-btn.acrylic-btn.q-mr-sm(
-                flat
-                color='indigo'
-                icon='las la-file-export'
-                @click='exportRules'
-                )
-                q-tooltip {{$t('admin.groups.exportRules')}}
-              q-btn.acrylic-btn.q-mr-sm(
-                flat
-                color='indigo'
-                icon='las la-file-import'
-                @click='importRules'
-                )
-                q-tooltip {{$t('admin.groups.importRules')}}
-              q-btn(
-                unelevated
-                color='primary'
-                icon='las la-plus'
-                label='New Rule'
-                @click='newRule'
-              )
-          q-card-section.q-pl-lg
-            q-banner(
-              v-if='!group.rules || group.rules.length < 1'
-              rounded
-              :class='$q.dark.isActive ? `bg-negative text-white` : `bg-red-1 text-red-9`'
-              ) {{$t('admin.groups.rulesNone')}}
+        q-banner(
+          v-if='!group.rules || group.rules.length < 1'
+          rounded
+          :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-4 text-grey-9`'
+          ) {{$t('admin.groups.rulesNone')}}
+        q-card.shadow-1.q-pb-sm(v-else)
+          q-card-section
             .admin-groups-rule(
               v-for='(rule, idx) of group.rules'
               :key='rule.id'
@@ -368,7 +379,16 @@ q-layout(view='hHh lpR fFf', container)
       q-toolbar(
         :class='$q.dark.isActive ? `bg-dark-3` : `bg-white`'
         )
+        .text-subtitle1 {{$t('admin.groups.users')}}
         q-space
+        q-btn.acrylic-btn.q-mr-sm(
+          icon='las la-question-circle'
+          flat
+          color='grey'
+          type='a'
+          href='https://docs.js.wiki/admin/groups#users'
+          target='_blank'
+          )
         q-input.denser.fill-outline.q-mr-sm(
           outlined
           v-model='searchUsers'
@@ -391,67 +411,68 @@ q-layout(view='hHh lpR fFf', container)
           @click='assignUser'
           )
       q-separator
-      q-card.shadow-1
-        q-table(
-          :rows='users'
-          :columns='usersHeaders'
-          row-key='id'
-          flat
-          hide-header
-          hide-bottom
-          :rows-per-page-options='[0]'
-          :loading='isLoadingUsers'
-          )
-          template(v-slot:body-cell-id='props')
-            q-td(:props='props')
-              q-icon(name='las la-user', color='primary', size='sm')
-          template(v-slot:body-cell-name='props')
-            q-td(:props='props')
-              .flex.items-center
-                strong {{props.value}}
-                q-icon.q-ml-sm(
-                  v-if='props.row.isSystem'
-                  name='las la-lock'
-                  color='pink'
+      .q-pa-md
+        q-card.shadow-1
+          q-table(
+            :rows='users'
+            :columns='usersHeaders'
+            row-key='id'
+            flat
+            hide-header
+            hide-bottom
+            :rows-per-page-options='[0]'
+            :loading='isLoadingUsers'
+            )
+            template(v-slot:body-cell-id='props')
+              q-td(:props='props')
+                q-icon(name='las la-user', color='primary', size='sm')
+            template(v-slot:body-cell-name='props')
+              q-td(:props='props')
+                .flex.items-center
+                  strong {{props.value}}
+                  q-icon.q-ml-sm(
+                    v-if='props.row.isSystem'
+                    name='las la-lock'
+                    color='pink'
+                    )
+                  q-icon.q-ml-sm(
+                    v-if='!props.row.isActive'
+                    name='las la-ban'
+                    color='pink'
+                    )
+            template(v-slot:body-cell-email='props')
+              q-td(:props='props')
+                em {{ props.value }}
+            template(v-slot:body-cell-date='props')
+              q-td(:props='props')
+                i18n-t.text-caption(keypath='admin.users.createdAt', tag='div')
+                  template(#date)
+                    strong {{ humanizeDate(props.value) }}
+                i18n-t.text-caption(
+                  v-if='props.row.lastLoginAt'
+                  keypath='admin.users.lastLoginAt'
+                  tag='div'
                   )
-                q-icon.q-ml-sm(
-                  v-if='!props.row.isActive'
-                  name='las la-ban'
-                  color='pink'
+                  template(#date)
+                    strong {{ humanizeDate(props.row.lastLoginAt) }}
+            template(v-slot:body-cell-edit='props')
+              q-td(:props='props')
+                q-btn.acrylic-btn.q-mr-sm(
+                  v-if='!props.row.isSystem'
+                  flat
+                  :to='`/a/users/` + props.row.id'
+                  icon='las la-pen'
+                  color='indigo'
+                  :label='$t(`common.actions.edit`)'
+                  no-caps
                   )
-          template(v-slot:body-cell-email='props')
-            q-td(:props='props')
-              em {{ props.value }}
-          template(v-slot:body-cell-date='props')
-            q-td(:props='props')
-              i18n-t.text-caption(keypath='admin.users.createdAt', tag='div')
-                template(#date)
-                  strong {{ humanizeDate(props.value) }}
-              i18n-t.text-caption(
-                v-if='props.row.lastLoginAt'
-                keypath='admin.users.lastLoginAt'
-                tag='div'
-                )
-                template(#date)
-                  strong {{ humanizeDate(props.row.lastLoginAt) }}
-          template(v-slot:body-cell-edit='props')
-            q-td(:props='props')
-              q-btn.acrylic-btn.q-mr-sm(
-                v-if='!props.row.isSystem'
-                flat
-                :to='`/a/users/` + props.row.id'
-                icon='las la-pen'
-                color='indigo'
-                :label='$t(`common.actions.edit`)'
-                no-caps
-                )
-              q-btn.acrylic-btn(
-                v-if='!props.row.isSystem'
-                flat
-                icon='las la-user-minus'
-                color='accent'
-                @click='unassignUser(props.row)'
-                )
+                q-btn.acrylic-btn(
+                  v-if='!props.row.isSystem'
+                  flat
+                  icon='las la-user-minus'
+                  color='accent'
+                  @click='unassignUser(props.row)'
+                  )
 </template>
 
 <script>
@@ -475,9 +496,6 @@ export default {
       ],
       group: {},
       isLoading: false,
-      icons: {
-        group: require('../assets/icons/fluent-people.svg')
-      },
       // RULES
       rules: [
         {
@@ -734,6 +752,9 @@ export default {
         default: return '???'
       }
     },
+    refresh () {
+      this.fetchGroup()
+    },
     async fetchGroup () {
       this.isLoading = true
       try {
@@ -761,11 +782,6 @@ export default {
                   mode
                   locales
                   sites
-                }
-                users {
-                  id
-                  name
-                  email
                 }
                 createdAt
                 updatedAt
@@ -868,8 +884,50 @@ export default {
         })
       }
     },
-    refreshUsers () {
-
+    async refreshUsers () {
+      this.isLoadingUsers = true
+      try {
+        const resp = await this.$apollo.query({
+          query: gql`
+            query adminFetchGroupUsers (
+              $filter: String
+              $groupId: UUID!
+              ) {
+              groupById (
+                id: $groupId
+              ) {
+                users (
+                  filter: $filter
+                ) {
+                  id
+                  name
+                  email
+                  isSystem
+                  isActive
+                  createdAt
+                  lastLoginAt
+                }
+              }
+            }
+          `,
+          variables: {
+            filter: this.searchUsers,
+            groupId: this.groupId
+          },
+          fetchPolicy: 'network-only'
+        })
+        if (resp?.data?.groupById?.users) {
+          this.users = cloneDeep(resp.data.groupById.users)
+        } else {
+          throw new Error('An unexpected error occured while fetching group users.')
+        }
+      } catch (err) {
+        this.$q.notify({
+          type: 'negative',
+          message: err.message
+        })
+      }
+      this.isLoadingUsers = false
     },
     assignUser () {
 

@@ -190,8 +190,8 @@ export default {
         picture: null
       },
       info: {
-        groupsTotal: 99,
-        usersTotal: 999
+        groupsTotal: 3,
+        usersTotal: 2
       },
       thumbStyle: {
         right: '1px',
@@ -204,30 +204,30 @@ export default {
         width: '7px'
       },
       icons: {
-        dashboard: require('../assets/icons/fluent-apps-tab.svg'),
-        sites: require('../assets/icons/fluent-change-theme.svg'),
-        general: require('../assets/icons/fluent-web.svg'),
-        analytics: require('../assets/icons/fluent-bar-chart.svg'),
-        comments: require('../assets/icons/fluent-comments.svg'),
-        editors: require('../assets/icons/fluent-cashbook.svg'),
-        locale: require('../assets/icons/fluent-language.svg'),
-        login: require('../assets/icons/fluent-bunch-of-keys.svg'),
-        navigation: require('../assets/icons/fluent-tree-structure.svg'),
-        rendering: require('../assets/icons/fluent-rich-text-converter.svg'),
-        storage: require('../assets/icons/fluent-ssd.svg'),
-        theme: require('../assets/icons/fluent-paint-roller.svg'),
-        auth: require('../assets/icons/fluent-security-lock.svg'),
-        groups: require('../assets/icons/fluent-people.svg'),
-        users: require('../assets/icons/fluent-account.svg'),
-        api: require('../assets/icons/fluent-rest-api.svg'),
-        extensions: require('../assets/icons/fluent-module.svg'),
-        mail: require('../assets/icons/fluent-message-settings.svg'),
-        security: require('../assets/icons/fluent-protect.svg'),
-        ssl: require('../assets/icons/fluent-security-ssl.svg'),
-        system: require('../assets/icons/fluent-processor.svg'),
-        utilities: require('../assets/icons/fluent-swiss-army-knife.svg'),
-        webhooks: require('../assets/icons/fluent-lightning-bolt.svg'),
-        flags: require('../assets/icons/fluent-windsock.svg')
+        dashboard: '/_assets/icons/fluent-apps-tab.svg',
+        sites: '/_assets/icons/fluent-change-theme.svg',
+        general: '/_assets/icons/fluent-web.svg',
+        analytics: '/_assets/icons/fluent-bar-chart.svg',
+        comments: '/_assets/icons/fluent-comments.svg',
+        editors: '/_assets/icons/fluent-cashbook.svg',
+        locale: '/_assets/icons/fluent-language.svg',
+        login: '/_assets/icons/fluent-bunch-of-keys.svg',
+        navigation: '/_assets/icons/fluent-tree-structure.svg',
+        rendering: '/_assets/icons/fluent-rich-text-converter.svg',
+        storage: '/_assets/icons/fluent-ssd.svg',
+        theme: '/_assets/icons/fluent-paint-roller.svg',
+        auth: '/_assets/icons/fluent-security-lock.svg',
+        groups: '/_assets/icons/fluent-people.svg',
+        users: '/_assets/icons/fluent-account.svg',
+        api: '/_assets/icons/fluent-rest-api.svg',
+        extensions: '/_assets/icons/fluent-module.svg',
+        mail: '/_assets/icons/fluent-message-settings.svg',
+        security: '/_assets/icons/fluent-protect.svg',
+        ssl: '/_assets/icons/fluent-security-ssl.svg',
+        system: '/_assets/icons/fluent-processor.svg',
+        utilities: '/_assets/icons/fluent-swiss-army-knife.svg',
+        webhooks: '/_assets/icons/fluent-lightning-bolt.svg',
+        flags: '/_assets/icons/fluent-windsock.svg'
       }
     }
   },

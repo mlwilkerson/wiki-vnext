@@ -2,7 +2,7 @@
 q-page.admin-mail
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-protect.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-protect.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.security.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.security.subtitle') }}

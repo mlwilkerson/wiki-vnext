@@ -1,12 +1,21 @@
 <template lang="pug">
 q-layout(view='hHh lpR fFf', container)
   q-header.card-header.q-px-md.q-py-sm
-    q-icon(:name='`img:` + icons.user', left, size='md')
+    q-icon(name='img:/_assets/icons/fluent-account.svg', left, size='md')
     div
       span {{$t(`admin.users.edit`)}}
       .text-caption {{user.name}}
     q-space
     q-btn-group(push)
+      q-btn(
+        push
+        color='grey-6'
+        text-color='white'
+        :aria-label='$t(`common.actions.refresh`)'
+        icon='las la-redo-alt'
+        @click='refresh'
+        )
+        q-tooltip(anchor='center left', self='center right') {{$t(`common.actions.refresh`)}}
       q-btn(
         push
         color='white'
@@ -23,7 +32,7 @@ q-layout(view='hHh lpR fFf', container)
         :label='$t(`common.actions.save`)'
         :aria-label='$t(`common.actions.save`)'
         icon='las la-check'
-        @click='save'
+        @click='save()'
         :disabled='isLoading'
       )
   q-drawer.bg-dark-6(:model-value='true', :width='250', dark)
@@ -213,16 +222,90 @@ q-layout(view='hHh lpR fFf', container)
                   q-item-label {{$t(`admin.users.lastLoginAt`)}}
                   q-item-label: strong {{humanizeDate(user.lastLoginAt)}}
 
+            q-card.shadow-1.q-pb-sm.q-mt-md(v-if='user.meta')
+              q-card-section
+                .text-subtitle1 {{$t('admin.users.notes')}}
+                q-input.q-mt-sm(
+                  outlined
+                  v-model='user.meta.notes'
+                  type='textarea'
+                  :aria-label='$t(`admin.users.notes`)'
+                  input-style='min-height: 243px'
+                  :hint='$t(`admin.users.noteHint`)'
+                )
+
     q-page(v-else-if='$route.params.section === `activity`')
       span ---
+
     q-page(v-else-if='$route.params.section === `auth`')
       .q-pa-md
         .row.q-col-gutter-md
-          .col-12.col-lg-8
+          .col-12.col-lg-7
             q-card.shadow-1.q-pb-sm
               q-card-section
-                .text-subtitle1 {{$t('admin.users.auth')}}
+                .text-subtitle1 {{$t('admin.users.passAuth')}}
               q-item
+                blueprint-icon(icon='password', :hue-rotate='45')
+                q-item-section
+                  q-item-label {{$t(`admin.users.changePassword`)}}
+                  q-item-label(caption) {{$t(`admin.users.changePasswordHint`)}}
+                  q-item-label(caption): strong(:class='localAuth.password ? `text-positive` : `text-negative`') {{localAuth.password ? $t(`admin.users.pwdSet`) : $t(`admin.users.pwdNotSet`)}}
+                q-item-section(side)
+                  q-btn.acrylic-btn(
+                    flat
+                    icon='las la-arrow-circle-right'
+                    color='primary'
+                    @click='changePassword'
+                    :label='$t(`common.actions.proceed`)'
+                  )
+              q-separator.q-my-sm(inset)
+              q-item(tag='label', v-ripple)
+                blueprint-icon(icon='password-reset')
+                q-item-section
+                  q-item-label {{$t(`admin.users.mustChangePwd`)}}
+                  q-item-label(caption) {{$t(`admin.users.mustChangePwdHint`)}}
+                q-item-section(avatar)
+                  q-toggle(
+                    v-model='localAuth.mustChangePwd'
+                    color='primary'
+                    checked-icon='las la-check'
+                    unchecked-icon='las la-times'
+                    :aria-label='$t(`admin.users.mustChangePwd`)'
+                  )
+              q-separator.q-my-sm(inset)
+              q-item(tag='label', v-ripple)
+                blueprint-icon(icon='key')
+                q-item-section
+                  q-item-label {{$t(`admin.users.pwdAuthRestrict`)}}
+                  q-item-label(caption) {{$t(`admin.users.pwdAuthRestrictHint`)}}
+                q-item-section(avatar)
+                  q-toggle(
+                    v-model='localAuth.restrictLogin'
+                    color='primary'
+                    checked-icon='las la-check'
+                    unchecked-icon='las la-times'
+                    :aria-label='$t(`admin.users.pwdAuthRestrict`)'
+                  )
+          .col-12.col-lg-5
+            q-card.shadow-1.q-pb-sm
+              q-card-section
+                .text-subtitle1 {{$t('admin.users.linkedProviders')}}
+                q-banner.q-mt-md(
+                  v-if='linkedAuthProviders.length < 1'
+                  rounded
+                  :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-2 text-grey-7`'
+                  ) {{$t('admin.users.noLinkedProviders')}}
+              template(
+                v-for='(prv, idx) in linkedAuthProviders'
+                :key='prv._id'
+                )
+                q-separator.q-my-sm(inset, v-if='idx > 0')
+                q-item
+                  blueprint-icon(icon='google', :hue-rotate='-45')
+                  q-item-section
+                    q-item-label {{prv._moduleName}}
+                    q-item-label(caption) {{prv.key}}
+
     q-page(v-else-if='$route.params.section === `groups`')
       .q-pa-md
         .row.q-col-gutter-md
@@ -242,10 +325,12 @@ q-layout(view='hHh lpR fFf', container)
                   q-item-section(side)
                     q-btn.acrylic-btn(
                       flat
-                      icon='las la-trash'
+                      icon='las la-times'
                       color='accent'
                       @click='unassignGroup(grp.id)'
-                    )
+                      :aria-label='$t(`admin.users.unassignGroup`)'
+                      )
+                      q-tooltip(anchor='center left' self='center right') {{$t('admin.users.unassignGroup')}}
             q-card.shadow-1.q-py-sm.q-mt-md
               q-item
                 blueprint-icon(icon='join')
@@ -273,6 +358,35 @@ q-layout(view='hHh lpR fFf', container)
                     color='primary'
                     @click='assignGroup'
                   )
+
+    q-page(v-else-if='$route.params.section === `metadata`')
+      .q-pa-md
+        .row.q-col-gutter-md
+          .col-12.col-lg-8
+            q-card.shadow-1.q-pb-sm
+              q-card-section.flex.items-center
+                .text-subtitle1 {{$t('admin.users.metadata')}}
+                q-space
+                q-badge(
+                  v-if='metadataInvalidJSON'
+                  color='negative'
+                  )
+                  q-icon.q-mr-xs(name='las la-exclamation-triangle', size='20px')
+                  span {{$t('admin.users.invalidJSON')}}
+                q-badge.q-py-xs(
+                  v-else
+                  label='JSON'
+                  color='positive'
+                )
+              q-item
+                q-item-section
+                  q-no-ssr(:placeholder='$t(`common.loading`)')
+                    util-code-editor.admin-theme-cm(
+                      v-model='metadata'
+                      language='json'
+                      :min-height='500'
+                    )
+
     q-page(v-else-if='$route.params.section === `operations`')
       .q-pa-md
         .row.q-col-gutter-md
@@ -292,7 +406,6 @@ q-layout(view='hHh lpR fFf', container)
                     color='primary'
                     @click='sendWelcomeEmail'
                     :label='$t(`common.actions.proceed`)'
-                    disabled
                   )
               q-separator.q-my-sm(inset)
               q-item
@@ -337,18 +450,18 @@ q-layout(view='hHh lpR fFf', container)
                     color='negative'
                     @click='deleteUser'
                     :label='$t(`common.actions.proceed`)'
-                    disabled
                   )
 </template>
 
 <script>
 import gql from 'graphql-tag'
-import sampleSize from 'lodash/sampleSize'
 import cloneDeep from 'lodash/cloneDeep'
 import some from 'lodash/some'
 import find from 'lodash/find'
+import findKey from 'lodash/findKey'
+import _get from 'lodash/get'
+import map from 'lodash/map'
 import { get } from '@requarks/vuex-pathify'
-import zxcvbn from 'zxcvbn'
 import { DateTime } from 'luxon'
 
 export default {
@@ -359,6 +472,7 @@ export default {
         { key: 'activity', text: this.$t('admin.users.activity'), icon: 'las la-chart-area' },
         { key: 'auth', text: this.$t('admin.users.auth'), icon: 'las la-key' },
         { key: 'groups', text: this.$t('admin.users.groups'), icon: 'las la-users' },
+        { key: 'metadata', text: this.$t('admin.users.metadata'), icon: 'las la-clipboard-list' },
         { key: 'operations', text: this.$t('admin.users.operations'), icon: 'las la-tools' }
       ],
       user: {
@@ -370,49 +484,45 @@ export default {
       groupToAdd: null,
       isLoadingGroups: false,
       isLoading: true,
-      icons: {
-        user: require('../assets/icons/fluent-account.svg')
-      }
+      metadataInvalidJSON: false
     }
   },
   computed: {
     timezones: get('data/timezones'),
     userId: get('admin/overlayOpts@id'),
-    passwordStrength () {
-      if (this.userPassword.length < 8) {
-        return {
-          color: 'negative',
-          label: this.$t('admin.users.pwdStrengthWeak')
-        }
-      } else {
-        switch (zxcvbn(this.userPassword).score) {
-          case 1:
-            return {
-              color: 'deep-orange-7',
-              label: this.$t('admin.users.pwdStrengthPoor')
-            }
-          case 2:
-            return {
-              color: 'purple-7',
-              label: this.$t('admin.users.pwdStrengthMedium')
-            }
-          case 3:
-            return {
-              color: 'blue-7',
-              label: this.$t('admin.users.pwdStrengthGood')
-            }
-          case 4:
-            return {
-              color: 'green-7',
-              label: this.$t('admin.users.pwdStrengthStrong')
-            }
-          default:
-            return {
-              color: 'negative',
-              label: this.$t('admin.users.pwdStrengthWeak')
-            }
+    metadata: {
+      get () { return JSON.stringify(this.user.meta ?? {}, null, 2) },
+      set (val) {
+        try {
+          this.user.meta = JSON.parse(val)
+          this.metadataInvalidJSON = false
+        } catch (err) {
+          this.metadataInvalidJSON = true
         }
       }
+    },
+    localAuthId () {
+      return findKey(this.user.auth, ['module', 'local'])
+    },
+    localAuth: {
+      get () {
+        return this.localAuthId ? _get(this.user.auth, this.localAuthId, {}) : {}
+      },
+      set (val) {
+        if (this.localAuthId) {
+          this.user.auth[this.localAuthId] = val
+        }
+      }
+    },
+    linkedAuthProviders () {
+      if (!this.user?.auth) { return [] }
+
+      return map(this.user.auth, (obj, key) => {
+        return {
+          ...obj,
+          _id: key
+        }
+      }).filter(prv => prv.module !== 'local')
     }
   },
   watch: {
@@ -429,6 +539,9 @@ export default {
     checkRoute () {
       if (!this.$route.params.section) {
         this.$router.replace({ params: { section: 'overview' } })
+      }
+      if (this.$route.params.section === 'metadata') {
+        this.metadataInvalidJSON = false
       }
     },
     humanizeDate (val) {
@@ -461,6 +574,9 @@ export default {
         this.user.groups = this.user.groups.filter(gr => gr.id === id)
       }
     },
+    refresh () {
+      this.fetchUser()
+    },
     async fetchUser () {
       this.isLoading = true
       try {
@@ -478,6 +594,7 @@ export default {
                 isSystem
                 isVerified
                 isActive
+                auth
                 meta
                 prefs
                 lastLoginAt
@@ -508,12 +625,19 @@ export default {
       }
       this.isLoading = false
     },
-    randomizePassword () {
-      const pwdChars = 'abcdefghkmnpqrstuvwxyzABCDEFHJKLMNPQRSTUVWXYZ23456789_*=?#!()+'
-      this.userPassword = sampleSize(pwdChars, 16).join('')
-    },
-    async save () {
+    async save (patch, { silent, keepOpen } = { silent: false, keepOpen: false }) {
       this.$q.loading.show()
+      if (!patch) {
+        patch = {
+          name: this.user.name,
+          email: this.user.email,
+          isVerified: this.user.isVerified,
+          isActive: this.user.isActive,
+          meta: this.user.meta,
+          prefs: this.user.prefs,
+          groups: this.user.groups.map(gr => gr.id)
+        }
+      }
       try {
         const resp = await this.$apollo.mutate({
           mutation: gql`
@@ -534,29 +658,21 @@ export default {
           `,
           variables: {
             id: this.userId,
-            patch: {
-              name: this.user.name,
-              email: this.user.email,
-              isVerified: this.user.isVerified,
-              isActive: this.user.isActive,
-              location: this.user.meta.location,
-              jobTitle: this.user.meta.jobTitle,
-              timezone: this.user.prefs.timezone,
-              dateFormat: this.user.prefs.dateFormat,
-              timeFormat: this.user.prefs.timeFormat,
-              darkMode: this.user.prefs.darkMode,
-              groups: this.user.groups.map(gr => gr.id)
-            }
+            patch
           }
         })
         if (resp?.data?.updateUser?.status?.succeeded) {
-          this.$q.notify({
-            type: 'positive',
-            message: this.$t('admin.users.saveSuccess')
-          })
-          this.close()
+          if (!silent) {
+            this.$q.notify({
+              type: 'positive',
+              message: this.$t('admin.users.saveSuccess')
+            })
+          }
+          if (!keepOpen) {
+            this.close()
+          }
         } else {
-          throw new Error(resp?.data?.createUser?.status?.message || 'An unexpected error occured.')
+          throw new Error(resp?.data?.updateUser?.status?.message || 'An unexpected error occured.')
         }
       } catch (err) {
         this.$q.notify({
@@ -566,14 +682,33 @@ export default {
       }
       this.$q.loading.hide()
     },
+    changePassword () {
+      this.$q.dialog({
+        component: this.$.appContext.components.UserChangePwdDialog,
+        componentProps: {
+          userId: this.userId
+        }
+      }).onOk(({ mustChangePassword }) => {
+        this.localAuth = {
+          ...this.localAuth,
+          mustChangePwd: mustChangePassword
+        }
+      })
+    },
     async sendWelcomeEmail () {
 
     },
     toggleVerified () {
       this.user.isVerified = !this.user.isVerified
+      this.save({
+        isVerified: this.user.isVerified
+      }, { silent: true, keepOpen: true })
     },
     toggleBan () {
       this.user.isActive = !this.user.isActive
+      this.save({
+        isActive: this.user.isActive
+      }, { silent: true, keepOpen: true })
     },
     async deleteUser () {
 

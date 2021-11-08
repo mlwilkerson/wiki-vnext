@@ -2,7 +2,7 @@
 q-page.admin-groups
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-account.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-account.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.users.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.users.subtitle') }}
@@ -225,7 +225,6 @@ export default {
             id
             name
             email
-            providerId
             isSystem
             isActive
             createdAt

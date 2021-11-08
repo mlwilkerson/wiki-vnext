@@ -37,6 +37,7 @@ module.exports = class Analytics extends Model {
 
   static async refreshProvidersFromDisk () {
     let trx
+
     try {
       const dbProviders = await WIKI.models.analytics.query()
 

@@ -39,13 +39,20 @@ module.exports = {
      */
     async userById (obj, args, context, info) {
       const usr = await WIKI.models.users.query().findById(args.id)
-      usr.password = ''
-      usr.tfaSecret = ''
 
       // const str = _.get(WIKI.auth.strategies, usr.providerKey)
       // str.strategy = _.find(WIKI.data.authentication, ['key', str.strategyKey])
       // usr.providerName = str.displayName
       // usr.providerIs2FACapable = _.get(str, 'strategy.useForm', false)
+
+      usr.auth = _.mapValues(usr.auth, (auth, providerKey) => {
+        if (auth.password) {
+          auth.password = '***'
+        }
+        auth.module = providerKey === '00910749-8ab6-498a-9be0-f4ca28ea5e52' ? 'google' : 'local'
+        auth._moduleName = providerKey === '00910749-8ab6-498a-9be0-f4ca28ea5e52' ? 'Google' : 'Local'
+        return auth
+      })
 
       return usr
     },

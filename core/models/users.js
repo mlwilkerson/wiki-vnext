@@ -594,7 +594,8 @@ module.exports = class User extends Model {
         auth: {
           [localAuthModule.id]: {
             password: await bcrypt.hash(passwordRaw, 12),
-            mustChangePwd: mustChangePassword === true
+            mustChangePwd: mustChangePassword === true,
+            restrictLogin: false
           }
         },
         name,
@@ -649,7 +650,7 @@ module.exports = class User extends Model {
    * @param {Number} id Update an existing user
    * @param {*} param1 Patch object
    */
-  static async updateUser (id, { email, name, newPassword, isActive, isVerified, groups, location, jobTitle, timezone, dateFormat, timeFormat, darkMode }) {
+  static async updateUser (id, { email, name, newPassword, isActive, isVerified, groups, meta, prefs }) {
     const usr = await WIKI.models.users.query().findById(id)
     if (usr) {
       const usrData = {}
@@ -689,23 +690,11 @@ module.exports = class User extends Model {
           await usr.$relatedQuery('groups').unrelate().where('groupId', grp)
         }
       }
-      if (!_.isEmpty(location) && location !== usr.location) {
-        _.set(usrData, 'meta.location', _.trim(location))
+      if (!_.isNil(meta) && _.isPlainObject(meta)) {
+        usrData.meta = meta
       }
-      if (!_.isEmpty(jobTitle) && jobTitle !== usr.jobTitle) {
-        _.set(usrData, 'meta.jobTitle', _.trim(jobTitle))
-      }
-      if (!_.isEmpty(timezone) && timezone !== usr.timezone) {
-        _.set(usrData, 'prefs.timezone', timezone)
-      }
-      if (!_.isEmpty(dateFormat) && dateFormat !== usr.dateFormat) {
-        _.set(usrData, 'prefs.dateFormat', dateFormat)
-      }
-      if (!_.isEmpty(timeFormat) && timeFormat !== usr.timeFormat) {
-        _.set(usrData, 'prefs.timeFormat', timeFormat)
-      }
-      if (!_.isNil(darkMode)) {
-        _.set(usrData, 'prefs.darkMode', darkMode)
+      if (!_.isNil(prefs) && _.isPlainObject(prefs)) {
+        usrData.prefs = prefs
       }
       await WIKI.models.users.query().patch(usrData).findById(id)
     } else {

@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 450px;')
     q-card-section.card-header
-      q-icon(:name='`img:` + icons.plus', left, size='sm')
+      q-icon(name='img:/_assets/icons/fluent-plus-plus.svg', left, size='sm')
       span {{$t(`admin.sites.new`)}}
     q-form.q-py-sm(ref='createSiteForm')
       q-item
@@ -67,10 +67,7 @@ export default {
     return {
       siteName: '',
       siteHostname: 'wiki.example.com',
-      isLoading: false,
-      icons: {
-        plus: require('../assets/icons/fluent-plus-plus.svg')
-      }
+      isLoading: false
     }
   },
   methods: {

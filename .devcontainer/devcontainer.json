@@ -51,12 +51,16 @@
 	"forwardPorts": [3000, 5432],
 
   "portsAttributes": {
-    "3000": {
-      "label": "Application",
+    "80": {
+      "label": "App - UI Server",
       "onAutoForward": "notify"
     },
     "5432": {
       "label": "PostgreSQL Database",
+      "onAutoForward": "silent"
+    },
+    "11511": {
+      "label": "App - Core Server",
       "onAutoForward": "silent"
     }
   },

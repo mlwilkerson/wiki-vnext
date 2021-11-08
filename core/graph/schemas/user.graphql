@@ -8,6 +8,7 @@ extend type Query {
     pageSize: Int
     orderBy: UserOrderBy
     orderByDirection: OrderByDirection
+    # Filter by name / email
     filter: String
   ): [UserMinimal] @auth(requires: ["write:users", "manage:users", "manage:system"])
 
@@ -98,7 +99,6 @@ type UserMinimal {
   id: UUID
   name: String
   email: String
-  providerId: String
   isSystem: Boolean
   isActive: Boolean
   createdAt: Date
@@ -162,10 +162,6 @@ input UserUpdateInput {
   groups: [UUID!]
   isActive: Boolean
   isVerified: Boolean
-  location: String
-  jobTitle: String
-  timezone: String
-  dateFormat: String
-  timeFormat: String
-  darkMode: Boolean
+  meta: JSON
+  prefs: JSON
 }

@@ -2,7 +2,7 @@
 q-page.admin-mail
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-security-lock.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-security-lock.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.auth.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.auth.subtitle') }}
@@ -295,7 +295,7 @@ export default {
             title: 'Username-Password Authentication',
             description: '',
             useForm: true,
-            icon: require('assets/icons/ultraviolet-data-protection.svg'),
+            icon: '/_assets/icons/ultraviolet-data-protection.svg',
             website: ''
           },
           config: [],
@@ -312,7 +312,7 @@ export default {
             title: 'Google',
             description: '',
             useForm: true,
-            icon: require('assets/icons/ultraviolet-google.svg'),
+            icon: '/_assets/icons/ultraviolet-google.svg',
             website: ''
           },
           config: [],
@@ -329,7 +329,7 @@ export default {
             title: 'Slack',
             description: '',
             useForm: true,
-            icon: require('assets/icons/ultraviolet-slack.svg'),
+            icon: '/_assets/icons/ultraviolet-slack.svg',
             website: ''
           },
           config: [],

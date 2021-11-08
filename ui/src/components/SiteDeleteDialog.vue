@@ -2,7 +2,7 @@
 q-dialog(ref='dialog', @hide='onDialogHide')
   q-card(style='min-width: 350px; max-width: 450px;')
     q-card-section.card-header
-      q-icon(:name='`img:` + icons.delete', left, size='sm')
+      q-icon(name='img:/_assets/icons/fluent-delete-bin.svg', left, size='sm')
       span {{$t(`admin.sites.delete`)}}
     q-card-section
       .text-body2
@@ -41,9 +41,6 @@ export default {
   emits: ['ok', 'hide'],
   data () {
     return {
-      icons: {
-        delete: require('../assets/icons/fluent-delete-bin.svg')
-      }
     }
   },
   methods: {

@@ -195,8 +195,31 @@ module.exports = {
     }
   },
   Group: {
-    users (grp) {
+    users (grp, args) {
+      // -> Sanitize limit
+      let limit = args.pageSize ?? 20
+      if (limit < 1 || limit > 1000) {
+        limit = 1000
+      }
+
+      // -> Sanitize offset
+      let offset = args.page ?? 1
+      if (offset < 1) {
+        offset = 1
+      }
+
+      // -> Fetch Users
       return grp.$relatedQuery('users')
+        .select('users.id', 'users.email', 'users.name', 'users.isSystem', 'users.isActive', 'users.createdAt', 'users.lastLoginAt')
+        .where(builder => {
+          if (args.filter) {
+            builder.where('users.email', 'like', `%${args.filter}%`)
+              .orWhere('users.name', 'like', `%${args.filter}%`)
+          }
+        })
+        .orderBy(args.orderBy ?? 'users.name', `users.${args.orderByDirection}` ?? 'asc')
+        .offset((offset - 1) * limit)
+        .limit(limit)
     }
   }
 }

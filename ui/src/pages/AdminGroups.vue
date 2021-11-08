@@ -2,7 +2,7 @@
 q-page.admin-groups
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-people.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-people.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.groups.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.groups.subtitle') }}

@@ -2,7 +2,7 @@
 q-page.admin-flags
   .row.q-pa-md.items-center
     .col-auto
-      img.admin-icon.animated.fadeInLeft(src='~assets/icons/fluent-cashbook.svg')
+      img.admin-icon.animated.fadeInLeft(src='/_assets/icons/fluent-cashbook.svg')
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.editors.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.editors.subtitle') }}
