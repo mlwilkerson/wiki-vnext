@@ -35,8 +35,6 @@ module.exports = {
     try {
       // -> Initialize core modules
 
-      require('./telemetry').init()
-
       WIKI.sideloader = await require('./sideloader').init()
       WIKI.cache = require('./cache').init()
       WIKI.scheduler = require('./scheduler').init()
@@ -48,14 +46,12 @@ module.exports = {
       WIKI.extensions = require('./extensions')
       WIKI.asar = require('./asar')
       WIKI.auth = require('./auth').init()
-      WIKI.lang = require('./localization').init()
       WIKI.mail = require('./mail').init()
       WIKI.system = require('./system').init()
 
       // await WIKI.models.analytics.refreshProvidersFromDisk()
       // await WIKI.models.authentication.refreshStrategiesFromDisk()
       // await WIKI.models.commentProviders.refreshProvidersFromDisk()
-      // await WIKI.models.editors.refreshEditorsFromDisk()
       // await WIKI.models.loggers.refreshLoggersFromDisk()
       // await WIKI.models.renderers.refreshRenderersFromDisk()
       // await WIKI.models.searchEngines.refreshSearchEnginesFromDisk()
@@ -67,7 +63,7 @@ module.exports = {
       // await WIKI.models.commentProviders.initProvider()
       // await WIKI.models.searchEngines.initEngine()
       // await WIKI.models.storage.initTargets()
-      // WIKI.scheduler.start()
+      WIKI.scheduler.start()
 
       await WIKI.models.subscribeToNotifications()
     } catch (err) {

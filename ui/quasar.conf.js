@@ -56,7 +56,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-
+      devtool: false,
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
@@ -98,6 +98,13 @@ module.exports = configure(function (ctx) {
       chainWebpack (chain) {
         chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js'], threads: true }])
         chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin, [{ excludeAliases: ['console'] }])
+      },
+      sourceMap: false,
+      minify: false,
+      vueLoaderOptions: {
+        cacheDirectory: 'cache',
+        cacheIdentifier: 'oui',
+        prettify: false
       }
     },
 

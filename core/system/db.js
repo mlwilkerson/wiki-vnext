@@ -84,7 +84,7 @@ module.exports = {
       useNullAsDefault: true,
       asyncStackTraces: WIKI.IS_DEBUG,
       connection: dbConfig,
-      searchPath: WIKI.config.db.schema ? WIKI.config.db.schema : 'public',
+      searchPath: [WIKI.config.db.schemas.wiki],
       pool: {
         ...WIKI.config.pool,
         async afterCreate (conn, done) {
@@ -111,7 +111,13 @@ module.exports = {
           WIKI.logger.info('Connecting to database...')
           await self.knex.raw('SELECT 1 + 1;')
           WIKI.logger.info('Database connection established.')
+
+          // -> Make sure schema exists
+          WIKI.logger.info('Checking Database Schema...')
+          await self.knex.raw(`CREATE SCHEMA IF NOT EXISTS ${WIKI.config.db.schemas.wiki};`)
+          WIKI.logger.info('Database Schema: [ OK ]')
         } catch (err) {
+          // -> Retry to connect after delay
           if (conAttempts < 20) {
             if (err.code) {
               WIKI.logger.error(`Database Connection Error: ${err.code} ${err.address}:${err.port}`)
@@ -131,7 +137,7 @@ module.exports = {
         return self.knex.migrate.latest({
           tableName: 'migrations',
           migrationSource,
-          schemaName: WIKI.config.db.schema ? WIKI.config.db.schema : 'public'
+          schemaName: WIKI.config.db.schemas.wiki
         })
       }
     }

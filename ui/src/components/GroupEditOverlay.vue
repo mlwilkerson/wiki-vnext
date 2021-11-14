@@ -44,6 +44,10 @@ q-layout(view='hHh lpR fFf', container)
         q-item-section(side)
           q-icon(:name='sc.icon', color='white')
         q-item-section {{sc.text}}
+        q-item-section(side, v-if='sc.usersTotal')
+          q-badge(color='dark-3', :label='usersTotal')
+        q-item-section(side, v-if='sc.rulesTotal && group.rules')
+          q-badge(color='dark-3', :label='group.rules.length')
   q-page-container
     q-page(v-if='isLoading')
     //- -----------------------------------------------------------------------
@@ -391,7 +395,7 @@ q-layout(view='hHh lpR fFf', container)
           )
         q-input.denser.fill-outline.q-mr-sm(
           outlined
-          v-model='searchUsers'
+          v-model='usersFilter'
           :placeholder='$t(`admin.groups.filterUsers`)'
           dense
           )
@@ -473,6 +477,15 @@ q-layout(view='hHh lpR fFf', container)
                   color='accent'
                   @click='unassignUser(props.row)'
                   )
+
+        .flex.flex-center.q-mt-md(v-if='usersTotalPages > 1')
+          q-pagination(
+            v-model='usersPage'
+            :max='usersTotalPages'
+            :max-pages='9'
+            boundary-numbers
+            direction-links
+          )
 </template>
 
 <script>
@@ -481,6 +494,7 @@ import { get } from '@requarks/vuex-pathify'
 import { DateTime } from 'luxon'
 import cloneDeep from 'lodash/cloneDeep'
 import some from 'lodash/some'
+import debounce from 'lodash/debounce'
 import { v4 as uuid } from 'uuid'
 import { exportFile } from 'quasar'
 import { fileOpen } from 'browser-fs-access'
@@ -490,11 +504,13 @@ export default {
     return {
       sections: [
         { key: 'overview', text: this.$t('admin.groups.overview'), icon: 'las la-users' },
-        { key: 'rules', text: this.$t('admin.groups.rules'), icon: 'las la-file-invoice' },
+        { key: 'rules', text: this.$t('admin.groups.rules'), icon: 'las la-file-invoice', rulesTotal: true },
         { key: 'permissions', text: this.$t('admin.groups.permissions'), icon: 'las la-list-alt' },
-        { key: 'users', text: this.$t('admin.groups.users'), icon: 'las la-user' }
+        { key: 'users', text: this.$t('admin.groups.users'), icon: 'las la-user', usersTotal: true }
       ],
-      group: {},
+      group: {
+        rules: []
+      },
       isLoading: false,
       // RULES
       rules: [
@@ -661,7 +677,10 @@ export default {
       // USERS
       users: [],
       isLoadingUsers: false,
-      searchUsers: '',
+      usersFilter: '',
+      usersPage: 1,
+      usersPageSize: 15,
+      usersTotal: 0,
       usersHeaders: [
         {
           align: 'center',
@@ -704,10 +723,20 @@ export default {
   computed: {
     groupId: get('admin/overlayOpts@id'),
     sites: get('admin/sites'),
-    locales: get('admin/locales')
+    locales: get('admin/locales'),
+    usersTotalPages () {
+      if (this.usersTotal < 1) { return 0 }
+      return Math.ceil(this.usersTotal / this.usersPageSize)
+    }
   },
   watch: {
-    $route: 'checkRoute'
+    $route: 'checkRoute',
+    usersPage () {
+      this.refreshUsers()
+    },
+    usersFilter () {
+      this.refreshUsers()
+    }
   },
   mounted () {
     this.checkRoute()
@@ -720,6 +749,8 @@ export default {
     checkRoute () {
       if (!this.$route.params.section) {
         this.$router.replace({ params: { section: 'overview' } })
+      } else if (this.$route.params.section === 'users') {
+        this.refreshUsers()
       }
     },
     humanizeDate (val) {
@@ -783,6 +814,7 @@ export default {
                   locales
                   sites
                 }
+                userCount
                 createdAt
                 updatedAt
               }
@@ -795,6 +827,7 @@ export default {
         })
         if (resp?.data?.groupById) {
           this.group = cloneDeep(resp.data.groupById)
+          this.userCount = this.group.userCount ?? 0
         } else {
           throw new Error('An unexpected error occured while fetching group details.')
         }
@@ -891,13 +924,18 @@ export default {
           query: gql`
             query adminFetchGroupUsers (
               $filter: String
+              $page: Int
+              $pageSize: Int
               $groupId: UUID!
               ) {
               groupById (
                 id: $groupId
               ) {
+                userCount
                 users (
                   filter: $filter
+                  page: $page
+                  pageSize: $pageSize
                 ) {
                   id
                   name
@@ -911,12 +949,15 @@ export default {
             }
           `,
           variables: {
-            filter: this.searchUsers,
+            filter: this.usersFilter,
+            page: this.usersPage,
+            pageSize: this.usersPageSize,
             groupId: this.groupId
           },
           fetchPolicy: 'network-only'
         })
         if (resp?.data?.groupById?.users) {
+          this.usersTotal = resp.data.groupById.userCount ?? 0
           this.users = cloneDeep(resp.data.groupById.users)
         } else {
           throw new Error('An unexpected error occured while fetching group users.')

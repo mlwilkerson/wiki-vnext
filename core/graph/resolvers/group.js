@@ -195,7 +195,11 @@ module.exports = {
     }
   },
   Group: {
-    users (grp, args) {
+    async userCount (grp) {
+      const result = await grp.$relatedQuery('users').count().first()
+      return result?.count
+    },
+    async users (grp, args) {
       // -> Sanitize limit
       let limit = args.pageSize ?? 20
       if (limit < 1 || limit > 1000) {
