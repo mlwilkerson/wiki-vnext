@@ -19,16 +19,30 @@ module.exports = {
     // Base ESLint recommended rules
     // 'eslint:recommended',
 
+    // Uncomment any of the lines below to choose desired strictness,
+    // but leave only one uncommented!
+    // See https://eslint.vuejs.org/rules/#available-rules
+    'plugin:vue/vue3-essential', // Priority A: Essential (Error Prevention)
+    'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
+    // 'plugin:vue/recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
+
     'standard'
+
   ],
 
   plugins: [
+    // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-file
+    // required to lint *.vue files
+    'vue'
 
   ],
 
   globals: {
+    ga: true, // Google Analytics
+    __statics: true,
     process: true,
-    WIKI: true
+    chrome: true,
+    APOLLO_CLIENT: true
   },
 
   // add your custom rules here

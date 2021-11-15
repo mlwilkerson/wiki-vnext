@@ -511,7 +511,9 @@ exports.up = async knex => {
         [authModuleId]: {
           password: await bcrypt.hash(process.env.ADMIN_PASS || '12345678', 12),
           mustChangePwd: !process.env.ADMIN_PASS,
-          restrictLogin: false
+          restrictLogin: false,
+          tfaRequired: false,
+          tfaSecret: ''
         }
       },
       name: 'Administrator',
