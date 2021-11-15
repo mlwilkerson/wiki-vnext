@@ -7,11 +7,32 @@ q-page.admin-system
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.system.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.system.subtitle') }}
     .col-auto
-      q-btn(
-        outline
+      q-spinner-tail.q-mr-md(
+        v-show='loading > 0'
+        color='accent'
+        size='sm'
+      )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-question-circle'
+        flat
+        color='grey'
+        href='https://docs.js.wiki/admin/system'
+        target='_blank'
+        type='a'
+        )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        @click='refresh'
+        )
+      q-btn.acrylic-btn(
+        ref='copySysInfoBtn'
+        flat
         icon='las la-clipboard'
         label='Copy System Info'
         color='primary'
+        @click=''
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -23,20 +44,20 @@ q-page.admin-system
         q-card-section
           .text-subtitle1 Wiki.js
         q-item
-          blueprint-icon(icon='breakable')
+          blueprint-icon(icon='breakable', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.currentVersion') }}
             q-item-label(caption) {{$t('admin.system.currentVersionHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.currentVersion }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.currentVersion }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='cloud-checked')
+          blueprint-icon(icon='cloud-checked', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.latestVersion') }}
             q-item-label(caption) {{$t('admin.system.latestVersionHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.latestVersion }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.latestVersion }}
 
       //- -----------------------
       //- CLIENT
@@ -46,44 +67,44 @@ q-page.admin-system
           q-card-section
             .text-subtitle1 {{$t('admin.system.client')}}
           q-item
-            blueprint-icon(icon='navigation-toolbar-top')
+            blueprint-icon(icon='navigation-toolbar-top', :hue-rotate='-45')
             q-item-section
               q-item-label {{$t('admin.system.browser')}}
               q-item-label(caption) {{$t('admin.system.browserHint')}}
             q-item-section
-              q-item-label(caption): strong.text-primary.font-robotomono {{ clientBrowser }}
+              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientBrowser }}
           q-separator(inset)
           q-item
-            blueprint-icon(icon='computer')
+            blueprint-icon(icon='computer', :hue-rotate='-45')
             q-item-section
               q-item-label {{$t('admin.system.clientPlatform')}}
               q-item-label(caption) {{$t('admin.system.clientPlatformHint')}}
             q-item-section
-              q-item-label(caption): strong.text-primary.font-robotomono {{ clientPlatform }}
+              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientPlatform }}
           q-separator(inset)
           q-item
-            blueprint-icon(icon='translation')
+            blueprint-icon(icon='translation', :hue-rotate='-45')
             q-item-section
               q-item-label {{$t('admin.system.clientLanguage')}}
               q-item-label(caption) {{$t('admin.system.clientLanguageHint')}}
             q-item-section
-              q-item-label(caption): strong.text-primary.font-robotomono {{ clientLanguage }}
+              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientLanguage }}
           q-separator(inset)
           q-item
-            blueprint-icon(icon='cookies')
+            blueprint-icon(icon='cookies', :hue-rotate='-45')
             q-item-section
               q-item-label {{$t('admin.system.clientCookies')}}
               q-item-label(caption) {{$t('admin.system.clientCookiesHint')}}
             q-item-section
-              q-item-label(caption): strong.text-primary.font-robotomono {{ clientCookies }}
+              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientCookies }}
           q-separator(inset)
           q-item
-            blueprint-icon(icon='widescreen')
+            blueprint-icon(icon='widescreen', :hue-rotate='-45')
             q-item-section
               q-item-label {{$t('admin.system.clientViewport')}}
               q-item-label(caption) {{$t('admin.system.clientViewportHint')}}
             q-item-section
-              q-item-label(caption): strong.text-primary.font-robotomono {{ clientViewport }}
+              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientViewport }}
 
     .col-6
       //- -----------------------
@@ -93,28 +114,28 @@ q-page.admin-system
         q-card-section
           .text-subtitle1 {{$t('admin.system.engines')}}
         q-item
-          blueprint-icon(icon='nodejs')
+          blueprint-icon(icon='nodejs', :hue-rotate='-45')
           q-item-section
             q-item-label Node.js
             q-item-label(caption) {{$t('admin.system.nodejsHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.nodeVersion }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.nodeVersion }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='postgresql')
+          blueprint-icon(icon='postgresql', :hue-rotate='-45')
           q-item-section
             q-item-label {{$t('admin.system.database')}}
             q-item-label(caption) {{$t('admin.system.databaseHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono PostgreSQL {{dbVersion}}
+            q-item-label(caption): strong.text-teal-8.font-robotomono PostgreSQL {{dbVersion}}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='database')
+          blueprint-icon(icon='database', :hue-rotate='-45')
           q-item-section
             q-item-label {{$t('admin.system.databaseHost')}}
             q-item-label(caption) {{$t('admin.system.databaseHostHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.dbHost }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.dbHost }}
 
       //- -----------------------
       //- HOST INFORMATION
@@ -123,52 +144,52 @@ q-page.admin-system
         q-card-section
           .text-subtitle1 {{ $t('admin.system.hostInfo') }}
         q-item
-          blueprint-icon(:icon='platformLogo')
+          blueprint-icon(:icon='platformLogo', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.os') }}
             q-item-label(caption) {{$t('admin.system.osHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='server')
+          blueprint-icon(icon='server', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.hostname') }}
             q-item-label(caption) {{$t('admin.system.hostnameHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.hostname }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.hostname }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='processor')
+          blueprint-icon(icon='processor', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.cpuCores') }}
             q-item-label(caption) {{$t('admin.system.cpuCoresHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.cpuCores }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.cpuCores }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='memory-slot')
+          blueprint-icon(icon='memory-slot', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.totalRAM') }}
             q-item-label(caption) {{$t('admin.system.totalRAMHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.ramTotal }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.ramTotal }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='program')
+          blueprint-icon(icon='program', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.workingDirectory') }}
             q-item-label(caption) {{$t('admin.system.workingDirectoryHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.workingDirectory }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.workingDirectory }}
         q-separator(inset)
         q-item
-          blueprint-icon(icon='automation')
+          blueprint-icon(icon='automation', :hue-rotate='-45')
           q-item-section
             q-item-label {{ $t('admin.system.configFile') }}
             q-item-label(caption) {{$t('admin.system.configFileHint')}}
           q-item-section
-            q-item-label(caption): strong.text-primary.font-robotomono {{ info.configFile }}
+            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.configFile }}
 
   //-                 v-list-item-action-text {{ $t('admin.system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
   //-           v-card-actions(v-if='info.upgradeCapable && !isLatestVersion && info.platform === `docker`', :class='$vuetify.theme.dark ? `grey darken-3-d5` : `indigo lighten-5`')
@@ -213,6 +234,7 @@ import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import { createMetaMixin } from 'quasar'
+import ClipboardJS from 'clipboard'
 
 // import { SelfBuildingSquareSpinner } from 'epic-spinners'
 
@@ -229,6 +251,8 @@ export default {
   },
   data () {
     return {
+      clip: null,
+      loading: 0,
       isUpgrading: false,
       isUpgradingStarted: false,
       upgradeProgress: 0,
@@ -259,9 +283,6 @@ export default {
           return 'washing-machine'
       }
     },
-    isDbLimited () {
-      return this.info.dbType === 'MySQL' && this.dbVersion.indexOf('5.') === 0
-    },
     isLatestVersion () {
       return this.info.currentVersion === this.info.latestVersion
     },
@@ -280,6 +301,32 @@ export default {
     clientViewport () {
       return !import.meta.env.SSR ? `${document.documentElement.clientWidth}x${document.documentElement.clientHeight}` : ''
     }
+  },
+  mounted () {
+    this.clip = new ClipboardJS(this.$refs.copySysInfoBtn.$el, {
+      text: () => {
+        return `Wiki.js ${this.info.currentVersion}
+Postgres ${this.dbVersion}
+Node.js ${this.info.nodeVersion}
+OS: ${this.info.operatingSystem}
+Platform: ${this.info.platform}
+CPU Cores: ${this.info.cpuCores}
+Total RAM: ${this.info.ramTotal}`
+      }
+    })
+
+    this.clip.on('success', () => {
+      this.$q.notify({
+        message: 'Info copied successfully',
+        icon: 'las la-clipboard'
+      })
+    })
+    this.clip.on('error', () => {
+      this.$q.notify({
+        type: 'negative',
+        message: 'Failed to copy to system info'
+      })
+    })
   },
   methods: {
     async refresh () {
@@ -357,9 +404,7 @@ export default {
       prefetch: false,
       fetchPolicy: 'network-only',
       update: (data) => cloneDeep(data.systemInfo),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-system-refresh')
-      }
+      loadingKey: 'loading'
     }
   }
 }

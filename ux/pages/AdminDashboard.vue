@@ -118,7 +118,7 @@ import some from 'lodash/some'
 import includes from 'lodash/includes'
 import AnimatedNumber from 'animated-number-vue'
 import { get } from '@requarks/vuex-pathify'
-import gql from 'graphql-tag'
+// import gql from 'graphql-tag'
 import semverLte from 'semver/functions/lte'
 import { createMetaMixin } from 'quasar'
 
@@ -200,25 +200,25 @@ export default {
     //     this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-dashboard-recentpages')
     //   }
     // },
-    lastLogins: {
-      query: gql`
-        query getLastLogins {
-          users {
-            lastLogins {
-              id
-              name
-              lastLoginAt
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => data.users.lastLogins,
-      watchLoading (isLoading) {
-        this.lastLoginsLoading = isLoading
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-dashboard-lastlogins')
-      }
-    }
+    // lastLogins: {
+    //   query: gql`
+    //     query getLastLogins {
+    //       users {
+    //         lastLogins {
+    //           id
+    //           name
+    //           lastLoginAt
+    //         }
+    //       }
+    //     }
+    //   `,
+    //   fetchPolicy: 'network-only',
+    //   update: (data) => data.users.lastLogins,
+    //   watchLoading (isLoading) {
+    //     this.lastLoginsLoading = isLoading
+    //     this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-dashboard-lastlogins')
+    //   }
+    // }
   }
 }
 </script>

@@ -18,6 +18,7 @@ q-page.admin-mail
         color='grey'
         href='https://docs.js.wiki/admin/mail'
         target='_blank'
+        type='a'
         )
       q-btn(
         unelevated
@@ -217,18 +218,51 @@ q-page.admin-mail
 
     .col-12.col-lg-5
       //- -----------------------
-      //- SMTP TEST
+      //- MAIL TEMPLATES
       //- -----------------------
       q-card.shadow-1.q-pb-sm
         q-card-section
+          .text-subtitle1 {{$t('admin.mail.templates')}}
+        q-list
+          q-item
+            blueprint-icon(icon='resume-template')
+            q-item-section
+              q-item-label {{$t(`admin.mail.templateWelcome`)}}
+            q-item-section(side)
+              q-btn(
+                outline
+                no-caps
+                icon='las la-edit'
+                color='primary'
+                @click=''
+                :label='$t(`common.actions.edit`)'
+              )
+          q-separator(inset)
+          q-item
+            blueprint-icon(icon='resume-template')
+            q-item-section
+              q-item-label {{$t(`admin.mail.templateResetPwd`)}}
+            q-item-section(side)
+              q-btn(
+                outline
+                no-caps
+                icon='las la-edit'
+                color='primary'
+                @click=''
+                :label='$t(`common.actions.edit`)'
+              )
+      //- -----------------------
+      //- SMTP TEST
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm.q-mt-md
+        q-card-section
           .text-subtitle1 {{$t('admin.mail.test')}}
         q-item
-          blueprint-icon(icon='email')
+          blueprint-icon.self-start(icon='email')
           q-item-section
             q-item-label {{$t(`admin.mail.testRecipient`)}}
             q-item-label(caption) {{$t(`admin.mail.testRecipientHint`)}}
-          q-item-section
-            q-input(
+            q-input.q-mt-md(
               outlined
               v-model='testEmail'
               dense
