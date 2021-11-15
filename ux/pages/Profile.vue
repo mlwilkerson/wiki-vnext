@@ -56,6 +56,20 @@ q-page.q-py-md(:style-fn='pageStyle')
         hide-bottom-space
         :aria-label='$t(`profile.jobTitle`)'
         )
+  q-separator.q-my-sm(inset)
+  q-item
+    blueprint-icon(icon='gender')
+    q-item-section
+      q-item-label {{$t(`profile.pronouns`)}}
+      q-item-label(caption) {{$t(`profile.pronounsHint`)}}
+    q-item-section
+      q-input(
+        outlined
+        v-model='config.pronouns'
+        dense
+        hide-bottom-space
+        :aria-label='$t(`profile.pronouns`)'
+        )
   .text-header.q-mt-lg {{$t('profile.preferences')}}
   q-item
     blueprint-icon(icon='timezone')
@@ -150,6 +164,7 @@ export default {
         email: 'john.doe@company.com',
         location: '',
         jobTitle: '',
+        pronouns: '',
         dateFormat: '',
         timeFormat: '12h',
         darkMode: false

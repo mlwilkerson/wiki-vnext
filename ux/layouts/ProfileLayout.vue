@@ -21,6 +21,16 @@ q-layout(view='hHh Lpr lff')
           q-item(
             clickable
             v-ripple
+            to='/p/me'
+            )
+            q-item-section(side)
+              q-icon(name='las la-id-card')
+            q-item-section
+              q-item-label View Public Profile
+          q-separator.q-my-sm(inset)
+          q-item(
+            clickable
+            v-ripple
             )
             q-item-section(side)
               q-icon(name='las la-sign-out-alt', color='negative')
@@ -33,7 +43,7 @@ q-layout(view='hHh Lpr lff')
 </template>
 
 <script>
-import HeaderNav from "../components/HeaderNav.vue"
+import HeaderNav from '../components/HeaderNav.vue'
 
 export default {
   name: 'ProfileLayout',
@@ -47,6 +57,11 @@ export default {
           key: 'profile',
           label: 'Profile',
           icon: 'las la-user-circle'
+        },
+        {
+          key: 'avatar',
+          label: 'Avatar',
+          icon: 'las la-otter'
         },
         {
           key: 'password',

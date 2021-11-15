@@ -81,7 +81,6 @@ q-page.admin-flags
 
 <script>
 import gql from 'graphql-tag'
-// import _set from 'lodash/set'
 import _transform from 'lodash/transform'
 import { createMetaMixin } from 'quasar'
 

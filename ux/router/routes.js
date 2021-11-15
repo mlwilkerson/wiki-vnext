@@ -54,7 +54,7 @@ const routes = [
       { path: 'security', component: () => import('../pages/AdminSecurity.vue') },
       // { path: 'ssl', component: () => import('../pages/AdminSsl.vue') },
       { path: 'system', component: () => import('../pages/AdminSystem.vue') },
-      // { path: 'utilities', component: () => import('../pages/AdminUtilities.vue') },
+      { path: 'utilities', component: () => import('../pages/AdminUtilities.vue') },
       { path: 'webhooks', component: () => import('../pages/AdminWebhooks.vue') },
       { path: 'flags', component: () => import('../pages/AdminFlags.vue') }
     ]

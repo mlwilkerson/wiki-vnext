@@ -522,7 +522,8 @@ exports.up = async knex => {
       isVerified: true,
       meta: {
         location: '',
-        jobTitle: ''
+        jobTitle: '',
+        pronouns: ''
       },
       prefs: {
         timezone: 'America/New_York',
