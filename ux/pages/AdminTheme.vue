@@ -75,7 +75,8 @@ q-page.admin-theme
                 padding='xs md'
                 no-caps
                 size='sm'
-                :color='cl'
+                :style='`background-color: ` + config[`color` + startCase(cl)] + `;`'
+                text-color='white'
                 )
                 q-icon(name='las la-fill', size='xs', left)
                 span Pick...
@@ -249,44 +250,40 @@ export default {
         tocPosition: 'right',
         showSharingMenu: true,
         showPrintBtn: true
-      },
-      darkModeInitial: false
+      }
     }
   },
   computed: {
     currentSiteId: get('admin/currentSiteId')
   },
   watch: {
-    'config.dark' (newValue) {
-      this.qsr.dark.set(newValue)
-      // this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-      // this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-      // this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-    },
-    'config.colorPrimary' (newValue) {
-      setCssVar('primary', newValue)
-    },
-    'config.colorSecondary' (newValue) {
-      setCssVar('secondary', newValue)
-    },
-    'config.colorAccent' (newValue) {
-      setCssVar('accent', newValue)
-    },
-    'config.colorHeader' (newValue) {
-      setCssVar('header', newValue)
-    },
-    'config.colorSidebar' (newValue) {
-      setCssVar('sidebar', newValue)
-    },
+    // 'config.dark' (newValue) {
+    //   this.qsr.dark.set(newValue)
+    //   // this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+    //   // this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+    //   // this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
+    // },
+    // 'config.colorPrimary' (newValue) {
+    //   setCssVar('primary', newValue)
+    // },
+    // 'config.colorSecondary' (newValue) {
+    //   setCssVar('secondary', newValue)
+    // },
+    // 'config.colorAccent' (newValue) {
+    //   setCssVar('accent', newValue)
+    // },
+    // 'config.colorHeader' (newValue) {
+    //   setCssVar('header', newValue)
+    // },
+    // 'config.colorSidebar' (newValue) {
+    //   setCssVar('sidebar', newValue)
+    // },
     currentSiteId () {
       this.fetchConfig()
     }
   },
   mounted () {
     this.fetchConfig()
-  },
-  beforeUnmount () {
-    this.qsr.dark.set(this.darkModeInitial)
   },
   methods: {
     startCase,
@@ -338,7 +335,6 @@ export default {
           throw new Error('Failed to fetch theme config.')
         }
         this.config = cloneDeep(resp.data.siteById.theme)
-        this.darkModeInitial = this.config.dark
       } catch (err) {
         this.$q.notify({
           type: 'negative',
@@ -351,6 +347,21 @@ export default {
       this.loading = true
       this.$store.commit('loadingStart', 'admin-theme-save')
       try {
+        const patchTheme = {
+          dark: this.config.dark,
+          colorPrimary: this.config.colorPrimary,
+          colorSecondary: this.config.colorSecondary,
+          colorAccent: this.config.colorAccent,
+          colorHeader: this.config.colorHeader,
+          colorSidebar: this.config.colorSidebar,
+          injectCSS: this.config.injectCSS,
+          injectHead: this.config.injectHead,
+          injectBody: this.config.injectBody,
+          sidebarPosition: this.config.sidebarPosition,
+          tocPosition: this.config.tocPosition,
+          showSharingMenu: this.config.showSharingMenu,
+          showPrintBtn: this.config.showPrintBtn
+        }
         const respRaw = await this.$apollo.mutate({
           mutation: gql`
             mutation saveTheme (
@@ -372,27 +383,15 @@ export default {
           variables: {
             id: this.currentSiteId,
             patch: {
-              theme: {
-                dark: this.config.dark,
-                colorPrimary: this.config.colorPrimary,
-                colorSecondary: this.config.colorSecondary,
-                colorAccent: this.config.colorAccent,
-                colorHeader: this.config.colorHeader,
-                colorSidebar: this.config.colorSidebar,
-                injectCSS: this.config.injectCSS,
-                injectHead: this.config.injectHead,
-                injectBody: this.config.injectBody,
-                sidebarPosition: this.config.sidebarPosition,
-                tocPosition: this.config.tocPosition,
-                showSharingMenu: this.config.showSharingMenu,
-                showPrintBtn: this.config.showPrintBtn
-              }
+              theme: patchTheme
             }
           }
         })
         const resp = _get(respRaw, 'data.updateSite.status', {})
         if (resp.succeeded) {
-          this.darkModeInitial = this.darkMode
+          if (this.currentSiteId === this.$store.get('site/id')) {
+            this.$store.set('site/theme', patchTheme)
+          }
           this.$q.notify({
             type: 'positive',
             message: this.$t('admin.theme.saveSuccess')

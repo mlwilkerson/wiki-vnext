@@ -1,6 +1,6 @@
 <template lang='pug'>
 q-layout.admin(view='hHh Lpr lff')
-  q-header.bg-header.text-white
+  q-header.bg-black.text-white
     .row.no-wrap
       q-toolbar(style='height: 64px;', dark)
         q-btn(dense, flat, to='/')
@@ -168,7 +168,7 @@ q-layout.admin(view='hHh Lpr lff')
 
 <script>
 import { get, sync } from '@requarks/vuex-pathify'
-import { createMetaMixin } from 'quasar'
+import { createMetaMixin, setCssVar } from 'quasar'
 import { defineAsyncComponent } from 'vue'
 import AccountMenu from '../components/AccountMenu.vue'
 
@@ -246,12 +246,17 @@ export default {
   watch: {
     sites (newValue) {
       if (this.currentSiteId === null && newValue.length > 0) {
-        this.currentSiteId = newValue[0].id
+        this.currentSiteId = this.$store.get('site/id')
       }
     },
     overlay (newValue) {
       this.overlayIsShown = !!newValue
     }
+  },
+  created () {
+    setCssVar('primary', '#1976D2')
+    setCssVar('secondary', '#02C39A')
+    setCssVar('accent', '#f03a47')
   },
   async mounted () {
     await this.$store.dispatch('admin/fetchSites')

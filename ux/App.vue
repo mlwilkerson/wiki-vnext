@@ -4,6 +4,9 @@
 <script>
 export default {
   name: 'App',
+  created () {
+    this.$store.dispatch('site/loadSite', window.location.hostname)
+  },
   mounted () {
     // this.$q.dark.set(true)
     this.$nextTick(() => {

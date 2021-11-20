@@ -205,34 +205,38 @@ q-page.admin-general
         q-card-section
           .text-subtitle1 {{$t('admin.general.logo')}}
         q-item
-          blueprint-icon(icon='butterfly', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
+          blueprint-icon.self-start(icon='butterfly', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
           q-item-section
-            q-item-label {{$t(`admin.general.logoUpl`)}}
-            q-item-label(caption) {{$t(`admin.general.logoUplHint`)}}
-          q-item-section.col-auto
-            q-btn(
-              label='Upload'
-              unelevated
-              icon='las la-upload'
-              color='primary'
-              text-color='white'
-              @click='uploadLogo'
-            )
-        q-separator.q-my-sm(inset)
-        q-item
-          blueprint-icon(icon='starfish', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
-          q-item-section
-            q-item-label {{$t(`admin.general.favicon`)}}
-            q-item-label(caption) {{$t(`admin.general.faviconHint`)}}
-          q-item-section.col-auto
-            q-btn(
-              label='Upload'
-              unelevated
-              icon='las la-upload'
-              color='primary'
-              text-color='white'
-              @click='uploadFavicon'
-            )
+            .flex
+              q-item-section
+                q-item-label {{$t(`admin.general.logoUpl`)}}
+                q-item-label(caption) {{$t(`admin.general.logoUplHint`)}}
+              q-item-section.col-auto
+                q-btn(
+                  label='Upload'
+                  unelevated
+                  icon='las la-upload'
+                  color='primary'
+                  text-color='white'
+                  @click='uploadLogo'
+                )
+            q-toolbar.bg-header.q-mt-md.rounded-borders.text-white(
+              dark
+              style='height: 64px;'
+              )
+              q-btn(dense, flat, to='/')
+                q-avatar(
+                  v-if='config.logoText'
+                  size='34px'
+                  square
+                  )
+                  img(src='/_assets/logo-wikijs.svg')
+                img(
+                  v-else
+                  src='https://m.media-amazon.com/images/G/01/audibleweb/arya/navigation/audible_logo._V517446980_.svg'
+                  style='height: 34px;'
+                  )
+              q-toolbar-title.text-h6.font-poppins(v-if='config.logoText') {{config.title}}
         q-separator.q-my-sm(inset)
         q-item(tag='label', v-ripple)
           blueprint-icon(icon='information')
@@ -247,6 +251,37 @@ q-page.admin-general
               unchecked-icon='las la-times'
               :aria-label='$t(`admin.general.displaySiteTitle`)'
               )
+        q-separator.q-my-sm(inset)
+        q-item
+          blueprint-icon.self-start(icon='starfish', indicator, :indicator-text='$t(`admin.extensions.requiresSharp`)')
+          q-item-section
+            .flex
+              q-item-section
+                q-item-label {{$t(`admin.general.favicon`)}}
+                q-item-label(caption) {{$t(`admin.general.faviconHint`)}}
+              q-item-section.col-auto
+                q-btn(
+                  label='Upload'
+                  unelevated
+                  icon='las la-upload'
+                  color='primary'
+                  text-color='white'
+                  @click='uploadFavicon'
+                )
+            .admin-general-favicontabs.q-mt-md
+              div
+                q-avatar(
+                  size='24px'
+                  square
+                  )
+                  img(src='/_assets/logo-wikijs.svg')
+                .text-caption.q-ml-sm {{config.title}}
+              div
+                q-icon(name='las la-otter', size='24px', color='primary')
+                .text-caption.q-ml-sm Lorem ipsum
+              div
+                q-icon(name='las la-mountain', size='24px', color='primary')
+                .text-caption.q-ml-sm Dolor sit amet...
 
       //- -----------------------
       //- Defaults
@@ -635,5 +670,39 @@ export default {
 </script>
 
 <style lang='scss'>
+.admin-general {
 
+  &-favicontabs {
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: rgba(0,0,0,.1);
+    display: flex;
+    padding: 5px 5px 0 12px;
+
+    > div {
+      display: flex;
+      padding: 4px 12px;
+      position: relative;
+      align-items: center;
+
+      &:first-child {
+        border: 1px solid #FFF;
+        border-bottom: none;
+        border-radius: 7px 7px 0 0;
+        box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
+
+        @at-root .body--light & {
+          background: linear-gradient(to top, #FFF, rgba(255,255,255,.75));
+          border-color: #FFF;
+        }
+
+        @at-root .body--dark & {
+          background: linear-gradient(to top, $dark-6, $dark-5);
+          border-color: $dark-6;
+        }
+      }
+    }
+  }
+
+}
 </style>

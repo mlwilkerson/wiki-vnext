@@ -17,7 +17,7 @@ q-header.bg-header.text-white.site-header(
           square
           )
           img(src='/_assets/logo-wikijs.svg')
-      q-toolbar-title.text-h6.font-poppins Wiki.js
+      q-toolbar-title.text-h6.font-poppins {{siteTitle}}
     q-toolbar.gt-sm(
       style='height: 64px;'
       dark
@@ -99,7 +99,8 @@ export default {
     }
   },
   computed: {
-    isSyncing: get('isLoading')
+    isSyncing: get('isLoading'),
+    siteTitle: get('site/title')
   }
 }
 </script>
