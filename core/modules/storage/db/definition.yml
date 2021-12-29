@@ -1,0 +1,25 @@
+title: 'Database'
+icon: '/_assets/icons/ultraviolet-database.svg'
+banner: '/_assets/storage/database.jpg'
+description: 'The local PostgreSQL database can store any assets. It is however not recommended to store large files directly in the database as this can cause performance issues.'
+vendor: 'Wiki.js'
+website: 'https://js.wiki'
+assetDelivery:
+  isStreamingSupported: true
+  isDirectAccessSupported: false
+  defaultStreamingEnabled: true
+  defaultDirectAccessEnabled: false
+contentTypes:
+  defaultTypesEnabled: ['pages', 'images', 'documents', 'others', 'large']
+  defaultLargeThreshold: '5MB'
+sync:
+  supportedModes:
+    - sync
+  defaultMode: sync
+  schedule: false
+props: {}
+actions:
+  - handler: purge
+    label: Purge All Assets
+    hint: Delete all assets from the database. Useful if you moved assets to another storage target and want to reduce the size of the database.
+    warn: true

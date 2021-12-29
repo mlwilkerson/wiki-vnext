@@ -358,13 +358,15 @@ exports.up = async knex => {
         enforceCsp: false,
         enforceHsts: false,
         enforceSameOriginReferrerPolicy: true,
+        forceAssetDownload: true,
         hstsDuration: 0,
         trustProxy: false,
         authJwtAudience: 'urn:wiki.js',
         authJwtExpiration: '30m',
         authJwtRenewablePeriod: '14d',
         uploadMaxFileSize: 10485760,
-        uploadMaxFiles: 20
+        uploadMaxFiles: 20,
+        uploadScanSVG: true
       }
     }
   ])

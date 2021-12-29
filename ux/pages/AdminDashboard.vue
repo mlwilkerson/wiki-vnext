@@ -6,6 +6,9 @@ q-page.admin-dashboard
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.dashboard.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.dashboard.subtitle') }}
+  .row.q-px-md.q-col-gutter-md
+    .col-12 ---
+
 //- v-container(fluid, grid-list-lg)
 //-   v-layout(row, wrap)
 //-     v-flex(xs12)
@@ -122,6 +125,9 @@ import { get } from '@requarks/vuex-pathify'
 import semverLte from 'semver/functions/lte'
 import { createMetaMixin } from 'quasar'
 
+import { ArrowSmDownIcon, ArrowSmUpIcon } from '@heroicons/vue/solid'
+import { CursorClickIcon, MailOpenIcon, UsersIcon } from '@heroicons/vue/outline'
+
 export default {
   mixins: [
     createMetaMixin(function () {
@@ -131,10 +137,17 @@ export default {
     })
   ],
   components: {
-    AnimatedNumber
+    AnimatedNumber,
+    ArrowSmDownIcon,
+    ArrowSmUpIcon
   },
   data () {
     return {
+      stats: [
+        { id: 1, name: 'Total Subscribers', stat: '71,897', icon: UsersIcon, change: '122', changeType: 'increase' },
+        { id: 2, name: 'Avg. Open Rate', stat: '58.16%', icon: MailOpenIcon, change: '5.4%', changeType: 'increase' },
+        { id: 3, name: 'Avg. Click Rate', stat: '24.57%', icon: CursorClickIcon, change: '3.2%', changeType: 'decrease' }
+      ],
       recentPages: [],
       recentPagesLoading: false,
       recentPagesHeaders: [

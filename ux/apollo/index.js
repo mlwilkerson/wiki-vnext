@@ -44,6 +44,10 @@ const apolloProvider = createApolloProvider({
   defaultClient: client
 })
 
-window.APOLLO_CLIENT = client
+if (import.meta.env.SSR) {
+  global.APOLLO_CLIENT = client
+} else {
+  window.APOLLO_CLIENT = client
+}
 
 export default apolloProvider

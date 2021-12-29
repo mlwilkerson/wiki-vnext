@@ -3,32 +3,16 @@
 # ===============================================
 
 extend type Query {
-  storage: StorageQuery
+  storageTargets: [StorageTarget] @auth(requires: ["manage:system"])
+  storageStatus: [StorageStatus] @auth(requires: ["manage:system"])
 }
 
 extend type Mutation {
-  storage: StorageMutation
-}
-
-# -----------------------------------------------
-# QUERIES
-# -----------------------------------------------
-
-type StorageQuery {
-  targets: [StorageTarget] @auth(requires: ["manage:system"])
-  status: [StorageStatus] @auth(requires: ["manage:system"])
-}
-
-# -----------------------------------------------
-# MUTATIONS
-# -----------------------------------------------
-
-type StorageMutation {
-  updateTargets(
+  updateStorageTargets(
     targets: [StorageTargetInput]!
   ): DefaultResponse @auth(requires: ["manage:system"])
 
-  executeAction(
+  executeStorageAction(
     targetKey: String!
     handler: String!
   ): DefaultResponse @auth(requires: ["manage:system"])
@@ -39,13 +23,14 @@ type StorageMutation {
 # -----------------------------------------------
 
 type StorageTarget {
-  isAvailable: Boolean!
-  isEnabled: Boolean!
-  key: String!
-  title: String!
+  id: UUID
+  isEnabled: Boolean
+  module: String
+  title: String
   description: String
   logo: String
   website: String
+  contentTypes: [String]
   supportedModes: [String]
   mode: String
   hasSchedule: Boolean!

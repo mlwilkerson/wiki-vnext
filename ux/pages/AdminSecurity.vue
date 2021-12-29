@@ -101,6 +101,20 @@ q-page.admin-mail
               )
         q-separator.q-my-sm(inset)
         q-item(tag='label', v-ripple)
+          blueprint-icon(icon='download-from-cloud')
+          q-item-section
+            q-item-label {{$t(`admin.security.forceAssetDownload`)}}
+            q-item-label(caption) {{$t(`admin.security.forceAssetDownloadHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.forceAssetDownload'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.forceAssetDownload`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
           blueprint-icon(icon='door-sensor-alarmed')
           q-item-section
             q-item-label {{$t(`admin.security.trustProxy`)}}
@@ -192,6 +206,20 @@ q-page.admin-mail
               dense
               :suffix='$t(`admin.security.maxUploadBatchSuffix`)'
               :aria-label='$t(`admin.security.maxUploadBatch`)'
+              )
+        q-separator.q-my-sm(inset)
+        q-item(tag='label', v-ripple)
+          blueprint-icon(icon='scan-stock')
+          q-item-section
+            q-item-label {{$t(`admin.security.scanSVG`)}}
+            q-item-label(caption) {{$t(`admin.security.scanSVGHint`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='config.uploadScanSVG'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.security.scanSVG`)'
               )
 
       //- -----------------------
@@ -320,13 +348,15 @@ export default {
         enforceCsp: false,
         enforceHsts: false,
         enforceSameOriginReferrerPolicy: false,
+        forceAssetDownload: false,
         hstsDuration: 0,
         trustProxy: false,
         authJwtAudience: 'urn:wiki.js',
         authJwtExpiration: '30m',
         authJwtRenewablePeriod: '14d',
         uploadMaxFileSize: 0,
-        uploadMaxFiles: 0
+        uploadMaxFiles: 0,
+        uploadScanSVG: false
       },
       hstsDurations: [
         { value: 300, text: '5 minutes' },
@@ -436,10 +466,12 @@ export default {
             enforceCsp
             enforceHsts
             enforceSameOriginReferrerPolicy
+            forceAssetDownload
             hstsDuration
             trustProxy
             uploadMaxFileSize
             uploadMaxFiles
+            uploadScanSVG
           }
         }
       `,

@@ -122,7 +122,7 @@ q-page.admin-general
       q-card.shadow-1.q-pb-sm.q-mt-md
         q-card-section
           .text-subtitle1 {{$t('admin.general.features')}}
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='discussion-forum')
           q-item-section
             q-item-label {{$t(`admin.general.allowComments`)}}
@@ -136,7 +136,7 @@ q-page.admin-general
               :aria-label='$t(`admin.general.allowComments`)'
               )
         q-separator.q-my-sm(inset)
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='pen')
           q-item-section
             q-item-label {{$t(`admin.general.allowContributions`)}}
@@ -150,7 +150,7 @@ q-page.admin-general
               :aria-label='$t(`admin.general.allowContributions`)'
               )
         q-separator.q-my-sm(inset)
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='administrator-male')
           q-item-section
             q-item-label {{$t(`admin.general.allowProfile`)}}
@@ -183,7 +183,7 @@ q-page.admin-general
               ]`
             )
         q-separator.q-my-sm(inset)
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='search')
           q-item-section
             q-item-label {{$t(`admin.general.allowSearch`)}}
@@ -238,7 +238,7 @@ q-page.admin-general
                   )
               q-toolbar-title.text-h6.font-poppins(v-if='config.logoText') {{config.title}}
         q-separator.q-my-sm(inset)
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='information')
           q-item-section
             q-item-label {{$t(`admin.general.displaySiteTitle`)}}
@@ -277,10 +277,10 @@ q-page.admin-general
                   img(src='/_assets/logo-wikijs.svg')
                 .text-caption.q-ml-sm {{config.title}}
               div
-                q-icon(name='las la-otter', size='24px', color='primary')
+                q-icon(name='las la-otter', size='24px', color='grey')
                 .text-caption.q-ml-sm Lorem ipsum
               div
-                q-icon(name='las la-mountain', size='24px', color='primary')
+                q-icon(name='las la-mountain', size='24px', color='grey')
                 .text-caption.q-ml-sm Dolor sit amet...
 
       //- -----------------------
@@ -355,7 +355,7 @@ q-page.admin-general
       q-card.shadow-1.q-pb-sm.q-mt-md(v-if='config.robots')
         q-card-section
           .text-subtitle1 SEO
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='bot')
           q-item-section
             q-item-label {{$t(`admin.general.searchAllowIndexing`)}}
@@ -369,7 +369,7 @@ q-page.admin-general
               :aria-label='$t(`admin.general.searchAllowIndexing`)'
               )
         q-separator.q-my-sm(inset)
-        q-item(tag='label', v-ripple)
+        q-item(tag='label')
           blueprint-icon(icon='polyline')
           q-item-section
             q-item-label {{$t(`admin.general.searchAllowFollow`)}}

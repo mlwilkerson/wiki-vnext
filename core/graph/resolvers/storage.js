@@ -5,13 +5,7 @@ const graphHelper = require('../../helpers/graph')
 
 module.exports = {
   Query: {
-    async storage() { return {} }
-  },
-  Mutation: {
-    async storage() { return {} }
-  },
-  StorageQuery: {
-    async targets(obj, args, context, info) {
+    async storageTargets (obj, args, context, info) {
       let targets = await WIKI.models.storage.getTargets()
       targets = _.sortBy(targets.map(tgt => {
         const targetInfo = _.find(WIKI.data.storage, ['key', tgt.key]) || {}
@@ -37,8 +31,8 @@ module.exports = {
       }), ['title', 'key'])
       return targets
     },
-    async status(obj, args, context, info) {
-      let activeTargets = await WIKI.models.storage.query().where('isEnabled', true)
+    async storageStatus (obj, args, context, info) {
+      const activeTargets = await WIKI.models.storage.query().where('isEnabled', true)
       return activeTargets.map(tgt => {
         const targetInfo = _.find(WIKI.data.storage, ['key', tgt.key]) || {}
         return {
@@ -51,11 +45,11 @@ module.exports = {
       })
     }
   },
-  StorageMutation: {
-    async updateTargets(obj, args, context) {
+  Mutation: {
+    async updateStorageTargets (obj, args, context) {
       try {
-        let dbTargets = await WIKI.models.storage.getTargets()
-        for (let tgt of args.targets) {
+        const dbTargets = await WIKI.models.storage.getTargets()
+        for (const tgt of args.targets) {
           const currentDbTarget = _.find(dbTargets, ['key', tgt.key])
           if (!currentDbTarget) {
             continue
@@ -87,7 +81,7 @@ module.exports = {
         return graphHelper.generateError(err)
       }
     },
-    async executeAction(obj, args, context) {
+    async executeStorageAction (obj, args, context) {
       try {
         await WIKI.models.storage.executeAction(args.targetKey, args.handler)
         return {

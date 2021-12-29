@@ -27,10 +27,12 @@ extend type Mutation {
     enforceCsp: Boolean
     enforceHsts: Boolean
     enforceSameOriginReferrerPolicy: Boolean
+    forceAssetDownload: Boolean
     hstsDuration: Int
     trustProxy: Boolean
     uploadMaxFiles: Int
     uploadMaxFileSize: Int
+    uploadScanSVG: Boolean
   ): DefaultResponse @auth(requires: ["manage:system"])
 
   installExtension(
@@ -138,10 +140,12 @@ type SystemSecurity {
   enforceCsp: Boolean
   enforceHsts: Boolean
   enforceSameOriginReferrerPolicy: Boolean
+  forceAssetDownload: Boolean
   hstsDuration: Int
   trustProxy: Boolean
   uploadMaxFiles: Int
   uploadMaxFileSize: Int
+  uploadScanSVG: Boolean
 }
 
 enum SystemSecurityCorsMode {

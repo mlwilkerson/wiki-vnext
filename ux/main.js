@@ -1,4 +1,5 @@
-import { createApp } from 'vue'
+import { createSSRApp } from 'vue'
+
 import {
   ClosePopup,
   Dialog,
@@ -97,140 +98,148 @@ import './css/app.scss'
 // and placed in same folder as main.js
 import AppComponent from './App.vue'
 
-const app = createApp(AppComponent)
+export function createApp () {
+  const app = createSSRApp(AppComponent)
 
-// Initialize Quasar
+  // Initialize Quasar
 
-Notify.registerType('warning', {
-  icon: 'las la-exclamation-circle',
-  progress: false,
-  color: 'orange-8',
-  textColor: 'white'
-})
+  Notify.registerType('warning', {
+    icon: 'las la-exclamation-circle',
+    progress: false,
+    color: 'orange-8',
+    textColor: 'white'
+  })
 
-app.use(Quasar, {
-  plugins: {
-    Dialog,
-    Loading,
-    LoadingBar,
-    Meta,
-    Notify
-  },
-  iconSet: quasarIconSet,
-  config: {
-    brand: {
-      header: '#000',
-      sidebar: '#1976D2'
+  app.use(Quasar, {
+    plugins: {
+      Dialog,
+      Loading,
+      LoadingBar,
+      Meta,
+      Notify
     },
-    loadingBar: {
-      color: 'primary',
-      size: '1px',
-      position: 'top'
-    },
-    notify: {
-      position: 'top',
-      progress: true,
-      color: 'green',
-      icon: 'las la-check',
-      actions: [
-        {
-          icon: 'las la-times',
-          color: 'white',
-          size: 'sm',
-          round: true,
-          handler: () => {}
-        }
-      ]
+    iconSet: quasarIconSet,
+    config: {
+      brand: {
+        header: '#000',
+        sidebar: '#1976D2'
+      },
+      loadingBar: {
+        color: 'primary',
+        size: '1px',
+        position: 'top'
+      },
+      notify: {
+        position: 'top',
+        progress: true,
+        color: 'green',
+        icon: 'las la-check',
+        actions: [
+          {
+            icon: 'las la-times',
+            color: 'white',
+            size: 'sm',
+            round: true,
+            handler: () => {}
+          }
+        ]
+      }
     }
+  })
+
+  // Vuex
+  app.use(Store)
+
+  // Vue-Router
+  app.use(Router)
+
+  // Vue-i18n
+  app.use(I18n)
+
+  // Apollo
+  app.use(Apollo)
+
+  // Helpers
+  PageHelpers({
+    app,
+    store: Store
+  })
+
+  // Quasar components
+  app.component('QAvatar', QAvatar)
+  app.component('QBadge', QBadge)
+  app.component('QBanner', QBanner)
+  app.component('QBar', QBar)
+  app.component('QBreadcrumbs', QBreadcrumbs)
+  app.component('QBreadcrumbsEl', QBreadcrumbsEl)
+  app.component('QBtn', QBtn)
+  app.component('QBtnGroup', QBtnGroup)
+  app.component('QBtnToggle', QBtnToggle)
+  app.component('QCard', QCard)
+  app.component('QCardActions', QCardActions)
+  app.component('QCardSection', QCardSection)
+  app.component('QCheckbox', QCheckbox)
+  app.component('QChip', QChip)
+  app.component('QCircularProgress', QCircularProgress)
+  app.component('QColor', QColor)
+  app.component('QDate', QDate)
+  app.component('QDialog', QDialog)
+  app.component('QDrawer', QDrawer)
+  app.component('QForm', QForm)
+  app.component('QFooter', QFooter)
+  app.component('QHeader', QHeader)
+  app.component('QIcon', QIcon)
+  app.component('QImg', QImg)
+  app.component('QInnerLoading', QInnerLoading)
+  app.component('QInput', QInput)
+  app.component('QItem', QItem)
+  app.component('QItemLabel', QItemLabel)
+  app.component('QItemSection', QItemSection)
+  app.component('QLayout', QLayout)
+  app.component('QList', QList)
+  app.component('QMenu', QMenu)
+  app.component('QNoSsr', QNoSsr)
+  app.component('QPage', QPage)
+  app.component('QPageContainer', QPageContainer)
+  app.component('QPageScroller', QPageScroller)
+  app.component('QPagination', QPagination)
+  app.component('QRadio', QRadio)
+  app.component('QRange', QRange)
+  app.component('QRating', QRating)
+  app.component('QRouteTab', QRouteTab)
+  app.component('QScrollArea', QScrollArea)
+  app.component('QSelect', QSelect)
+  app.component('QSeparator', QSeparator)
+  app.component('QSlider', QSlider)
+  app.component('QSpace', QSpace)
+  app.component('QSpinner', QSpinner)
+  app.component('QSpinnerRings', QSpinnerRings)
+  app.component('QSpinnerTail', QSpinnerTail)
+  app.component('QTab', QTab)
+  app.component('QTabPanel', QTabPanel)
+  app.component('QTabPanels', QTabPanels)
+  app.component('QTable', QTable)
+  app.component('QTabs', QTabs)
+  app.component('QTd', QTd)
+  app.component('QToggle', QToggle)
+  app.component('QToolbar', QToolbar)
+  app.component('QToolbarTitle', QToolbarTitle)
+  app.component('QTooltip', QTooltip)
+  app.component('QTree', QTree)
+
+  // Quasar Directives
+  app.directive('ripple', Ripple)
+  app.directive('close-popup', ClosePopup)
+
+  // App Components
+  app.component('BlueprintIcon', BlueprintIcon)
+
+  // Mount
+  app.mount('#app')
+
+  return {
+    app,
+    router: Router,
+    store: Store
   }
-})
-
-// Vuex
-app.use(Store)
-
-// Vue-Router
-app.use(Router)
-
-// Vue-i18n
-app.use(I18n)
-
-// Apollo
-app.use(Apollo)
-
-// Helpers
-PageHelpers({
-  app,
-  store: Store
-})
-
-// Quasar components
-app.component('QAvatar', QAvatar)
-app.component('QBadge', QBadge)
-app.component('QBanner', QBanner)
-app.component('QBar', QBar)
-app.component('QBreadcrumbs', QBreadcrumbs)
-app.component('QBreadcrumbsEl', QBreadcrumbsEl)
-app.component('QBtn', QBtn)
-app.component('QBtnGroup', QBtnGroup)
-app.component('QBtnToggle', QBtnToggle)
-app.component('QCard', QCard)
-app.component('QCardActions', QCardActions)
-app.component('QCardSection', QCardSection)
-app.component('QCheckbox', QCheckbox)
-app.component('QChip', QChip)
-app.component('QCircularProgress', QCircularProgress)
-app.component('QColor', QColor)
-app.component('QDate', QDate)
-app.component('QDialog', QDialog)
-app.component('QDrawer', QDrawer)
-app.component('QForm', QForm)
-app.component('QFooter', QFooter)
-app.component('QHeader', QHeader)
-app.component('QIcon', QIcon)
-app.component('QImg', QImg)
-app.component('QInnerLoading', QInnerLoading)
-app.component('QInput', QInput)
-app.component('QItem', QItem)
-app.component('QItemLabel', QItemLabel)
-app.component('QItemSection', QItemSection)
-app.component('QLayout', QLayout)
-app.component('QList', QList)
-app.component('QMenu', QMenu)
-app.component('QNoSsr', QNoSsr)
-app.component('QPage', QPage)
-app.component('QPageContainer', QPageContainer)
-app.component('QPageScroller', QPageScroller)
-app.component('QPagination', QPagination)
-app.component('QRadio', QRadio)
-app.component('QRange', QRange)
-app.component('QRating', QRating)
-app.component('QRouteTab', QRouteTab)
-app.component('QScrollArea', QScrollArea)
-app.component('QSelect', QSelect)
-app.component('QSeparator', QSeparator)
-app.component('QSlider', QSlider)
-app.component('QSpace', QSpace)
-app.component('QSpinner', QSpinner)
-app.component('QSpinnerRings', QSpinnerRings)
-app.component('QSpinnerTail', QSpinnerTail)
-app.component('QTab', QTab)
-app.component('QTabPanel', QTabPanel)
-app.component('QTabPanels', QTabPanels)
-app.component('QTable', QTable)
-app.component('QTabs', QTabs)
-app.component('QTd', QTd)
-app.component('QToggle', QToggle)
-app.component('QToolbar', QToolbar)
-app.component('QToolbarTitle', QToolbarTitle)
-app.component('QTooltip', QTooltip)
-app.component('QTree', QTree)
-
-// Quasar Directives
-app.directive('ripple', Ripple)
-app.directive('close-popup', ClosePopup)
-
-// App Components
-app.component('BlueprintIcon', BlueprintIcon)
-
-// Mount
-app.mount('#app')
+}

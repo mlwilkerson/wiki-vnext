@@ -147,7 +147,7 @@ export default {
       return this.strategies.length > 1
     },
     filteredStrategies () {
-      const qParams = new URLSearchParams(process.env.CLIENT ? window.location.search : '')
+      const qParams = new URLSearchParams(!import.meta.env.SSR ? window.location.search : '')
       if (this.hideLocal && !qParams.has('all')) {
         return reject(this.strategies, ['key', 'local'])
       } else {
