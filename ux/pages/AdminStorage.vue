@@ -26,7 +26,7 @@ q-page.admin-storage
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :loading='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -51,10 +51,10 @@ q-page.admin-storage
               )
             q-item-section
               q-item-label {{tgt.title}}
-              q-item-label(caption) {{getTargetSubtitle(tgt.contentTypes)}}
+              q-item-label(caption, :class='!tgt.isEnabled ? `text-grey-7` : `text-positive`') {{getTargetSubtitle(tgt)}}
             q-item-section(side)
               q-spinner-rings(:color='tgt.isEnabled ? `positive` : `negative`', size='sm')
-    .col
+    .col(v-if='target')
       //- -----------------------
       //- Content Types
       //- -----------------------
@@ -65,7 +65,7 @@ q-page.admin-storage
         q-item(tag='label')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.contentTypes'
+              v-model='target.contentTypes.activeTypes'
               :color='target.module === `db` ? `grey` : `primary`'
               val='pages'
               :aria-label='$t(`admin.storage.contentTypePages`)'
@@ -77,7 +77,7 @@ q-page.admin-storage
         q-item(tag='label')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.contentTypes'
+              v-model='target.contentTypes.activeTypes'
               color='primary'
               val='images'
               :aria-label='$t(`admin.storage.contentTypeImages`)'
@@ -88,7 +88,7 @@ q-page.admin-storage
         q-item(tag='label')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.contentTypes'
+              v-model='target.contentTypes.activeTypes'
               color='primary'
               val='documents'
               :aria-label='$t(`admin.storage.contentTypeDocuments`)'
@@ -99,7 +99,7 @@ q-page.admin-storage
         q-item(tag='label')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.contentTypes'
+              v-model='target.contentTypes.activeTypes'
               color='primary'
               val='others'
               :aria-label='$t(`admin.storage.contentTypeOthers`)'
@@ -110,7 +110,7 @@ q-page.admin-storage
         q-item(tag='label')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.contentTypes'
+              v-model='target.contentTypes.activeTypes'
               color='primary'
               val='large'
               :aria-label='$t(`admin.storage.contentTypeLargeFiles`)'
@@ -123,7 +123,7 @@ q-page.admin-storage
             q-input(
               outlined
               :label='$t(`admin.storage.contentTypeLargeFilesThreshold`)'
-              v-model='target.largeThreshold'
+              v-model='target.contentTypes.largeThreshold'
               style='min-width: 150px;'
               dense
             )
@@ -135,30 +135,30 @@ q-page.admin-storage
         q-card-section
           .text-subtitle1 {{$t('admin.storage.assetDelivery')}}
           .text-body2.text-grey {{ $t('admin.storage.assetDeliveryHint') }}
-        q-item(:tag='target.isAssetStreamingSupported ? `label` : null')
+        q-item(:tag='target.assetDelivery.isStreamingSupported ? `label` : null')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.assetStreaming'
-              :color='target.module === `db` || !target.isAssetStreamingSupported ? `grey` : `primary`'
+              v-model='target.assetDelivery.streaming'
+              :color='target.module === `db` || !target.assetDelivery.isStreamingSupported ? `grey` : `primary`'
               :aria-label='$t(`admin.storage.contentTypePages`)'
-              :disable='target.module === `db` || !target.isAssetStreamingSupported'
+              :disable='target.module === `db` || !target.assetDelivery.isStreamingSupported'
               )
           q-item-section
             q-item-label {{$t(`admin.storage.assetStreaming`)}}
             q-item-label(caption) {{$t(`admin.storage.assetStreamingHint`)}}
-            q-item-label.text-red(v-if='!target.isAssetStreamingSupported', caption) {{$t(`admin.storage.assetStreamingNotSupported`)}}
-        q-item(:tag='target.isAssetDirectAccessSupported ? `label` : null')
+            q-item-label.text-red(v-if='!target.assetDelivery.isStreamingSupported', caption) {{$t(`admin.storage.assetStreamingNotSupported`)}}
+        q-item(:tag='target.assetDelivery.isDirectAccessSupported ? `label` : null')
           q-item-section(avatar)
             q-checkbox(
-              v-model='target.assetDirectAccess'
-              :color='!target.isAssetDirectAccessSupported ? `grey` : `primary`'
+              v-model='target.assetDelivery.directAccess'
+              :color='!target.assetDelivery.isDirectAccessSupported ? `grey` : `primary`'
               :aria-label='$t(`admin.storage.contentTypePages`)'
-              :disable='!target.isAssetDirectAccessSupported'
+              :disable='!target.assetDelivery.isDirectAccessSupported'
               )
           q-item-section
             q-item-label {{$t(`admin.storage.assetDirectAccess`)}}
             q-item-label(caption) {{$t(`admin.storage.assetDirectAccessHint`)}}
-            q-item-label.text-red(v-if='!target.isAssetDirectAccessSupported', caption) {{$t(`admin.storage.assetDirectAccessNotSupported`)}}
+            q-item-label.text-red(v-if='!target.assetDelivery.isDirectAccessSupported', caption) {{$t(`admin.storage.assetDirectAccessNotSupported`)}}
 
       //- -----------------------
       //- Configuration
@@ -167,10 +167,67 @@ q-page.admin-storage
         q-card-section
           .text-subtitle1 {{$t('admin.storage.config')}}
           q-banner.q-mt-md(
-            v-if='!target.config || target.config.length < 1'
+            v-if='!target.config || Object.keys(target.config).length < 1'
             rounded
             :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-2 text-grey-7`'
             ) {{$t('admin.storage.noConfigOption')}}
+        template(
+          v-for='(cfg, cfgKey, idx) in target.config'
+          )
+          template(
+            v-if='configIfCheck(cfg.if)'
+            )
+            q-separator.q-my-sm(inset, v-if='idx > 0')
+            q-item(v-if='cfg.type === `Boolean`', tag='label')
+              blueprint-icon(:icon='cfg.icon')
+              q-item-section
+                q-item-label {{cfg.title}}
+                q-item-label(caption) {{cfg.hint}}
+              q-item-section(avatar)
+                q-toggle(
+                  v-model='cfg.value'
+                  color='primary'
+                  checked-icon='las la-check'
+                  unchecked-icon='las la-times'
+                  :aria-label='$t(`admin.general.allowComments`)'
+                  )
+            q-item(v-else)
+              blueprint-icon(:icon='cfg.icon')
+              q-item-section
+                q-item-label {{cfg.title}}
+                q-item-label(caption) {{cfg.hint}}
+              q-item-section(
+                :style='cfg.type === `Number` ? `flex: 0 0 150px;` : ``'
+                :class='{ "col-auto": cfg.enum && cfg.enumDisplay === `buttons` }'
+                )
+                q-btn-toggle(
+                  v-if='cfg.enum && cfg.enumDisplay === `buttons`'
+                  v-model='cfg.value'
+                  push
+                  glossy
+                  no-caps
+                  toggle-color='primary'
+                  :options=`cfg.enum`
+                )
+                q-select(
+                  v-else-if='cfg.enum'
+                  outlined
+                  v-model='cfg.value'
+                  :options='cfg.enum'
+                  emit-value
+                  map-options
+                  dense
+                  options-dense
+                  :aria-label='cfg.title'
+                )
+                q-input(
+                  v-else
+                  outlined
+                  v-model='cfg.value'
+                  dense
+                  :type='cfg.multiline ? `textarea` : `input`'
+                  :aria-label='cfg.title'
+                  )
 
       //- -----------------------
       //- Sync
@@ -179,7 +236,7 @@ q-page.admin-storage
         q-card-section
           .text-subtitle1 {{$t('admin.storage.sync')}}
           q-banner.q-mt-md(
-            v-if='!target.config || target.config.length < 1'
+            v-if='!target.sync || Object.keys(target.sync).length < 1'
             rounded
             :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-2 text-grey-7`'
             ) {{$t('admin.storage.noSyncModes')}}
@@ -191,12 +248,37 @@ q-page.admin-storage
         q-card-section
           .text-subtitle1 {{$t('admin.storage.actions')}}
           q-banner.q-mt-md(
-            v-if='!target.config || target.config.length < 1'
+            v-if='!target.actions || target.actions.length < 1'
             rounded
             :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-2 text-grey-7`'
             ) {{$t('admin.storage.noActions')}}
+          q-banner.q-mt-md(
+            v-else-if='!target.isEnabled'
+            rounded
+            :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-2 text-grey-7`'
+            ) {{$t('admin.storage.actionsInactiveWarn')}}
 
-    .col-auto
+        template(
+          v-if='target.isEnabled'
+          v-for='(act, idx) in target.actions'
+          )
+          q-separator.q-my-sm(inset, v-if='idx > 0')
+          q-item
+            blueprint-icon.self-start(:icon='act.icon', :hue-rotate='45')
+            q-item-section
+              q-item-label {{act.label}}
+              q-item-label(caption) {{act.hint}}
+              q-item-label.text-red(v-if='act.warn', caption): strong {{act.warn}}
+            q-item-section(side)
+              q-btn.acrylic-btn(
+                flat
+                icon='las la-arrow-circle-right'
+                color='primary'
+                @click=''
+                :label='$t(`common.actions.proceed`)'
+              )
+
+    .col-auto(v-if='target')
       //- -----------------------
       //- Infobox
       //- -----------------------
@@ -229,6 +311,7 @@ q-page.admin-storage
           q-item-section
             q-item-label {{$t(`admin.storage.enabled`)}}
             q-item-label(caption) {{$t(`admin.storage.enabledHint`)}}
+            q-item-label.text-red(v-if='target.module === `db`', caption) {{$t(`admin.storage.enabledForced`)}}
           q-item-section(avatar)
             q-toggle(
               v-model='target.isEnabled'
@@ -244,126 +327,28 @@ q-page.admin-storage
             q-item-label.text-grey {{$t(`admin.storage.currentState`)}}
             q-item-label.text-positive No issues detected.
 
-  //-       v-card.mt-3.animated.fadeInUp.wait-p2s
-  //-         v-toolbar(flat, :color='$vuetify.theme.dark ? `grey darken-3-l5` : `grey darken-3`', dark, dense)
-  //-           .subtitle-1 {{$t('admin.storage.status')}}
-  //-           v-spacer
-  //-           looping-rhombuses-spinner(
-  //-             :animation-duration='5000'
-  //-             :rhombus-size='10'
-  //-             color='#FFF'
-  //-           )
-  //-         v-list.py-0(two-line, dense)
-  //-           template(v-for='(tgt, n) in status')
-  //-             v-list-item(:key='tgt.key')
-  //-               template(v-if='tgt.status === `pending`')
-  //-                 v-list-item-avatar(color='purple')
-  //-                   v-icon(color='white') mdi-clock-outline
-  //-                 v-list-item-content
-  //-                   v-list-item-title.body-2 {{tgt.title}}
-  //-                   v-list-item-subtitle.purple--text.caption {{tgt.status}}
-  //-                 v-list-item-action
-  //-                   v-progress-circular(indeterminate, :size='20', :width='2', color='purple')
-  //-               template(v-else-if='tgt.status === `operational`')
-  //-                 v-list-item-avatar(color='green')
-  //-                   v-icon(color='white') mdi-check-circle
-  //-                 v-list-item-content
-  //-                   v-list-item-title.body-2 {{tgt.title}}
-  //-                   v-list-item-subtitle.green--text.caption {{$t('admin.storage.lastSync', { time: $options.filters.moment(tgt.lastAttempt, 'from') })}}
-  //-               template(v-else)
-  //-                 v-list-item-avatar(color='red')
-  //-                   v-icon(color='white') mdi-close-circle-outline
-  //-                 v-list-item-content
-  //-                   v-list-item-title.body-2 {{tgt.title}}
-  //-                   v-list-item-subtitle.red--text.caption {{$t('admin.storage.lastSyncAttempt', { time: $options.filters.moment(tgt.lastAttempt, 'from') })}}
-  //-                 v-list-item-action
-  //-                   v-menu
-  //-                     template(v-slot:activator='{ on }')
-  //-                       v-btn(icon, v-on='on')
-  //-                         v-icon(color='red') mdi-information
-  //-                     v-card(width='450')
-  //-                       v-toolbar(flat, color='red', dark, dense) {{$t('admin.storage.errorMsg')}}
-  //-                       v-card-text {{tgt.message}}
-
-  //-             v-divider(v-if='n < status.length - 1')
-  //-           v-list-item(v-if='status.length < 1')
-  //-             em {{$t('admin.storage.noTarget')}}
-
-  //-     v-flex(xs12, lg9)
-  //-       v-card.wiki-form.animated.fadeInUp.wait-p2s
-  //-         v-toolbar(color='primary', dense, flat, dark)
-  //-           .subtitle-1 {{target.title}}
-  //-           v-spacer
-  //-           v-switch(
-  //-             dark
-  //-             color='blue lighten-5'
-  //-             label='Active'
-  //-             v-model='target.isEnabled'
-  //-             hide-details
-  //-             inset
-  //-             )
-  //-         v-card-info(color='blue')
-  //-           div
-  //-             div {{target.description}}
-  //-             span.caption: a(:href='target.website') {{target.website}}
-  //-           v-spacer
-  //-           .admin-providerlogo
-  //-             img(:src='target.logo', :alt='target.title')
-  //-         v-card-text
-  //-           v-form
-  //-             i18next.body-2(path='admin.storage.targetState', tag='div', v-if='target.isEnabled')
-  //-               v-chip(color='green', small, dark, label, place='state') {{$t('admin.storage.targetStateActive')}}
-  //-             i18next.body-2(path='admin.storage.targetState', tag='div', v-else)
-  //-               v-chip(color='red', small, dark, label, place='state') {{$t('admin.storage.targetStateInactive')}}
-  //-             v-divider.mt-3
-  //-             .overline.my-5 {{$t('admin.storage.targetConfig')}}
-  //-             .body-2.ml-3(v-if='!target.config || target.config.length < 1'): em {{$t('admin.storage.noConfigOption')}}
-  //-             template(v-else, v-for='cfg in target.config')
-  //-               v-select(
-  //-                 v-if='cfg.value.type === "string" && cfg.value.enum'
-  //-                 outlined
-  //-                 :items='cfg.value.enum'
-  //-                 :key='cfg.key'
-  //-                 :label='cfg.value.title'
-  //-                 v-model='cfg.value.value'
-  //-                 prepend-icon='mdi-cog-box'
-  //-                 :hint='cfg.value.hint ? cfg.value.hint : ""'
-  //-                 persistent-hint
-  //-                 :class='cfg.value.hint ? "mb-2" : ""'
-  //-               )
-  //-               v-switch.mb-3(
-  //-                 v-else-if='cfg.value.type === "boolean"'
-  //-                 :key='cfg.key'
-  //-                 :label='cfg.value.title'
-  //-                 v-model='cfg.value.value'
-  //-                 color='primary'
-  //-                 prepend-icon='mdi-cog-box'
-  //-                 :hint='cfg.value.hint ? cfg.value.hint : ""'
-  //-                 persistent-hint
-  //-                 inset
-  //-                 )
-  //-               v-textarea(
-  //-                 v-else-if='cfg.value.type === "string" && cfg.value.multiline'
-  //-                 outlined
-  //-                 :key='cfg.key'
-  //-                 :label='cfg.value.title'
-  //-                 v-model='cfg.value.value'
-  //-                 prepend-icon='mdi-cog-box'
-  //-                 :hint='cfg.value.hint ? cfg.value.hint : ""'
-  //-                 persistent-hint
-  //-                 :class='cfg.value.hint ? "mb-2" : ""'
-  //-                 )
-  //-               v-text-field(
-  //-                 v-else
-  //-                 outlined
-  //-                 :key='cfg.key'
-  //-                 :label='cfg.value.title'
-  //-                 v-model='cfg.value.value'
-  //-                 prepend-icon='mdi-cog-box'
-  //-                 :hint='cfg.value.hint ? cfg.value.hint : ""'
-  //-                 persistent-hint
-  //-                 :class='cfg.value.hint ? "mb-2" : ""'
-  //-                 )
+      //- -----------------------
+      //- Versioning
+      //- -----------------------
+      q-card.rounded-borders.q-pb-md.q-mt-md(style='width: 350px;')
+        q-card-section
+          .text-subtitle1 {{$t(`admin.storage.versioning`)}}
+          .text-body2.text-grey {{$t(`admin.storage.versioningHint`)}}
+        q-item(:tag='target.versioning.isSupported ? `label` : null')
+          q-item-section
+            q-item-label {{$t(`admin.storage.useVersioning`)}}
+            q-item-label(caption) {{$t(`admin.storage.useVersioningHint`)}}
+            q-item-label.text-red(v-if='!target.versioning.isSupported', caption) {{$t(`admin.storage.versioningNotSupported`)}}
+            q-item-label.text-red(v-if='target.versioning.isForceEnabled', caption) {{$t(`admin.storage.versioningForceEnabled`)}}
+          q-item-section(avatar)
+            q-toggle(
+              v-model='target.versioning.enabled'
+              :disable='!target.versioning.isSupported || target.versioning.isForceEnabled'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='$t(`admin.storage.useVersioning`)'
+              )
   //-             v-divider.mt-3
   //-             .overline.my-5 {{$t('admin.storage.syncDirection')}}
   //-             .body-2.ml-3 {{$t('admin.storage.syncDirectionSubtitle')}}
@@ -442,148 +427,8 @@ export default {
       runningAction: false,
       runningActionHandler: '',
       selectedTarget: '',
-      target: {
-        contentTypes: ['pages'],
-        supportedModes: []
-      },
-      targets: [
-        {
-          id: '10000000-0000-4000-0000-000000000001',
-          module: 'db',
-          title: 'Database',
-          contentTypes: ['pages', 'images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: true,
-          assetDirectAccess: false,
-          isAssetStreamingSupported: true,
-          isAssetDirectAccessSupported: false,
-          isEnabled: true,
-          icon: '/_assets/icons/ultraviolet-database.svg',
-          banner: '/_assets/storage/database.jpg',
-          description: 'The local PostgreSQL database can store any assets. It is however not recommended to store large files directly in the database as this can cause performance issues.',
-          vendor: 'Wiki.js',
-          website: 'https://js.wiki'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000002',
-          module: 'github',
-          title: 'GitHub',
-          contentTypes: ['pages', 'images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: false,
-          assetDirectAccess: false,
-          isAssetStreamingSupported: false,
-          isAssetDirectAccessSupported: false,
-          isEnabled: true,
-          icon: '/_assets/icons/ultraviolet-github.svg',
-          banner: '/_assets/storage/github.jpg',
-          description: 'Millions of developers and companies build, ship, and maintain their software on GitHub—the largest and most advanced development platform in the world.',
-          vendor: 'GitHub, Inc.',
-          website: 'https://github.com'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000003',
-          module: 'git',
-          title: 'Git',
-          contentTypes: ['pages', 'images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: false,
-          assetDirectAccess: false,
-          isAssetStreamingSupported: false,
-          isAssetDirectAccessSupported: false,
-          isEnabled: false,
-          icon: '/_assets/icons/ultraviolet-git.svg',
-          banner: '/_assets/storage/git.jpg',
-          description: 'The local PostgreSQL database can store any assets. It is however not recommended to store large files directly in the database as this can cause performance issues.',
-          vendor: 'Software Freedom Conservancy, Inc.',
-          website: 'https://git-scm.com'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000004',
-          module: 's3',
-          title: 'AWS S3',
-          contentTypes: ['images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: true,
-          assetDirectAccess: true,
-          isAssetStreamingSupported: true,
-          isAssetDirectAccessSupported: true,
-          isEnabled: false,
-          icon: '/_assets/icons/ultraviolet-amazon-web-services.svg',
-          banner: '/_assets/storage/s3.jpg',
-          description: 'Amazon Simple Storage Service (Amazon S3) is an object storage service offering industry-leading scalability, data availability, security, and performance.',
-          vendor: 'Amazon.com, Inc.',
-          website: 'https://aws.amazon.com'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000005',
-          module: 'azure',
-          title: 'Azure Blob Storage',
-          contentTypes: ['images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: true,
-          assetDirectAccess: true,
-          isAssetStreamingSupported: true,
-          isAssetDirectAccessSupported: true,
-          isEnabled: false,
-          icon: '/_assets/icons/ultraviolet-azure.svg',
-          banner: '/_assets/storage/azure.jpg',
-          description: 'Azure Blob Storage is Microsoft\'s object storage solution for the cloud. Blob storage is optimized for storing massive amounts of unstructured data.',
-          vendor: 'Microsoft Corporation',
-          website: 'https://azure.microsoft.com'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000006',
-          module: 'gcs',
-          title: 'Google Cloud Storage',
-          contentTypes: ['images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: true,
-          assetDirectAccess: true,
-          isAssetStreamingSupported: true,
-          isAssetDirectAccessSupported: true,
-          isEnabled: false,
-          icon: '/_assets/icons/ultraviolet-google.svg',
-          banner: '/_assets/storage/gcs.jpg',
-          description: 'Google Cloud Storage is an online file storage web service for storing and accessing data on Google Cloud Platform infrastructure.',
-          vendor: 'Alphabet Inc.',
-          website: 'https://cloud.google.com'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000007',
-          module: 'disk',
-          title: 'Local File System',
-          contentTypes: ['images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: true,
-          assetDirectAccess: false,
-          isAssetStreamingSupported: true,
-          isAssetDirectAccessSupported: false,
-          isEnabled: false,
-          icon: '/_assets/icons/ultraviolet-hdd.svg',
-          banner: '/_assets/storage/disk.jpg',
-          description: 'Store files on the local file system or over network attached storage. Note that you must use replicated storage if using high-availability instances.',
-          vendor: 'Wiki.js',
-          website: 'https://js.wiki'
-        },
-        {
-          id: '10000000-0000-4000-0000-000000000008',
-          module: 'sftp',
-          title: 'SFTP',
-          contentTypes: ['images', 'documents', 'others', 'large'],
-          largeThreshold: '5MB',
-          assetStreaming: false,
-          assetDirectAccess: false,
-          isAssetStreamingSupported: false,
-          isAssetDirectAccessSupported: false,
-          isEnabled: false,
-          icon: '/_assets/icons/ultraviolet-nas.svg',
-          banner: '/_assets/storage/ssh.jpg',
-          description: 'Store files over a remote connection using the SSH File Transfer Protocol.',
-          vendor: 'Wiki.js',
-          website: 'https://js.wiki'
-        }
-      ]
+      target: null,
+      targets: []
     }
   },
   computed: {
@@ -591,18 +436,19 @@ export default {
   },
   watch: {
     selectedTarget (newValue, oldValue) {
-      this.target = find(this.targets, ['id', newValue]) || {}
+      this.target = find(this.targets, ['id', newValue]) || null
     },
     targets (newValue) {
       if (newValue && newValue.length > 0) {
-        this.selectedTarget = this.targets[0].id
+        this.selectedTarget = find(this.targets, ['module', 'db'])?.id || null
       }
     }
   },
-  mounted () {
-    this.selectedTarget = '10000000-0000-4000-0000-000000000001'
-  },
   methods: {
+    configIfCheck (ifs) {
+      if (!ifs || ifs.length < 1) { return true }
+      return ifs.every(s => this.target.config[s.key]?.value === s.eq)
+    },
     async refresh () {
       await this.$apollo.queries.targets.refetch()
       this.$store.commit('showNotification', {
@@ -632,9 +478,12 @@ export default {
       })
       this.$store.commit('loadingStop', 'admin-storage-savetargets')
     },
-    getTargetSubtitle (contentTypes) {
-      const hasPages = contentTypes.includes('pages')
-      const hasAssets = contentTypes.filter(c => c !== 'pages').length > 0
+    getTargetSubtitle (target) {
+      if (!target.isEnabled) {
+        return this.$t('admin.storage.inactiveTarget')
+      }
+      const hasPages = target.contentTypes?.activeTypes?.includes('pages')
+      const hasAssets = target.contentTypes?.activeTypes?.filter(c => c !== 'pages')?.length > 0
       if (hasPages && hasAssets) {
         return this.$t('admin.storage.pagesAndAssets')
       } else if (hasPages) {
@@ -672,38 +521,46 @@ export default {
       this.runningAction = false
       this.runningActionHandler = ''
       this.$store.commit('loadingStop', 'admin-storage-executeaction')
-    },
-    async fetchTargets () {
-      this.loading++
-      const raw = this.$apollo.query({
-        query: gql`{}`,
-        variables: {
-          siteId: this.currentSiteId
-        },
-        fetchPolicy: 'network-only'
-      })
-      if (raw?.data?.storageTargets) {
-        this.targets = cloneDeep(raw.data.storage.targets).map(str => ({
-          ...str,
-          config: _.sortBy(str.config.map(cfg => ({
-            ...cfg,
-            value: JSON.parse(cfg.value)
-          })), [t => t.value.order])
-        }))
-      }
-      this.loading--
     }
   },
   apollo: {
-    // status: {
-    //   query: gql`{}`,
-    //   fetchPolicy: 'network-only',
-    //   update: (data) => data.storage.status,
-    //   watchLoading (isLoading) {
-    //     this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-storage-status-refresh')
-    //   },
-    //   pollInterval: 3000
-    // }
+    targets: {
+      query: gql`
+        query getStorageTargets (
+          $siteId: UUID!
+        ) {
+        storageTargets (
+          siteId: $siteId
+        ) {
+          id
+          isEnabled
+          module
+          title
+          description
+          icon
+          banner
+          vendor
+          website
+          contentTypes
+          assetDelivery
+          versioning
+          sync
+          status
+          config
+          actions
+        }
+      }`,
+      variables () {
+        return {
+          siteId: this.currentSiteId
+        }
+      },
+      skip () {
+        return !this.currentSiteId
+      },
+      fetchPolicy: 'network-only',
+      update: (data) => cloneDeep(data.storageTargets)
+    }
   }
 }
 </script>

@@ -1,0 +1,26 @@
+title: GitHub
+icon: '/_assets/icons/ultraviolet-github.svg'
+banner: '/_assets/storage/github.jpg'
+description: Millions of developers and companies build, ship, and maintain their software on GitHub - the largest and most advanced development platform in the world.
+vendor: GitHub, Inc.
+website: 'https://github.com'
+assetDelivery:
+  isStreamingSupported: false
+  isDirectAccessSupported: false
+  defaultStreamingEnabled: false
+  defaultDirectAccessEnabled: false
+contentTypes:
+  defaultTypesEnabled: ['pages', 'images', 'documents', 'others', 'large']
+  defaultLargeThreshold: '5MB'
+versioning:
+  isSupported: true
+  defaultEnabled: true
+  isForceEnabled: true
+sync: false
+mustSetup: true
+props: {}
+actions:
+  - handler: exportAll
+    label: Export All DB Assets to GitHub
+    hint: Output all content from the DB to GitHub, overwriting any existing data. If you enabled GitHub after content was created or you temporarily disabled it, you'll want to execute this action to add the missing content.
+    icon: this-way-up

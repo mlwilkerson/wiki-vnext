@@ -1,46 +1,88 @@
 const _ = require('lodash')
 const graphHelper = require('../../helpers/graph')
+const { v4: uuid } = require('uuid')
 
 /* global WIKI */
 
 module.exports = {
   Query: {
     async storageTargets (obj, args, context, info) {
-      let targets = await WIKI.models.storage.getTargets()
-      targets = _.sortBy(targets.map(tgt => {
-        const targetInfo = _.find(WIKI.data.storage, ['key', tgt.key]) || {}
+      const dbTargets = await WIKI.models.storage.getTargets({ siteId: args.siteId })
+      // targets = _.sortBy(targets.map(tgt => {
+      //   const targetInfo = _.find(WIKI.data.storage, ['module', tgt.key]) || {}
+      //   return {
+      //     ...targetInfo,
+      //     ...tgt,
+      //     hasSchedule: (targetInfo.schedule !== false),
+      //     syncInterval: targetInfo.syncInterval || targetInfo.schedule || 'P0D',
+      //     syncIntervalDefault: targetInfo.schedule,
+      //     config: _.sortBy(_.transform(tgt.config, (res, value, key) => {
+      //       const configData = _.get(targetInfo.props, key, false)
+      //       if (configData) {
+      //         res.push({
+      //           key,
+      //           value: JSON.stringify({
+      //             ...configData,
+      //             value: (configData.sensitive && value.length > 0) ? '********' : value
+      //           })
+      //         })
+      //       }
+      //     }, []), 'key')
+      //   }
+      // }), ['title', 'key'])
+      return WIKI.data.storage.map(md => {
+        const dbTarget = dbTargets.find(tg => tg.module === md.key)
         return {
-          ...targetInfo,
-          ...tgt,
-          hasSchedule: (targetInfo.schedule !== false),
-          syncInterval: targetInfo.syncInterval || targetInfo.schedule || 'P0D',
-          syncIntervalDefault: targetInfo.schedule,
-          config: _.sortBy(_.transform(tgt.config, (res, value, key) => {
-            const configData = _.get(targetInfo.props, key, false)
-            if (configData) {
-              res.push({
-                key,
-                value: JSON.stringify({
-                  ...configData,
-                  value: (configData.sensitive && value.length > 0) ? '********' : value
+          id: dbTarget?.id ?? uuid(),
+          isEnabled: dbTarget?.isEnabled ?? false,
+          module: md.key,
+          title: md.title,
+          description: md.description,
+          icon: md.icon,
+          banner: md.banner,
+          vendor: md.vendor,
+          website: md.website,
+          contentTypes: {
+            activeTypes: dbTarget?.activeTypes ?? md.contentTypes.defaultTypesEnabled,
+            largeThreshold: dbTarget?.largeThreshold ?? md.contentTypes.defaultLargeThreshold
+          },
+          assetDelivery: {
+            isStreamingSupported: md?.assetDelivery?.isStreamingSupported ?? false,
+            isDirectAccessSupported: md?.assetDelivery?.isDirectAccessSupported ?? false,
+            streaming: dbTarget?.assetDelivery?.streaming ?? md?.assetDelivery?.defaultStreamingEnabled ?? false,
+            directAccess: dbTarget?.assetDelivery?.directAccess ?? md?.assetDelivery?.defaultDirectAccessEnabled ?? false
+          },
+          versioning: {
+            isSupported: md?.versioning?.isSupported ?? false,
+            isForceEnabled: md?.versioning?.isForceEnabled ?? false,
+            enabled: dbTarget?.versioning?.streaming ?? md?.versioning?.defaultEnabled ?? false
+          },
+          sync: {},
+          status: {},
+          config: _.transform(md.props, (r, v, k) => {
+            const cfValue = dbTarget?.config?.[k] ?? v.default
+            r[k] = {
+              ...v,
+              value: v.sensitive && cfValue ? '********' : cfValue,
+              ...v.enum && {
+                enum: v.enum.map(o => {
+                  if (o.indexOf('|') > 0) {
+                    const oParsed = o.split('|')
+                    return {
+                      value: oParsed[0],
+                      label: oParsed[1]
+                    }
+                  } else {
+                    return {
+                      value: o,
+                      label: o
+                    }
+                  }
                 })
-              })
+              }
             }
-          }, []), 'key')
-        }
-      }), ['title', 'key'])
-      return targets
-    },
-    async storageStatus (obj, args, context, info) {
-      const activeTargets = await WIKI.models.storage.query().where('isEnabled', true)
-      return activeTargets.map(tgt => {
-        const targetInfo = _.find(WIKI.data.storage, ['key', tgt.key]) || {}
-        return {
-          key: tgt.key,
-          title: targetInfo.title,
-          status: _.get(tgt, 'state.status', 'pending'),
-          message: _.get(tgt, 'state.message', 'Initializing...'),
-          lastAttempt: _.get(tgt, 'state.lastAttempt', null)
+          }, {}),
+          actions: md.actions
         }
       })
     }

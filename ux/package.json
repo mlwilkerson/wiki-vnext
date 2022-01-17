@@ -1,6 +1,12 @@
 {
-  "name": "ux",
-  "version": "0.0.0",
+  "name": "wiki-ux",
+  "version": "3.0.0",
+  "releaseDate": "2022-01-01T01:01:01.000Z",
+  "description": "The most powerful and extensible open source Wiki software.",
+  "productName": "Wiki.js - UX",
+  "author": "Nicolas Giard <nick@requarks.io>",
+  "private": true,
+  "license": "AGPL-3.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

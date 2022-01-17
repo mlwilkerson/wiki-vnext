@@ -203,8 +203,10 @@ exports.up = async knex => {
       table.uuid('id').notNullable().primary().defaultTo(knex.raw('gen_random_uuid()'))
       table.string('module').notNullable()
       table.boolean('isEnabled').notNullable().defaultTo(false)
-      table.enu('mode', ['sync', 'push', 'pull']).notNullable().defaultTo('push')
-      table.string('syncInterval')
+      table.jsonb('contentTypes')
+      table.jsonb('assetDelivery')
+      table.jsonb('versioning')
+      table.jsonb('schedule')
       table.jsonb('config')
       table.jsonb('state')
     })
@@ -556,6 +558,28 @@ exports.up = async knex => {
       groupId: groupGuestId
     }
   ])
+
+  // -> STORAGE MODULE
+
+  await knex('storage').insert({
+    module: 'db',
+    siteId,
+    isEnabled: true,
+    contentTypes: {
+      activeTypes: ['pages', 'images', 'documents', 'others', 'large'],
+      largeThreshold: '5MB'
+    },
+    assetDelivery: {
+      streaming: true,
+      directAccess: false
+    },
+    versioning: {
+      enabled: false
+    },
+    state: {
+      current: 'ok'
+    }
+  })
 
   WIKI.logger.info('Completed 3.0.0 database migration.')
 }

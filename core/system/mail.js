@@ -39,7 +39,7 @@ module.exports = {
       }
       this.transport = nodemailer.createTransport(conf)
     } else {
-      WIKI.logger.warn('Mail is not setup! Please set the configuration in the administration area!')
+      WIKI.logger.warn('Mail needs to be setup in the administration area.')
       this.transport = null
     }
     return this

@@ -3,17 +3,20 @@
 # ===============================================
 
 extend type Query {
-  storageTargets: [StorageTarget] @auth(requires: ["manage:system"])
-  storageStatus: [StorageStatus] @auth(requires: ["manage:system"])
+  storageTargets(
+    siteId: UUID!
+    ): [StorageTarget] @auth(requires: ["manage:system"])
 }
 
 extend type Mutation {
   updateStorageTargets(
+    siteId: UUID!
     targets: [StorageTargetInput]!
   ): DefaultResponse @auth(requires: ["manage:system"])
 
   executeStorageAction(
-    targetKey: String!
+    siteId: UUID!
+    targetId: UUID!
     handler: String!
   ): DefaultResponse @auth(requires: ["manage:system"])
 }
@@ -28,36 +31,33 @@ type StorageTarget {
   module: String
   title: String
   description: String
-  logo: String
+  icon: String
+  banner: String
+  vendor: String
   website: String
-  contentTypes: [String]
-  supportedModes: [String]
-  mode: String
-  hasSchedule: Boolean!
-  syncInterval: String
-  syncIntervalDefault: String
-  config: [KeyValuePair]
-  actions: [StorageTargetAction]
+  contentTypes: JSON
+  assetDelivery: JSON
+  versioning: JSON
+  sync: JSON
+  status: JSON
+  config: JSON
+  actions: JSON
 }
 
 input StorageTargetInput {
-  isEnabled: Boolean!
-  key: String!
-  mode: String!
+  id: UUID!
+  isEnabled: Boolean
+  contentTypes: [String!]
+  largeThreshold: String
+  assetDeliveryFileStreaming: Boolean
+  assetDeliveryDirectAccess: Boolean
+  syncMode: StorageTargetSyncMode
   syncInterval: String
-  config: [KeyValuePairInput]
+  config: JSON
 }
 
-type StorageStatus {
-  key: String!
-  title: String!
-  status: String!
-  message: String!
-  lastAttempt: String!
-}
-
-type StorageTargetAction {
-  handler: String!
-  label: String!
-  hint: String!
+enum StorageTargetSyncMode {
+  PULL
+  PUSH
+  SYNC
 }
