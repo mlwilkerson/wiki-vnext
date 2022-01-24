@@ -76,7 +76,7 @@ q-header.bg-header.text-white.site-header(
         dense
         icon='las la-tools'
         color='secondary'
-        to='/a'
+        to='/_admin'
         aria-label='Administration'
         )
         q-tooltip Administration

@@ -32,7 +32,11 @@ const WIKI = {
   ERROR: require('./helpers/error'),
   configSvc: require('./system/config'),
   kernel: require('./system/kernel'),
-  app: express()
+  app: express(),
+  storage: {
+    defs: [],
+    modules: []
+  }
 }
 global.WIKI = WIKI
 

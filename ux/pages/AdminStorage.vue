@@ -42,7 +42,7 @@ q-page.admin-storage
             :key='tgt.key'
             active-class='bg-primary text-white'
             :active='selectedTarget === tgt.id'
-            @click='selectedTarget = tgt.id'
+            :to='`/_admin/storage/` + tgt.id'
             clickable
             )
             q-item-section(side)
@@ -118,7 +118,7 @@ q-page.admin-storage
           q-item-section
             q-item-label {{$t(`admin.storage.contentTypeLargeFiles`)}}
             q-item-label(caption) {{$t(`admin.storage.contentTypeLargeFilesHint`)}}
-            q-item-label.text-red(v-if='target.module === `db`', caption) {{$t(`admin.storage.contentTypeLargeFilesDBWarn`)}}
+            q-item-label.text-deep-orange(v-if='target.module === `db`', caption) {{$t(`admin.storage.contentTypeLargeFilesDBWarn`)}}
           q-item-section(side)
             q-input(
               outlined
@@ -146,7 +146,7 @@ q-page.admin-storage
           q-item-section
             q-item-label {{$t(`admin.storage.assetStreaming`)}}
             q-item-label(caption) {{$t(`admin.storage.assetStreamingHint`)}}
-            q-item-label.text-red(v-if='!target.assetDelivery.isStreamingSupported', caption) {{$t(`admin.storage.assetStreamingNotSupported`)}}
+            q-item-label.text-deep-orange(v-if='!target.assetDelivery.isStreamingSupported', caption) {{$t(`admin.storage.assetStreamingNotSupported`)}}
         q-item(:tag='target.assetDelivery.isDirectAccessSupported ? `label` : null')
           q-item-section(avatar)
             q-checkbox(
@@ -158,7 +158,97 @@ q-page.admin-storage
           q-item-section
             q-item-label {{$t(`admin.storage.assetDirectAccess`)}}
             q-item-label(caption) {{$t(`admin.storage.assetDirectAccessHint`)}}
-            q-item-label.text-red(v-if='!target.assetDelivery.isDirectAccessSupported', caption) {{$t(`admin.storage.assetDirectAccessNotSupported`)}}
+            q-item-label.text-deep-orange(v-if='!target.assetDelivery.isDirectAccessSupported', caption) {{$t(`admin.storage.assetDirectAccessNotSupported`)}}
+
+      //- -----------------------
+      //- Setup
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm.q-mt-md(v-if='target.setup && target.setup.handler && target.setup.state === `notconfigured`')
+        q-card-section
+          .text-subtitle1 {{$t('admin.storage.setup')}}
+          .text-body2.text-grey {{ $t('admin.storage.setupHint') }}
+        template(v-if='target.setup.handler === `github`')
+          q-item
+            blueprint-icon(icon='test-account')
+            q-item-section
+              q-item-label GitHub Account Type
+              q-item-label(caption) Whether to use an organization or personal GitHub account during setup.
+            q-item-section.col-auto
+              q-btn-toggle(
+                v-model='target.setup.values.accountType'
+                push
+                glossy
+                no-caps
+                toggle-color='primary'
+                :options=`[
+                  { label: $t('admin.storage.githubAccTypeOrg'), value: 'org' },
+                  { label: $t('admin.storage.githubAccTypePersonal'), value: 'personal' }
+                ]`
+              )
+          q-separator.q-my-sm(inset)
+          template(v-if='target.setup.values.accountType === `org`')
+            q-item
+              blueprint-icon(icon='github')
+              q-item-section
+                q-item-label {{ $t('admin.storage.githubOrg') }}
+                q-item-label(caption) {{ $t('admin.storage.githubOrgHint') }}
+              q-item-section
+                q-input(
+                  outlined
+                  v-model='target.setup.values.org'
+                  dense
+                  :aria-label='$t(`admin.storage.githubOrg`)'
+                  )
+            q-separator.q-my-sm(inset)
+          q-item
+            blueprint-icon(icon='dns')
+            q-item-section
+              q-item-label {{ $t('admin.storage.githubPublicUrl') }}
+              q-item-label(caption) {{ $t('admin.storage.githubPublicUrlHint') }}
+            q-item-section
+              q-input(
+                outlined
+                v-model='target.setup.values.publicUrl'
+                dense
+                :aria-label='$t(`admin.storage.githubPublicUrl`)'
+                )
+          q-card-section.q-pt-sm.text-right
+            form(
+              ref='githubSetupForm'
+              method='POST'
+              :action='setupCfg.action'
+              )
+              input(
+                type='hidden'
+                name='manifest'
+                :value='setupCfg.manifest'
+              )
+              q-btn(
+                unelevated
+                icon='las la-angle-double-right'
+                :label='$t(`admin.storage.startSetup`)'
+                color='secondary'
+                @click='setupGitHub'
+                :loading='setupCfg.loading'
+              )
+      q-card.shadow-1.q-pb-sm.q-mt-md(v-if='target.setup && target.setup.handler && target.setup.state === `configured`')
+        q-card-section
+          .text-subtitle1 {{$t('admin.storage.setup')}}
+          .text-body2.text-grey {{ $t('admin.storage.setupConfiguredHint') }}
+        q-item
+          blueprint-icon.self-start(icon='matches', :hue-rotate='140')
+          q-item-section
+            q-item-label Uninstall
+            q-item-label(caption) Delete the active configuration and start over the setup process.
+            q-item-label.text-red(caption): strong This action cannot be undone!
+          q-item-section(side)
+            q-btn.acrylic-btn(
+              flat
+              icon='las la-arrow-circle-right'
+              color='negative'
+              @click=''
+              :label='$t(`admin.storage.uninstall`)'
+            )
 
       //- -----------------------
       //- Configuration
@@ -232,11 +322,10 @@ q-page.admin-storage
       //- -----------------------
       //- Sync
       //- -----------------------
-      q-card.shadow-1.q-pb-sm.q-mt-md
+      q-card.shadow-1.q-pb-sm.q-mt-md(v-if='target.sync && Object.keys(target.sync).length > 0')
         q-card-section
           .text-subtitle1 {{$t('admin.storage.sync')}}
           q-banner.q-mt-md(
-            v-if='!target.sync || Object.keys(target.sync).length < 1'
             rounded
             :class='$q.dark.isActive ? `bg-negative text-white` : `bg-grey-2 text-grey-7`'
             ) {{$t('admin.storage.noSyncModes')}}
@@ -311,7 +400,7 @@ q-page.admin-storage
           q-item-section
             q-item-label {{$t(`admin.storage.enabled`)}}
             q-item-label(caption) {{$t(`admin.storage.enabledHint`)}}
-            q-item-label.text-red(v-if='target.module === `db`', caption) {{$t(`admin.storage.enabledForced`)}}
+            q-item-label.text-deep-orange(v-if='target.module === `db`', caption) {{$t(`admin.storage.enabledForced`)}}
           q-item-section(avatar)
             q-toggle(
               v-model='target.isEnabled'
@@ -338,8 +427,8 @@ q-page.admin-storage
           q-item-section
             q-item-label {{$t(`admin.storage.useVersioning`)}}
             q-item-label(caption) {{$t(`admin.storage.useVersioningHint`)}}
-            q-item-label.text-red(v-if='!target.versioning.isSupported', caption) {{$t(`admin.storage.versioningNotSupported`)}}
-            q-item-label.text-red(v-if='target.versioning.isForceEnabled', caption) {{$t(`admin.storage.versioningForceEnabled`)}}
+            q-item-label.text-deep-orange(v-if='!target.versioning.isSupported', caption) {{$t(`admin.storage.versioningNotSupported`)}}
+            q-item-label.text-deep-orange(v-if='target.versioning.isForceEnabled', caption) {{$t(`admin.storage.versioningForceEnabled`)}}
           q-item-section(avatar)
             q-toggle(
               v-model='target.versioning.enabled'
@@ -349,7 +438,7 @@ q-page.admin-storage
               unchecked-icon='las la-times'
               :aria-label='$t(`admin.storage.useVersioning`)'
               )
-  //-             v-divider.mt-3
+
   //-             .overline.my-5 {{$t('admin.storage.syncDirection')}}
   //-             .body-2.ml-3 {{$t('admin.storage.syncDirectionSubtitle')}}
   //-             .pr-3.pt-3
@@ -391,26 +480,6 @@ q-page.admin-storage
   //-                 i18next.caption(path='admin.storage.syncScheduleDefault', tag='div')
   //-                   strong(place='schedule') {{getDefaultSchedule(target.syncIntervalDefault)}}
 
-  //-             template(v-if='target.actions && target.actions.length > 0')
-  //-               v-divider.mt-3
-  //-               .overline.my-5 {{$t('admin.storage.actions')}}
-  //-               v-alert(outlined, :value='!target.isEnabled', color='red', icon='mdi-alert')
-  //-                 .body-2 {{$t('admin.storage.actionsInactiveWarn')}}
-  //-               v-container.pt-0(grid-list-xl, fluid)
-  //-                 v-layout(row, wrap, fill-height)
-  //-                   v-flex(xs12, lg6, xl4, v-for='act of target.actions', :key='act.handler')
-  //-                     v-card.radius-7.grey(flat, :class='$vuetify.theme.dark ? `darken-3-d5` : `lighten-3`', height='100%')
-  //-                       v-card-text
-  //-                         .subtitle-1(v-html='act.label')
-  //-                         .body-2.mt-4(v-html='act.hint')
-  //-                         v-btn.mx-0.mt-5(
-  //-                           @click='executeAction(target.key, act.handler)'
-  //-                           outlined
-  //-                           :color='$vuetify.theme.dark ? `blue` : `primary`'
-  //-                           :disabled='runningAction || !target.isEnabled'
-  //-                           :loading='runningActionHandler === act.handler'
-  //-                           ) {{$t('admin.storage.actionRun')}}
-
 </template>
 
 <script>
@@ -418,7 +487,7 @@ import find from 'lodash/find'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import { get } from '@requarks/vuex-pathify'
-// import { LoopingRhombusesSpinner } from 'epic-spinners'
+import transform from 'lodash/transform'
 
 export default {
   data () {
@@ -427,8 +496,14 @@ export default {
       runningAction: false,
       runningActionHandler: '',
       selectedTarget: '',
+      desiredTarget: '',
       target: null,
-      targets: []
+      targets: [],
+      setupCfg: {
+        action: '',
+        manifest: '',
+        loading: false
+      }
     }
   },
   computed: {
@@ -440,9 +515,38 @@ export default {
     },
     targets (newValue) {
       if (newValue && newValue.length > 0) {
-        this.selectedTarget = find(this.targets, ['module', 'db'])?.id || null
+        if (this.desiredTarget) {
+          this.selectedTarget = this.desiredTarget
+          this.desiredTarget = ''
+        } else {
+          this.selectedTarget = find(this.targets, ['module', 'db'])?.id || null
+          if (!this.$route.params.id) {
+            this.$router.replace(`/_admin/storage/${this.selectedTarget}`)
+          }
+        }
+        this.handleSetupCallback()
+      }
+    },
+    $route (to, from) {
+      if (!to.params.id) {
+        return
+      }
+      if (this.targets.length < 1) {
+        this.desiredTarget = to.params.id
+      } else {
+        this.selectedTarget = to.params.id
       }
     }
+  },
+  mounted () {
+    if (!this.selectedTarget && this.$route.params.id) {
+      if (this.targets.length < 1) {
+        this.desiredTarget = this.$route.params.id
+      } else {
+        this.selectedTarget = this.$route.params.id
+      }
+    }
+    this.handleSetupCallback()
   },
   methods: {
     configIfCheck (ifs) {
@@ -457,26 +561,62 @@ export default {
         icon: 'cached'
       })
     },
-    async save () {
-      this.$store.commit('loadingStart', 'admin-storage-savetargets')
-      await this.$apollo.mutate({
-        mutation: gql`{}`,
-        variables: {
-          targets: this.targets.map(tgt => _.pick(tgt, [
-            'isEnabled',
-            'key',
-            'config',
-            'mode',
-            'syncInterval'
-          ])).map(str => ({ ...str, config: str.config.map(cfg => ({ ...cfg, value: JSON.stringify({ v: cfg.value.value }) })) }))
+    async save ({ silent }) {
+      let saveSuccess = false
+      if (!silent) { this.$q.loading.show() }
+      try {
+        const resp = await this.$apollo.mutate({
+          mutation: gql`
+            mutation (
+              $siteId: UUID!
+              $targets: [StorageTargetInput]!
+              ) {
+              updateStorageTargets(
+                siteId: $siteId
+                targets: $targets
+              ) {
+                status {
+                  succeeded
+                  message
+                }
+              }
+            }
+          `,
+          variables: {
+            siteId: this.currentSiteId,
+            targets: this.targets.map(tgt => ({
+              id: tgt.id,
+              module: tgt.module,
+              isEnabled: tgt.isEnabled,
+              contentTypes: tgt.contentTypes.activeTypes,
+              largeThreshold: tgt.contentTypes.largeThreshold,
+              assetDeliveryFileStreaming: tgt.assetDelivery.streaming,
+              assetDeliveryDirectAccess: tgt.assetDelivery.directAccess,
+              useVersioning: tgt.versioning.enabled,
+              config: transform(tgt.config, (r, v, k) => { r[k] = v.value }, {})
+            }))
+          }
+        })
+        if (resp?.data?.updateStorageTargets?.status?.succeeded) {
+          saveSuccess = true
+          if (!silent) {
+            this.$q.notify({
+              type: 'positive',
+              message: this.$t('admin.storage.saveSuccess')
+            })
+          }
+        } else {
+          throw new Error(resp?.data?.updateStorageTargets?.status?.message || 'Unexpected error')
         }
-      })
-      this.$store.commit('showNotification', {
-        message: 'Storage configuration saved successfully.',
-        style: 'success',
-        icon: 'check'
-      })
-      this.$store.commit('loadingStop', 'admin-storage-savetargets')
+      } catch (err) {
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('admin.storage.saveFailed'),
+          caption: err.message
+        })
+      }
+      if (!silent) { this.$q.loading.hide() }
+      return saveSuccess
     },
     getTargetSubtitle (target) {
       if (!target.isEnabled) {
@@ -521,6 +661,156 @@ export default {
       this.runningAction = false
       this.runningActionHandler = ''
       this.$store.commit('loadingStop', 'admin-storage-executeaction')
+    },
+    async handleSetupCallback () {
+      if (this.targets.length < 1 || !this.selectedTarget) { return }
+
+      this.$nextTick(() => {
+        if (this.target?.setup?.handler === 'github' && this.$route.query.code) {
+          this.setupGitHubCallback(this.$route.query.code)
+        }
+      })
+    },
+    async setupGitHub () {
+      // -> Format values
+      this.target.setup.values.publicUrl = this.target.setup.values.publicUrl.toLowerCase()
+
+      // -> Basic input check
+      if (this.target.setup.values.accountType === 'org' && this.target.setup.values.org.length < 1) {
+        return this.$q.notify({
+          type: 'negative',
+          message: 'Invalid GitHub Organization',
+          caption: 'Enter a valid github organization.'
+        })
+      }
+      if (this.target.setup.values.publicUrl.length < 11 || !/^https?:\/\/.{4,}$/.test(this.target.setup.values.publicUrl)) {
+        return this.$q.notify({
+          type: 'negative',
+          message: 'Invalid Wiki Public URL',
+          caption: 'Enter a valid public URL for your wiki.'
+        })
+      }
+      if (this.target.setup.values.publicUrl.endsWith('/')) {
+        this.target.setup.values.publicUrl = this.target.setup.values.publicUrl.slice(0, -1)
+      }
+
+      // -> Generate manifest
+      this.setupCfg.loading = true
+      if (this.target.setup.values.accountType === 'org') {
+        this.setupCfg.action = `https://github.com/organizations/${this.target.setup.values.org}/settings/apps/new`
+      } else {
+        this.setupCfg.action = 'https://github.com/settings/apps/new'
+      }
+      this.setupCfg.manifest = JSON.stringify({
+        name: 'Wiki.js GitHub Storage',
+        description: 'Connects your Wiki.js to GitHub repositories and synchronize their contents.',
+        url: this.target.setup.values.publicUrl,
+        hook_attributes: {
+          url: `${this.target.setup.values.publicUrl}/_github/${this.currentSiteId}/events`
+        },
+        redirect_url: `${this.target.setup.values.publicUrl}/_admin/storage/${this.target.id}`,
+        callback_urls: [
+          `${this.target.setup.values.publicUrl}/_admin/storage/${this.target.id}`
+        ],
+        public: false,
+        default_permissions: {
+          contents: 'write',
+          metadata: 'read',
+          members: 'read'
+        },
+        default_events: [
+          'create',
+          'delete',
+          'push'
+        ]
+      })
+      this.$q.loading.show({
+        message: this.$t('admin.storage.githubPreparingManifest')
+      })
+      if (await this.save({ silent: true })) {
+        this.$refs.githubSetupForm.submit()
+      } else {
+        this.$q.loading.hide()
+      }
+    },
+    async setupGitHubCallback (code) {
+      this.$q.loading.show({
+        message: this.$t('admin.storage.githubVerifying')
+      })
+
+      try {
+        const resp = await this.$apollo.mutate({
+          mutation: gql`
+            mutation (
+              $targetId: UUID!
+              $state: JSON!
+              ) {
+              setupStorageTarget(
+                targetId: $targetId
+                state: $state
+              ) {
+                status {
+                  succeeded
+                  message
+                }
+                state
+              }
+            }
+          `,
+          variables: {
+            targetId: this.selectedTarget,
+            state: {
+              step: 'connect',
+              code
+            }
+          }
+        })
+        if (resp?.data?.setupStorageTarget?.status?.succeeded) {
+          if (resp.data.setupStorageTarget.state?.nextStep !== 'selectRepo') {
+            throw new Error('Unknown Setup Step')
+          }
+
+          this.$router.replace({ query: null })
+          this.$q.loading.hide()
+
+          this.$q.dialog({
+            title: this.$t('admin.storage.githubRepo'),
+            message: this.$t('admin.storage.githubRepoHint'),
+            prompt: {
+              model: 'wiki',
+              type: 'text',
+              outlined: true,
+              isValid: v => /^[A-Za-z0-9-._]{1,100}$/.test(v)
+            },
+            cancel: false,
+            persistent: true
+          }).onOk(data => {
+            this.$q.loading.show({
+              message: this.$t('admin.storage.githubRepoCreating')
+            })
+            this.target.isEnabled = true
+            this.target.setup.state = 'configured'
+            setTimeout(() => {
+              this.$q.loading.hide()
+              this.$q.notify({
+                type: 'positive',
+                message: this.$t('admin.storage.githubSetupSuccess')
+              })
+            }, 2000)
+          }).onCancel(() => {
+            throw new Error('Setup was aborted prematurely.')
+          })
+        } else {
+          throw new Error(resp?.data?.setupStorageTarget?.status?.message || 'Unexpected error')
+        }
+      } catch (err) {
+        this.$q.loading.hide()
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('admin.storage.githubSetupFailed'),
+          caption: err.message
+        })
+      }
     }
   },
   apollo: {
@@ -546,6 +836,7 @@ export default {
           versioning
           sync
           status
+          setup
           config
           actions
         }

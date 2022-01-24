@@ -17,7 +17,12 @@ versioning:
   defaultEnabled: true
   isForceEnabled: true
 sync: false
-mustSetup: true
+setup:
+  handler: github
+  defaultValues:
+    accountType: org
+    org: ''
+    publicUrl: https://
 props: {}
 actions:
   - handler: exportAll

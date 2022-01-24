@@ -75,7 +75,7 @@ q-page.admin-groups
             q-td(:props='props')
               q-btn.acrylic-btn.q-mr-sm(
                 flat
-                :to='`/a/groups/` + props.row.id'
+                :to='`/_admin/groups/` + props.row.id'
                 icon='las la-pen'
                 color='indigo'
                 :label='$t(`common.actions.edit`)'
@@ -153,7 +153,7 @@ export default {
   watch: {
     overlay (newValue, oldValue) {
       if (newValue === '' && oldValue === 'GroupEditOverlay') {
-        this.$router.push('/a/groups')
+        this.$router.push('/_admin/groups')
       }
     },
     $route: 'checkOverlay'
@@ -188,7 +188,7 @@ export default {
       })
     },
     editGroup (gr) {
-      this.$router.push(`/a/groups/${gr.id}`)
+      this.$router.push(`/_admin/groups/${gr.id}`)
     },
     deleteGroup (gr) {
       this.$q.dialog({

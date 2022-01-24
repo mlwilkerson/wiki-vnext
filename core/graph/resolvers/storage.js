@@ -30,7 +30,7 @@ module.exports = {
       //     }, []), 'key')
       //   }
       // }), ['title', 'key'])
-      return WIKI.data.storage.map(md => {
+      return _.sortBy(WIKI.storage.defs.map(md => {
         const dbTarget = dbTargets.find(tg => tg.module === md.key)
         return {
           id: dbTarget?.id ?? uuid(),
@@ -43,8 +43,8 @@ module.exports = {
           vendor: md.vendor,
           website: md.website,
           contentTypes: {
-            activeTypes: dbTarget?.activeTypes ?? md.contentTypes.defaultTypesEnabled,
-            largeThreshold: dbTarget?.largeThreshold ?? md.contentTypes.defaultLargeThreshold
+            activeTypes: dbTarget?.contentTypes?.activeTypes ?? md.contentTypes.defaultTypesEnabled,
+            largeThreshold: dbTarget?.contentTypes?.largeThreshold ?? md.contentTypes.defaultLargeThreshold
           },
           assetDelivery: {
             isStreamingSupported: md?.assetDelivery?.isStreamingSupported ?? false,
@@ -55,10 +55,20 @@ module.exports = {
           versioning: {
             isSupported: md?.versioning?.isSupported ?? false,
             isForceEnabled: md?.versioning?.isForceEnabled ?? false,
-            enabled: dbTarget?.versioning?.streaming ?? md?.versioning?.defaultEnabled ?? false
+            enabled: dbTarget?.versioning?.enabled ?? md?.versioning?.defaultEnabled ?? false
           },
           sync: {},
           status: {},
+          setup: {
+            handler: md?.setup?.handler,
+            state: 'notconfigured',
+            values: md.setup?.handler
+              ? _.transform(md.setup.defaultValues,
+                (r, v, k) => {
+                  r[k] = dbTarget?.config?.[k] ?? v
+                }, {})
+              : {}
+          },
           config: _.transform(md.props, (r, v, k) => {
             const cfValue = dbTarget?.config?.[k] ?? v.default
             r[k] = {
@@ -84,40 +94,94 @@ module.exports = {
           }, {}),
           actions: md.actions
         }
-      })
+      }), ['title'])
     }
   },
   Mutation: {
     async updateStorageTargets (obj, args, context) {
+      WIKI.logger.debug(`Updating storage targets for site ${args.siteId}...`)
       try {
-        const dbTargets = await WIKI.models.storage.getTargets()
+        const dbTargets = await WIKI.models.storage.getTargets({ siteId: args.siteId })
         for (const tgt of args.targets) {
-          const currentDbTarget = _.find(dbTargets, ['key', tgt.key])
-          if (!currentDbTarget) {
-            continue
+          const md = _.find(WIKI.storage.defs, ['key', tgt.module])
+          if (!md) {
+            throw new Error('Invalid module key for non-existent storage target.')
           }
-          await WIKI.models.storage.query().patch({
-            isEnabled: tgt.isEnabled,
-            mode: tgt.mode,
-            syncInterval: tgt.syncInterval,
-            config: _.reduce(tgt.config, (result, value, key) => {
-              let configValue = _.get(JSON.parse(value.value), 'v', null)
-              if (configValue === '********') {
-                configValue = _.get(currentDbTarget.config, value.key, '')
-              }
-              _.set(result, `${value.key}`, configValue)
-              return result
-            }, {}),
-            state: {
-              status: 'pending',
-              message: 'Initializing...',
-              lastAttempt: null
-            }
-          }).where('key', tgt.key)
+
+          const dbTarget = _.find(dbTargets, ['id', tgt.id])
+          // -> Target doesn't exist yet in the DB, let's create it
+          if (!dbTarget) {
+            WIKI.logger.debug(`No existing DB configuration for module ${tgt.module}. Creating a new one...`)
+            await WIKI.models.storage.query().insert({
+              id: tgt.id,
+              module: tgt.module,
+              siteId: args.siteId,
+              isEnabled: tgt.isEnabled ?? false,
+              contentTypes: {
+                activeTypes: tgt.contentTypes ?? md.contentTypes.defaultTypesEnabled ?? [],
+                largeThreshold: tgt.largeThreshold ?? md.contentTypes.defaultLargeThreshold ?? '5MB'
+              },
+              assetDelivery: {
+                streaming: tgt.assetDeliveryFileStreaming ?? md?.assetDelivery?.defaultStreamingEnabled ?? false,
+                directAccess: tgt.assetDeliveryDirectAccess ?? md?.assetDelivery?.defaultDirectAccessEnabled ?? false
+              },
+              versioning: {
+                enabled: tgt.useVersioning ?? md?.versioning?.defaultEnabled ?? false
+              },
+              state: {
+                current: 'ok'
+              },
+              config: tgt.config ?? {}
+            })
+          } else {
+            WIKI.logger.debug(`Updating DB configuration for module ${tgt.module}...`)
+            await WIKI.models.storage.query().patch({
+              isEnabled: tgt.isEnabled ?? dbTarget.isEnabled ?? false,
+              contentTypes: {
+                activeTypes: tgt.contentTypes ?? dbTarget?.contentTypes?.activeTypes ?? [],
+                largeThreshold: tgt.largeThreshold ?? dbTarget?.contentTypes?.largeThreshold ?? '5MB'
+              },
+              assetDelivery: {
+                streaming: tgt.assetDeliveryFileStreaming ?? dbTarget?.assetDelivery?.streaming ?? false,
+                directAccess: tgt.assetDeliveryDirectAccess ?? dbTarget?.assetDelivery?.directAccess ?? false
+              },
+              versioning: {
+                enabled: tgt.useVersioning ?? dbTarget?.versioning?.enabled ?? false
+              },
+              config: tgt.config
+                ? _.transform(tgt.config, (r, v, k) => {
+                  r[k] = (v === '********') ? (dbTarget.config[k] ?? '') : v
+                }, {})
+                : dbTarget.config
+            }).where('id', tgt.id)
+          }
         }
-        await WIKI.models.storage.initTargets()
+        // await WIKI.models.storage.initTargets()
         return {
-          responseResult: graphHelper.generateSuccess('Storage targets updated successfully')
+          status: graphHelper.generateSuccess('Storage targets updated successfully')
+        }
+      } catch (err) {
+        return graphHelper.generateError(err)
+      }
+    },
+    async setupStorageTarget (obj, args, context) {
+      try {
+        const tgt = await WIKI.models.storage.query().findById(args.targetId)
+        if (!tgt) {
+          throw new Error('Not storage target matching this ID')
+        }
+        const md = _.find(WIKI.storage.defs, ['key', tgt.module])
+        if (!md) {
+          throw new Error('No matching storage module installed.')
+        }
+        if (!await WIKI.models.storage.ensureModule(md.key)) {
+          throw new Error('Failed to load storage module. Check logs for details.')
+        }
+        const result = await WIKI.storage.modules[md.key].setup(args.targetId, args.state)
+
+        return {
+          status: graphHelper.generateSuccess('Storage target setup step succeeded'),
+          state: result
         }
       } catch (err) {
         return graphHelper.generateError(err)
@@ -127,7 +191,7 @@ module.exports = {
       try {
         await WIKI.models.storage.executeAction(args.targetKey, args.handler)
         return {
-          responseResult: graphHelper.generateSuccess('Action completed.')
+          status: graphHelper.generateSuccess('Action completed.')
         }
       } catch (err) {
         return graphHelper.generateError(err)

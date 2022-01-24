@@ -149,7 +149,7 @@ export default {
     },
     editSite (st) {
       this.$store.set('admin/currentSiteId', st.id)
-      this.$router.push('/a/general')
+      this.$router.push('/_admin/general')
     },
     toggleSiteState (st, newState) {
       this.$q.dialog({

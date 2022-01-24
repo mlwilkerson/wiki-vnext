@@ -14,8 +14,12 @@ extend type Mutation {
     targets: [StorageTargetInput]!
   ): DefaultResponse @auth(requires: ["manage:system"])
 
+  setupStorageTarget(
+    targetId: UUID!
+    state: JSON!
+  ): StorageTargetSetupResponse @auth(requires: ["manage:system"])
+
   executeStorageAction(
-    siteId: UUID!
     targetId: UUID!
     handler: String!
   ): DefaultResponse @auth(requires: ["manage:system"])
@@ -40,12 +44,19 @@ type StorageTarget {
   versioning: JSON
   sync: JSON
   status: JSON
+  setup: JSON
   config: JSON
   actions: JSON
 }
 
+type StorageTargetSetupResponse {
+  status: ResponseStatus
+  state: JSON
+}
+
 input StorageTargetInput {
   id: UUID!
+  module: String!
   isEnabled: Boolean
   contentTypes: [String!]
   largeThreshold: String
@@ -53,6 +64,7 @@ input StorageTargetInput {
   assetDeliveryDirectAccess: Boolean
   syncMode: StorageTargetSyncMode
   syncInterval: String
+  useVersioning: Boolean
   config: JSON
 }
 

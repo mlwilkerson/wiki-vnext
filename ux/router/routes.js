@@ -23,10 +23,10 @@ const routes = [
     ]
   },
   {
-    path: '/a',
+    path: '/_admin',
     component: () => import('../layouts/AdminLayout.vue'),
     children: [
-      { path: '', redirect: '/a/dashboard' },
+      { path: '', redirect: '/_admin/dashboard' },
       { path: 'dashboard', component: () => import('../pages/AdminDashboard.vue') },
       { path: 'sites', component: () => import('../pages/AdminSites.vue') },
       { path: 'general', component: () => import('../pages/AdminGeneral.vue') },
@@ -34,7 +34,7 @@ const routes = [
       { path: 'locale', component: () => import('../pages/AdminLocale.vue') },
       { path: 'login', component: () => import('../pages/AdminLogin.vue') },
       { path: 'navigation', component: () => import('../pages/AdminNavigation.vue') },
-      { path: 'storage', component: () => import('../pages/AdminStorage.vue') },
+      { path: 'storage/:id?', component: () => import('../pages/AdminStorage.vue') },
       // { path: 'pages', component: () => import('../pages/AdminPages.vue') },
       // { path: 'pages/:id(\\d+)', component: () => import('../pages/AdminPagesEdit.vue') },
       // { path: 'pages/visualize', component: () => import('../pages/AdminPagesVisualize.vue') },

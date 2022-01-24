@@ -17,12 +17,16 @@ export default defineConfig({
   server: {
     port: 80,
     proxy: {
+      '^/_github/.*': 'http://localhost:11511',
       '/_graphql': 'http://localhost:11511'
     },
     fs: {
       allow: [
         process.cwd()
       ]
+    },
+    hmr: {
+      clientPort: 443
     }
   }
 })

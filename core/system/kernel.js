@@ -62,7 +62,7 @@ module.exports = {
       // await WIKI.auth.activateStrategies()
       // await WIKI.models.commentProviders.initProvider()
       // await WIKI.models.searchEngines.initEngine()
-      // await WIKI.models.storage.initTargets()
+      await WIKI.models.storage.initTargets()
       WIKI.scheduler.start()
 
       await WIKI.models.subscribeToNotifications()

@@ -87,7 +87,7 @@ q-page.admin-groups
               q-btn.acrylic-btn.q-mr-sm(
                 v-if='!props.row.isSystem'
                 flat
-                :to='`/a/users/` + props.row.id'
+                :to='`/_admin/users/` + props.row.id'
                 icon='las la-pen'
                 color='indigo'
                 :label='$t(`common.actions.edit`)'
@@ -170,7 +170,7 @@ export default {
   watch: {
     overlay (newValue, oldValue) {
       if (newValue === '' && oldValue === 'UserEditOverlay') {
-        this.$router.push('/a/users')
+        this.$router.push('/_admin/users')
         this.$apollo.queries.users.refetch()
       }
     },
