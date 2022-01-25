@@ -1,4 +1,5 @@
 const { Octokit, App } = require('octokit')
+const jwt = require('jsonwebtoken')
 
 /* global WIKI */
 
@@ -30,17 +31,27 @@ module.exports = {
                 appEvents: resp.data.events,
                 ownerLogin: resp.data.owner?.login,
                 ownerId: resp.data.owner?.id
+              },
+              state: {
+                current: 'ok',
+                setup: 'pendinginstall'
               }
             }).where('id', id)
             return {
-              nextStep: 'selectRepo'
+              nextStep: 'installApp',
+              url: `https://github.com/apps/${resp.data.slug}/installations/new/permissions?target_id=${resp.data.owner?.id}`
             }
           } else {
             throw new Error('GitHub refused the code or could not be reached.')
           }
         }
-        case 'repo': {
+        case 'verify': {
           // TODO: Create repo
+          // const dasJwt = jwt.sign({
+          //   iss: resp.data.id,
+          //   exp: Math.floor(Date.now() / 1000) + 300,
+          //   iat: Math.floor(Date.now() / 1000) - 60
+          // }, resp.data.pem, { algorithm: 'RS256' })
           break
         }
         default: {

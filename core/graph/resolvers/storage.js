@@ -61,7 +61,7 @@ module.exports = {
           status: {},
           setup: {
             handler: md?.setup?.handler,
-            state: 'notconfigured',
+            state: dbTarget?.state?.setup ?? 'notconfigured',
             values: md.setup?.handler
               ? _.transform(md.setup.defaultValues,
                 (r, v, k) => {

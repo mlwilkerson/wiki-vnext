@@ -163,11 +163,11 @@ q-page.admin-storage
       //- -----------------------
       //- Setup
       //- -----------------------
-      q-card.shadow-1.q-pb-sm.q-mt-md(v-if='target.setup && target.setup.handler && target.setup.state === `notconfigured`')
+      q-card.shadow-1.q-pb-sm.q-mt-md(v-if='target.setup && target.setup.handler && target.setup.state !== `configured`')
         q-card-section
           .text-subtitle1 {{$t('admin.storage.setup')}}
           .text-body2.text-grey {{ $t('admin.storage.setupHint') }}
-        template(v-if='target.setup.handler === `github`')
+        template(v-if='target.setup.handler === `github` && target.setup.state === `notconfigured`')
           q-item
             blueprint-icon(icon='test-account')
             q-item-section
@@ -231,6 +231,28 @@ q-page.admin-storage
                 @click='setupGitHub'
                 :loading='setupCfg.loading'
               )
+        template(v-else-if='target.setup.handler === `github` && target.setup.state === `pendinginstall`')
+          q-card-section.q-py-none
+            q-banner(
+              rounded
+              :class='$q.dark.isActive ? `bg-teal-9 text-white` : `bg-teal-1 text-teal-9`'
+              ) {{$t('admin.storage.githubFinish')}}
+          q-card-section.q-pt-sm.text-right
+            q-btn.q-mr-sm(
+              unelevated
+              icon='las la-times-circle'
+              :label='$t(`admin.storage.cancelSetup`)'
+              color='negative'
+              @click='setupDestroy()'
+            )
+            q-btn(
+              unelevated
+              icon='las la-angle-double-right'
+              :label='$t(`admin.storage.finishSetup`)'
+              color='secondary'
+              @click='setupGitHubStep(`verify`)'
+              :loading='setupCfg.loading'
+            )
       q-card.shadow-1.q-pb-sm.q-mt-md(v-if='target.setup && target.setup.handler && target.setup.state === `configured`')
         q-card-section
           .text-subtitle1 {{$t('admin.storage.setup')}}
@@ -396,21 +418,22 @@ q-page.admin-storage
       q-card.rounded-borders.q-pb-md.q-mt-md(style='width: 350px;')
         q-card-section
           .text-subtitle1 Status
-        q-item(:tag='target.module !== `db` ? `label` : null')
-          q-item-section
-            q-item-label {{$t(`admin.storage.enabled`)}}
-            q-item-label(caption) {{$t(`admin.storage.enabledHint`)}}
-            q-item-label.text-deep-orange(v-if='target.module === `db`', caption) {{$t(`admin.storage.enabledForced`)}}
-          q-item-section(avatar)
-            q-toggle(
-              v-model='target.isEnabled'
-              :disable='target.module === `db`'
-              color='primary'
-              checked-icon='las la-check'
-              unchecked-icon='las la-times'
-              :aria-label='$t(`admin.general.allowSearch`)'
-              )
-        q-separator.q-my-sm(inset)
+        template(v-if='target.module !== `db` && !(target.setup && target.setup.handler && target.setup.state !== `configured`)')
+          q-item(tag='label')
+            q-item-section
+              q-item-label {{$t(`admin.storage.enabled`)}}
+              q-item-label(caption) {{$t(`admin.storage.enabledHint`)}}
+              q-item-label.text-deep-orange(v-if='target.module === `db`', caption) {{$t(`admin.storage.enabledForced`)}}
+            q-item-section(avatar)
+              q-toggle(
+                v-model='target.isEnabled'
+                :disable='target.module === `db` || (target.setup && target.setup.handler && target.setup.state !== `configured`)'
+                color='primary'
+                checked-icon='las la-check'
+                unchecked-icon='las la-times'
+                :aria-label='$t(`admin.general.allowSearch`)'
+                )
+          q-separator.q-my-sm(inset)
         q-item
           q-item-section
             q-item-label.text-grey {{$t(`admin.storage.currentState`)}}
@@ -488,6 +511,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import { get } from '@requarks/vuex-pathify'
 import transform from 'lodash/transform'
+
+import GithubSetupInstallDialog from '../components/GithubSetupInstallDialog.vue'
 
 export default {
   data () {
@@ -667,9 +692,12 @@ export default {
 
       this.$nextTick(() => {
         if (this.target?.setup?.handler === 'github' && this.$route.query.code) {
-          this.setupGitHubCallback(this.$route.query.code)
+          this.setupGitHubStep('connect', this.$route.query.code)
         }
       })
+    },
+    async setupDestroy () {
+
     },
     async setupGitHub () {
       // -> Format values
@@ -690,6 +718,7 @@ export default {
           caption: 'Enter a valid public URL for your wiki.'
         })
       }
+
       if (this.target.setup.values.publicUrl.endsWith('/')) {
         this.target.setup.values.publicUrl = this.target.setup.values.publicUrl.slice(0, -1)
       }
@@ -702,7 +731,7 @@ export default {
         this.setupCfg.action = 'https://github.com/settings/apps/new'
       }
       this.setupCfg.manifest = JSON.stringify({
-        name: 'Wiki.js GitHub Storage',
+        name: `Wiki.js - ${this.currentSiteId.slice(-12)}`,
         description: 'Connects your Wiki.js to GitHub repositories and synchronize their contents.',
         url: this.target.setup.values.publicUrl,
         hook_attributes: {
@@ -730,10 +759,11 @@ export default {
       if (await this.save({ silent: true })) {
         this.$refs.githubSetupForm.submit()
       } else {
+        this.setupCfg.loading = false
         this.$q.loading.hide()
       }
     },
-    async setupGitHubCallback (code) {
+    async setupGitHubStep (step, code) {
       this.$q.loading.show({
         message: this.$t('admin.storage.githubVerifying')
       })
@@ -760,13 +790,91 @@ export default {
           variables: {
             targetId: this.selectedTarget,
             state: {
-              step: 'connect',
-              code
+              step,
+              ...code && { code }
             }
           }
         })
         if (resp?.data?.setupStorageTarget?.status?.succeeded) {
-          if (resp.data.setupStorageTarget.state?.nextStep !== 'selectRepo') {
+          switch (resp.data.setupStorageTarget.state?.nextStep) {
+            case 'installApp': {
+              this.$router.replace({ query: null })
+              this.$q.loading.hide()
+
+              this.$q.dialog({
+                component: GithubSetupInstallDialog,
+                persistent: true
+              }).onOk(() => {
+                this.$q.loading.show({
+                  message: this.$t('admin.storage.githubRedirecting')
+                })
+                window.location.assign(resp.data.setupStorageTarget.state?.url)
+              }).onCancel(() => {
+                throw new Error('Setup was aborted prematurely.')
+              })
+              break
+            }
+            case 'completed': {
+              this.target.isEnabled = true
+              this.target.setup.state = 'configured'
+              setTimeout(() => {
+                this.$q.loading.hide()
+                this.$q.notify({
+                  type: 'positive',
+                  message: this.$t('admin.storage.githubSetupSuccess')
+                })
+              }, 2000)
+              break
+            }
+            default: {
+              throw new Error('Unknown Setup Step')
+            }
+          }
+        } else {
+          throw new Error(resp?.data?.setupStorageTarget?.status?.message || 'Unexpected error')
+        }
+      } catch (err) {
+        this.$q.loading.hide()
+        this.$q.notify({
+          type: 'negative',
+          message: this.$t('admin.storage.githubSetupFailed'),
+          caption: err.message
+        })
+      }
+    },
+    async setupGitHubFinish () {
+      this.$q.loading.show({
+        message: this.$t('admin.storage.githubVerifying')
+      })
+
+      try {
+        const resp = await this.$apollo.mutate({
+          mutation: gql`
+            mutation (
+              $targetId: UUID!
+              $state: JSON!
+              ) {
+              setupStorageTarget(
+                targetId: $targetId
+                state: $state
+              ) {
+                status {
+                  succeeded
+                  message
+                }
+                state
+              }
+            }
+          `,
+          variables: {
+            targetId: this.selectedTarget,
+            state: {
+              step: 'verify'
+            }
+          }
+        })
+        if (resp?.data?.setupStorageTarget?.status?.succeeded) {
+          if (resp.data.setupStorageTarget.state?.nextStep !== 'installApp') {
             throw new Error('Unknown Setup Step')
           }
 
@@ -774,29 +882,22 @@ export default {
           this.$q.loading.hide()
 
           this.$q.dialog({
-            title: this.$t('admin.storage.githubRepo'),
-            message: this.$t('admin.storage.githubRepoHint'),
-            prompt: {
-              model: 'wiki',
-              type: 'text',
-              outlined: true,
-              isValid: v => /^[A-Za-z0-9-._]{1,100}$/.test(v)
-            },
-            cancel: false,
+            component: GithubSetupInstallDialog,
             persistent: true
-          }).onOk(data => {
+          }).onOk(() => {
             this.$q.loading.show({
-              message: this.$t('admin.storage.githubRepoCreating')
+              message: this.$t('admin.storage.githubRedirecting')
             })
-            this.target.isEnabled = true
-            this.target.setup.state = 'configured'
-            setTimeout(() => {
-              this.$q.loading.hide()
-              this.$q.notify({
-                type: 'positive',
-                message: this.$t('admin.storage.githubSetupSuccess')
-              })
-            }, 2000)
+            window.location.assign(resp.data.setupStorageTarget.state?.url)
+            // this.target.isEnabled = true
+            // this.target.setup.state = 'configured'
+            // setTimeout(() => {
+            //   this.$q.loading.hide()
+            //   this.$q.notify({
+            //     type: 'positive',
+            //     message: this.$t('admin.storage.githubSetupSuccess')
+            //   })
+            // }, 2000)
           }).onCancel(() => {
             throw new Error('Setup was aborted prematurely.')
           })
