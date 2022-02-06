@@ -71,6 +71,10 @@ import {
   Ripple
 } from 'quasar'
 import quasarIconSet from 'quasar/icon-set/mdi-v6'
+
+import VNetworkGraph from 'v-network-graph'
+import 'v-network-graph/lib/style.css'
+
 import Router from './router'
 import Store from './store'
 import I18n from './i18n'
@@ -158,6 +162,9 @@ export function createApp () {
 
   // Apollo
   app.use(Apollo)
+
+  //
+  app.use(VNetworkGraph)
 
   // Helpers
   PageHelpers({

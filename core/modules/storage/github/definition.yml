@@ -23,7 +23,25 @@ setup:
     accountType: org
     org: ''
     publicUrl: https://
-props: {}
+props:
+  appName:
+    readOnly: true
+    type: String
+    title: App Name
+    hint: Name of the generated app in GitHub.
+    icon: 3d-touch
+  repoFullName:
+    readOnly: true
+    type: String
+    title: GitHub Repository
+    hint: The GitHub repository used for content synchronization.
+    icon: github
+  repoDefaultBranch:
+    readOnly: true
+    type: String
+    title: Default Branch
+    hint: The repository default branch.
+    icon: code-fork
 actions:
   - handler: exportAll
     label: Export All DB Assets to GitHub

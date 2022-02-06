@@ -109,6 +109,18 @@ module.exports = {
           }
 
           const dbTarget = _.find(dbTargets, ['id', tgt.id])
+
+          // -> Build update config object
+          const updatedConfig = dbTarget?.config ?? {}
+          if (tgt.config) {
+            for (const [key, prop] of Object.entries(md.props)) {
+              if (prop.readOnly) { continue }
+              if (!Object.prototype.hasOwnProperty.call(tgt.config, key)) { continue }
+              if (prop.sensitive && tgt.config[key] === '********') { continue }
+              updatedConfig[key] = tgt.config[key]
+            }
+          }
+
           // -> Target doesn't exist yet in the DB, let's create it
           if (!dbTarget) {
             WIKI.logger.debug(`No existing DB configuration for module ${tgt.module}. Creating a new one...`)
@@ -131,7 +143,7 @@ module.exports = {
               state: {
                 current: 'ok'
               },
-              config: tgt.config ?? {}
+              config: updatedConfig
             })
           } else {
             WIKI.logger.debug(`Updating DB configuration for module ${tgt.module}...`)
@@ -148,11 +160,7 @@ module.exports = {
               versioning: {
                 enabled: tgt.useVersioning ?? dbTarget?.versioning?.enabled ?? false
               },
-              config: tgt.config
-                ? _.transform(tgt.config, (r, v, k) => {
-                  r[k] = (v === '********') ? (dbTarget.config[k] ?? '') : v
-                }, {})
-                : dbTarget.config
+              config: updatedConfig
             }).where('id', tgt.id)
           }
         }
@@ -182,6 +190,28 @@ module.exports = {
         return {
           status: graphHelper.generateSuccess('Storage target setup step succeeded'),
           state: result
+        }
+      } catch (err) {
+        return graphHelper.generateError(err)
+      }
+    },
+    async destroyStorageTargetSetup (obj, args, context) {
+      try {
+        const tgt = await WIKI.models.storage.query().findById(args.targetId)
+        if (!tgt) {
+          throw new Error('Not storage target matching this ID')
+        }
+        const md = _.find(WIKI.storage.defs, ['key', tgt.module])
+        if (!md) {
+          throw new Error('No matching storage module installed.')
+        }
+        if (!await WIKI.models.storage.ensureModule(md.key)) {
+          throw new Error('Failed to load storage module. Check logs for details.')
+        }
+        await WIKI.storage.modules[md.key].setupDestroy(args.targetId)
+
+        return {
+          status: graphHelper.generateSuccess('Storage target setup configuration destroyed succesfully.')
         }
       } catch (err) {
         return graphHelper.generateError(err)

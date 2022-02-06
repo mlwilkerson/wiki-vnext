@@ -5,9 +5,9 @@ description: Git is a version control system for tracking changes in computer fi
 vendor: Software Freedom Conservancy, Inc.
 website: 'https://git-scm.com'
 assetDelivery:
-  isStreamingSupported: false
+  isStreamingSupported: true
   isDirectAccessSupported: false
-  defaultStreamingEnabled: false
+  defaultStreamingEnabled: true
   defaultDirectAccessEnabled: false
 contentTypes:
   defaultTypesEnabled: ['pages', 'images', 'documents', 'others', 'large']

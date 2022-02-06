@@ -6,12 +6,23 @@ q-page.admin-storage
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.storage.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.storage.subtitle') }}
-    .col-auto
+    .col-auto.flex
       q-spinner-tail.q-mr-md(
         v-show='loading > 0'
         color='accent'
         size='sm'
       )
+      q-btn-toggle.q-mr-md(
+        v-model='displayMode'
+        push
+        no-caps
+        toggle-color='black'
+        :options=`[
+          { label: $t('admin.storage.targets'), value: 'targets' },
+          { label: $t('admin.storage.deliveryPaths'), value: 'delivery' }
+        ]`
+      )
+      q-separator.q-mr-md(vertical)
       q-btn.q-mr-sm.acrylic-btn(
         icon='las la-question-circle'
         flat
@@ -29,7 +40,12 @@ q-page.admin-storage
         :loading='loading > 0'
       )
   q-separator(inset)
-  .row.q-pa-md.q-col-gutter-md
+
+  //- ==========================================
+  //- TARGETS
+  //- ==========================================
+
+  .row.q-pa-md.q-col-gutter-md(v-if='displayMode === `targets`')
     .col-auto
       q-card.rounded-borders.bg-dark
         q-list(
@@ -243,7 +259,7 @@ q-page.admin-storage
               icon='las la-times-circle'
               :label='$t(`admin.storage.cancelSetup`)'
               color='negative'
-              @click='setupDestroy()'
+              @click='setupDestroy'
             )
             q-btn(
               unelevated
@@ -268,7 +284,7 @@ q-page.admin-storage
               flat
               icon='las la-arrow-circle-right'
               color='negative'
-              @click=''
+              @click='setupDestroy'
               :label='$t(`admin.storage.uninstall`)'
             )
 
@@ -291,7 +307,7 @@ q-page.admin-storage
             )
             q-separator.q-my-sm(inset, v-if='idx > 0')
             q-item(v-if='cfg.type === `Boolean`', tag='label')
-              blueprint-icon(:icon='cfg.icon')
+              blueprint-icon(:icon='cfg.icon', :hue-rotate='cfg.readOnly ? -45 : 0')
               q-item-section
                 q-item-label {{cfg.title}}
                 q-item-label(caption) {{cfg.hint}}
@@ -302,9 +318,10 @@ q-page.admin-storage
                   checked-icon='las la-check'
                   unchecked-icon='las la-times'
                   :aria-label='$t(`admin.general.allowComments`)'
+                  :disable='cfg.readOnly'
                   )
             q-item(v-else)
-              blueprint-icon(:icon='cfg.icon')
+              blueprint-icon(:icon='cfg.icon', :hue-rotate='cfg.readOnly ? -45 : 0')
               q-item-section
                 q-item-label {{cfg.title}}
                 q-item-label(caption) {{cfg.hint}}
@@ -320,6 +337,7 @@ q-page.admin-storage
                   no-caps
                   toggle-color='primary'
                   :options=`cfg.enum`
+                  :disable='cfg.readOnly'
                 )
                 q-select(
                   v-else-if='cfg.enum'
@@ -331,6 +349,7 @@ q-page.admin-storage
                   dense
                   options-dense
                   :aria-label='cfg.title'
+                  :disable='cfg.readOnly'
                 )
                 q-input(
                   v-else
@@ -339,6 +358,7 @@ q-page.admin-storage
                   dense
                   :type='cfg.multiline ? `textarea` : `input`'
                   :aria-label='cfg.title'
+                  :disable='cfg.readOnly'
                   )
 
       //- -----------------------
@@ -462,6 +482,39 @@ q-page.admin-storage
               :aria-label='$t(`admin.storage.useVersioning`)'
               )
 
+  //- ==========================================
+  //- DELIVERY PATHS
+  //- ==========================================
+
+  .row.q-pa-md.q-col-gutter-md(v-if='displayMode === `delivery`')
+    .col
+      q-card.rounded-borders
+        v-network-graph(
+          :zoom-level='2'
+          :configs='deliveryConfig'
+          :nodes='deliveryNodes'
+          :edges='deliveryEdges'
+          :layouts='deliveryLayouts'
+          style='height: 600px;'
+          )
+          template(#override-node='{ nodeId, scale, config, ...slotProps }')
+            rect(
+              :rx='config.borderRadius * scale'
+              :x='-config.radius * scale'
+              :y='-config.radius * scale'
+              :width='config.radius * scale * 2'
+              :height='config.radius * scale * 2'
+              :fill='config.color'
+              v-bind='slotProps'
+              )
+            image(
+              :x='(-config.radius + 5) * scale'
+              :y='(-config.radius + 5) * scale'
+              :width='(config.radius - 5) * scale * 2'
+              :height='(config.radius - 5) * scale * 2'
+              :xlink:href='deliveryNodes[nodeId].icon'
+            )
+
   //-             .overline.my-5 {{$t('admin.storage.syncDirection')}}
   //-             .body-2.ml-3 {{$t('admin.storage.syncDirectionSubtitle')}}
   //-             .pr-3.pt-3
@@ -511,6 +564,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import { get } from '@requarks/vuex-pathify'
 import transform from 'lodash/transform'
+import * as vNG from 'v-network-graph'
 
 import GithubSetupInstallDialog from '../components/GithubSetupInstallDialog.vue'
 
@@ -518,6 +572,7 @@ export default {
   data () {
     return {
       loading: 0,
+      displayMode: 'targets',
       runningAction: false,
       runningActionHandler: '',
       selectedTarget: '',
@@ -528,7 +583,56 @@ export default {
         action: '',
         manifest: '',
         loading: false
-      }
+      },
+      deliveryNodes: {},
+      deliveryEdges: {},
+      deliveryLayouts: {
+        nodes: {}
+      },
+      deliveryConfig: vNG.defineConfigs({
+        view: {
+          layoutHandler: new vNG.GridLayout({ grid: 15 }),
+          fit: true,
+          mouseWheelZoomEnabled: false,
+          grid: {
+            visible: true,
+            interval: 2.5,
+            thickIncrements: 0
+          }
+        },
+        node: {
+          draggable: false,
+          selectable: true,
+          normal: {
+            type: 'rect',
+            color: node => node.color || '#1976D2',
+            borderRadius: node => node.borderRadius || 5
+          },
+          label: {
+            margin: 8
+          }
+        },
+        edge: {
+          normal: {
+            width: 3,
+            dasharray: 3,
+            animate: true,
+            animationSpeed: edge => edge.animationSpeed || 50,
+            color: edge => edge.color || '#1976D2'
+          },
+          type: 'straight',
+          gap: 7,
+          margin: 4,
+          marker: {
+            source: {
+              type: 'none'
+            },
+            target: {
+              type: 'none'
+            }
+          }
+        }
+      })
     }
   },
   computed: {
@@ -550,6 +654,7 @@ export default {
           }
         }
         this.handleSetupCallback()
+        this.generateGraph()
       }
     },
     $route (to, from) {
@@ -697,7 +802,57 @@ export default {
       })
     },
     async setupDestroy () {
+      this.$q.dialog({
+        title: this.$t('admin.storage.destroyConfirm'),
+        message: this.$t('admin.storage.destroyConfirmInfo'),
+        cancel: true,
+        persistent: true
+      }).onOk(async () => {
+        this.$q.loading.show({
+          message: this.$t('admin.storage.destroyingSetup')
+        })
 
+        try {
+          const resp = await this.$apollo.mutate({
+            mutation: gql`
+              mutation (
+                $targetId: UUID!
+                ) {
+                destroyStorageTargetSetup(
+                  targetId: $targetId
+                ) {
+                  status {
+                    succeeded
+                    message
+                  }
+                }
+              }
+            `,
+            variables: {
+              targetId: this.selectedTarget
+            }
+          })
+          if (resp?.data?.destroyStorageTargetSetup?.status?.succeeded) {
+            this.target.setup.state = 'notconfigured'
+            setTimeout(() => {
+              this.$q.loading.hide()
+              this.$q.notify({
+                type: 'positive',
+                message: this.$t('admin.storage.githubSetupDestroySuccess')
+              })
+            }, 2000)
+          } else {
+            throw new Error(resp?.data?.destroyStorageTargetSetup?.status?.message || 'Unexpected error')
+          }
+        } catch (err) {
+          this.$q.notify({
+            type: 'negative',
+            message: this.$t('admin.storage.githubSetupDestroyFailed'),
+            caption: err.message
+          })
+          this.$q.loading.hide()
+        }
+      })
     },
     async setupGitHub () {
       // -> Format values
@@ -842,75 +997,83 @@ export default {
         })
       }
     },
-    async setupGitHubFinish () {
-      this.$q.loading.show({
-        message: this.$t('admin.storage.githubVerifying')
-      })
+    generateGraph () {
+      const types = [
+        { key: 'images', label: this.$t('admin.storage.contentTypeImages') },
+        { key: 'documents', label: this.$t('admin.storage.contentTypeDocuments') },
+        { key: 'others', label: this.$t('admin.storage.contentTypeOthers') },
+        { key: 'large', label: this.$t('admin.storage.contentTypeLargeFiles') }
+      ]
 
-      try {
-        const resp = await this.$apollo.mutate({
-          mutation: gql`
-            mutation (
-              $targetId: UUID!
-              $state: JSON!
-              ) {
-              setupStorageTarget(
-                targetId: $targetId
-                state: $state
-              ) {
-                status {
-                  succeeded
-                  message
-                }
-                state
-              }
-            }
-          `,
-          variables: {
-            targetId: this.selectedTarget,
-            state: {
-              step: 'verify'
-            }
-          }
+      // -> Create PagesNodes
+
+      this.deliveryNodes = {
+        user: { name: 'User', borderRadius: 16 },
+        pages: { name: this.$t('admin.storage.contentTypePages'), color: '#161b22' },
+        pages_wiki: { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg', color: '#161b22' }
+      }
+      this.deliveryEdges = {
+        user_pages: { source: 'user', target: 'pages' },
+        pages_in: { source: 'pages', target: 'pages_wiki' },
+        pages_out: { source: 'pages_wiki', target: 'pages' }
+      }
+      this.deliveryLayouts.nodes = {
+        user: { x: -30, y: 30 },
+        pages: { x: 0, y: 0 },
+        pages_wiki: { x: 60, y: 0 }
+      }
+
+      // -> Create Asset Nodes
+
+      for (const [i, t] of types.entries()) {
+        this.deliveryNodes[t.key] = { name: t.label, color: '#161b22' }
+        this.deliveryEdges[`user_${t.key}`] = { source: 'user', target: t.key }
+        this.deliveryLayouts.nodes[t.key] = { x: 0, y: (i + 1) * 15 }
+
+        // -> Find target with direct access
+        const dt = find(this.targets, tgt => {
+          return tgt.module !== 'db' && tgt.contentTypes.activeTypes.includes(t.key) && tgt.isEnabled && tgt.assetDelivery.isDirectAccessSupported && tgt.assetDelivery.directAccess
         })
-        if (resp?.data?.setupStorageTarget?.status?.succeeded) {
-          if (resp.data.setupStorageTarget.state?.nextStep !== 'installApp') {
-            throw new Error('Unknown Setup Step')
-          }
 
-          this.$router.replace({ query: null })
-          this.$q.loading.hide()
-
-          this.$q.dialog({
-            component: GithubSetupInstallDialog,
-            persistent: true
-          }).onOk(() => {
-            this.$q.loading.show({
-              message: this.$t('admin.storage.githubRedirecting')
-            })
-            window.location.assign(resp.data.setupStorageTarget.state?.url)
-            // this.target.isEnabled = true
-            // this.target.setup.state = 'configured'
-            // setTimeout(() => {
-            //   this.$q.loading.hide()
-            //   this.$q.notify({
-            //     type: 'positive',
-            //     message: this.$t('admin.storage.githubSetupSuccess')
-            //   })
-            // }, 2000)
-          }).onCancel(() => {
-            throw new Error('Setup was aborted prematurely.')
-          })
-        } else {
-          throw new Error(resp?.data?.setupStorageTarget?.status?.message || 'Unexpected error')
+        if (dt) {
+          this.deliveryNodes[`${t.key}_${dt.module}`] = { name: dt.title, icon: dt.icon }
+          this.deliveryNodes[`${t.key}_wiki`] = { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg', color: '#161b22' }
+          this.deliveryLayouts.nodes[`${t.key}_${dt.module}`] = { x: 60, y: (i + 1) * 15 }
+          this.deliveryLayouts.nodes[`${t.key}_wiki`] = { x: 120, y: (i + 1) * 15 }
+          this.deliveryEdges[`${t.key}_${dt.module}_in`] = { source: t.key, target: `${t.key}_${dt.module}` }
+          this.deliveryEdges[`${t.key}_${dt.module}_out`] = { source: `${t.key}_${dt.module}`, target: t.key }
+          this.deliveryEdges[`${t.key}_${dt.module}_wiki`] = { source: `${t.key}_wiki`, target: `${t.key}_${dt.module}`, color: '#02c39a', animationSpeed: 25 }
+          continue
         }
-      } catch (err) {
-        this.$q.loading.hide()
-        this.$q.notify({
-          type: 'negative',
-          message: this.$t('admin.storage.githubSetupFailed'),
-          caption: err.message
+
+        // -> Find target with streaming
+
+        const st = find(this.targets, tgt => {
+          return tgt.module !== 'db' && tgt.contentTypes.activeTypes.includes(t.key) && tgt.isEnabled && tgt.assetDelivery.isStreamingSupported && tgt.assetDelivery.streaming
         })
+
+        if (st) {
+          this.deliveryNodes[`${t.key}_${st.module}`] = { name: st.title, icon: st.icon }
+          this.deliveryNodes[`${t.key}_wiki`] = { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg', color: '#161b22' }
+          this.deliveryLayouts.nodes[`${t.key}_${st.module}`] = { x: 120, y: (i + 1) * 15 }
+          this.deliveryLayouts.nodes[`${t.key}_wiki`] = { x: 60, y: (i + 1) * 15 }
+          this.deliveryEdges[`${t.key}_wiki_in`] = { source: t.key, target: `${t.key}_wiki` }
+          this.deliveryEdges[`${t.key}_wiki_out`] = { source: `${t.key}_wiki`, target: t.key }
+          this.deliveryEdges[`${t.key}_${st.module}_out`] = { source: `${t.key}_${st.module}`, target: `${t.key}_wiki` }
+          this.deliveryEdges[`${t.key}_${st.module}_in`] = { source: `${t.key}_wiki`, target: `${t.key}_${st.module}` }
+          this.deliveryEdges[`${t.key}_${st.module}_wiki`] = { source: `${t.key}_wiki`, target: `${t.key}_${st.module}`, color: '#02c39a', animationSpeed: 25 }
+          continue
+        }
+
+        // -> Check DB fallback
+
+        const dbt = find(this.targets, ['module', 'db'])
+        if (dbt.contentTypes.activeTypes.includes(t.key)) {
+          this.deliveryNodes[`${t.key}_wiki`] = { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg' }
+          this.deliveryLayouts.nodes[`${t.key}_wiki`] = { x: 60, y: (i + 1) * 15 }
+          this.deliveryEdges[`${t.key}_db_in`] = { source: t.key, target: `${t.key}_wiki` }
+          this.deliveryEdges[`${t.key}_db_out`] = { source: `${t.key}_wiki`, target: t.key }
+        }
       }
     }
   },

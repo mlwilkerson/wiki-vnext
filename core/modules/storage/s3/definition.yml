@@ -109,7 +109,7 @@ props:
   storageTier:
     type: String
     title: Storage Tier
-    hint: The Secret Access Key for the Access Key ID you created above.
+    hint: The storage tier to use when adding files.
     icon: scan-stock
     order: 6
     default: STANDARD
