@@ -489,11 +489,24 @@ q-page.admin-storage
   .row.q-pa-md.q-col-gutter-md(v-if='displayMode === `delivery`')
     .col
       q-card.rounded-borders
+        q-card-section.flex.items-center
+          .text-caption.q-mr-sm {{ $t('admin.storage.deliveryPathsLegend') }}
+          q-chip(square, dense, color='blue-1', text-color='blue-8')
+            q-avatar(icon='las la-ellipsis-h', color='blue', text-color='white')
+            span.text-caption.q-px-sm {{ $t('admin.storage.deliveryPathsUserRequest') }}
+          q-chip(square, dense, color='teal-1', text-color='teal-8')
+            q-avatar(icon='las la-ellipsis-h', color='positive', text-color='white')
+            span.text-caption.q-px-sm {{ $t('admin.storage.deliveryPathsPushToOrigin') }}
+          q-chip(square, dense, color='red-1', text-color='red-8')
+            q-avatar(icon='las la-minus', color='negative', text-color='white')
+            span.text-caption.q-px-sm {{ $t('admin.storage.missingOrigin') }}
+        q-separator
         v-network-graph(
           :zoom-level='2'
           :configs='deliveryConfig'
           :nodes='deliveryNodes'
           :edges='deliveryEdges'
+          :paths='deliveryPaths'
           :layouts='deliveryLayouts'
           style='height: 600px;'
           )
@@ -508,11 +521,21 @@ q-page.admin-storage
               v-bind='slotProps'
               )
             image(
+              v-if='deliveryNodes[nodeId].icon && deliveryNodes[nodeId].icon.endsWith(`.svg`)'
               :x='(-config.radius + 5) * scale'
               :y='(-config.radius + 5) * scale'
               :width='(config.radius - 5) * scale * 2'
               :height='(config.radius - 5) * scale * 2'
               :xlink:href='deliveryNodes[nodeId].icon'
+            )
+            text(
+              v-if='deliveryNodes[nodeId].icon && deliveryNodes[nodeId].iconText'
+              :class='deliveryNodes[nodeId].icon'
+              :font-size='22 * scale'
+              fill='#ffffff'
+              text-anchor='middle'
+              dominant-baseline='central'
+              v-html='deliveryNodes[nodeId].iconText'
             )
 
   //-             .overline.my-5 {{$t('admin.storage.syncDirection')}}
@@ -589,6 +612,7 @@ export default {
       deliveryLayouts: {
         nodes: {}
       },
+      deliveryPaths: [],
       deliveryConfig: vNG.defineConfigs({
         view: {
           layoutHandler: new vNG.GridLayout({ grid: 15 }),
@@ -615,8 +639,8 @@ export default {
         edge: {
           normal: {
             width: 3,
-            dasharray: 3,
-            animate: true,
+            dasharray: edge => edge.animate === false ? 20 : 3,
+            animate: edge => !(edge.animate === false),
             animationSpeed: edge => edge.animationSpeed || 50,
             color: edge => edge.color || '#1976D2'
           },
@@ -630,6 +654,16 @@ export default {
             target: {
               type: 'none'
             }
+          }
+        },
+        path: {
+          visible: true,
+          end: 'edgeOfNode',
+          margin: 4,
+          path: {
+            width: 7,
+            color: p => p.color,
+            linecap: 'square'
           }
         }
       })
@@ -999,17 +1033,17 @@ export default {
     },
     generateGraph () {
       const types = [
-        { key: 'images', label: this.$t('admin.storage.contentTypeImages') },
-        { key: 'documents', label: this.$t('admin.storage.contentTypeDocuments') },
-        { key: 'others', label: this.$t('admin.storage.contentTypeOthers') },
-        { key: 'large', label: this.$t('admin.storage.contentTypeLargeFiles') }
+        { key: 'images', label: this.$t('admin.storage.contentTypeImages'), icon: 'las', iconText: '&#xf1c5;' },
+        { key: 'documents', label: this.$t('admin.storage.contentTypeDocuments'), icon: 'las', iconText: '&#xf1c1;' },
+        { key: 'others', label: this.$t('admin.storage.contentTypeOthers'), icon: 'las', iconText: '&#xf15b;' },
+        { key: 'large', label: this.$t('admin.storage.contentTypeLargeFiles'), icon: 'las', iconText: '&#xf1c6;' }
       ]
 
       // -> Create PagesNodes
 
       this.deliveryNodes = {
-        user: { name: 'User', borderRadius: 16 },
-        pages: { name: this.$t('admin.storage.contentTypePages'), color: '#161b22' },
+        user: { name: this.$t('admin.storage.deliveryPathsUser'), borderRadius: 16, icon: '/_assets/icons/fluent-account.svg' },
+        pages: { name: this.$t('admin.storage.contentTypePages'), color: '#3f51b5', icon: 'las', iconText: '&#xf15c;' },
         pages_wiki: { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg', color: '#161b22' }
       }
       this.deliveryEdges = {
@@ -1022,11 +1056,12 @@ export default {
         pages: { x: 0, y: 0 },
         pages_wiki: { x: 60, y: 0 }
       }
+      this.deliveryPaths = []
 
       // -> Create Asset Nodes
 
       for (const [i, t] of types.entries()) {
-        this.deliveryNodes[t.key] = { name: t.label, color: '#161b22' }
+        this.deliveryNodes[t.key] = { name: t.label, color: '#3f51b5', icon: t.icon, iconText: t.iconText }
         this.deliveryEdges[`user_${t.key}`] = { source: 'user', target: t.key }
         this.deliveryLayouts.nodes[t.key] = { x: 0, y: (i + 1) * 15 }
 
@@ -1069,10 +1104,15 @@ export default {
 
         const dbt = find(this.targets, ['module', 'db'])
         if (dbt.contentTypes.activeTypes.includes(t.key)) {
-          this.deliveryNodes[`${t.key}_wiki`] = { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg' }
+          this.deliveryNodes[`${t.key}_wiki`] = { name: 'Wiki.js', icon: '/_assets/logo-wikijs.svg', color: '#161b22' }
           this.deliveryLayouts.nodes[`${t.key}_wiki`] = { x: 60, y: (i + 1) * 15 }
           this.deliveryEdges[`${t.key}_db_in`] = { source: t.key, target: `${t.key}_wiki` }
           this.deliveryEdges[`${t.key}_db_out`] = { source: `${t.key}_wiki`, target: t.key }
+        } else {
+          this.deliveryNodes[`${t.key}_wiki`] = { name: this.$t('admin.storage.missingOrigin'), color: '#f03a47', icon: 'las', iconText: '&#xf071;' }
+          this.deliveryLayouts.nodes[`${t.key}_wiki`] = { x: 60, y: (i + 1) * 15 }
+          this.deliveryEdges[`${t.key}_db_in`] = { source: t.key, target: `${t.key}_wiki`, color: '#f03a47', animate: false }
+          this.deliveryPaths.push({ edges: [`${t.key}_db_in`], color: '#f03a4755' })
         }
       }
     }
