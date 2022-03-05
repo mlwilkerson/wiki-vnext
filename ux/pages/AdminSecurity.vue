@@ -7,11 +7,6 @@ q-page.admin-mail
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.security.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.security.subtitle') }}
     .col-auto
-      q-spinner-tail.q-mr-md(
-        v-show='loading'
-        color='accent'
-        size='sm'
-      )
       q-btn.q-mr-sm.acrylic-btn(
         icon='las la-question-circle'
         flat
@@ -20,13 +15,20 @@ q-page.admin-mail
         target='_blank'
         type='a'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :loading='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -188,9 +190,8 @@ q-page.admin-mail
           q-item-section(style='flex: 0 0 200px;')
             q-input(
               outlined
-              v-model.number='config.uploadMaxFileSize'
+              v-model.number='humanUploadMaxFileSize'
               dense
-              :suffix='$t(`admin.security.maxUploadSizeSuffix`)'
               :aria-label='$t(`admin.security.maxUploadSize`)'
               )
         q-separator.q-my-sm(inset)
@@ -325,6 +326,8 @@ q-page.admin-mail
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import _get from 'lodash/get'
+import filesize from 'filesize'
+import filesizeParser from 'filesize-parser'
 import { createMetaMixin } from 'quasar'
 
 export default {
@@ -358,6 +361,7 @@ export default {
         uploadMaxFiles: 0,
         uploadScanSVG: false
       },
+      humanUploadMaxFileSize: '0',
       hstsDurations: [
         { value: 300, text: '5 minutes' },
         { value: 86400, text: '1 day' },
@@ -378,7 +382,45 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.load()
+  },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getSecurityConfig {
+            systemSecurity {
+              authJwtAudience
+              authJwtExpiration
+              authJwtRenewablePeriod
+              corsConfig
+              corsMode
+              cspDirectives
+              disallowFloc
+              disallowIframe
+              disallowOpenRedirect
+              enforceCsp
+              enforceHsts
+              enforceSameOriginReferrerPolicy
+              forceAssetDownload
+              hstsDuration
+              trustProxy
+              uploadMaxFileSize
+              uploadMaxFiles
+              uploadScanSVG
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
+      })
+      this.config = cloneDeep(resp?.data?.systemSecurity)
+      this.humanUploadMaxFileSize = filesize(this.config.uploadMaxFileSize ?? 0, { base: 2, standard: 'jedec' })
+      this.$q.loading.hide()
+      this.loading--
+    },
     async save () {
       this.loading = true
       try {
@@ -428,7 +470,10 @@ export default {
               }
             }
           `,
-          variables: this.config
+          variables: {
+            ...this.config,
+            uploadMaxFileSize: filesizeParser(this.humanUploadMaxFileSize || '0')
+          }
         })
         const resp = _get(respRaw, 'data.updateSystemSecurity.status', {})
         if (resp.succeeded) {
@@ -447,39 +492,6 @@ export default {
         })
       }
       this.loading = false
-    }
-  },
-  apollo: {
-    config: {
-      query: gql`
-        query getSecurityConfig {
-          systemSecurity {
-            authJwtAudience
-            authJwtExpiration
-            authJwtRenewablePeriod
-            corsConfig
-            corsMode
-            cspDirectives
-            disallowFloc
-            disallowIframe
-            disallowOpenRedirect
-            enforceCsp
-            enforceHsts
-            enforceSameOriginReferrerPolicy
-            forceAssetDownload
-            hstsDuration
-            trustProxy
-            uploadMaxFileSize
-            uploadMaxFiles
-            uploadScanSVG
-          }
-        }
-      `,
-      fetchPolicy: 'no-cache',
-      update: (data) => cloneDeep(data.systemSecurity),
-      watchLoading (isLoading) {
-        this.loading = isLoading
-      }
     }
   }
 }

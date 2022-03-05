@@ -11,6 +11,11 @@ q-layout.admin(view='hHh Lpr lff')
         .text-overline.text-uppercase.text-grey {{$t('admin.adminArea')}}
       q-toolbar(style='height: 64px;', dark)
         q-space
+        q-spinner-tail(
+          v-show='routerLoading'
+          color='blue'
+          size='sm'
+          )
         q-btn.q-ml-md(flat, dense, icon='las la-times-circle', label='Exit' color='pink', to='/')
         account-menu
   q-drawer.admin-sidebar(v-model='leftDrawerOpen', show-if-above, bordered)
@@ -53,43 +58,43 @@ q-layout.admin(view='hHh Lpr lff')
               emit-value
               map-options
             )
-        q-item(to='/_admin/general', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/general`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.general')
           q-item-section {{ $t('admin.general.title') }}
-        q-item(to='/_admin/analytics', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/analytics`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.analytics')
           q-item-section {{ $t('admin.analytics.title') }}
-        q-item(to='/_admin/comments', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/comments`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.comments')
           q-item-section {{ $t('admin.comments.title') }}
-        q-item(to='/_admin/editors', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/editors`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.editors')
           q-item-section {{ $t('admin.editors.title') }}
-        q-item(to='/_admin/locale', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/locale`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.locale')
           q-item-section {{ $t('admin.locale.title') }}
-        q-item(to='/_admin/login', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/login`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.login')
           q-item-section {{ $t('admin.login.title') }}
-        q-item(to='/_admin/navigation', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/navigation`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.navigation')
           q-item-section {{ $t('admin.navigation.title') }}
-        q-item(to='/_admin/rendering', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/rendering`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.rendering')
           q-item-section {{ $t('admin.rendering.title') }}
-        q-item(to='/_admin/storage', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/storage`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.storage')
           q-item-section {{ $t('admin.storage.title') }}
-        q-item(to='/_admin/theme', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/theme`', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.theme')
           q-item-section {{ $t('admin.theme.title') }}
@@ -115,6 +120,10 @@ q-layout.admin(view='hHh Lpr lff')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.api')
           q-item-section {{ $t('admin.api.title') }}
+        q-item(to='/_admin/audit', v-ripple, active-class='bg-primary text-white')
+          q-item-section(avatar)
+            q-icon(:name='`img:` + icons.audit')
+          q-item-section {{ $t('admin.audit.title') }}
         q-item(to='/_admin/extensions', v-ripple, active-class='bg-primary text-white')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.extensions')
@@ -227,6 +236,7 @@ export default {
         groups: '/_assets/icons/fluent-people.svg',
         users: '/_assets/icons/fluent-account.svg',
         api: '/_assets/icons/fluent-rest-api.svg',
+        audit: '/_assets/icons/fluent-event-log.svg',
         extensions: '/_assets/icons/fluent-module.svg',
         mail: '/_assets/icons/fluent-message-settings.svg',
         security: '/_assets/icons/fluent-protect.svg',
@@ -241,7 +251,8 @@ export default {
   computed: {
     currentSiteId: sync('admin/currentSiteId'),
     overlay: get('admin/overlay'),
-    sites: get('admin/sites')
+    sites: get('admin/sites'),
+    routerLoading: get('routerLoading')
   },
   watch: {
     sites (newValue) {
@@ -251,6 +262,11 @@ export default {
     },
     overlay (newValue) {
       this.overlayIsShown = !!newValue
+    },
+    currentSiteId (newValue) {
+      if (newValue && this.$route.params.siteid !== newValue) {
+        this.$router.push({ params: { siteid: newValue } })
+      }
     }
   },
   created () {
@@ -260,6 +276,9 @@ export default {
   },
   async mounted () {
     await this.$store.dispatch('admin/fetchSites')
+    if (this.$route.params.siteid) {
+      this.currentSiteId = this.$route.params.siteid
+    }
   }
 }
 </script>

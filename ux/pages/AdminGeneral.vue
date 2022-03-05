@@ -15,13 +15,20 @@ q-page.admin-general
         target='_blank'
         type='a'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -401,7 +408,7 @@ export default {
   ],
   data () {
     return {
-      loading: false,
+      loading: 0,
       config: {
         hostname: '',
         title: '',
@@ -445,9 +452,67 @@ export default {
     },
     timezones: get('data/timezones')
   },
+  watch: {
+    currentSiteId (newValue) {
+      this.load()
+    }
+  },
+  mounted () {
+    if (this.currentSiteId) {
+      this.load()
+    }
+  },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getSite (
+            $id: UUID!
+          ) {
+            siteById(
+              id: $id
+            ) {
+              id
+              hostname
+              isEnabled
+              title
+              description
+              company
+              contentLicense
+              logoText
+              robots {
+                index
+                follow
+              }
+              features {
+                comments
+                ratings
+                ratingsMode
+                contributions
+                profile
+                search
+              }
+              defaults {
+                timezone
+                dateFormat
+                timeFormat
+              }
+            }
+          }
+        `,
+        variables: {
+          id: this.currentSiteId
+        },
+        fetchPolicy: 'network-only'
+      })
+      this.config = cloneDeep(resp?.data?.siteById)
+      this.$q.loading.hide()
+      this.loading--
+    },
     async save () {
-      this.loading = true
+      this.loading++
       try {
         await this.$apollo.mutate({
           mutation: gql`
@@ -514,14 +579,14 @@ export default {
           caption: err.message
         })
       }
-      this.loading = false
+      this.loading--
     },
     async uploadLogo () {
       const input = document.createElement('input')
       input.type = 'file'
 
       input.onchange = async e => {
-        this.loading = true
+        this.loading++
         try {
           await this.$apollo.mutate({
             mutation: gql`
@@ -557,7 +622,7 @@ export default {
             caption: err.message
           })
         }
-        this.loading = false
+        this.loading--
       }
 
       input.click()
@@ -570,7 +635,7 @@ export default {
       input.type = 'file'
 
       input.onchange = async e => {
-        this.loading = true
+        this.loading++
         try {
           await this.$apollo.mutate({
             mutation: gql`
@@ -606,64 +671,10 @@ export default {
             caption: err.message
           })
         }
-        this.loading = false
+        this.loading--
       }
 
       input.click()
-    }
-  },
-  mounted () {
-    console.info(this)
-  },
-  apollo: {
-    config: {
-      query: gql`
-        query getSite (
-          $id: UUID!
-        ) {
-          siteById(
-            id: $id
-          ) {
-            hostname
-            isEnabled
-            title
-            description
-            company
-            contentLicense
-            logoText
-            robots {
-              index
-              follow
-            }
-            features {
-              comments
-              ratings
-              ratingsMode
-              contributions
-              profile
-              search
-            }
-            defaults {
-              timezone
-              dateFormat
-              timeFormat
-            }
-          }
-        }
-      `,
-      variables () {
-        return {
-          id: this.currentSiteId
-        }
-      },
-      skip () {
-        return !this.currentSiteId
-      },
-      fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.siteById),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-site-refresh')
-      }
     }
   }
 }

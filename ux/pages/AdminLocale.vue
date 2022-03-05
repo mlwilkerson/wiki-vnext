@@ -15,13 +15,20 @@ q-page.admin-locale
         target='_blank'
         type='a'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -49,20 +56,20 @@ q-page.admin-locale
               dense
               :aria-label='$t(`admin.locale.base.label`)'
               )
-        q-separator.q-my-sm(inset)
-        q-item(tag='label', v-ripple)
-          blueprint-icon(icon='renew')
-          q-item-section
-            q-item-label {{$t(`admin.locale.autoUpdate.label`)}}
-            q-item-label(caption) {{namespacing ? $t(`admin.locale.autoUpdate.hintWithNS`) : $t(`admin.locale.autoUpdate.hint`)}}
-          q-item-section(avatar)
-            q-toggle(
-              v-model='autoUpdate'
-              color='primary'
-              checked-icon='las la-check'
-              unchecked-icon='las la-times'
-              :aria-label='$t(`admin.locale.autoUpdate.label`)'
-              )
+        //- q-separator.q-my-sm(inset)
+        //- q-item(tag='label', v-ripple)
+        //-   blueprint-icon(icon='renew')
+        //-   q-item-section
+        //-     q-item-label {{$t(`admin.locale.autoUpdate.label`)}}
+        //-     q-item-label(caption) {{namespacing ? $t(`admin.locale.autoUpdate.hintWithNS`) : $t(`admin.locale.autoUpdate.hint`)}}
+        //-   q-item-section(avatar)
+        //-     q-toggle(
+        //-       v-model='autoUpdate'
+        //-       color='primary'
+        //-       checked-icon='las la-check'
+        //-       unchecked-icon='las la-times'
+        //-       :aria-label='$t(`admin.locale.autoUpdate.label`)'
+        //-       )
 
       //- -----------------------
       //- Namespacing
@@ -129,7 +136,7 @@ q-page.admin-locale
             flat
             hide-bottom
             :rows-per-page-options='[0]'
-            :loading='loading'
+            :loading='loading > 0'
             )
             template(v-slot:body-cell-code='props')
               q-td(:props='props')
@@ -194,45 +201,15 @@ q-page.admin-locale
                   icon='las la-cloud-download-alt'
                   color='primary'
                   )
-//-             v-card.wiki-form.mt-3.animated.fadeInUp.wait-p5s
-//-               v-toolbar(color='teal', dark, dense, flat)
-//-                 v-toolbar-title.subtitle-1 {{ $t('admin.locale.sideload') }}
-//-                 v-spacer
-//-                 v-chip(label, color='white', small).teal--text coming soon
-//-               v-card-text
-//-                 div {{ $t('admin.locale.sideloadHelp') }}
-//-                 v-btn.ml-0.mt-3(color='teal', disabled) {{ $t('common.actions.browse') }}
 </template>
 
 <script>
+import { get } from '@requarks/vuex-pathify'
 import gql from 'graphql-tag'
 import filter from 'lodash/filter'
 import _get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 import { createMetaMixin } from 'quasar'
-
-const fetchLocaleGql = gql`
-  query getLocales {
-    localization {
-      locales {
-        availability
-        code
-        createdAt
-        isInstalled
-        installDate
-        isRTL
-        name
-        nativeName
-        updatedAt
-      }
-      config {
-        locale
-        autoUpdate
-        namespacing
-        namespaces
-      }
-    }
-  }
-`
 
 export default {
   mixins: [
@@ -244,15 +221,15 @@ export default {
   ],
   data () {
     return {
-      loading: false,
+      loading: 0,
       locales: [],
       selectedLocale: 'en',
-      autoUpdate: false,
       namespacing: false,
       namespaces: []
     }
   },
   computed: {
+    currentSiteId: get('admin/currentSiteId'),
     installedLocales () {
       return filter(this.locales, ['isInstalled', true])
     },
@@ -307,7 +284,56 @@ export default {
       ]
     }
   },
+  watch: {
+    currentSiteId (newValue) {
+      this.load()
+    }
+  },
+  mounted () {
+    if (this.currentSiteId) {
+      this.load()
+    }
+  },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getLocales ($siteId: UUID!) {
+            locales {
+              availability
+              code
+              createdAt
+              isInstalled
+              installDate
+              isRTL
+              name
+              nativeName
+              updatedAt
+            }
+            siteById(
+              id: $siteId
+            ) {
+              id
+              locale
+              localeNamespacing
+              localeNamespaces
+            }
+          }
+        `,
+        variables: {
+          siteId: this.currentSiteId
+        },
+        fetchPolicy: 'network-only'
+      })
+      this.locales = cloneDeep(resp?.data?.locales)
+      this.selectedLocale = cloneDeep(resp?.data?.siteById?.locale)
+      this.namespacing = cloneDeep(resp?.data?.siteById?.localeNamespacing)
+      this.namespaces = cloneDeep(resp?.data?.siteById?.localeNamespaces)
+      this.$q.loading.hide()
+      this.loading--
+    },
     async download (lc) {
       lc.isDownloading = true
       const respRaw = await this.$apollo.mutate({
@@ -402,32 +428,6 @@ export default {
         })
       }
       this.loading = false
-    }
-  },
-  apollo: {
-    locales: {
-      query: fetchLocaleGql,
-      fetchPolicy: 'network-only',
-      update: (data) => data.localization.locales.map(lc => ({ ...lc, isDownloading: false })),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-locale-refresh')
-      }
-    },
-    selectedLocale: {
-      query: fetchLocaleGql,
-      update: (data) => data.localization.config.locale
-    },
-    autoUpdate: {
-      query: fetchLocaleGql,
-      update: (data) => data.localization.config.autoUpdate
-    },
-    namespacing: {
-      query: fetchLocaleGql,
-      update: (data) => data.localization.config.namespacing
-    },
-    namespaces: {
-      query: fetchLocaleGql,
-      update: (data) => data.localization.config.namespaces
     }
   }
 }

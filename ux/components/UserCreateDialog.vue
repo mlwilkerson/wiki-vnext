@@ -95,7 +95,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
             :label='$t(`admin.users.groups`)'
             :aria-label='$t(`admin.users.groups`)'
             lazy-rules='ondemand'
-            :loading='isLoadingGroups'
+            :loading='loadingGroups'
             )
             template(v-slot:selected)
               .text-caption(v-if='userGroups.length > 1')
@@ -167,7 +167,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
         color='primary'
         padding='xs md'
         @click='create'
-        :loading='isLoading'
+        :loading='loading > 0'
         )
 </template>
 
@@ -175,6 +175,7 @@ q-dialog(ref='dialog', @hide='onDialogHide')
 import gql from 'graphql-tag'
 import sampleSize from 'lodash/sampleSize'
 import zxcvbn from 'zxcvbn'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   emits: ['ok', 'hide'],
@@ -188,8 +189,8 @@ export default {
       userSendWelcomeEmail: false,
       keepOpened: false,
       groups: [],
-      isLoadingGroups: false,
-      isLoading: false
+      loadingGroups: false,
+      loading: false
     }
   },
   computed: {
@@ -234,8 +235,25 @@ export default {
     }
   },
   methods: {
-    show () {
+    async show () {
       this.$refs.dialog.show()
+
+      this.loading++
+      this.loadingGroups = true
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getGroupsForCreateUser {
+            groups {
+              id
+              name
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
+      })
+      this.groups = cloneDeep(resp?.data?.groups?.filter(g => g.id !== '10000000-0000-4000-0000-000000000001') ?? [])
+      this.loadingGroups = false
+      this.loading--
     },
     hide () {
       this.$refs.dialog.hide()
@@ -248,7 +266,7 @@ export default {
       this.userPassword = sampleSize(pwdChars, 16).join('')
     },
     async create () {
-      this.isLoading = true
+      this.loading++
       try {
         const isFormValid = await this.$refs.createUserForm.validate(true)
         if (!isFormValid) {
@@ -311,25 +329,7 @@ export default {
           message: err.message
         })
       }
-      this.isLoading = false
-    }
-  },
-  apollo: {
-    groups: {
-      query: gql`
-        query getGroupsForCreateUser {
-          groups {
-            id
-            name
-          }
-        }
-      `,
-      update (data) {
-        return data?.groups?.filter(g => g.id !== '10000000-0000-4000-0000-000000000001') ?? []
-      },
-      watchLoading (isLoading) {
-        this.isLoadingGroups = isLoading
-      }
+      this.loading--
     }
   }
 }

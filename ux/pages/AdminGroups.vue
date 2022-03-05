@@ -27,7 +27,8 @@ q-page.admin-groups
         icon='las la-redo-alt'
         flat
         color='secondary'
-        @click='refresh'
+        @click='load'
+        :loading='loading > 0'
         )
       q-btn(
         unelevated
@@ -48,7 +49,7 @@ q-page.admin-groups
           hide-header
           hide-bottom
           :rows-per-page-options='[0]'
-          :loading='loading'
+          :loading='loading > 0'
           :filter='search'
           )
           template(v-slot:body-cell-id='props')
@@ -92,6 +93,7 @@ q-page.admin-groups
 
 <script>
 import gql from 'graphql-tag'
+import cloneDeep from 'lodash/cloneDeep'
 import { createMetaMixin } from 'quasar'
 import { sync } from '@requarks/vuex-pathify'
 
@@ -109,7 +111,7 @@ export default {
   data () {
     return {
       groups: [],
-      loading: true,
+      loading: 0,
       search: ''
     }
   },
@@ -154,23 +156,40 @@ export default {
     overlay (newValue, oldValue) {
       if (newValue === '' && oldValue === 'GroupEditOverlay') {
         this.$router.push('/_admin/groups')
+        this.load()
       }
     },
     $route: 'checkOverlay'
   },
   mounted () {
     this.checkOverlay()
+    this.load()
   },
   beforeUnmount () {
     this.overlay = ''
   },
   methods: {
-    async refresh () {
-      await this.$apollo.queries.groups.refetch()
-      this.$q.notify({
-        type: 'positive',
-        message: this.$t('admin.groups.refreshSuccess')
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getGroups {
+            groups {
+              id
+              name
+              isSystem
+              userCount
+              createdAt
+              updatedAt
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
       })
+      this.groups = cloneDeep(resp?.data?.groups)
+      this.$q.loading.hide()
+      this.loading--
     },
     checkOverlay () {
       if (this.$route.params && this.$route.params.id) {
@@ -184,7 +203,7 @@ export default {
       this.$q.dialog({
         component: GroupCreateDialog
       }).onOk(() => {
-        this.$apollo.queries.groups.refetch()
+        this.load()
       })
     },
     editGroup (gr) {
@@ -197,31 +216,8 @@ export default {
           group: gr
         }
       }).onOk(() => {
-        this.$apollo.queries.groups.refetch()
+        this.load()
       })
-    }
-  },
-  apollo: {
-    groups: {
-      query: gql`
-        query getGroups {
-          groups {
-            id
-            name
-            isSystem
-            userCount
-            createdAt
-            updatedAt
-          }
-        }
-      `,
-      prefetch: false,
-      fetchPolicy: 'network-only',
-      update: (data) => data.groups,
-      watchLoading (isLoading) {
-        this.loading = isLoading
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-groups-refresh')
-      }
     }
   }
 }

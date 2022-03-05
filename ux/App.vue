@@ -4,6 +4,11 @@
 <script>
 export default {
   name: 'App',
+  data () {
+    return {
+      loading: false
+    }
+  },
   created () {
     this.$store.dispatch('site/loadSite', window.location.hostname)
   },

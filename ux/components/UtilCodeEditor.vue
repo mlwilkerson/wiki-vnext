@@ -67,27 +67,27 @@ export default {
         break
       }
     }
-    this.editor = new EditorView({
-      state: EditorState.create({
-        doc: this.modelValue,
-        extensions: [
-          history(),
-          keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-          lineNumbers(),
-          EditorView.theme({
-            '.cm-content, .cm-gutter': { minHeight: `${this.minHeight}px` }
-          }),
-          ...langModule && [langModule()],
-          defaultHighlightStyle,
-          EditorView.updateListener.of(v => {
-            if (v.docChanged) {
-              this.$emit('update:modelValue', v.state.doc.toString())
-            }
-          })
-        ]
-      }),
-      parent: this.$refs.editor
-    })
+    // this.editor = new EditorView({
+    //   state: EditorState.create({
+    //     doc: this.modelValue,
+    //     extensions: [
+    //       // history()
+    //       // keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab])
+    //       lineNumbers()
+    //       // EditorView.theme({
+    //       //   '.cm-content, .cm-gutter': { minHeight: `${this.minHeight}px` }
+    //       // }),
+    //       // ...langModule && [langModule()],
+    //       // defaultHighlightStyle,
+    //       // EditorView.updateListener.of(v => {
+    //       //   if (v.docChanged) {
+    //       //     this.$emit('update:modelValue', v.state.doc.toString())
+    //       //   }
+    //       // })
+    //     ]
+    //   }),
+    //   parent: this.$refs.editor
+    // })
   },
   beforeUnmount () {
     if (this.editor) {

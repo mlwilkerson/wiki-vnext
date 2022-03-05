@@ -21,6 +21,7 @@ import user from './user'
  */
 
 const state = {
+  routerLoading: false,
   loadingStack: []
 }
 

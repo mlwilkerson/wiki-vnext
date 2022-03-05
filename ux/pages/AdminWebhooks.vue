@@ -20,6 +20,13 @@ q-page.admin-webhooks
         target='_blank'
         type='a'
         )
+      q-btn.acrylic-btn.q-mr-sm(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='las la-plus'
@@ -90,10 +97,10 @@ q-page.admin-webhooks
 </template>
 
 <script>
+import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
-import { createMetaMixin } from 'quasar'
 
-import { QSpinnerClock, QSpinnerInfinity } from 'quasar'
+import { createMetaMixin, QSpinnerClock, QSpinnerInfinity } from 'quasar'
 import WebhookDeleteDialog from '../components/WebhookDeleteDialog.vue'
 import WebhookEditDialog from '../components/WebhookEditDialog.vue'
 
@@ -112,10 +119,33 @@ export default {
   data () {
     return {
       hooks: [],
-      loading: false
+      loading: 0
     }
   },
+  mounted () {
+    this.load()
+  },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getHooks {
+            hooks {
+              id
+              name
+              url
+              state
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
+      })
+      this.config = cloneDeep(resp?.data?.hooks) ?? []
+      this.$q.loading.hide()
+      this.loading--
+    },
     createHook () {
       this.$q.dialog({
         component: WebhookEditDialog,
@@ -123,7 +153,7 @@ export default {
           hookId: null
         }
       }).onOk(() => {
-        this.$apollo.queries.hooks.refetch()
+        this.load()
       })
     },
     editHook (id) {
@@ -133,7 +163,7 @@ export default {
           hookId: id
         }
       }).onOk(() => {
-        this.$apollo.queries.hooks.refetch()
+        this.load()
       })
     },
     deleteHook (hook) {
@@ -143,27 +173,8 @@ export default {
           hook
         }
       }).onOk(() => {
-        this.$apollo.queries.hooks.refetch()
+        this.load()
       })
-    }
-  },
-  apollo: {
-    hooks: {
-      query: gql`
-        query getHooks {
-          hooks {
-            id
-            name
-            url
-            state
-          }
-        }
-      `,
-      pollInterval: 10000,
-      fetchPolicy: 'no-cache',
-      watchLoading (isLoading) {
-        this.loading = isLoading
-      }
     }
   }
 }

@@ -54,6 +54,7 @@ import {
   QSlider,
   QSpace,
   QSpinner,
+  QSpinnerGrid,
   QSpinnerRings,
   QSpinnerTail,
   QTab,
@@ -128,6 +129,12 @@ export function createApp () {
         header: '#000',
         sidebar: '#1976D2'
       },
+      loading: {
+        delay: 500,
+        spinner: QSpinnerGrid,
+        spinnerSize: 32,
+        spinnerColor: 'white'
+      },
       loadingBar: {
         color: 'primary',
         size: '1px',
@@ -155,6 +162,12 @@ export function createApp () {
   app.use(Store)
 
   // Vue-Router
+  Router.beforeEach((to, from) => {
+    Store.commit('SET_ROUTER_LOADING', true)
+  })
+  Router.afterEach((to, from) => {
+    Store.commit('SET_ROUTER_LOADING', false)
+  })
   app.use(Router)
 
   // Vue-i18n
@@ -220,6 +233,7 @@ export function createApp () {
   app.component('QSlider', QSlider)
   app.component('QSpace', QSpace)
   app.component('QSpinner', QSpinner)
+  app.component('QSpinnerGrid', QSpinnerGrid)
   app.component('QSpinnerRings', QSpinnerRings)
   app.component('QSpinnerTail', QSpinnerTail)
   app.component('QTab', QTab)

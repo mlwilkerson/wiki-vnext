@@ -7,11 +7,6 @@ q-page.admin-system
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.system.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.system.subtitle') }}
     .col-auto
-      q-spinner-tail.q-mr-md(
-        v-show='loading > 0'
-        color='accent'
-        size='sm'
-      )
       q-btn.q-mr-sm.acrylic-btn(
         icon='las la-question-circle'
         flat
@@ -24,7 +19,8 @@ q-page.admin-system
         icon='las la-redo-alt'
         flat
         color='secondary'
-        @click='refresh'
+        :loading='loading > 0'
+        @click='load'
         )
       q-btn.acrylic-btn(
         ref='copySysInfoBtn'
@@ -33,6 +29,7 @@ q-page.admin-system
         label='Copy System Info'
         color='primary'
         @click=''
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -49,7 +46,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.currentVersion') }}
             q-item-label(caption) {{$t('admin.system.currentVersionHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.currentVersion }}
+            q-item-label.dark-value(caption) {{ info.currentVersion }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='cloud-checked', :hue-rotate='-45')
@@ -57,7 +54,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.latestVersion') }}
             q-item-label(caption) {{$t('admin.system.latestVersionHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.latestVersion }}
+            q-item-label.dark-value(caption) {{ info.latestVersion }}
 
       //- -----------------------
       //- CLIENT
@@ -72,7 +69,7 @@ q-page.admin-system
               q-item-label {{$t('admin.system.browser')}}
               q-item-label(caption) {{$t('admin.system.browserHint')}}
             q-item-section
-              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientBrowser }}
+              q-item-label.dark-value(caption) {{ clientBrowser }}
           q-separator(inset)
           q-item
             blueprint-icon(icon='computer', :hue-rotate='-45')
@@ -80,7 +77,7 @@ q-page.admin-system
               q-item-label {{$t('admin.system.clientPlatform')}}
               q-item-label(caption) {{$t('admin.system.clientPlatformHint')}}
             q-item-section
-              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientPlatform }}
+              q-item-label.dark-value(caption) {{ clientPlatform }}
           q-separator(inset)
           q-item
             blueprint-icon(icon='translation', :hue-rotate='-45')
@@ -88,7 +85,7 @@ q-page.admin-system
               q-item-label {{$t('admin.system.clientLanguage')}}
               q-item-label(caption) {{$t('admin.system.clientLanguageHint')}}
             q-item-section
-              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientLanguage }}
+              q-item-label.dark-value(caption) {{ clientLanguage }}
           q-separator(inset)
           q-item
             blueprint-icon(icon='cookies', :hue-rotate='-45')
@@ -96,7 +93,7 @@ q-page.admin-system
               q-item-label {{$t('admin.system.clientCookies')}}
               q-item-label(caption) {{$t('admin.system.clientCookiesHint')}}
             q-item-section
-              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientCookies }}
+              q-item-label.dark-value(caption) {{ clientCookies }}
           q-separator(inset)
           q-item
             blueprint-icon(icon='widescreen', :hue-rotate='-45')
@@ -104,7 +101,7 @@ q-page.admin-system
               q-item-label {{$t('admin.system.clientViewport')}}
               q-item-label(caption) {{$t('admin.system.clientViewportHint')}}
             q-item-section
-              q-item-label(caption): strong.text-teal-8.font-robotomono {{ clientViewport }}
+              q-item-label.dark-value(caption) {{ clientViewport }}
 
     .col-6
       //- -----------------------
@@ -119,7 +116,7 @@ q-page.admin-system
             q-item-label Node.js
             q-item-label(caption) {{$t('admin.system.nodejsHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.nodeVersion }}
+            q-item-label.dark-value(caption) {{ info.nodeVersion }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='postgresql', :hue-rotate='-45')
@@ -127,7 +124,7 @@ q-page.admin-system
             q-item-label {{$t('admin.system.database')}}
             q-item-label(caption) {{$t('admin.system.databaseHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono PostgreSQL {{dbVersion}}
+            q-item-label.dark-value(caption) PostgreSQL {{dbVersion}}
         q-separator(inset)
         q-item
           blueprint-icon(icon='database', :hue-rotate='-45')
@@ -135,7 +132,7 @@ q-page.admin-system
             q-item-label {{$t('admin.system.databaseHost')}}
             q-item-label(caption) {{$t('admin.system.databaseHostHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.dbHost }}
+            q-item-label.dark-value(caption) {{ info.dbHost }}
 
       //- -----------------------
       //- HOST INFORMATION
@@ -149,7 +146,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.os') }}
             q-item-label(caption) {{$t('admin.system.osHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
+            q-item-label.dark-value(caption) {{ (info.platform === 'docker') ? 'Docker Container (Linux)' : info.operatingSystem }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='server', :hue-rotate='-45')
@@ -157,7 +154,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.hostname') }}
             q-item-label(caption) {{$t('admin.system.hostnameHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.hostname }}
+            q-item-label.dark-value(caption) {{ info.hostname }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='processor', :hue-rotate='-45')
@@ -165,7 +162,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.cpuCores') }}
             q-item-label(caption) {{$t('admin.system.cpuCoresHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.cpuCores }}
+            q-item-label.dark-value(caption) {{ info.cpuCores }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='memory-slot', :hue-rotate='-45')
@@ -173,7 +170,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.totalRAM') }}
             q-item-label(caption) {{$t('admin.system.totalRAMHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.ramTotal }}
+            q-item-label.dark-value(caption) {{ info.ramTotal }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='program', :hue-rotate='-45')
@@ -181,7 +178,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.workingDirectory') }}
             q-item-label(caption) {{$t('admin.system.workingDirectoryHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.workingDirectory }}
+            q-item-label.dark-value(caption) {{ info.workingDirectory }}
         q-separator(inset)
         q-item
           blueprint-icon(icon='automation', :hue-rotate='-45')
@@ -189,7 +186,7 @@ q-page.admin-system
             q-item-label {{ $t('admin.system.configFile') }}
             q-item-label(caption) {{$t('admin.system.configFileHint')}}
           q-item-section
-            q-item-label(caption): strong.text-teal-8.font-robotomono {{ info.configFile }}
+            q-item-label.dark-value(caption) {{ info.configFile }}
 
   //-                 v-list-item-action-text {{ $t('admin.system.published') }} {{ info.latestVersionReleaseDate | moment('from') }}
   //-           v-card-actions(v-if='info.upgradeCapable && !isLatestVersion && info.platform === `docker`', :class='$vuetify.theme.dark ? `grey darken-3-d5` : `indigo lighten-5`')
@@ -303,6 +300,7 @@ export default {
     }
   },
   mounted () {
+    this.load()
     this.clip = new ClipboardJS(this.$refs.copySysInfoBtn.$el, {
       text: () => {
         return `Wiki.js ${this.info.currentVersion}
@@ -329,13 +327,35 @@ Total RAM: ${this.info.ramTotal}`
     })
   },
   methods: {
-    async refresh () {
-      await this.$apollo.queries.info.refetch()
-      this.$store.commit('showNotification', {
-        message: this.$t('admin.system.refreshSuccess'),
-        style: 'success',
-        icon: 'cached'
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getSystemInfo {
+            systemInfo {
+              configFile
+              cpuCores
+              currentVersion
+              dbHost
+              dbVersion
+              hostname
+              latestVersion
+              latestVersionReleaseDate
+              nodeVersion
+              operatingSystem
+              platform
+              ramTotal
+              upgradeCapable
+              workingDirectory
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
       })
+      this.info = cloneDeep(resp?.data?.systemInfo)
+      this.$q.loading.hide()
+      this.loading--
     },
     async performUpgrade () {
       this.isUpgrading = true
@@ -378,34 +398,6 @@ Total RAM: ${this.info.ramTotal}`
         this.isUpgrading = false
       }
     }
-  },
-  apollo: {
-    info: {
-      query: gql`
-        query getSystemInfo {
-          systemInfo {
-            configFile
-            cpuCores
-            currentVersion
-            dbHost
-            dbVersion
-            hostname
-            latestVersion
-            latestVersionReleaseDate
-            nodeVersion
-            operatingSystem
-            platform
-            ramTotal
-            upgradeCapable
-            workingDirectory
-          }
-        }
-      `,
-      prefetch: false,
-      fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.systemInfo),
-      loadingKey: 'loading'
-    }
   }
 }
 </script>
@@ -414,6 +406,14 @@ Total RAM: ${this.info.ramTotal}`
 .admin-system {
   .v-list-item-title, .v-list-item__subtitle {
     user-select: text;
+  }
+
+  .dark-value {
+    background-color: #F8F8F8;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', Consolas, "Liberation Mono", Courier, monospace;
   }
 }
 </style>

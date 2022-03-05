@@ -13,7 +13,8 @@ q-layout(view='hHh lpR fFf', container)
         text-color='white'
         :aria-label='$t(`common.actions.refresh`)'
         icon='las la-redo-alt'
-        @click='refresh'
+        @click='load'
+        :loading='loading > 0'
         )
         q-tooltip(anchor='center left', self='center right') {{$t(`common.actions.refresh`)}}
       q-btn(
@@ -33,10 +34,10 @@ q-layout(view='hHh lpR fFf', container)
         :aria-label='$t(`common.actions.save`)'
         icon='las la-check'
         @click='save()'
-        :disabled='isLoading'
+        :disabled='loading > 0'
       )
   q-drawer.bg-dark-6(:model-value='true', :width='250', dark)
-    q-list(padding, v-if='!isLoading')
+    q-list(padding, v-if='loading < 1')
       q-item(
         v-for='sc of sections'
         :key='`section-` + sc.key'
@@ -49,7 +50,7 @@ q-layout(view='hHh lpR fFf', container)
           q-icon(:name='sc.icon', color='white')
         q-item-section {{sc.text}}
   q-page-container
-    q-page(v-if='isLoading')
+    q-page(v-if='loading > 0')
       .flex.q-pa-lg.items-center
         q-spinner-tail(color='primary', size='32px', :thickness='2')
         .text-caption.text-primary.q-pl-md: strong {{$t('admin.users.loading')}}
@@ -380,7 +381,7 @@ q-layout(view='hHh lpR fFf', container)
                     hide-bottom-space
                     :label='$t(`admin.users.groups`)'
                     :aria-label='$t(`admin.users.groups`)'
-                    :loading='isLoadingGroups'
+                    :loading='loading > 0'
                     )
                 q-item-section(side)
                   q-btn(
@@ -520,8 +521,7 @@ export default {
       },
       groups: [],
       groupToAdd: null,
-      isLoadingGroups: false,
-      isLoading: true,
+      loading: 0,
       metadataInvalidJSON: false
     }
   },
@@ -568,9 +568,64 @@ export default {
   },
   mounted () {
     this.checkRoute()
-    this.fetchUser()
+    this.load()
   },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      try {
+        const resp = await this.$apollo.query({
+          query: gql`
+            query adminFetchUser (
+              $id: UUID!
+              ) {
+              groups {
+                id
+                name
+              }
+              userById(
+                id: $id
+              ) {
+                id
+                email
+                name
+                isSystem
+                isVerified
+                isActive
+                auth
+                meta
+                prefs
+                lastLoginAt
+                createdAt
+                updatedAt
+                groups {
+                  id
+                  name
+                }
+              }
+            }
+          `,
+          variables: {
+            id: this.userId
+          },
+          fetchPolicy: 'network-only'
+        })
+        this.groups = resp?.data?.groups?.filter(g => g.id !== '10000000-0000-4000-0000-000000000001') ?? []
+        if (resp?.data?.userById) {
+          this.user = cloneDeep(resp.data.userById)
+        } else {
+          throw new Error('An unexpected error occured while fetching user details.')
+        }
+      } catch (err) {
+        this.$q.notify({
+          type: 'negative',
+          message: err.message
+        })
+      }
+      this.$q.loading.hide()
+      this.loading--
+    },
     close () {
       this.$store.set('admin/overlay', '')
     },
@@ -611,57 +666,6 @@ export default {
       } else {
         this.user.groups = this.user.groups.filter(gr => gr.id === id)
       }
-    },
-    refresh () {
-      this.fetchUser()
-    },
-    async fetchUser () {
-      this.isLoading = true
-      try {
-        const resp = await this.$apollo.query({
-          query: gql`
-            query adminFetchUser (
-              $id: UUID!
-              ) {
-              userById(
-                id: $id
-              ) {
-                id
-                email
-                name
-                isSystem
-                isVerified
-                isActive
-                auth
-                meta
-                prefs
-                lastLoginAt
-                createdAt
-                updatedAt
-                groups {
-                  id
-                  name
-                }
-              }
-            }
-          `,
-          variables: {
-            id: this.userId
-          },
-          fetchPolicy: 'network-only'
-        })
-        if (resp?.data?.userById) {
-          this.user = cloneDeep(resp.data.userById)
-        } else {
-          throw new Error('An unexpected error occured while fetching user details.')
-        }
-      } catch (err) {
-        this.$q.notify({
-          type: 'negative',
-          message: err.message
-        })
-      }
-      this.isLoading = false
     },
     async save (patch, { silent, keepOpen } = { silent: false, keepOpen: false }) {
       this.$q.loading.show()
@@ -767,24 +771,6 @@ export default {
     },
     async deleteUser () {
 
-    }
-  },
-  apollo: {
-    groups: {
-      query: gql`
-        query getGroupsForCresdfsdfateUser {
-          groups {
-            id
-            name
-          }
-        }
-      `,
-      update (data) {
-        return data?.groups?.filter(g => g.id !== '10000000-0000-4000-0000-000000000001') ?? []
-      },
-      watchLoading (isLoading) {
-        this.isLoadingGroups = isLoading
-      }
     }
   }
 }

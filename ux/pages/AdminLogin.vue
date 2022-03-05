@@ -15,13 +15,20 @@ q-page.admin-login
         target='_blank'
         type='a'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -169,6 +176,7 @@ q-page.admin-login
 </template>
 
 <script>
+import { get } from '@requarks/vuex-pathify'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import draggable from 'vuedraggable'
@@ -188,7 +196,7 @@ export default {
   data () {
     return {
       invalidCharsRegex: /^[^<>"]+$/,
-      loading: false,
+      loading: 0,
       config: {
         authAutoLogin: false,
         authHideLocal: false,
@@ -205,9 +213,33 @@ export default {
     }
   },
   computed: {
-    avatarBgColor () { return this.$q.dark.isActive ? 'dark-4' : 'blue-1' }
+    currentSiteId: get('admin/currentSiteId')
   },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      // const resp = await this.$apollo.query({
+      //   query: gql`
+      //     query getSite (
+      //       $id: UUID!
+      //     ) {
+      //       siteById(
+      //         id: $id
+      //       ) {
+      //         id
+      //       }
+      //     }
+      //   `,
+      //   variables: {
+      //     id: this.currentSiteId
+      //   },
+      //   fetchPolicy: 'network-only'
+      // })
+      // this.config = cloneDeep(resp?.data?.siteById)
+      this.$q.loading.hide()
+      this.loading--
+    },
     async save () {
       try {
         await this.$apollo.mutate({
@@ -246,24 +278,6 @@ export default {
         })
       } catch (err) {
         this.$store.commit('pushGraphError', err)
-      }
-    }
-  },
-  apollo: {
-    config: {
-      query: gql`
-        query getSystemSecurity {
-          systemSecurity {
-            authJwtAudience
-            authJwtExpiration
-          }
-        }
-      `,
-      skip: true,
-      fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.systemSecurity),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-security-refresh')
       }
     }
   }

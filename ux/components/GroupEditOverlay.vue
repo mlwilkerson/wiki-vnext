@@ -464,7 +464,7 @@ q-layout(view='hHh lpR fFf', container)
                 q-btn.acrylic-btn.q-mr-sm(
                   v-if='!props.row.isSystem'
                   flat
-                  :to='`/a/users/` + props.row.id'
+                  :to='`/_admin/users/` + props.row.id'
                   icon='las la-pen'
                   color='indigo'
                   :label='$t(`common.actions.edit`)'
@@ -930,6 +930,7 @@ export default {
               groupById (
                 id: $groupId
               ) {
+                id
                 userCount
                 users (
                   filter: $filter

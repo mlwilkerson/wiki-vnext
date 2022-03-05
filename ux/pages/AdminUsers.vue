@@ -27,7 +27,8 @@ q-page.admin-groups
         icon='las la-redo-alt'
         flat
         color='secondary'
-        @click='refresh'
+        @click='load'
+        :loading='loading > 0'
         )
       q-btn(
         unelevated
@@ -35,6 +36,7 @@ q-page.admin-groups
         :label='$t(`admin.users.create`)'
         color='primary'
         @click='createUser'
+        :disabled='loading > 0'
         )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -48,7 +50,7 @@ q-page.admin-groups
           hide-header
           hide-bottom
           :rows-per-page-options='[0]'
-          :loading='loading'
+          :loading='loading > 0'
           )
           template(v-slot:body-cell-id='props')
             q-td(:props='props')
@@ -104,6 +106,7 @@ q-page.admin-groups
 
 <script>
 import gql from 'graphql-tag'
+import cloneDeep from 'lodash/cloneDeep'
 import { DateTime } from 'luxon'
 import { sync } from '@requarks/vuex-pathify'
 import { createMetaMixin } from 'quasar'
@@ -121,7 +124,7 @@ export default {
   data () {
     return {
       users: [],
-      loading: true,
+      loading: 0,
       search: ''
     }
   },
@@ -171,27 +174,44 @@ export default {
     overlay (newValue, oldValue) {
       if (newValue === '' && oldValue === 'UserEditOverlay') {
         this.$router.push('/_admin/users')
-        this.$apollo.queries.users.refetch()
+        this.load()
       }
     },
     $route: 'checkOverlay'
   },
   mounted () {
     this.checkOverlay()
+    this.load()
   },
   beforeUnmount () {
     this.overlay = ''
   },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getUsers {
+            users {
+              id
+              name
+              email
+              isSystem
+              isActive
+              createdAt
+              lastLoginAt
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
+      })
+      this.users = cloneDeep(resp?.data?.users)
+      this.$q.loading.hide()
+      this.loading--
+    },
     humanizeDate (val) {
       return DateTime.fromISO(val).toRelative()
-    },
-    async refresh () {
-      await this.$apollo.queries.users.refetch()
-      this.$q.notify({
-        type: 'positive',
-        message: this.$t('admin.users.refreshSuccess')
-      })
     },
     checkOverlay () {
       if (this.$route.params && this.$route.params.id) {
@@ -205,7 +225,7 @@ export default {
       this.$q.dialog({
         component: UserCreateDialog
       }).onOk(() => {
-        this.$apollo.queries.users.refetch()
+        this.load()
       })
     },
     deleteUser (gr) {
@@ -215,32 +235,8 @@ export default {
           group: gr
         }
       }).onOk(() => {
-        this.$apollo.queries.users.refetch()
+        this.load()
       })
-    }
-  },
-  apollo: {
-    users: {
-      query: gql`
-        query getUsers {
-          users {
-            id
-            name
-            email
-            isSystem
-            isActive
-            createdAt
-            lastLoginAt
-          }
-        }
-      `,
-      prefetch: false,
-      fetchPolicy: 'network-only',
-      update: (data) => data.users,
-      watchLoading (isLoading) {
-        this.loading = isLoading
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-groups-refresh')
-      }
     }
   }
 }

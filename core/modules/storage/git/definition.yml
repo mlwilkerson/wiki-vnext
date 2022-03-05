@@ -38,7 +38,7 @@ props:
   repoUrl:
     type: String
     title: Repository URI
-    hint: Git-compliant URI (e.g. git@github.com:org/repo.git for ssh, https://github.com/org/repo.git for basic)
+    hint: Git-compliant URI (e.g. git@server.com:org/repo.git for ssh, https://server.com/org/repo.git for basic)
     icon: dns
     order: 2
   branch:

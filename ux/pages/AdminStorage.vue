@@ -58,7 +58,7 @@ q-page.admin-storage
             :key='tgt.key'
             active-class='bg-primary text-white'
             :active='selectedTarget === tgt.id'
-            :to='`/_admin/storage/` + tgt.id'
+            :to='`/_admin/` + currentSiteId + `/storage/` + tgt.id'
             clickable
             )
             q-item-section(side)
@@ -67,7 +67,7 @@ q-page.admin-storage
               )
             q-item-section
               q-item-label {{tgt.title}}
-              q-item-label(caption, :class='!tgt.isEnabled ? `text-grey-7` : `text-positive`') {{getTargetSubtitle(tgt)}}
+              q-item-label(caption, :class='getTargetSubtitleColor(tgt)') {{getTargetSubtitle(tgt)}}
             q-item-section(side)
               q-spinner-rings(:color='tgt.isEnabled ? `positive` : `negative`', size='sm')
     .col(v-if='target')
@@ -419,6 +419,7 @@ q-page.admin-storage
           q-img.q-mt-sm.rounded-borders(
             :src='target.banner'
             fit='cover'
+            no-spinner
           )
           .text-body2.q-mt-md {{target.description}}
         q-separator.q-mb-sm(inset)
@@ -673,7 +674,18 @@ export default {
     currentSiteId: get('admin/currentSiteId')
   },
   watch: {
-    selectedTarget (newValue, oldValue) {
+    async currentSiteId (newValue) {
+      await this.load()
+      this.$nextTick(() => {
+        this.$router.replace(`/_admin/${newValue}/storage/${this.selectedTarget}`)
+      })
+    },
+    displayMode (newValue) {
+      if (newValue === 'delivery') {
+        this.generateGraph()
+      }
+    },
+    selectedTarget (newValue) {
       this.target = find(this.targets, ['id', newValue]) || null
     },
     targets (newValue) {
@@ -684,11 +696,10 @@ export default {
         } else {
           this.selectedTarget = find(this.targets, ['module', 'db'])?.id || null
           if (!this.$route.params.id) {
-            this.$router.replace(`/_admin/storage/${this.selectedTarget}`)
+            this.$router.replace(`/_admin/${this.currentSiteId}/storage/${this.selectedTarget}`)
           }
         }
         this.handleSetupCallback()
-        this.generateGraph()
       }
     },
     $route (to, from) {
@@ -710,9 +721,51 @@ export default {
         this.selectedTarget = this.$route.params.id
       }
     }
+    if (this.currentSiteId) {
+      this.load()
+    }
     this.handleSetupCallback()
   },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getStorageTargets (
+            $siteId: UUID!
+          ) {
+          storageTargets (
+            siteId: $siteId
+          ) {
+            id
+            isEnabled
+            module
+            title
+            description
+            icon
+            banner
+            vendor
+            website
+            contentTypes
+            assetDelivery
+            versioning
+            sync
+            status
+            setup
+            config
+            actions
+          }
+        }`,
+        variables: {
+          siteId: this.currentSiteId
+        },
+        fetchPolicy: 'network-only'
+      })
+      this.targets = cloneDeep(resp?.data?.storageTargets)
+      this.$q.loading.hide()
+      this.loading--
+    },
     configIfCheck (ifs) {
       if (!ifs || ifs.length < 1) { return true }
       return ifs.every(s => this.target.config[s.key]?.value === s.eq)
@@ -796,6 +849,15 @@ export default {
         return this.$t('admin.storage.assetsOnly')
       } else {
         return this.$t('admin.storage.notConfigured')
+      }
+    },
+    getTargetSubtitleColor (target) {
+      if (this.selectedTarget === target.id) {
+        return 'text-blue-2'
+      } else if (target.isEnabled) {
+        return 'text-positive'
+      } else {
+        return 'text-grey-7'
       }
     },
     getDefaultSchedule (val) {
@@ -926,9 +988,9 @@ export default {
         hook_attributes: {
           url: `${this.target.setup.values.publicUrl}/_github/${this.currentSiteId}/events`
         },
-        redirect_url: `${this.target.setup.values.publicUrl}/_admin/storage/${this.target.id}`,
+        redirect_url: `${this.target.setup.values.publicUrl}/_admin/${this.currentSiteId}/storage/${this.target.id}`,
         callback_urls: [
-          `${this.target.setup.values.publicUrl}/_admin/storage/${this.target.id}`
+          `${this.target.setup.values.publicUrl}/_admin/${this.currentSiteId}/storage/${this.target.id}`
         ],
         public: false,
         default_permissions: {
@@ -1115,46 +1177,6 @@ export default {
           this.deliveryPaths.push({ edges: [`${t.key}_db_in`], color: '#f03a4755' })
         }
       }
-    }
-  },
-  apollo: {
-    targets: {
-      query: gql`
-        query getStorageTargets (
-          $siteId: UUID!
-        ) {
-        storageTargets (
-          siteId: $siteId
-        ) {
-          id
-          isEnabled
-          module
-          title
-          description
-          icon
-          banner
-          vendor
-          website
-          contentTypes
-          assetDelivery
-          versioning
-          sync
-          status
-          setup
-          config
-          actions
-        }
-      }`,
-      variables () {
-        return {
-          siteId: this.currentSiteId
-        }
-      },
-      skip () {
-        return !this.currentSiteId
-      },
-      fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.storageTargets)
     }
   }
 }

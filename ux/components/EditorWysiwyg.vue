@@ -88,10 +88,13 @@
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import Collaboration from '@tiptap/extension-collaboration'
-import Dropcursor from '@tiptap/extension-dropcursor'
+// import Collaboration from '@tiptap/extension-collaboration'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import { Color } from '@tiptap/extension-color'
+import FontFamily from '@tiptap/extension-font-family'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
+import Mention from '@tiptap/extension-mention'
 import Placeholder from '@tiptap/extension-placeholder'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
@@ -100,9 +103,10 @@ import TableHeader from '@tiptap/extension-table-header'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import TextAlign from '@tiptap/extension-text-align'
+import TextStyle from '@tiptap/extension-text-style'
 import Typography from '@tiptap/extension-typography'
-import * as Y from 'yjs'
-import { IndexeddbPersistence } from 'y-indexeddb'
+// import * as Y from 'yjs'
+// import { IndexeddbPersistence } from 'y-indexeddb'
 // import { WebsocketProvider } from 'y-websocket'
 
 export default {
@@ -153,6 +157,109 @@ export default {
           title: 'Code',
           action: () => this.editor.chain().focus().toggleCode().run(),
           isActive: () => this.editor.isActive('code')
+        },
+        {
+          key: 'fontfamily',
+          icon: 'mdi-format-font',
+          title: 'Font Family',
+          type: 'dropdown',
+          isActive: () => this.editor.isActive('fontFamily'),
+          children: [
+            {
+              key: 'fontunset',
+              icon: 'mdi-format-font',
+              title: 'Sans-Serif',
+              action: () => this.editor.chain().focus().unsetFontFamily().run()
+            },
+            {
+              key: 'monospace',
+              icon: 'mdi-format-font',
+              title: 'Monospace',
+              action: () => this.editor.chain().focus().setFontFamily('monospace').run()
+            }
+          ]
+        },
+        {
+          key: 'color',
+          icon: 'mdi-palette',
+          title: 'Text Color',
+          type: 'dropdown',
+          isActive: () => this.editor.isActive('color'),
+          children: [
+            {
+              key: 'blue',
+              icon: 'mdi-palette',
+              title: 'Blue',
+              color: 'blue',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'brown',
+              icon: 'mdi-palette',
+              title: 'Brown',
+              color: 'brown',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'green',
+              icon: 'mdi-palette',
+              title: 'Green',
+              color: 'green',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'orange',
+              icon: 'mdi-palette',
+              title: 'Orange',
+              color: 'orange',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'pink',
+              icon: 'mdi-palette',
+              title: 'Pink',
+              color: 'pink',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'purple',
+              icon: 'mdi-palette',
+              title: 'Purple',
+              color: 'purple',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'red',
+              icon: 'mdi-palette',
+              title: 'Red',
+              color: 'red',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'teal',
+              icon: 'mdi-palette',
+              title: 'Teal',
+              color: 'teal',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              key: 'yellow',
+              icon: 'mdi-palette',
+              title: 'Yellow',
+              color: 'yellow',
+              action: () => this.editor.chain().focus().toggleHighlight().run()
+            },
+            {
+              type: 'divider'
+            },
+            {
+              key: 'remove',
+              icon: 'mdi-water-off',
+              title: 'Default',
+              color: 'grey',
+              action: () => this.editor.chain().focus().unsetHighlight().run()
+            }
+          ]
         },
         {
           key: 'highlight',
@@ -331,14 +438,14 @@ export default {
           isActive: () => this.editor.isActive('taskList')
         },
         {
+          type: 'divider'
+        },
+        {
           key: 'codeblock',
           icon: 'mdi-code-json',
           title: 'Code Block',
           action: () => this.editor.chain().focus().toggleCodeBlock().run(),
           isActive: () => this.editor.isActive('codeBlock')
-        },
-        {
-          type: 'divider'
         },
         {
           key: 'blockquote',
@@ -530,7 +637,7 @@ export default {
     }
   },
   mounted () {
-    if (process.env.CLIENT) {
+    if (!import.meta.env.SSR) {
       this.init()
     }
   },
@@ -539,27 +646,36 @@ export default {
   },
   methods: {
     init () {
-      this.ydoc = new Y.Doc()
+      console.info('BOOP')
+      // this.ydoc = new Y.Doc()
 
       /* eslint-disable no-unused-vars */
-      const dbProvider = new IndexeddbPersistence('example-document', this.ydoc)
+      // const dbProvider = new IndexeddbPersistence('example-document', this.ydoc)
       // const wsProvider = new WebsocketProvider('ws://127.0.0.1:1234', 'example-document', this.ydoc)
       /* eslint-enable no-unused-vars */
 
       this.editor = new Editor({
-        // content: this.$store.get('page/render'),
+        content: this.$store.get('page/render'),
         extensions: [
           StarterKit.configure({
-            history: false
+            codeBlock: false,
+            history: {
+              depth: 500
+            }
           }),
-          Collaboration.configure({
-            document: this.ydoc
-          }),
-          Dropcursor,
+          CodeBlockLowlight,
+          Color,
+          // Collaboration.configure({
+          //   document: this.ydoc
+          // }),
+          FontFamily,
           Highlight.configure({
             multicolor: true
           }),
           Image,
+          Mention.configure({
+            // TODO: suggestions
+          }),
           Placeholder.configure({
             placeholder: 'Enter some content here...'
           }),
@@ -572,40 +688,19 @@ export default {
           TaskList,
           TaskItem,
           TextAlign,
+          TextStyle,
           Typography
         ],
         onUpdate: () => {
           this.$store.set('page/render', this.editor.getHTML())
         }
       })
-      // this.ql = new Quill(this.$refs.editor, {
-      //   bounds: this.$refs.editor,
-      //   theme: 'snow',
-      //   placeholder: 'Enter content here...',
-      //   modules: {
-      //     blotFormatter: {},
-      //     // syntax: true,
-      //     table: true,
-      //     tableUI: true,
-      //     toolbar: {
-      //       container: this.$refs.toolbar
-      //     }
-      //   }
-      // })
-      // this.ql.setContents([
-      //   { insert: this.$store.get('page/render') }
-      // ], 'api')
-      // this.ql.on('text-change', () => {
-      //   const delta = this.ql.getContents()
-      //   const converter = new QuillDeltaToHtmlConverter(delta.ops, {})
-      //   this.$store.set('page/render', converter.convert())
-      // })
     },
     insertTable () {
       // this.ql.getModule('table').insertTable(3, 3)
     },
     snapshot () {
-      console.info(Y.encodeStateVector(this.ydoc))
+      // console.info(Y.encodeStateVector(this.ydoc))
     }
   }
 }

@@ -1,18 +1,10 @@
 const _ = require('lodash')
-const fs = require('fs-extra')
-const path = require('path')
 const graphHelper = require('../../helpers/graph')
 
 /* global WIKI */
 
 module.exports = {
   Query: {
-    async authentication () { return {} }
-  },
-  Mutation: {
-    async authentication () { return {} }
-  },
-  AuthenticationQuery: {
     /**
      * List of API Keys
      */
@@ -34,7 +26,7 @@ module.exports = {
     apiState () {
       return WIKI.config.api.isEnabled
     },
-    async strategies () {
+    async authStrategies () {
       return WIKI.data.authentication.map(stg => ({
         ...stg,
         isAvailable: stg.isAvailable === true,
@@ -73,7 +65,7 @@ module.exports = {
       return args.enabledOnly ? _.filter(strategies, 'isEnabled') : strategies
     }
   },
-  AuthenticationMutation: {
+  Mutation: {
     /**
      * Create New API Key
      */
@@ -272,16 +264,6 @@ module.exports = {
       } catch (err) {
         return graphHelper.generateError(err)
       }
-    }
-  },
-  AuthenticationStrategy: {
-    icon (ap, args) {
-      return fs.readFile(path.join(WIKI.ROOTPATH, `assets/svg/auth-icon-${ap.key}.svg`), 'utf8').catch(err => {
-        if (err.code === 'ENOENT') {
-          return null
-        }
-        throw err
-      })
     }
   }
 }

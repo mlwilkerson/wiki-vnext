@@ -35,7 +35,8 @@ import gql from 'graphql-tag'
 export default {
   props: {
     group: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
   emits: ['ok', 'hide'],

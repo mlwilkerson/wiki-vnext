@@ -149,8 +149,8 @@ q-page.column
   .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
     .col(style='order: 1;')
       q-no-ssr(v-if='editMode')
-        component(:is='editorComponent')
-        //- editor-wysiwyg
+        //- component(:is='editorComponent')
+        editor-wysiwyg
         //- editor-markdown
       q-scroll-area(
         :thumb-style='thumbStyle'
@@ -375,10 +375,12 @@ import PageDataDialog from '../components/PageDataDialog.vue'
 import PageTags from '../components/PageTags.vue'
 import PagePropertiesDialog from '../components/PagePropertiesDialog.vue'
 import PageSaveDialog from '../components/PageSaveDialog.vue'
+import EditorWysiwyg from '../components/EditorWysiwyg.vue'
 
 export default {
   name: 'PageIndex',
   components: {
+    EditorWysiwyg,
     IconPickerDialog,
     PageDataDialog,
     PagePropertiesDialog,

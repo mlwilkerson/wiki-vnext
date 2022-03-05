@@ -19,7 +19,8 @@ q-page.admin-extensions
         icon='las la-redo-alt'
         flat
         color='secondary'
-        @click='$apollo.queries.extensions.refetch()'
+        :loading='loading > 0'
+        @click='load'
         )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -115,7 +116,32 @@ export default {
       extensions: []
     }
   },
+  mounted () {
+    this.load()
+  },
   methods: {
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query fetchExtensions {
+            systemExtensions {
+              key
+              title
+              description
+              isInstalled
+              isInstallable
+              isCompatible
+            }
+          }
+        `,
+        fetchPolicy: 'network-only'
+      })
+      this.extensions = cloneDeep(resp?.data?.systemExtensions)
+      this.$q.loading.hide()
+      this.loading--
+    },
     async install (ext) {
       this.$q.loading.show({
         message: this.$t('admin.extensions.installing') + '<br>' + this.$t('admin.extensions.installingHint'),
@@ -159,28 +185,6 @@ export default {
         })
       }
       this.$q.loading.hide()
-    }
-  },
-  apollo: {
-    extensions: {
-      query: gql`
-        query fetchExtensions {
-          systemExtensions {
-            key
-            title
-            description
-            isInstalled
-            isInstallable
-            isCompatible
-          }
-        }
-      `,
-      prefetch: false,
-      fetchPolicy: 'network-only',
-      update: (data) => cloneDeep(data.systemExtensions),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-extensions-refresh')
-      }
     }
   }
 }

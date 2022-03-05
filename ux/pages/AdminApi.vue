@@ -23,13 +23,20 @@ q-page.admin-api
         target='_blank'
         type='a'
         )
+      q-btn.acrylic-btn.q-mr-sm(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn.q-mr-sm(
         unelevated
         icon='las la-power-off'
         :label='!enabled ? $t(`admin.api.enableButton`) : $t(`admin.api.disableButton`)'
         :color='!enabled ? `positive` : `negative`'
         @click='globalSwitch'
-        :loading='loading'
+        :disabled='loading > 0'
       )
       q-btn(
         unelevated
@@ -37,7 +44,7 @@ q-page.admin-api
         :label='$t(`admin.api.newKeyButton`)'
         color='primary'
         @click='newKey'
-        :loading='loading'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -109,6 +116,7 @@ q-page.admin-api
 
 <script>
 import _get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import { createMetaMixin } from 'quasar'
 // import { StatusIndicator } from 'vue-status-indicator'
@@ -130,7 +138,7 @@ export default {
   data () {
     return {
       enabled: false,
-      loading: false,
+      loading: 0,
       keys: [],
       isCreateDialogShown: false,
       isRevokeConfirmDialogShown: false,
@@ -138,16 +146,34 @@ export default {
       current: {}
     }
   },
+  mounted () {
+    this.load()
+  },
   methods: {
-    async refresh (notify = true) {
-      this.$apollo.queries.keys.refetch()
-      if (notify) {
-        this.$store.commit('showNotification', {
-          message: this.$t('admin.api.refreshSuccess'),
-          style: 'success',
-          icon: 'cached'
-        })
-      }
+    async load () {
+      this.loading++
+      this.$q.loading.show()
+      const resp = await this.$apollo.query({
+        query: gql`
+          query getHooks {
+            apiKeys {
+              id
+              name
+              keyShort
+              expiration
+              isRevoked
+              createdAt
+              updatedAt
+            }
+            apiState
+          }
+        `,
+        fetchPolicy: 'network-only'
+      })
+      this.keys = cloneDeep(resp?.data?.apiKeys) ?? []
+      this.enabled = resp?.data?.apiState === true
+      this.$q.loading.hide()
+      this.loading--
     },
     async globalSwitch () {
       this.isToggleLoading = true
@@ -180,7 +206,7 @@ export default {
             message: this.enabled ? this.$t('admin.api.toggleStateDisabledSuccess') : this.$t('admin.api.toggleStateEnabledSuccess'),
             icon: 'check'
           })
-          await this.$apollo.queries.enabled.refetch()
+          await this.load()
         } else {
           this.$store.commit('showNotification', {
             style: 'red',
@@ -231,7 +257,7 @@ export default {
             message: this.$t('admin.api.revokeSuccess'),
             icon: 'check'
           })
-          this.refresh(false)
+          this.load()
         } else {
           this.$store.commit('showNotification', {
             style: 'red',
@@ -244,44 +270,6 @@ export default {
       }
       this.isRevokeConfirmDialogShown = false
       this.revokeLoading = false
-    }
-  },
-  apollo: {
-    enabled: {
-      query: gql`
-        {
-          authentication {
-            apiState
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => data.authentication.apiState,
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-api-state-refresh')
-      }
-    },
-    keys: {
-      query: gql`
-        {
-          authentication {
-            apiKeys {
-              id
-              name
-              keyShort
-              expiration
-              isRevoked
-              createdAt
-              updatedAt
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => data.authentication.apiKeys,
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-api-keys-refresh')
-      }
     }
   }
 }
