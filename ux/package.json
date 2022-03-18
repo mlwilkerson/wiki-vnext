@@ -104,5 +104,6 @@
     "postcss-rtlcss": "3.5.3",
     "sass": "1.32.12",
     "vite": "2.8.6"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }
