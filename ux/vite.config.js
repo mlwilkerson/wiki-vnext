@@ -32,10 +32,10 @@ export default defineConfig({
       allow: [
         process.cwd()
       ]
-    },
-    hmr: {
-      clientPort: 443
     }
+    // hmr: {
+    //   clientPort: 443
+    // }
   },
   optimizeDeps: {
     include: [

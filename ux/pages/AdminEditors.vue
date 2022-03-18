@@ -11,9 +11,16 @@ q-page.admin-flags
         icon='las la-question-circle'
         flat
         color='grey'
-        href='https://docs.requarks.io/admin/editors'
+        href='https://docs.js.wiki/admin/editors'
         target='_blank'
         type='a'
+        )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
         )
       q-btn(
         unelevated
@@ -21,7 +28,7 @@ q-page.admin-flags
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .q-pa-md.q-gutter-md
@@ -110,6 +117,7 @@ export default {
     }
   },
   methods: {
+    async load () {},
     save () {},
     refresh () {}
   }

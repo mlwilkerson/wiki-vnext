@@ -516,98 +516,119 @@ export default {
         {
           permission: 'read:pages',
           title: 'Read Pages',
-          hint: 'Can view pages, as specified in the Page Rules',
+          hint: 'Can view and search pages.',
           warning: false,
           restrictedForSystem: false,
           disabled: false
         },
         {
           permission: 'write:pages',
-          hint: 'Can create / edit pages, as specified in the Page Rules',
+          title: 'Write Pages',
+          hint: 'Can create and edit pages.',
+          warning: false,
+          restrictedForSystem: true,
+          disabled: false
+        },
+        {
+          permission: 'review:pages',
+          title: 'Review Pages',
+          hint: 'Can review and approve edits submitted by users.',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'manage:pages',
-          hint: 'Can move existing pages as specified in the Page Rules',
+          title: 'Manage Pages',
+          hint: 'Can move existing pages to other locations the user has write access to.',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'delete:pages',
-          hint: 'Can delete existing pages, as specified in the Page Rules',
+          title: 'Delete Pages',
+          hint: 'Can delete existing pages.',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'write:styles',
-          hint: 'Can insert CSS styles in pages, as specified in the Page Rules',
+          title: 'Use CSS',
+          hint: 'Can insert CSS styles in pages.',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'write:scripts',
-          hint: 'Can insert JavaScript in pages, as specified in the Page Rules',
+          title: 'Use JavaScript',
+          hint: 'Can insert JavaScript in pages.',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'read:source',
-          hint: 'Can view pages source, as specified in the Page Rules',
+          title: 'View Pages Source',
+          hint: 'Can view pages source.',
           warning: false,
           restrictedForSystem: false,
           disabled: false
         },
         {
           permission: 'read:history',
-          hint: 'Can view pages history, as specified in the Page Rules',
+          title: 'View Page History',
+          hint: 'Can view previous versions of pages.',
           warning: false,
           restrictedForSystem: false,
           disabled: false
         },
         {
           permission: 'read:assets',
-          hint: 'Can view / use assets (such as images and files), as specified in the Page Rules',
+          title: 'View Assets',
+          hint: 'Can view / use assets (such as images and files) in pages.',
           warning: false,
           restrictedForSystem: false,
           disabled: false
         },
         {
           permission: 'write:assets',
-          hint: 'Can upload new assets (such as images and files), as specified in the Page Rules',
+          title: 'Upload Assets',
+          hint: 'Can upload new assets (such as images and files).',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'manage:assets',
-          hint: 'Can edit and delete existing assets (such as images and files), as specified in the Page Rules',
+          title: 'Manage Assets',
+          hint: 'Can edit and delete existing assets (such as images and files).',
           warning: false,
           restrictedForSystem: true,
           disabled: false
         },
         {
           permission: 'read:comments',
-          hint: 'Can view comments, as specified in the Page Rules',
+          title: 'Read Comments',
+          hint: 'Can view page comments.',
           warning: false,
           restrictedForSystem: false,
           disabled: false
         },
         {
           permission: 'write:comments',
-          hint: 'Can post new comments, as specified in the Page Rules',
+          title: 'Write Comments',
+          hint: 'Can post new comments on pages.',
           warning: false,
           restrictedForSystem: false,
           disabled: false
         },
         {
           permission: 'manage:comments',
-          hint: 'Can edit and delete existing comments, as specified in the Page Rules',
+          title: 'Manage Comments',
+          hint: 'Can edit and delete existing page comments.',
           warning: false,
           restrictedForSystem: true,
           disabled: false

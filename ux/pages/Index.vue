@@ -149,8 +149,8 @@ q-page.column
   .page-container.row.no-wrap.items-stretch(style='flex: 1 1 100%;')
     .col(style='order: 1;')
       q-no-ssr(v-if='editMode')
-        //- component(:is='editorComponent')
-        editor-wysiwyg
+        component(:is='editorComponent')
+        //- editor-wysiwyg
         //- editor-markdown
       q-scroll-area(
         :thumb-style='thumbStyle'
@@ -213,8 +213,8 @@ q-page.column
           q-tree(
             :nodes='toc'
             node-key='key'
-            default-expand-all
-            :selected.sync='tocSelected'
+            v-model:expanded='tocExpanded'
+            v-model:selected='tocSelected'
           )
       //- Tags
       template(v-if='showTags')
@@ -266,7 +266,7 @@ q-page.column
               color='secondary'
             )
     .page-actions.column.items-stretch.order-last
-      q-btn.q-py-sm(
+      q-btn.q-py-md(
         flat
         icon='las la-pen-nib'
         color='deep-orange-9'
@@ -274,7 +274,7 @@ q-page.column
         @click='togglePageProperties'
         )
         q-tooltip(anchor='center left' self='center right') Page Properties
-      q-btn.q-py-sm(
+      q-btn.q-py-md(
         flat
         icon='las la-project-diagram'
         color='deep-orange-9'
@@ -282,7 +282,7 @@ q-page.column
         @click='togglePageData'
         )
         q-tooltip(anchor='center left' self='center right') Page Data
-      q-separator(inset)
+      q-separator.q-my-sm(inset)
       q-btn.q-py-sm(
         flat
         icon='las la-history'
@@ -444,6 +444,7 @@ export default {
           ]
         }
       ],
+      tocExpanded: ['h1-0', 'h1-1'],
       tocSelected: [],
       currentRating: 3,
       thumbStyle: {
@@ -500,6 +501,17 @@ export default {
       return this.mode === 'edit' && this.editorMode === 'create'
     }
   },
+  watch: {
+    toc () {
+      this.refreshTocExpanded()
+    },
+    tocDepth () {
+      this.refreshTocExpanded()
+    }
+  },
+  mounted () {
+    this.refreshTocExpanded()
+  },
   methods: {
     togglePageProperties () {
       this.sideDialogComponent = 'PagePropertiesDialog'
@@ -512,6 +524,29 @@ export default {
     savePage () {
       this.globalDialogComponent = 'PageSaveDialog'
       this.showGlobalDialog = true
+    },
+    refreshTocExpanded (baseToc) {
+      const toExpand = []
+      let isRootNode = false
+      if (!baseToc) {
+        baseToc = this.toc
+        isRootNode = true
+      }
+      if (baseToc.length > 0) {
+        for (const node of baseToc) {
+          if (node.key >= `h${this.tocDepth.min}` && node.key <= `h${this.tocDepth.max}`) {
+            toExpand.push(node.key)
+          }
+          if (node.children?.length && node.key < `h${this.tocDepth.max}`) {
+            toExpand.push(...this.refreshTocExpanded(node.children))
+          }
+        }
+      }
+      if (isRootNode) {
+        this.tocExpanded = toExpand
+      } else {
+        return toExpand
+      }
     }
   }
 }

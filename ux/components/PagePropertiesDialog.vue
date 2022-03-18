@@ -176,6 +176,8 @@ q-card.page-properties-dialog
             :min='1'
             :max='6'
             color='primary'
+            :left-label-value='`H` + tocDepth.min'
+            :right-label-value='`H` + tocDepth.max'
             snap
             label
             markers

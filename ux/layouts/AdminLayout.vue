@@ -62,11 +62,15 @@ q-layout.admin(view='hHh Lpr lff')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.general')
           q-item-section {{ $t('admin.general.title') }}
-        q-item(:to='`/_admin/` + currentSiteId + `/analytics`', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/analytics`', v-ripple, active-class='bg-primary text-white', disabled)
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.analytics')
           q-item-section {{ $t('admin.analytics.title') }}
-        q-item(:to='`/_admin/` + currentSiteId + `/comments`', v-ripple, active-class='bg-primary text-white')
+        q-item(:to='`/_admin/` + currentSiteId + `/approvals`', v-ripple, active-class='bg-primary text-white', disabled)
+          q-item-section(avatar)
+            q-icon(:name='`img:` + icons.approvals')
+          q-item-section {{ $t('admin.approval.title') }}
+        q-item(:to='`/_admin/` + currentSiteId + `/comments`', v-ripple, active-class='bg-primary text-white', disabled)
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.comments')
           q-item-section {{ $t('admin.comments.title') }}
@@ -120,7 +124,7 @@ q-layout.admin(view='hHh Lpr lff')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.api')
           q-item-section {{ $t('admin.api.title') }}
-        q-item(to='/_admin/audit', v-ripple, active-class='bg-primary text-white')
+        q-item(to='/_admin/audit', v-ripple, active-class='bg-primary text-white', disabled)
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.audit')
           q-item-section {{ $t('admin.audit.title') }}
@@ -136,7 +140,7 @@ q-layout.admin(view='hHh Lpr lff')
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.security')
           q-item-section {{ $t('admin.security.title') }}
-        q-item(to='/_admin/ssl', v-ripple, active-class='bg-primary text-white')
+        q-item(to='/_admin/ssl', v-ripple, active-class='bg-primary text-white', disabled)
           q-item-section(avatar)
             q-icon(:name='`img:` + icons.ssl')
           q-item-section {{ $t('admin.ssl.title') }}
@@ -224,6 +228,7 @@ export default {
         sites: '/_assets/icons/fluent-change-theme.svg',
         general: '/_assets/icons/fluent-web.svg',
         analytics: '/_assets/icons/fluent-bar-chart.svg',
+        approvals: '/_assets/icons/fluent-inspection.svg',
         comments: '/_assets/icons/fluent-comments.svg',
         editors: '/_assets/icons/fluent-cashbook.svg',
         locale: '/_assets/icons/fluent-language.svg',

@@ -7,11 +7,6 @@ q-page.admin-theme
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.theme.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.theme.subtitle') }}
     .col-auto
-      q-spinner-tail.q-mr-md(
-        v-show='loading'
-        color='accent'
-        size='sm'
-      )
       q-btn.q-mr-sm.acrylic-btn(
         icon='las la-question-circle'
         flat
@@ -20,13 +15,20 @@ q-page.admin-theme
         href='https://docs.js.wiki/admin/theme'
         target='_blank'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :loading='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -211,7 +213,7 @@ import { get } from '@requarks/vuex-pathify'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import startCase from 'lodash/startCase'
-import { createMetaMixin, useQuasar, setCssVar } from 'quasar'
+import { createMetaMixin, useQuasar } from 'quasar'
 import UtilCodeEditor from '../components/UtilCodeEditor.vue'
 
 export default {
@@ -228,7 +230,7 @@ export default {
   data () {
     return {
       qsr: useQuasar(),
-      loading: false,
+      loading: 0,
       colorKeys: [
         'primary',
         'secondary',
@@ -257,33 +259,12 @@ export default {
     currentSiteId: get('admin/currentSiteId')
   },
   watch: {
-    // 'config.dark' (newValue) {
-    //   this.qsr.dark.set(newValue)
-    //   // this.$refs.cmCSS.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-    //   // this.$refs.cmHead.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-    //   // this.$refs.cmBody.codemirror.setOption('theme', newValue ? 'material-ocean' : 'elegant')
-    // },
-    // 'config.colorPrimary' (newValue) {
-    //   setCssVar('primary', newValue)
-    // },
-    // 'config.colorSecondary' (newValue) {
-    //   setCssVar('secondary', newValue)
-    // },
-    // 'config.colorAccent' (newValue) {
-    //   setCssVar('accent', newValue)
-    // },
-    // 'config.colorHeader' (newValue) {
-    //   setCssVar('header', newValue)
-    // },
-    // 'config.colorSidebar' (newValue) {
-    //   setCssVar('sidebar', newValue)
-    // },
     currentSiteId () {
-      this.fetchConfig()
+      this.load()
     }
   },
   mounted () {
-    this.fetchConfig()
+    this.load()
   },
   methods: {
     startCase,
@@ -295,10 +276,10 @@ export default {
       this.config.colorHeader = '#000'
       this.config.colorSidebar = '#1976D2'
     },
-    async fetchConfig () {
+    async load () {
       if (!this.currentSiteId) { return }
 
-      this.loading = true
+      this.loading++
       try {
         const resp = await this.$apollo.query({
           query: gql`
@@ -341,11 +322,10 @@ export default {
           message: 'Failed to fetch site theme config'
         })
       }
-      this.loading = false
+      this.loading--
     },
     async save () {
-      this.loading = true
-      this.$store.commit('loadingStart', 'admin-theme-save')
+      this.loading++
       try {
         const patchTheme = {
           dark: this.config.dark,
@@ -391,6 +371,7 @@ export default {
         if (resp.succeeded) {
           if (this.currentSiteId === this.$store.get('site/id')) {
             this.$store.set('site/theme', patchTheme)
+            this.$q.dark.set(this.config.dark)
           }
           this.$q.notify({
             type: 'positive',
@@ -406,8 +387,7 @@ export default {
           caption: err.message
         })
       }
-      this.$store.commit('loadingStop', 'admin-theme-save')
-      this.loading = false
+      this.loading--
     }
   }
 }

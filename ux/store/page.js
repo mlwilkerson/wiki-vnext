@@ -2,7 +2,7 @@ import { make } from '@requarks/vuex-pathify'
 
 const state = {
   mode: 'view',
-  editor: '',
+  editor: 'wysiwyg',
   editorMode: 'edit',
   id: 0,
   authorId: 0,

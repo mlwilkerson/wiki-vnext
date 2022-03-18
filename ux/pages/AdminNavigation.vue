@@ -15,13 +15,20 @@ q-page.admin-navigation
         target='_blank'
         type='a'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
-        :loading='loading'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -384,6 +391,9 @@ export default {
     }
   },
   methods: {
+    async load () {
+
+    },
     addItem (kind) {
       let newItem = {
         id: uuid(),
@@ -479,90 +489,90 @@ export default {
         icon: 'cached'
       })
     }
-  },
-  apollo: {
-    config: {
-      query: gql`
-        {
-          navigation {
-            config {
-              mode
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => _.cloneDeep(data.navigation.config),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-config')
-      }
-    },
-    trees: {
-      query: gql`
-        {
-          navigation {
-            tree {
-              locale
-              items {
-                id
-                kind
-                label
-                icon
-                targetType
-                target
-                visibilityMode
-                visibilityGroups
-              }
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => _.cloneDeep(data.navigation.tree),
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-tree')
-      }
-    },
-    groups: {
-      query: gql`
-        query {
-          groups {
-            list {
-              id
-              name
-              isSystem
-              userCount
-              createdAt
-              updatedAt
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => data.groups.list,
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-groups')
-      }
-    },
-    allLocales: {
-      query: gql`
-        {
-          localization {
-            locales {
-              code
-              name
-              nativeName
-            }
-          }
-        }
-      `,
-      fetchPolicy: 'network-only',
-      update: (data) => data.localization.locales,
-      watchLoading (isLoading) {
-        this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-locales')
-      }
-    }
   }
+  // apollo: {
+  //   config: {
+  //     query: gql`
+  //       {
+  //         navigation {
+  //           config {
+  //             mode
+  //           }
+  //         }
+  //       }
+  //     `,
+  //     fetchPolicy: 'network-only',
+  //     update: (data) => _.cloneDeep(data.navigation.config),
+  //     watchLoading (isLoading) {
+  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-config')
+  //     }
+  //   },
+  //   trees: {
+  //     query: gql`
+  //       {
+  //         navigation {
+  //           tree {
+  //             locale
+  //             items {
+  //               id
+  //               kind
+  //               label
+  //               icon
+  //               targetType
+  //               target
+  //               visibilityMode
+  //               visibilityGroups
+  //             }
+  //           }
+  //         }
+  //       }
+  //     `,
+  //     fetchPolicy: 'network-only',
+  //     update: (data) => _.cloneDeep(data.navigation.tree),
+  //     watchLoading (isLoading) {
+  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-tree')
+  //     }
+  //   },
+  //   groups: {
+  //     query: gql`
+  //       query {
+  //         groups {
+  //           list {
+  //             id
+  //             name
+  //             isSystem
+  //             userCount
+  //             createdAt
+  //             updatedAt
+  //           }
+  //         }
+  //       }
+  //     `,
+  //     fetchPolicy: 'network-only',
+  //     update: (data) => data.groups.list,
+  //     watchLoading (isLoading) {
+  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-groups')
+  //     }
+  //   },
+  //   allLocales: {
+  //     query: gql`
+  //       {
+  //         localization {
+  //           locales {
+  //             code
+  //             name
+  //             nativeName
+  //           }
+  //         }
+  //       }
+  //     `,
+  //     fetchPolicy: 'network-only',
+  //     update: (data) => data.localization.locales,
+  //     watchLoading (isLoading) {
+  //       this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-navigation-locales')
+  //     }
+  //   }
+  // }
 }
 </script>
 

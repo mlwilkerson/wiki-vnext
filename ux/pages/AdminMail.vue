@@ -7,11 +7,6 @@ q-page.admin-mail
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.mail.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.mail.subtitle') }}
     .col-auto
-      q-spinner-tail.q-mr-md(
-        v-show='loading > 0'
-        color='accent'
-        size='sm'
-      )
       q-btn.q-mr-sm.acrylic-btn(
         icon='las la-question-circle'
         flat
@@ -20,12 +15,20 @@ q-page.admin-mail
         target='_blank'
         type='a'
         )
+      q-btn.q-mr-sm.acrylic-btn(
+        icon='las la-redo-alt'
+        flat
+        color='secondary'
+        :loading='loading > 0'
+        @click='load'
+        )
       q-btn(
         unelevated
         icon='mdi-check'
         :label='$t(`common.actions.apply`)'
         color='secondary'
         @click='save'
+        :disabled='loading > 0'
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
@@ -317,10 +320,10 @@ export default {
     }
   },
   mounted () {
-    this.fetchConfig()
+    this.load()
   },
   methods: {
-    async fetchConfig () {
+    async load () {
       this.loading++
       try {
         const resp = await this.$apollo.query({

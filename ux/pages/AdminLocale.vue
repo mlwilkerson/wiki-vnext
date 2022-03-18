@@ -6,7 +6,15 @@ q-page.admin-locale
     .col.q-pl-md
       .text-h5.text-primary.animated.fadeInLeft {{ $t('admin.locale.title') }}
       .text-subtitle1.text-grey.animated.fadeInLeft.wait-p2s {{ $t('admin.locale.subtitle') }}
-    .col-auto
+    .col-auto.flex
+      q-btn.q-mr-md(
+        icon='las la-download'
+        :label='$t(`admin.locale.downloadNew`)'
+        unelevated
+        color='primary'
+        :disabled='loading > 0'
+      )
+      q-separator.q-mr-md(vertical)
       q-btn.q-mr-sm.acrylic-btn(
         icon='las la-question-circle'
         flat
@@ -71,10 +79,11 @@ q-page.admin-locale
         //-       :aria-label='$t(`admin.locale.autoUpdate.label`)'
         //-       )
 
+    .col-6
       //- -----------------------
       //- Namespacing
       //- -----------------------
-      q-card.shadow-1.q-pb-sm.q-mt-md
+      q-card.shadow-1.q-pb-sm
         q-card-section
           .text-subtitle1 {{$t('admin.locale.namespacing')}}
         q-item(tag='label', v-ripple)
@@ -121,86 +130,85 @@ q-page.admin-locale
               :aria-label='$t(`admin.locale.activeNamespaces.label`)'
               )
 
-    .col-6
-      //- -----------------------
-      //- Download Locales
-      //- -----------------------
-      q-card.shadow-1
-        q-card-section
-          .text-subtitle1 {{$t('admin.locale.downloadTitle')}}
-        q-card-section.q-pa-none
-          q-table.no-border-radius(
-            :data='locales'
-            :columns='headers'
-            row-name='code'
-            flat
-            hide-bottom
-            :rows-per-page-options='[0]'
-            :loading='loading > 0'
-            )
-            template(v-slot:body-cell-code='props')
-              q-td(:props='props')
-                q-chip(
-                  square
-                  color='teal'
-                  text-color='white'
-                  dense
-                  ): span.text-caption {{props.value}}
-            template(v-slot:body-cell-name='props')
-              q-td(:props='props')
-                strong {{props.value}}
-            template(v-slot:body-cell-isRTL='props')
-              q-td(:props='props')
-                q-icon(
-                  v-if='props.value'
-                  name='las la-check'
-                  color='brown'
-                  size='xs'
-                  )
-            template(v-slot:body-cell-availability='props')
-              q-td(:props='props')
-                q-circular-progress(
-                  size='md'
-                  show-value
-                  :value='props.value'
-                  :thickness='0.1'
-                  :color='props.value <= 33 ? `negative` : (props.value <= 66) ? `warning` : `positive`'
-                ) {{ props.value }}%
-            template(v-slot:body-cell-isInstalled='props')
-              q-td(:props='props')
-                q-spinner(
-                  v-if='props.row.isDownloading'
-                  color='primary'
-                  size='20px'
-                  :thickness='2'
-                  )
-                q-btn(
-                  v-else-if='props.value && props.row.installDate < props.row.updatedAt'
-                  flat
-                  round
-                  dense
-                  @click='download(props.row)'
-                  icon='las la-redo-alt'
-                  color='accent'
-                  )
-                q-btn(
-                  v-else-if='props.value'
-                  flat
-                  round
-                  dense
-                  @click='download(props.row)'
-                  icon='las la-check-circle'
-                  color='positive'
-                  )
-                q-btn(
-                  v-else
-                  flat
-                  round
-                  dense
-                  @click='download(props.row)'
-                  icon='las la-cloud-download-alt'
-                  color='primary'
-                  )
+      //- //- -----------------------
+      //- //- Download Locales
+      //- //- -----------------------
+      //- q-card.shadow-1
+      //-   q-card-section
+      //-     .text-subtitle1 {{$t('admin.locale.downloadTitle')}}
+      //-   q-card-section.q-pa-none
+      //-     q-table.no-border-radius(
+      //-       :data='locales'
+      //-       :columns='headers'
+      //-       row-name='code'
+      //-       flat
+      //-       hide-bottom
+      //-       :rows-per-page-options='[0]'
+      //-       :loading='loading > 0'
+      //-       )
+      //-       template(v-slot:body-cell-code='props')
+      //-         q-td(:props='props')
+      //-           q-chip(
+      //-             square
+      //-             color='teal'
+      //-             text-color='white'
+      //-             dense
+      //-             ): span.text-caption {{props.value}}
+      //-       template(v-slot:body-cell-name='props')
+      //-         q-td(:props='props')
+      //-           strong {{props.value}}
+      //-       template(v-slot:body-cell-isRTL='props')
+      //-         q-td(:props='props')
+      //-           q-icon(
+      //-             v-if='props.value'
+      //-             name='las la-check'
+      //-             color='brown'
+      //-             size='xs'
+      //-             )
+      //-       template(v-slot:body-cell-availability='props')
+      //-         q-td(:props='props')
+      //-           q-circular-progress(
+      //-             size='md'
+      //-             show-value
+      //-             :value='props.value'
+      //-             :thickness='0.1'
+      //-             :color='props.value <= 33 ? `negative` : (props.value <= 66) ? `warning` : `positive`'
+      //-           ) {{ props.value }}%
+      //-       template(v-slot:body-cell-isInstalled='props')
+      //-         q-td(:props='props')
+      //-           q-spinner(
+      //-             v-if='props.row.isDownloading'
+      //-             color='primary'
+      //-             size='20px'
+      //-             :thickness='2'
+      //-             )
+      //-           q-btn(
+      //-             v-else-if='props.value && props.row.installDate < props.row.updatedAt'
+      //-             flat
+      //-             round
+      //-             dense
+      //-             @click='download(props.row)'
+      //-             icon='las la-redo-alt'
+      //-             color='accent'
+      //-             )
+      //-           q-btn(
+      //-             v-else-if='props.value'
+      //-             flat
+      //-             round
+      //-             dense
+      //-             @click='download(props.row)'
+      //-             icon='las la-check-circle'
+      //-             color='positive'
+      //-             )
+      //-           q-btn(
+      //-             v-else
+      //-             flat
+      //-             round
+      //-             dense
+      //-             @click='download(props.row)'
+      //-             icon='las la-cloud-download-alt'
+      //-             color='primary'
+      //-             )
 </template>
 
 <script>
