@@ -1,7 +1,7 @@
 const graphHelper = require('../../helpers/graph')
 const safeRegex = require('safe-regex')
 const _ = require('lodash')
-const gql = require('graphql')
+const { GraphQLError } = require('@graphql-tools/utils')
 const { v4: uuid } = require('uuid')
 
 /* global WIKI */
@@ -32,13 +32,13 @@ module.exports = {
     async assignUserToGroup (obj, args, { req }) {
       // Check for guest user
       if (args.userId === 2) {
-        throw new gql.GraphQLError('Cannot assign the Guest user to a group.')
+        throw new GraphQLError('Cannot assign the Guest user to a group.')
       }
 
       // Check for valid group
       const grp = await WIKI.models.groups.query().findById(args.groupId)
       if (!grp) {
-        throw new gql.GraphQLError('Invalid Group ID')
+        throw new GraphQLError('Invalid Group ID')
       }
 
       // Check assigned permissions for write:groups
@@ -49,13 +49,13 @@ module.exports = {
           return ['users', 'groups', 'navigation', 'theme', 'api', 'system'].includes(resType)
         })
       ) {
-        throw new gql.GraphQLError('You are not authorized to assign a user to this elevated group.')
+        throw new GraphQLError('You are not authorized to assign a user to this elevated group.')
       }
 
       // Check for valid user
       const usr = await WIKI.models.users.query().findById(args.userId)
       if (!usr) {
-        throw new gql.GraphQLError('Invalid User ID')
+        throw new GraphQLError('Invalid User ID')
       }
 
       // Check for existing relation
@@ -64,7 +64,7 @@ module.exports = {
         groupId: args.groupId
       }).first()
       if (relExist) {
-        throw new gql.GraphQLError('User is already assigned to group.')
+        throw new GraphQLError('User is already assigned to group.')
       }
 
       // Assign user to group
@@ -104,7 +104,7 @@ module.exports = {
     async deleteGroup (obj, args) {
       const grp = WIKI.models.groups.query().findById(args.id)
       if (grp.isSystem) {
-        throw new gql.GraphQLError('Cannot delete this group.')
+        throw new GraphQLError('Cannot delete this group.')
       }
 
       await WIKI.models.groups.query().deleteById(args.id)
@@ -124,18 +124,18 @@ module.exports = {
      */
     async unassignUserFromGroup (obj, args) {
       if (args.userId === 2) {
-        throw new gql.GraphQLError('Cannot unassign Guest user')
+        throw new GraphQLError('Cannot unassign Guest user')
       }
       if (args.userId === 1 && args.groupId === 1) {
-        throw new gql.GraphQLError('Cannot unassign Administrator user from Administrators group.')
+        throw new GraphQLError('Cannot unassign Administrator user from Administrators group.')
       }
       const grp = await WIKI.models.groups.query().findById(args.groupId)
       if (!grp) {
-        throw new gql.GraphQLError('Invalid Group ID')
+        throw new GraphQLError('Invalid Group ID')
       }
       const usr = await WIKI.models.users.query().findById(args.userId)
       if (!usr) {
-        throw new gql.GraphQLError('Invalid User ID')
+        throw new GraphQLError('Invalid User ID')
       }
       await grp.$relatedQuery('users').unrelate().where('userId', usr.id)
 
@@ -154,7 +154,7 @@ module.exports = {
       if (_.some(args.pageRules, pr => {
         return pr.match === 'REGEX' && !safeRegex(pr.path)
       })) {
-        throw new gql.GraphQLError('Some Page Rules contains unsafe or exponential time regex.')
+        throw new GraphQLError('Some Page Rules contains unsafe or exponential time regex.')
       }
 
       // Set default redirect on login value
@@ -170,7 +170,7 @@ module.exports = {
           return ['users', 'groups', 'navigation', 'theme', 'api', 'system'].includes(resType)
         })
       ) {
-        throw new gql.GraphQLError('You are not authorized to manage this group or assign these permissions.')
+        throw new GraphQLError('You are not authorized to manage this group or assign these permissions.')
       }
 
       // Update group

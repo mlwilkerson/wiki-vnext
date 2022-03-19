@@ -1,4 +1,4 @@
-const gql = require('graphql')
+const { Kind, GraphQLScalarType } = require('graphql')
 
 function ensureObject (value) {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
@@ -10,22 +10,22 @@ function ensureObject (value) {
 
 function parseLiteral (typeName, ast, variables) {
   switch (ast.kind) {
-    case gql.Kind.STRING:
-    case gql.Kind.BOOLEAN:
+    case Kind.STRING:
+    case Kind.BOOLEAN:
       return ast.value
-    case gql.Kind.INT:
-    case gql.Kind.FLOAT:
+    case Kind.INT:
+    case Kind.FLOAT:
       return parseFloat(ast.value)
-    case gql.Kind.OBJECT:
+    case Kind.OBJECT:
       return parseObject(typeName, ast, variables)
-    case gql.Kind.LIST:
+    case Kind.LIST:
       return ast.values.map((n) => parseLiteral(typeName, n, variables))
-    case gql.Kind.NULL:
+    case Kind.NULL:
       return null
-    case gql.Kind.VARIABLE:
+    case Kind.VARIABLE:
       return variables ? variables[ast.name.value] : undefined
     default:
-      throw new TypeError(`${typeName} cannot represent value: ${gql.print(ast)}`)
+      throw new TypeError(`${typeName} cannot represent value: ${ast}`)
   }
 }
 
@@ -40,7 +40,7 @@ function parseObject (typeName, ast, variables) {
 }
 
 module.exports = {
-  JSON: new gql.GraphQLScalarType({
+  JSON: new GraphQLScalarType({
     name: 'JSON',
     description:
       'The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).',
@@ -49,8 +49,8 @@ module.exports = {
     serialize: ensureObject,
     parseValue: ensureObject,
     parseLiteral: (ast, variables) => {
-      if (ast.kind !== gql.Kind.OBJECT) {
-        throw new TypeError(`JSONObject cannot represent non-object value: ${gql.print(ast)}`)
+      if (ast.kind !== Kind.OBJECT) {
+        throw new TypeError(`JSONObject cannot represent non-object value: ${ast}`)
       }
 
       return parseObject('JSONObject', ast, variables)

@@ -2,6 +2,7 @@ const fs = require('fs-extra')
 const http = require('http')
 const https = require('https')
 const { ApolloServer } = require('apollo-server-express')
+const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core')
 const Promise = require('bluebird')
 const _ = require('lodash')
 
@@ -120,10 +121,15 @@ module.exports = {
   async startGraphQL () {
     const graphqlSchema = require('../graph')
     this.servers.graph = new ApolloServer({
-      ...graphqlSchema,
+      schema: graphqlSchema,
       uploads: false,
-      context: ({ req, res }) => ({ req, res })
+      context: ({ req, res }) => ({ req, res }),
+      plugins: [
+        // ApolloServerPluginDrainHttpServer({ httpServer: this.servers.http })
+        // ...(this.servers.https && ApolloServerPluginDrainHttpServer({ httpServer: this.servers.https }))
+      ]
     })
+    await this.servers.graph.start()
     this.servers.graph.applyMiddleware({ app: WIKI.app, path: '/' })
   },
   /**

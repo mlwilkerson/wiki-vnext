@@ -2,8 +2,10 @@ const _ = require('lodash')
 const fs = require('fs')
 const path = require('path')
 const autoload = require('auto-load')
-const { createRateLimitTypeDef } = require('graphql-rate-limit-directive')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { rateLimitDirective } = require('graphql-rate-limit-directive')
 const { GraphQLUpload } = require('graphql-upload')
+const { rateLimitDirectiveTypeDefs, rateLimitDirectiveTransformer } = rateLimitDirective()
 
 /* global WIKI */
 
@@ -11,7 +13,9 @@ WIKI.logger.info('Loading GraphQL Schema...')
 
 // Schemas
 
-const typeDefs = [createRateLimitTypeDef()]
+const typeDefs = [
+  rateLimitDirectiveTypeDefs
+]
 const schemas = fs.readdirSync(path.join(process.cwd(), 'graph/schemas'))
 schemas.forEach(schema => {
   typeDefs.push(fs.readFileSync(path.join(process.cwd(), `graph/schemas/${schema}`), 'utf8'))
@@ -27,16 +31,15 @@ resolversObj.forEach(resolver => {
   _.merge(resolvers, resolver)
 })
 
-// Directives
+// Make executable schema
 
-const schemaDirectives = {
-  ...autoload(path.join(process.cwd(), 'graph/directives'))
-}
+let schema = makeExecutableSchema({
+  typeDefs,
+  resolvers
+})
+
+schema = rateLimitDirectiveTransformer(schema)
 
 WIKI.logger.info('GraphQL Schema: [ OK ]')
 
-module.exports = {
-  typeDefs,
-  resolvers,
-  schemaDirectives
-}
+module.exports = schema

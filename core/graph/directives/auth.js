@@ -1,4 +1,4 @@
-const { SchemaDirectiveVisitor } = require('graphql-tools')
+const { SchemaDirectiveVisitor } = require('apollo-server-core')
 const { defaultFieldResolver } = require('graphql')
 const _ = require('lodash')
 
