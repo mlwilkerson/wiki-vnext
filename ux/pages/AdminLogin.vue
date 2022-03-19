@@ -176,7 +176,7 @@ q-page.admin-login
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
 import draggable from 'vuedraggable'
@@ -213,7 +213,7 @@ export default {
     }
   },
   computed: {
-    currentSiteId: get('admin/currentSiteId')
+    currentSiteId: get('admin/currentSiteId', false)
   },
   methods: {
     async load () {

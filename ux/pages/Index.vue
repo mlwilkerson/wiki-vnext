@@ -368,7 +368,7 @@ q-page.column
 </template>
 
 <script>
-import { get, sync } from '@requarks/vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 import IconPickerDialog from '../components/IconPickerDialog.vue'
 import SocialSharingMenu from '../components/SocialSharingMenu.vue'
 import PageDataDialog from '../components/PageDataDialog.vue'
@@ -462,26 +462,26 @@ export default {
     }
   },
   computed: {
-    mode: sync('page/mode'),
-    editorMode: get('page/editorMode'),
-    breadcrumbs: get('page/breadcrumbs'),
-    title: sync('page/title'),
-    description: sync('page/description'),
-    relations: get('page/relations'),
-    tags: sync('page/tags'),
-    ratingsMode: get('site/ratingsMode'),
-    allowComments: get('page/allowComments'),
-    allowContributions: get('page/allowContributions'),
-    allowRatings: get('page/allowRatings'),
+    mode: sync('page/mode', false),
+    editorMode: get('page/editorMode', false),
+    breadcrumbs: get('page/breadcrumbs', false),
+    title: sync('page/title', false),
+    description: sync('page/description', false),
+    relations: get('page/relations', false),
+    tags: sync('page/tags', false),
+    ratingsMode: get('site/ratingsMode', false),
+    allowComments: get('page/allowComments', false),
+    allowContributions: get('page/allowContributions', false),
+    allowRatings: get('page/allowRatings', false),
     showSidebar () {
       return this.$store.get('page/showSidebar') && this.$store.get('site/showSidebar')
     },
-    showTags: get('page/showTags'),
-    showToc: get('page/showToc'),
-    tocDepth: get('page/tocDepth'),
-    isPublished: get('page/isPublished'),
-    pageIcon: sync('page/icon'),
-    render: get('page/render'),
+    showTags: get('page/showTags', false),
+    showToc: get('page/showToc', false),
+    tocDepth: get('page/tocDepth', false),
+    isPublished: get('page/isPublished', false),
+    pageIcon: sync('page/icon', false),
+    render: get('page/render', false),
     editorComponent () {
       return this.$store.get('page/editor') ? `editor-${this.$store.get('page/editor')}` : null
     },

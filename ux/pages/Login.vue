@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import gql from 'graphql-tag'
 import find from 'lodash/find'
 import _get from 'lodash/get'
@@ -141,8 +141,8 @@ export default {
     }
   },
   computed: {
-    logoUrl: get('site/logoUrl'),
-    siteTitle: get('site/title'),
+    logoUrl: get('site/logoUrl', false),
+    siteTitle: get('site/title', false),
     isSocialShown () {
       return this.strategies.length > 1
     },

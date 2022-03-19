@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { sync } from '@requarks/vuex-pathify'
+import { sync } from 'vuex-pathify'
 
 export default {
   props: {
@@ -48,7 +48,7 @@ export default {
     }
   },
   computed: {
-    tags: sync('page/tags')
+    tags: sync('page/tags', false)
   },
   methods: {
     removeTag (tag) {

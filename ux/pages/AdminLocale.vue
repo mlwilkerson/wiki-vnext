@@ -212,7 +212,7 @@ q-page.admin-locale
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import gql from 'graphql-tag'
 import filter from 'lodash/filter'
 import _get from 'lodash/get'
@@ -237,7 +237,7 @@ export default {
     }
   },
   computed: {
-    currentSiteId: get('admin/currentSiteId'),
+    currentSiteId: get('admin/currentSiteId', false),
     installedLocales () {
       return filter(this.locales, ['isInstalled', true])
     },

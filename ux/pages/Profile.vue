@@ -154,7 +154,7 @@ q-page.q-py-md(:style-fn='pageStyle')
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 
 export default {
   data () {
@@ -172,7 +172,7 @@ export default {
     }
   },
   computed: {
-    timezones: get('data/timezones')
+    timezones: get('data/timezones', false)
   },
   watch: {
     'config.darkMode' (newValue) {

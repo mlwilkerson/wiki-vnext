@@ -260,10 +260,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:1.0.7"\
       ],\
       [\
-        "@requarks/vuex-pathify",\
-        "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.2"\
-      ],\
-      [\
         "@rollup/pluginutils",\
         "npm:4.1.2"\
       ],\
@@ -1396,10 +1392,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:4.17.21"\
       ],\
       [\
-        "lodash.clonedeep",\
-        "npm:4.5.0"\
-      ],\
-      [\
         "lodash.merge",\
         "npm:4.6.2"\
       ],\
@@ -2092,6 +2084,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:3.2.31"\
       ],\
       [\
+        "vue-class-component",\
+        "virtual:c8c49568118a9b9303a1298b9014e58f9da3a9ab127ca3e828971da19046b7105a573f1586b4f0d653b708606a46d60e9ee9705a3189470795bb0b00b63a9b36#npm:8.0.0-rc.1"\
+      ],\
+      [\
         "vue-eslint-parser",\
         "virtual:dc827e52661e0943828886703561777c730e2b3f7557d12f65d3fb18b5b5cc175b9a3ab629a4339495f42482aa87b30f09a990b11bc6410368a9c5d84e82d82b#npm:8.0.1"\
       ],\
@@ -2110,6 +2106,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [\
         "vuex",\
         "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.2"\
+      ],\
+      [\
+        "vuex-pathify",\
+        "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:3.0.0-beta"\
       ],\
       [\
         "w3c-keyname",\
@@ -2198,7 +2198,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@lezer/common", "npm:0.15.12"],\
             ["@quasar/extras", "npm:1.13.3"],\
             ["@quasar/vite-plugin", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:1.0.7"],\
-            ["@requarks/vuex-pathify", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.2"],\
             ["@tiptap/core", "npm:2.0.0-beta.174"],\
             ["@tiptap/extension-code-block", "virtual:26768ff676b11d45eeb19e630a17c915a717f57e0991bfdca6d9858ca23fce919a0fa0b31dde45842c1a2428b7fd2339d27fda88802cbf4d8342619f9ed943ca#npm:2.0.0-beta.37"],\
             ["@tiptap/extension-code-block-lowlight", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.0-beta.68"],\
@@ -2265,6 +2264,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["vue-router", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.14"],\
             ["vuedraggable", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.1.0"],\
             ["vuex", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.2"],\
+            ["vuex-pathify", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:3.0.0-beta"],\
             ["zxcvbn", "npm:4.4.2"]\
           ],\
           "linkType": "SOFT"\
@@ -3357,33 +3357,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "quasar",\
             "vite",\
             "vue"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@requarks/vuex-pathify", [\
-        ["npm:2.0.2", {\
-          "packageLocation": "./.yarn/cache/@requarks-vuex-pathify-npm-2.0.2-a89bd8bb8d-505be5756a.zip/node_modules/@requarks/vuex-pathify/",\
-          "packageDependencies": [\
-            ["@requarks/vuex-pathify", "npm:2.0.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.2", {\
-          "packageLocation": "./.yarn/__virtual__/@requarks-vuex-pathify-virtual-938c8eed9b/0/cache/@requarks-vuex-pathify-npm-2.0.2-a89bd8bb8d-505be5756a.zip/node_modules/@requarks/vuex-pathify/",\
-          "packageDependencies": [\
-            ["@requarks/vuex-pathify", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.2"],\
-            ["@types/vue", null],\
-            ["@types/vuex", null],\
-            ["lodash.clonedeep", "npm:4.5.0"],\
-            ["vue", "npm:3.2.31"],\
-            ["vuex", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.2"]\
-          ],\
-          "packagePeers": [\
-            "@types/vue",\
-            "@types/vuex",\
-            "vue",\
-            "vuex"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7429,15 +7402,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["lodash.clonedeep", [\
-        ["npm:4.5.0", {\
-          "packageLocation": "./.yarn/cache/lodash.clonedeep-npm-4.5.0-fbc3cda4e5-92c46f094b.zip/node_modules/lodash.clonedeep/",\
-          "packageDependencies": [\
-            ["lodash.clonedeep", "npm:4.5.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["lodash.merge", [\
         ["npm:4.6.2", {\
           "packageLocation": "./.yarn/cache/lodash.merge-npm-4.6.2-77cb4416bf-ad580b4bdb.zip/node_modules/lodash.merge/",\
@@ -9434,6 +9398,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["vue-class-component", [\
+        ["npm:8.0.0-rc.1", {\
+          "packageLocation": "./.yarn/cache/vue-class-component-npm-8.0.0-rc.1-75f69857f2-2e011478d9.zip/node_modules/vue-class-component/",\
+          "packageDependencies": [\
+            ["vue-class-component", "npm:8.0.0-rc.1"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:c8c49568118a9b9303a1298b9014e58f9da3a9ab127ca3e828971da19046b7105a573f1586b4f0d653b708606a46d60e9ee9705a3189470795bb0b00b63a9b36#npm:8.0.0-rc.1", {\
+          "packageLocation": "./.yarn/__virtual__/vue-class-component-virtual-0394a3f966/0/cache/vue-class-component-npm-8.0.0-rc.1-75f69857f2-2e011478d9.zip/node_modules/vue-class-component/",\
+          "packageDependencies": [\
+            ["vue-class-component", "virtual:c8c49568118a9b9303a1298b9014e58f9da3a9ab127ca3e828971da19046b7105a573f1586b4f0d653b708606a46d60e9ee9705a3189470795bb0b00b63a9b36#npm:8.0.0-rc.1"],\
+            ["@types/vue", null],\
+            ["vue", "npm:3.2.31"]\
+          ],\
+          "packagePeers": [\
+            "@types/vue",\
+            "vue"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["vue-eslint-parser", [\
         ["npm:8.0.1", {\
           "packageLocation": "./.yarn/cache/vue-eslint-parser-npm-8.0.1-4753b605cf-9c40558975.zip/node_modules/vue-eslint-parser/",\
@@ -9558,6 +9544,33 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["vuex-pathify", [\
+        ["npm:3.0.0-beta", {\
+          "packageLocation": "./.yarn/cache/vuex-pathify-npm-3.0.0-beta-2a197bd2c6-21a6c4ea59.zip/node_modules/vuex-pathify/",\
+          "packageDependencies": [\
+            ["vuex-pathify", "npm:3.0.0-beta"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:3.0.0-beta", {\
+          "packageLocation": "./.yarn/__virtual__/vuex-pathify-virtual-c8c4956811/0/cache/vuex-pathify-npm-3.0.0-beta-2a197bd2c6-21a6c4ea59.zip/node_modules/vuex-pathify/",\
+          "packageDependencies": [\
+            ["vuex-pathify", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:3.0.0-beta"],\
+            ["@types/vue", null],\
+            ["@types/vuex", null],\
+            ["vue", "npm:3.2.31"],\
+            ["vue-class-component", "virtual:c8c49568118a9b9303a1298b9014e58f9da3a9ab127ca3e828971da19046b7105a573f1586b4f0d653b708606a46d60e9ee9705a3189470795bb0b00b63a9b36#npm:8.0.0-rc.1"],\
+            ["vuex", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.2"]\
+          ],\
+          "packagePeers": [\
+            "@types/vue",\
+            "@types/vuex",\
+            "vue",\
+            "vuex"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["w3c-keyname", [\
         ["npm:2.2.4", {\
           "packageLocation": "./.yarn/cache/w3c-keyname-npm-2.2.4-8c6e5969c5-890180452b.zip/node_modules/w3c-keyname/",\
@@ -9631,7 +9644,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@lezer/common", "npm:0.15.12"],\
             ["@quasar/extras", "npm:1.13.3"],\
             ["@quasar/vite-plugin", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:1.0.7"],\
-            ["@requarks/vuex-pathify", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.2"],\
             ["@tiptap/core", "npm:2.0.0-beta.174"],\
             ["@tiptap/extension-code-block", "virtual:26768ff676b11d45eeb19e630a17c915a717f57e0991bfdca6d9858ca23fce919a0fa0b31dde45842c1a2428b7fd2339d27fda88802cbf4d8342619f9ed943ca#npm:2.0.0-beta.37"],\
             ["@tiptap/extension-code-block-lowlight", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:2.0.0-beta.68"],\
@@ -9698,6 +9710,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["vue-router", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.14"],\
             ["vuedraggable", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.1.0"],\
             ["vuex", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:4.0.2"],\
+            ["vuex-pathify", "virtual:4d7611ad4b587c60a9b08bb1cc5513ad1fd6d30e1efcb3337d015e3f22a2a1bbd1e39e3a5fa09e38e5e40be76b53ca96d2e40108f3d29a2873e59d438cd4e3ca#npm:3.0.0-beta"],\
             ["zxcvbn", "npm:4.4.2"]\
           ],\
           "linkType": "SOFT"\

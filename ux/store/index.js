@@ -1,8 +1,5 @@
-import union from 'lodash/union'
-import without from 'lodash/without'
 import { createStore } from 'vuex'
-import pathify from '@requarks/vuex-pathify' // eslint-disable-line import/no-duplicates
-import { make } from '@requarks/vuex-pathify' // eslint-disable-line import/no-duplicates
+import Pathify, { make } from 'vuex-pathify' // eslint-disable-line import/no-duplicates
 
 import admin from './admin'
 import colors from './colors'
@@ -27,20 +24,14 @@ const state = {
 
 const Store = createStore({
   plugins: [
-    pathify.plugin
+    Pathify.plugin
   ],
   state: () => ({ ...state }),
   getters: {
     isLoading: state => { return state.loadingStack.length > 0 }
   },
   mutations: {
-    ...make.mutations(state),
-    loadingStart (st, stackName) {
-      st.loadingStack = union(st.loadingStack, [stackName])
-    },
-    loadingStop (st, stackName) {
-      st.loadingStack = without(st.loadingStack, stackName)
-    }
+    ...make.mutations(state)
   },
   actions: {},
   modules: {

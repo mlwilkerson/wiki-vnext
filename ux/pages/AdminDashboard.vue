@@ -120,7 +120,7 @@ import isArray from 'lodash/isArray'
 import some from 'lodash/some'
 import includes from 'lodash/includes'
 import AnimatedNumber from 'animated-number-vue'
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 // import gql from 'graphql-tag'
 import semverLte from 'semver/functions/lte'
 import { createMetaMixin } from 'quasar'
@@ -171,8 +171,8 @@ export default {
         return semverLte(this.info.latestVersion, this.info.currentVersion)
       }
     },
-    info: get('admin/info'),
-    permissions: get('user/permissions')
+    info: get('admin/info', false),
+    permissions: get('user/permissions', false)
   },
   methods: {
     round (val) { return Math.round(val) },

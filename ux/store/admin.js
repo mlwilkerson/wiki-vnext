@@ -1,4 +1,4 @@
-import { make } from '@requarks/vuex-pathify'
+import { make } from 'vuex-pathify'
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
 

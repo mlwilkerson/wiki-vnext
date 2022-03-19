@@ -159,7 +159,7 @@ q-card.page-datatmpl-dialog(style='width: 1100px; max-width: 1100px;')
 </template>
 
 <script>
-import { get, sync } from '@requarks/vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 import { v4 as uuid } from 'uuid'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
@@ -183,9 +183,9 @@ export default {
     }
   },
   computed: {
-    templates: sync('site/pageDataTemplates'),
-    thumbStyle: get('site/thumbStyle'),
-    barStyle: get('site/barStyle'),
+    templates: sync('site/pageDataTemplates', false),
+    thumbStyle: get('site/thumbStyle', false),
+    barStyle: get('site/barStyle', false),
     inventoryMisc () {
       return [
         {

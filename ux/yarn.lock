@@ -972,18 +972,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@requarks/vuex-pathify@npm:2.0.2":
-  version: 2.0.2
-  resolution: "@requarks/vuex-pathify@npm:2.0.2"
-  dependencies:
-    lodash.clonedeep: ^4.5.0
-  peerDependencies:
-    vue: ">=2.5.19"
-    vuex: ">=3.0.1"
-  checksum: 505be5756a79c05f2eb15aa841d2b25cc25ffa58caeb44365917a4a3cab8ac6e8b3dd50189ac8fe404523006de9bc447212180656e3d06bdddfc6572dc48c0c1
-  languageName: node
-  linkType: hard
-
 "@rollup/pluginutils@npm:^4.1.0":
   version: 4.1.2
   resolution: "@rollup/pluginutils@npm:4.1.2"
@@ -3965,13 +3953,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.clonedeep@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.clonedeep@npm:4.5.0"
-  checksum: 92c46f094b064e876a23c97f57f81fbffd5d760bf2d8a1c61d85db6d1e488c66b0384c943abee4f6af7debf5ad4e4282e74ff83177c9e63d8ff081a4837c3489
-  languageName: node
-  linkType: hard
-
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -5723,6 +5704,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vue-class-component@npm:^8.0.0-rc.1":
+  version: 8.0.0-rc.1
+  resolution: "vue-class-component@npm:8.0.0-rc.1"
+  peerDependencies:
+    vue: ^3.0.0
+  checksum: 2e011478d94915e3a794561bfaaf820143697dea8268e4f749486f348b2e28583aee88a68f540ce7771d00129362a3883687495ad80a3928090a0524bfef7a66
+  languageName: node
+  linkType: hard
+
 "vue-eslint-parser@npm:^8.0.1":
   version: 8.0.1
   resolution: "vue-eslint-parser@npm:8.0.1"
@@ -5793,6 +5783,18 @@ __metadata:
   peerDependencies:
     vue: ^3.0.1
   checksum: 8b4c5a6b384361df97f7a3595d7772dfbb086bf97c6702a1117b532a9e49db2908cb5d21b7959cb10179714c4c2225e4be0b77b29f778923169ea8a8197a429f
+  languageName: node
+  linkType: hard
+
+"vuex-pathify@npm:3.0.0-beta":
+  version: 3.0.0-beta
+  resolution: "vuex-pathify@npm:3.0.0-beta"
+  dependencies:
+    vue-class-component: ^8.0.0-rc.1
+  peerDependencies:
+    vue: ^3.0.0
+    vuex: ^4.0.0
+  checksum: 21a6c4ea590c44696aa7c815f5994b34b15de059faede3b6be533d60efe4d87110d4f93a53dd7d88c09a2e61827ee18caa983ac2b6d3e28687eff70fd71a9570
   languageName: node
   linkType: hard
 
@@ -5876,7 +5878,6 @@ __metadata:
     "@lezer/common": 0.15.12
     "@quasar/extras": 1.13.3
     "@quasar/vite-plugin": 1.0.7
-    "@requarks/vuex-pathify": 2.0.2
     "@tiptap/core": 2.0.0-beta.174
     "@tiptap/extension-code-block": 2.0.0-beta.37
     "@tiptap/extension-code-block-lowlight": 2.0.0-beta.68
@@ -5943,6 +5944,7 @@ __metadata:
     vue-router: 4.0.14
     vuedraggable: 4.1.0
     vuex: 4.0.2
+    vuex-pathify: 3.0.0-beta
     zxcvbn: 4.4.2
   languageName: unknown
   linkType: soft

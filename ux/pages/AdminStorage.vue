@@ -586,7 +586,7 @@ q-page.admin-storage
 import find from 'lodash/find'
 import cloneDeep from 'lodash/cloneDeep'
 import gql from 'graphql-tag'
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import transform from 'lodash/transform'
 import * as vNG from 'v-network-graph'
 
@@ -671,7 +671,7 @@ export default {
     }
   },
   computed: {
-    currentSiteId: get('admin/currentSiteId')
+    currentSiteId: get('admin/currentSiteId', false)
   },
   watch: {
     async currentSiteId (newValue) {

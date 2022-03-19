@@ -98,7 +98,7 @@ q-page.admin-locale
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import { copyToClipboard, createMetaMixin } from 'quasar'
 
 import SiteActivateDialog from '../components/SiteActivateDialog.vue'
@@ -119,7 +119,7 @@ export default {
     }
   },
   computed: {
-    sites: get('admin/sites')
+    sites: get('admin/sites', false)
   },
   methods: {
     copyID (uid) {

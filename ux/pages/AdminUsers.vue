@@ -108,7 +108,7 @@ q-page.admin-groups
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
 import { DateTime } from 'luxon'
-import { sync } from '@requarks/vuex-pathify'
+import { sync } from 'vuex-pathify'
 import { createMetaMixin } from 'quasar'
 
 import UserCreateDialog from '../components/UserCreateDialog.vue'
@@ -129,7 +129,7 @@ export default {
     }
   },
   computed: {
-    overlay: sync('admin/overlay'),
+    overlay: sync('admin/overlay', false),
     headers () {
       return [
         {

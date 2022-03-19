@@ -490,7 +490,7 @@ q-layout(view='hHh lpR fFf', container)
 
 <script>
 import gql from 'graphql-tag'
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import { DateTime } from 'luxon'
 import cloneDeep from 'lodash/cloneDeep'
 import some from 'lodash/some'
@@ -741,9 +741,9 @@ export default {
     }
   },
   computed: {
-    groupId: get('admin/overlayOpts@id'),
-    sites: get('admin/sites'),
-    locales: get('admin/locales'),
+    groupId: get('admin/overlayOpts@id', false),
+    sites: get('admin/sites', false),
+    locales: get('admin/locales', false),
     usersTotalPages () {
       if (this.usersTotal < 1) { return 0 }
       return Math.ceil(this.usersTotal / this.usersPageSize)

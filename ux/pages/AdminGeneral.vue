@@ -393,7 +393,7 @@ q-page.admin-general
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import gql from 'graphql-tag'
 import cloneDeep from 'lodash/cloneDeep'
 import { createMetaMixin } from 'quasar'
@@ -436,7 +436,7 @@ export default {
     }
   },
   computed: {
-    currentSiteId: get('admin/currentSiteId'),
+    currentSiteId: get('admin/currentSiteId', false),
     contentLicenses () {
       return [
         { value: '', text: this.$t('common.license.none') },
@@ -450,7 +450,7 @@ export default {
         { value: 'ccbyncnd', text: this.$t('common.license.ccbyncnd') }
       ]
     },
-    timezones: get('data/timezones')
+    timezones: get('data/timezones', false)
   },
   watch: {
     currentSiteId (newValue) {

@@ -209,7 +209,7 @@ q-page.admin-theme
 
 <script>
 import gql from 'graphql-tag'
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import _get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import startCase from 'lodash/startCase'
@@ -256,7 +256,7 @@ export default {
     }
   },
   computed: {
-    currentSiteId: get('admin/currentSiteId')
+    currentSiteId: get('admin/currentSiteId', false)
   },
   watch: {
     currentSiteId () {

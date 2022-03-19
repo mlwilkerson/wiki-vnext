@@ -82,7 +82,7 @@ q-layout(view='hHh Lpr lff')
 </template>
 
 <script>
-import { get, sync } from '@requarks/vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 import { setCssVar } from 'quasar'
 import HeaderNav from '../components/HeaderNav.vue'
 
@@ -110,8 +110,8 @@ export default {
     }
   },
   computed: {
-    showSideNav: sync('site/showSideNav'),
-    isSyncing: get('isLoading')
+    showSideNav: sync('site/showSideNav', false),
+    isSyncing: get('isLoading', false)
   },
   created () {
     setCssVar('primary', this.$store.get('site/theme@colorPrimary'))

@@ -270,7 +270,7 @@ q-card.page-properties-dialog
 </template>
 
 <script>
-import { get, sync } from '@requarks/vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 import PageRelationDialog from './PageRelationDialog.vue'
 import PageScriptsDialog from './PageScriptsDialog.vue'
 import PageTags from './PageTags.vue'
@@ -294,20 +294,20 @@ export default {
     }
   },
   computed: {
-    title: sync('page/title'),
-    description: sync('page/description'),
-    showInTree: sync('page/showInTree'),
-    isPublished: sync('page/isPublished'),
-    relations: sync('page/relations'),
-    showSidebar: sync('page/showSidebar'),
-    showToc: sync('page/showToc'),
-    showTags: sync('page/showTags'),
-    tocDepth: sync('page/tocDepth'),
-    allowComments: sync('page/allowComments'),
-    allowContributions: sync('page/allowContributions'),
-    allowRatings: sync('page/allowRatings'),
-    thumbStyle: get('site/thumbStyle'),
-    barStyle: get('site/barStyle'),
+    title: sync('page/title', false),
+    description: sync('page/description', false),
+    showInTree: sync('page/showInTree', false),
+    isPublished: sync('page/isPublished', false),
+    relations: sync('page/relations', false),
+    showSidebar: sync('page/showSidebar', false),
+    showToc: sync('page/showToc', false),
+    showTags: sync('page/showTags', false),
+    tocDepth: sync('page/tocDepth', false),
+    allowComments: sync('page/allowComments', false),
+    allowContributions: sync('page/allowContributions', false),
+    allowRatings: sync('page/allowRatings', false),
+    thumbStyle: get('site/thumbStyle', false),
+    barStyle: get('site/barStyle', false),
     quickaccess () {
       return [
         { key: 'info', icon: 'las la-info-circle', label: this.$t('editor.props.info') },

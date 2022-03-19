@@ -36,7 +36,6 @@
     "@heroicons/vue": "1.0.6",
     "@lezer/common": "0.15.12",
     "@quasar/extras": "1.13.3",
-    "@requarks/vuex-pathify": "2.0.2",
     "@tiptap/core": "2.0.0-beta.174",
     "@tiptap/extension-code-block": "2.0.0-beta.37",
     "@tiptap/extension-code-block-lowlight": "2.0.0-beta.68",
@@ -91,6 +90,7 @@
     "vue-router": "4.0.14",
     "vuedraggable": "4.1.0",
     "vuex": "4.0.2",
+    "vuex-pathify": "3.0.0-beta",
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {

@@ -90,7 +90,7 @@ q-card.page-data-dialog(style='width: 750px;')
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 
 import PageDataTemplateDialog from './PageDataTemplateDialog.vue'
 
@@ -107,8 +107,8 @@ export default {
     }
   },
   computed: {
-    thumbStyle: get('site/thumbStyle'),
-    barStyle: get('site/barStyle'),
+    thumbStyle: get('site/thumbStyle', false),
+    barStyle: get('site/barStyle', false),
     templates () {
       return [
         {

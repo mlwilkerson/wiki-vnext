@@ -180,7 +180,7 @@ q-layout.admin(view='hHh Lpr lff')
 </template>
 
 <script>
-import { get, sync } from '@requarks/vuex-pathify'
+import { get, sync } from 'vuex-pathify'
 import { createMetaMixin, setCssVar } from 'quasar'
 import { defineAsyncComponent } from 'vue'
 import AccountMenu from '../components/AccountMenu.vue'
@@ -254,10 +254,10 @@ export default {
     }
   },
   computed: {
-    currentSiteId: sync('admin/currentSiteId'),
-    overlay: get('admin/overlay'),
-    sites: get('admin/sites'),
-    routerLoading: get('routerLoading')
+    currentSiteId: sync('admin/currentSiteId', false),
+    overlay: get('admin/overlay', false),
+    sites: get('admin/sites', false),
+    routerLoading: get('routerLoading', false)
   },
   watch: {
     sites (newValue) {

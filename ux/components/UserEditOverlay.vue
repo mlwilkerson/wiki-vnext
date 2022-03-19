@@ -494,7 +494,7 @@ import find from 'lodash/find'
 import findKey from 'lodash/findKey'
 import _get from 'lodash/get'
 import map from 'lodash/map'
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import { DateTime } from 'luxon'
 import UtilCodeEditor from './UtilCodeEditor.vue'
 import UserChangePwdDialog from './UserChangePwdDialog.vue'
@@ -526,8 +526,8 @@ export default {
     }
   },
   computed: {
-    timezones: get('data/timezones'),
-    userId: get('admin/overlayOpts@id'),
+    timezones: get('data/timezones', false),
+    userId: get('admin/overlayOpts@id', false),
     metadata: {
       get () { return JSON.stringify(this.user.meta ?? {}, null, 2) },
       set (val) {

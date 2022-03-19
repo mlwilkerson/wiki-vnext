@@ -1,4 +1,4 @@
-import { make } from '@requarks/vuex-pathify'
+import { make } from 'vuex-pathify'
 
 const state = {
   mode: 'view',

@@ -84,7 +84,7 @@ q-header.bg-header.text-white.site-header(
 </template>
 
 <script>
-import { get } from '@requarks/vuex-pathify'
+import { get } from 'vuex-pathify'
 import AccountMenu from './AccountMenu.vue'
 import NewMenu from './PageNewMenu.vue'
 
@@ -99,8 +99,8 @@ export default {
     }
   },
   computed: {
-    isSyncing: get('isLoading'),
-    siteTitle: get('site/title')
+    isSyncing: get('isLoading', false),
+    siteTitle: get('site/title', false)
   }
 }
 </script>
