@@ -312,6 +312,7 @@ q-page.admin-general
               map-options
               dense
               options-dense
+              :virtual-scroll-slice-size='1000'
               :aria-label='$t(`admin.general.defaultTimezone`)'
               )
         q-separator.q-my-sm(inset)

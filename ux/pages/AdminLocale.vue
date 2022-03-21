@@ -40,7 +40,7 @@ q-page.admin-locale
       )
   q-separator(inset)
   .row.q-pa-md.q-col-gutter-md
-    .col-6
+    .col-7
       //- -----------------------
       //- Locale Options
       //- -----------------------
@@ -64,28 +64,7 @@ q-page.admin-locale
               dense
               :aria-label='$t(`admin.locale.base.label`)'
               )
-        //- q-separator.q-my-sm(inset)
-        //- q-item(tag='label', v-ripple)
-        //-   blueprint-icon(icon='renew')
-        //-   q-item-section
-        //-     q-item-label {{$t(`admin.locale.autoUpdate.label`)}}
-        //-     q-item-label(caption) {{namespacing ? $t(`admin.locale.autoUpdate.hintWithNS`) : $t(`admin.locale.autoUpdate.hint`)}}
-        //-   q-item-section(avatar)
-        //-     q-toggle(
-        //-       v-model='autoUpdate'
-        //-       color='primary'
-        //-       checked-icon='las la-check'
-        //-       unchecked-icon='las la-times'
-        //-       :aria-label='$t(`admin.locale.autoUpdate.label`)'
-        //-       )
-
-    .col-6
-      //- -----------------------
-      //- Namespacing
-      //- -----------------------
-      q-card.shadow-1.q-pb-sm
-        q-card-section
-          .text-subtitle1 {{$t('admin.locale.namespacing')}}
+        q-separator.q-my-sm(inset)
         q-item(tag='label', v-ripple)
           blueprint-icon(icon='unit')
           q-item-section
@@ -101,34 +80,63 @@ q-page.admin-locale
               )
         q-item
           q-item-section
-            q-card.bg-warning.text-white.rounded-borders(flat)
+            q-card.bg-info.text-white.rounded-borders(flat)
               q-card-section.items-center(horizontal)
                 q-card-section.col-auto.q-pr-none
-                  q-icon(name='las la-exclamation-circle', size='sm')
+                  q-icon(name='las la-info-circle', size='sm')
                 q-card-section
                   span {{ $t('admin.locale.namespacingPrefixWarning.title', { langCode: selectedLocale }) }}
                   .text-caption.text-yellow-1 {{ $t('admin.locale.namespacingPrefixWarning.subtitle') }}
-        q-separator.q-my-sm(inset)
-        q-item
-          blueprint-icon(icon='test-passed')
+
+    .col-5
+      //- -----------------------
+      //- Namespacing
+      //- -----------------------
+      q-card.shadow-1.q-pb-sm(v-if='namespacing')
+        q-card-section
+          .text-subtitle1 {{$t('admin.locale.activeNamespaces')}}
+
+        q-item(
+          v-for='(lc, idx) of installedLocales'
+          :key='lc.code'
+          :tag='lc.code !== selectedLocale ? `label` : null'
+          )
+          blueprint-icon(:text='lc.code')
           q-item-section
-            q-item-label {{$t(`admin.locale.activeNamespaces.label`)}}
-            q-item-label(caption) {{$t(`admin.locale.activeNamespaces.hint`)}}
-          q-item-section
-            q-select(
-              outlined
-              :disable='!namespacing'
+            q-item-label {{lc.name}}
+            q-item-label(caption) {{lc.nativeName}}
+          q-item-section(avatar)
+            q-toggle(
+              :disable='lc.code === selectedLocale'
               v-model='namespaces'
-              :options='installedLocales'
-              multiple
-              use-chips
-              option-value='code'
-              option-label='name'
-              emit-value
-              map-options
-              dense
-              :aria-label='$t(`admin.locale.activeNamespaces.label`)'
+              :val='lc.code'
+              color='primary'
+              checked-icon='las la-check'
+              unchecked-icon='las la-times'
+              :aria-label='lc.name'
               )
+
+        //- q-separator.q-my-sm(inset)
+        //- q-item
+        //-   blueprint-icon(icon='test-passed')
+        //-   q-item-section
+        //-     q-item-label {{$t(`admin.locale.activeNamespaces.label`)}}
+        //-     q-item-label(caption) {{$t(`admin.locale.activeNamespaces.hint`)}}
+        //-   q-item-section
+        //-     q-select(
+        //-       outlined
+        //-       :disable='!namespacing'
+        //-       v-model='namespaces'
+        //-       :options='installedLocales'
+        //-       multiple
+        //-       use-chips
+        //-       option-value='code'
+        //-       option-label='name'
+        //-       emit-value
+        //-       map-options
+        //-       dense
+        //-       :aria-label='$t(`admin.locale.activeNamespaces.label`)'
+        //-       )
 
       //- //- -----------------------
       //- //- Download Locales
@@ -295,6 +303,11 @@ export default {
   watch: {
     currentSiteId (newValue) {
       this.load()
+    },
+    selectedLocale (newValue) {
+      if (!this.namespaces.includes(newValue)) {
+        this.namespaces.push(newValue)
+      }
     }
   },
   mounted () {
@@ -339,6 +352,9 @@ export default {
       this.selectedLocale = cloneDeep(resp?.data?.siteById?.locale)
       this.namespacing = cloneDeep(resp?.data?.siteById?.localeNamespacing)
       this.namespaces = cloneDeep(resp?.data?.siteById?.localeNamespaces)
+      if (!this.namespaces.includes(this.selectedLocale)) {
+        this.namespaces.push(this.selectedLocale)
+      }
       this.$q.loading.hide()
       this.loading--
     },
