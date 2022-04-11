@@ -109,6 +109,13 @@ q-card.icon-picker(flat, style='width: 400px;')
       v-close-popup
     )
     q-btn(
+      icon='las la-search'
+      label='Search'
+      outline
+      color='grey-7'
+      @click='faIconChooserLoad'
+    )
+    q-btn(
       icon='las la-check'
       label='Apply'
       unelevated
@@ -120,6 +127,7 @@ q-card.icon-picker(flat, style='width: 400px;')
 
 <script>
 import find from 'lodash/find'
+import get from 'lodash/get'
 
 export default {
   props: {
@@ -143,7 +151,11 @@ export default {
         { value: 'fal', label: 'Font Awesome (light)', name: 'Font Awesome', subset: 'light', prefix: 'fal fa-', reference: 'https://fontawesome.com/icons' },
         { value: 'fad', label: 'Font Awesome (duotone)', name: 'Font Awesome', subset: 'duotone', prefix: 'fad fa-', reference: 'https://fontawesome.com/icons' },
         { value: 'fab', label: 'Font Awesome (brands)', name: 'Font Awesome', subset: 'brands', prefix: 'fab fa-', reference: 'https://fontawesome.com/icons' }
-      ]
+      ],
+      // TODO: figure out to retrieve values that have been configured and stored in the db
+      // by the admin user. For now, hardcode them temporarily with real values to see it work.
+      faApiToken: undefined,
+      faKitToken: undefined
     }
   },
   computed: {
@@ -176,6 +188,129 @@ export default {
       } else {
         this.$emit('input', this.iconName)
       }
+    },
+
+    faIconChooserLoad () {
+      const faIconChooserContainer = document.createElement('DIV')
+      faIconChooserContainer.setAttribute('id', 'fa-icon-chooser-container')
+      document.body.appendChild(faIconChooserContainer)
+      const faIconChooser = document.createElement('fa-icon-chooser')
+      faIconChooser.setAttribute('kit-token', this.faKitToken)
+      faIconChooser.handleQuery = this.faIconChooserHandleQuery
+      faIconChooser.getUrlText = this.faIconChooserGetUrlText;
+      faIconChooser.addEventListener('finish', this.faIconChooserHandleResult);
+      faIconChooserContainer.appendChild(faIconChooser)
+    },
+
+    faIconChooserHandleQuery (query) {
+      return new Promise((resolve, reject) => {
+        const headers = {
+          'Content-Type': 'application/json'
+        }
+
+        this.getAccessToken()
+        .then(token => {
+
+          if(token) {
+            headers['Authorization'] = `Bearer ${ token }`
+            console.log('handleQuery: using fresh access token to issue authorized request')
+          } else {
+            console.log('handleQuery: no access token found -- sending an unauthorized request')
+          }
+
+          return fetch( 'https://api.fontawesome.com', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({ query })
+            },
+          )
+        })
+        .then(response => {
+          if(response.ok) {
+            response.json()
+            .then(json => resolve(json))
+            .catch(e => reject(e))
+          } else {
+            reject('bad query')
+          }
+        })
+        .catch(e => reject(e))
+      })      
+    },
+
+    getAccessToken() {
+      if(!this.faApiToken) {
+        // If there's no apiToken, then it's not an error to resolve an undefined access token.
+        return Promise.resolve(undefined)
+      }
+      const tokenJSON = window.localStorage.getItem('token')
+      const tokenObj = tokenJSON ? JSON.parse(tokenJSON) : undefined
+      const freshToken = (tokenObj && Math.floor(Date.now() / 1000) <= tokenObj.expiresAtEpochSeconds)
+        ? tokenObj.token
+        : undefined
+
+      if(freshToken) return Promise.resolve(freshToken)
+
+      return fetch('https://api.fontawesome.com/token', {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${ this.faApiToken }`
+        }
+      })
+      .then(response => {
+        if(response.ok) {
+          response.json()
+          .then(obj => {
+            const expiresAtEpochSeconds = Math.floor(Date.now() / 1000) + obj['expires_in']
+
+            // WARNING: storing an access token in localStorage may not be good enough
+            // security in other situations. This is a development-only situation
+            // intended to run on a local development machine, so this seems like
+            // good enough security for that use case.
+            window.localStorage.setItem(
+              'token',
+              JSON.stringify({
+                token: obj['access_token'],
+                expiresAtEpochSeconds
+              })
+            )
+          })
+          .catch(e => {
+            throw e
+          })
+        } else {
+          const msg = 'DEV: unexpected token endpoint response'
+          console.error(msg, response)
+          throw new Error(msg)
+        }
+      })
+      .catch(e => {
+        throw e
+      })
+    },
+
+    faIconChooserGetUrlText (url) {
+      return fetch(url)
+        .then(response => {
+          if(response.ok) {
+            return response.text()
+          } else {
+            throw new Error(`DEBUG: bad query for url: ${url}`)
+          }
+        })
+
+    },
+
+    faIconChooserHandleResult (result) {
+      this.selPack = get(result, 'details.prefix')
+      this.selIcon = get(result, 'details.iconName')
+      this.apply()
+      this.faIconChooserClose()
+    },
+
+    faIconChooserClose () {
+      document.querySelector('fa-icon-chooser').remove()
+      document.querySelector('#fa-icon-chooser-container').remove()
     }
   }
 }
@@ -209,5 +344,16 @@ export default {
       background-color: $dark-5;
     }
   }
+}
+
+#fa-icon-chooser-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000000;
+  padding: 100px;
+  background-color: #808080b8;
 }
 </style>
